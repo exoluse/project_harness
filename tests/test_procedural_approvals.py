@@ -20,6 +20,7 @@ from project_harness.core import (
     atomic_write_json,
     load_json,
     record_path,
+    sha256_file,
     subject_fingerprint_for_path,
 )
 from project_harness.gates import plan_preflight_gate, task_start_gate
@@ -764,7 +765,7 @@ class ProceduralApprovalTests(unittest.TestCase):
             self._git(root, "init", "-b", "main")
             self._git(root, "config", "user.name", "Harness Test")
             self._git(root, "config", "user.email", "harness@example.invalid")
-            self._git(root, "config", "core.autocrlf", "false")
+            self._git(root, "config", "core.autocrlf", "true")
             self._git(root, "add", "--all")
             self._git(root, "commit", "-m", "fixture baseline")
 
@@ -776,6 +777,11 @@ class ProceduralApprovalTests(unittest.TestCase):
             try:
                 linked_approval = load_json(
                     linked / ".harness" / "approvals" / f"{approval['id']}.json"
+                )
+                snapshot_entry = linked_approval["snapshot_manifest"][0]
+                linked_snapshot = linked / snapshot_entry["snapshot_path"]
+                self.assertNotEqual(
+                    sha256_file(linked_snapshot), snapshot_entry["sha256"]
                 )
                 status, reason = approval_status(linked, linked_approval)
                 self.assertEqual(status, "CURRENT", reason)

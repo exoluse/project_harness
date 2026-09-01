@@ -764,6 +764,22 @@ def _canonical_subject_path(root: Path, subject: dict[str, Any]) -> str | None:
     return None
 
 
+def _approval_snapshot_hash_matches(path: Path, expected: str) -> bool:
+    """Accept Git's CRLF checkout transform for JSON approval snapshots only."""
+
+    if sha256_file(path) == expected:
+        return True
+    if path.suffix.casefold() != ".json":
+        return False
+    try:
+        raw = path.read_bytes()
+        load_json(path)
+    except (OSError, HarnessError):
+        return False
+    normalized = raw.replace(b"\r\n", b"\n")
+    return normalized != raw and sha256_bytes(normalized) == expected
+
+
 def _record_approval_unlocked(
     root: Path,
     *,
@@ -1516,7 +1532,9 @@ def approval_status(
         except HarnessError as exc:
             return "INVALID", str(exc)
         snapshot_path = root / normalized_snapshot
-        if not snapshot_path.is_file() or sha256_file(snapshot_path) != expected:
+        if not snapshot_path.is_file() or not _approval_snapshot_hash_matches(
+            snapshot_path, expected
+        ):
             return "INVALID", f"approval baseline snapshot is missing or changed: {snapshot_value}"
     subject_path = approval.get("subject_path")
     if not isinstance(subject_path, str):
