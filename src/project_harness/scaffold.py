@@ -128,8 +128,12 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
     if project_path.exists() and not force:
         raise HarnessError(f"Project harness already exists at {root}")
 
-    for directory, _prefix in RECORD_DIRECTORIES.values():
-        (harness / directory).mkdir(parents=True, exist_ok=True)
+    for directory in sorted({value[0] for value in RECORD_DIRECTORIES.values()}):
+        record_directory = harness / directory
+        record_directory.mkdir(parents=True, exist_ok=True)
+        placeholder = record_directory / ".gitkeep"
+        if not placeholder.exists():
+            atomic_write_text(placeholder, "")
     for directory in RUNTIME_DIRECTORIES:
         (harness / directory).mkdir(parents=True, exist_ok=True)
 
@@ -193,6 +197,7 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
     _install_guidance(root)
 
     root_files = {
+        ".gitignore": "__pycache__/\n*.py[cod]\n.venv/\n.harness/runtime/\n",
         "AGENTS.md": GENERATED_AGENTS,
         "CLAUDE.md": GENERATED_CLAUDE,
         "CODEX_START_PROMPT.md": GENERATED_CODEX_PROMPT,
@@ -200,6 +205,8 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
         "HANDOFF.md": GENERATED_HANDOFF,
         "scripts/harness.py": GENERATED_WRAPPER,
         "scripts/check_repo.py": GENERATED_CHECK_REPO,
+        ".harness/.gitattributes": "*.json text eol=lf\n",
+        ".harness/.gitignore": "/runtime/\n",
         ".harness/templates/allowed_signers.example": "# Documentation only. Never use a repository file as the approval trust root.\n",
     }
     for relative, content in root_files.items():

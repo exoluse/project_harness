@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from project_harness.constants import RECORD_DIRECTORIES
 from project_harness.scaffold import init_project
 from project_harness.collaboration import result_build_fingerprint
 from project_harness.core import (
@@ -41,6 +42,28 @@ class ScaffoldValidationTests(HarnessTestCase):
             self.assertTrue((root / "docs" / "APPROVALS.md").is_file())
             self.assertTrue((root / ".harness" / "project.json").is_file())
             self.assertTrue((root / ".harness" / "results").is_dir())
+            record_directories = {
+                directory for directory, _prefix in RECORD_DIRECTORIES.values()
+            }
+            for directory in record_directories:
+                self.assertTrue(
+                    (root / ".harness" / directory / ".gitkeep").is_file(),
+                    directory,
+                )
+            self.assertIn(
+                ".harness/runtime/",
+                (root / ".gitignore").read_text(encoding="utf-8"),
+            )
+            self.assertEqual(
+                (root / ".harness" / ".gitignore").read_text(encoding="utf-8"),
+                "/runtime/\n",
+            )
+            self.assertEqual(
+                (root / ".harness" / ".gitattributes").read_text(
+                    encoding="utf-8"
+                ),
+                "*.json text eol=lf\n",
+            )
             root_schemas = sorted((root / "schemas").glob("*.json"))
             vendored_schemas = sorted(
                 (root / ".harness" / "tooling" / "schemas").glob("*.json")
@@ -86,6 +109,80 @@ class ScaffoldValidationTests(HarnessTestCase):
                 (root / "AGENTS.md").read_text(encoding="utf-8"),
             )
             self.assertTrue((nested / "docs" / "COLLABORATION.md").is_file())
+
+    def test_git_clone_preserves_scaffold_and_strict_validation(self):
+        with tempfile.TemporaryDirectory() as temp:
+            workspace = Path(temp)
+            root = init_project(workspace / "source", "DEMO", "Demo")
+            runtime_probe = root / ".harness" / "runtime" / "not-tracked.txt"
+            runtime_probe.write_text("ephemeral\n", encoding="utf-8")
+
+            commands = [
+                ["git", "init"],
+                ["git", "config", "user.name", "Harness Test"],
+                ["git", "config", "user.email", "harness@example.invalid"],
+                ["git", "config", "core.autocrlf", "true"],
+                ["git", "add", "-A"],
+                ["git", "commit", "-m", "Initialize harness"],
+            ]
+            for command in commands:
+                result = subprocess.run(
+                    command,
+                    cwd=root,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stdout)
+
+            tracked_runtime = subprocess.run(
+                ["git", "ls-files", ".harness/runtime"],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(tracked_runtime.returncode, 0, tracked_runtime.stdout)
+            self.assertEqual(tracked_runtime.stdout.strip(), "")
+
+            clone = workspace / "clone"
+            cloned = subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "core.autocrlf=true",
+                    "clone",
+                    str(root),
+                    str(clone),
+                ],
+                cwd=workspace,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(cloned.returncode, 0, cloned.stdout)
+            self.assertFalse((clone / ".harness" / "runtime").exists())
+            for directory, _prefix in RECORD_DIRECTORIES.values():
+                self.assertTrue(
+                    (clone / ".harness" / directory / ".gitkeep").is_file(),
+                    directory,
+                )
+            self.assertEqual(
+                issue_counts(validate_project(clone)),
+                {"errors": 0, "warnings": 0},
+            )
+            strict = subprocess.run(
+                [sys.executable, "scripts/harness.py", "validate", "--strict"],
+                cwd=clone,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(strict.returncode, 0, strict.stdout)
 
     def test_ready_fixture_validates_cleanly(self):
         with tempfile.TemporaryDirectory() as temp:

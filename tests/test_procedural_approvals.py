@@ -762,6 +762,10 @@ class ProceduralApprovalTests(unittest.TestCase):
             container = Path(temp)
             root = create_ready_project(container / "main", approve=False)
             linked = container / "linked"
+            # Reproduce a project scaffolded before the harness began emitting
+            # an LF policy. New projects prevent this checkout transform; the
+            # approval reader must remain compatible with existing projects.
+            (root / ".harness" / ".gitattributes").unlink()
             self._git(root, "init", "-b", "main")
             self._git(root, "config", "user.name", "Harness Test")
             self._git(root, "config", "user.email", "harness@example.invalid")
@@ -785,6 +789,17 @@ class ProceduralApprovalTests(unittest.TestCase):
                 )
                 status, reason = approval_status(linked, linked_approval)
                 self.assertEqual(status, "CURRENT", reason)
+
+                original_snapshot = linked_snapshot.read_bytes()
+                tampered_snapshot = original_snapshot.replace(
+                    b'"schema"', b'"tampered_schema"', 1
+                )
+                self.assertNotEqual(tampered_snapshot, original_snapshot)
+                linked_snapshot.write_bytes(tampered_snapshot)
+                status, reason = approval_status(linked, linked_approval)
+                self.assertEqual(status, "INVALID")
+                self.assertIn("snapshot", reason)
+                linked_snapshot.write_bytes(original_snapshot)
 
                 with self.assertRaisesRegex(
                     HarnessError, "primary integration worktree"

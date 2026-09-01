@@ -1,0 +1,46 @@
+{
+  "schema": "harness.result/v1",
+  "id": "RES-0005",
+  "kind": "result",
+  "status": "SUBMITTED",
+  "task_id": "TASK-0003",
+  "claim_id": "CLM-0005",
+  "agent": "codex",
+  "summary": "Separated legacy CRLF approval compatibility from the new LF scaffold policy and verified non-EOL JSON tampering remains invalid.",
+  "changed_files": [
+    "tests/test_procedural_approvals.py"
+  ],
+  "changed_file_states": {
+    "tests/test_procedural_approvals.py": "FILE:d2ffc7fab0d49baf4dffdc21882ff1436c81b573e8d576e6bda8bde67ac6e797"
+  },
+  "verification": [
+    {
+      "command": "python -B -m unittest tests.test_procedural_approvals.ProceduralApprovalTests.test_shared_marker_supersedes_stale_linked_worktree_approval -v",
+      "outcome": "PASS"
+    },
+    {
+      "command": "python -B -m unittest tests.test_approvals_and_gates tests.test_procedural_approvals -v",
+      "outcome": "PASS"
+    },
+    {
+      "command": "git diff --check -- tests/test_procedural_approvals.py",
+      "outcome": "PASS"
+    },
+    {
+      "command": "python scripts/check_repo.py",
+      "outcome": "PARTIAL"
+    }
+  ],
+  "verification_state": "INCOMPLETE",
+  "evidence_refs": [],
+  "evidence_fingerprints": {},
+  "limitations": [
+    "All 71 tests and compilation passed; strict validation reported only the expected stale RES-0003 build for this in-progress superseding change before result submission."
+  ],
+  "task_fingerprint": "d16f4346af356191119ef9c1e8c38f2b1269baebaab97118f5f739ced20966ec",
+  "plan_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+  "base_commit": "b583476ab89c726c36188c177d8db808ecaad13f",
+  "head_commit": "b583476ab89c726c36188c177d8db808ecaad13f",
+  "submitted_at": "2026-09-01T08:08:01Z",
+  "build_fingerprint": "e622f02688f9add0e78c3796be27d5696948278d6d8f5a29679fdd9e80844c1b"
+}
