@@ -31,6 +31,14 @@ from .helpers import create_ready_project, write_record
 
 
 class ProceduralApprovalTests(unittest.TestCase):
+    def _git(self, root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            ["git", "-C", str(root), *args],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
     def _fingerprint(self, root: Path) -> str:
         return subject_fingerprint_for_path(
             record_path(root, "plan", "PLAN-0001")
@@ -414,6 +422,34 @@ class ProceduralApprovalTests(unittest.TestCase):
                     basis="A materially different decision basis",
                 )
 
+    def test_exact_replay_repairs_a_missing_shared_marker(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo", approve=False)
+            approval = self._confirm(root)
+            marker_directory = (
+                root
+                / ".harness"
+                / "runtime"
+                / "human-decisions"
+                / "latest-procedural"
+            )
+            marker = next(marker_directory.glob("*.json"))
+            marker.unlink()
+
+            status, reason = approval_status(root, approval)
+            self.assertEqual(status, "INVALID")
+            self.assertIn("marker is unavailable", reason)
+
+            replay = self._confirm(root)
+
+            self.assertEqual(replay["id"], approval["id"])
+            self.assertEqual(len(list(marker_directory.glob("*.json"))), 1)
+            self.assertEqual(approval_status(root, replay)[0], "CURRENT")
+            self.assertEqual(
+                len(list((root / ".harness" / "approvals").glob("APR-*.json"))),
+                1,
+            )
+
     def test_tampered_confirmation_provenance_is_invalid(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo", approve=False)
@@ -719,6 +755,91 @@ class ProceduralApprovalTests(unittest.TestCase):
             self.assertEqual(len(approval_ids), 6)
             self.assertEqual(record_sequences, set(range(1, 7)))
             self.assertEqual(authority_sequences, set(range(1, 7)))
+
+    def test_shared_marker_supersedes_stale_linked_worktree_approval(self):
+        with tempfile.TemporaryDirectory() as temp:
+            container = Path(temp)
+            root = create_ready_project(container / "main", approve=False)
+            linked = container / "linked"
+            self._git(root, "init", "-b", "main")
+            self._git(root, "config", "user.name", "Harness Test")
+            self._git(root, "config", "user.email", "harness@example.invalid")
+            self._git(root, "config", "core.autocrlf", "false")
+            self._git(root, "add", "--all")
+            self._git(root, "commit", "-m", "fixture baseline")
+
+            approval = self._confirm(root)
+            apply_plan_decision(root, approval_id=approval["id"])
+            self._git(root, "add", "--all")
+            self._git(root, "commit", "-m", "fixture approval")
+            self._git(root, "worktree", "add", "-b", "linked", str(linked))
+            try:
+                linked_approval = load_json(
+                    linked / ".harness" / "approvals" / f"{approval['id']}.json"
+                )
+                status, reason = approval_status(linked, linked_approval)
+                self.assertEqual(status, "CURRENT", reason)
+
+                with self.assertRaisesRegex(
+                    HarnessError, "primary integration worktree"
+                ):
+                    self._confirm(
+                        linked,
+                        confirmation_id="HCONF-linked-write-0001",
+                    )
+
+                revoked = self._confirm(
+                    root,
+                    confirmation_id="HCONF-revoked-0001",
+                    decision="REVOKED",
+                )
+
+                self.assertEqual(approval["authority_sequence"], 1)
+                self.assertEqual(revoked["authority_sequence"], 2)
+                status, reason = approval_status(linked, linked_approval)
+                self.assertEqual(status, "SUPERSEDED")
+                self.assertIn("shared procedural decision", reason)
+                current, current_reason = find_current_approval(
+                    linked,
+                    subject_id="PLAN-0001",
+                    approval_type="PLAN",
+                )
+                self.assertIsNone(current)
+                self.assertIn("SUPERSEDED", current_reason)
+                for directory in (
+                    "artifacts",
+                    "open-items",
+                    "evidence",
+                    "changes",
+                    "results",
+                    "reviews",
+                    "handoffs",
+                    "recoveries",
+                ):
+                    (linked / ".harness" / directory).mkdir(
+                        parents=True, exist_ok=True
+                    )
+                gate = task_start_gate(linked, "TASK-0001")
+                self.assertFalse(gate.passed)
+                self.assertTrue(
+                    any("SUPERSEDED" in blocker for blocker in gate.blockers),
+                    gate.blockers,
+                )
+            finally:
+                subprocess.run(
+                    [
+                        "git",
+                        "-C",
+                        str(root),
+                        "worktree",
+                        "remove",
+                        "--force",
+                        str(linked),
+                    ],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
 
 
 if __name__ == "__main__":

@@ -15,9 +15,15 @@ In a Git repository, all worktrees resolve the same live coordination root:
   mailboxes/outbox/<agent>/
   mailboxes/acks/<agent>/
   handoff-acceptances/
+  human-decisions/
+    record.lock/
+    procedural-sequence.txt
+    latest-procedural/<subject-key>.json
 ```
 
-Claims, mailbox copies, acknowledgements, and handoff acceptance are runtime coordination, not committed project truth. Durable `HOF-*`, `RES-*`, and `VRD-*` records remain under `.harness/`. `HANDOFF.md` is a rendered current view.
+Claims, mailbox copies, acknowledgements, handoff acceptance, and procedural latest-decision markers are runtime coordination, not committed project truth. Durable `APR-*`, `HOF-*`, `RES-*`, and `VRD-*` records remain under `.harness/`. `HANDOFF.md` is a rendered current view.
+
+Only the primary integration worktree may record a procedural human decision. The shared sequence and latest marker prevent linked worktrees from creating divergent decision orderings and make a primary-worktree revocation immediately fail closed in worktrees that still contain an older `APR-*`. A missing marker also fails closed. Because Git does not transport this runtime, a new clone needs the owner to repeat the exact procedural confirmation in its primary worktree before the committed approval becomes executable there.
 
 In no-Git mode the runtime falls back to `.harness/runtime/`, only one active claim is permitted, and a full workspace snapshot detects out-of-claim changes. Because no-Git results have no committed base/head identity, they cannot satisfy dependency or project-closure integration checks.
 
@@ -170,6 +176,8 @@ For true parallel writes:
 4. Submit exact handoffs/results and independent reviews.
 5. Give a designated integrator the shared files/merge logical locks.
 6. Commit the integration and run the plan's full verification gate.
+
+Human procedural decisions are an exception to parallel writers: record them only in the primary integration worktree. Linked worktrees consume the shared decision marker but never write competing decisions.
 
 Formatters, generated clients, lockfiles, migrations, schema registries, public APIs, and release manifests often touch shared state even when the initial source paths differ. Model them with a common logical lock or serialize them.
 

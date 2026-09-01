@@ -73,6 +73,10 @@ python scripts/harness.py approval confirm `
 
 `--acknowledge-procedural` states that this record does not authenticate the human against a same-privilege process. `HCONF-*` must identify one real confirmation and cannot be reused for a different decision payload. Channel and reference must describe the actual confirmation; they are not authority tokens. For `APPROVED_WITH_CONDITIONS`, provide matching `--condition` and `--condition-ref OI-*` values.
 
+Run `approval confirm` only in the primary integration worktree. The harness serializes procedural decisions under `<git-common-dir>/project-harness-runtime/human-decisions/`, assigns one shared authority sequence, and writes a latest-decision marker for the approval type and subject. Every linked worktree consults that marker, so an unmerged revocation recorded in the primary worktree immediately supersedes an older local `APR-*` in every linked worktree. Linked worktrees cannot record competing procedural histories.
+
+The marker and counter are coordination provenance, not authentication or durable project truth. They are intentionally outside Git. A new clone therefore fails closed on committed procedural approvals until the project owner repeats the exact confirmation in that clone's primary worktree. Repeating the same `HCONF-*` and unchanged decision payload is idempotent and may repair a missing marker; it cannot overwrite a marker that names a different later decision.
+
 Procedural plans are code-limited to `LOCAL_IMPLEMENTATION`, `LOCAL_TESTS`, and `DOCUMENTATION`. A plan or confirmation containing any other authorized action requires `CRYPTOGRAPHIC` plan assurance. In addition, a task with `PRODUCTION_DEPLOYMENT`, `PRODUCTION_DATA_CHANGE`, `EXTERNAL_WRITE`, or `DESTRUCTIVE_CLEANUP` must declare a current cryptographic approval in `capability_approval_refs`; plan approval alone never authorizes those actions. Every condition on a referenced high-impact approval must be fully resolved before the capability gate opens. `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability.
 
 Capture the returned `APR-*`, verify it, and then explicitly apply it to the active plan and lifecycle state:
@@ -271,7 +275,7 @@ The request TTL bounds how long a signed request may be imported. Once imported,
 
 ## Supersede, reject, or revoke
 
-Record a later `REJECTED`, `REVISION_REQUIRED`, `DEFERRED`, or `REVOKED` decision at the assurance required for that type. A procedural plan uses a new direct confirmation and unique `HCONF-*`; a cryptographic decision uses the same prepare/sign/install/import workflow. The latest repository decision for the type/subject controls and an invalid latest record does not fall back to an older approval; cryptographic decisions additionally require the latest protected authority sequence.
+Record a later `REJECTED`, `REVISION_REQUIRED`, `DEFERRED`, or `REVOKED` decision at the assurance required for that type. A procedural plan uses a new direct confirmation and unique `HCONF-*`; a cryptographic decision uses the same prepare/sign/install/import workflow. The latest repository decision for the type/subject controls and an invalid latest record does not fall back to an older approval. Procedural decisions additionally require the shared latest marker and global procedural sequence; cryptographic decisions require the latest protected authority sequence.
 
 Never delete an old approval or ledger entry to represent reversal. The ordered decision history is part of the evidence.
 

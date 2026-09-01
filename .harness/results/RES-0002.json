@@ -1,0 +1,53 @@
+{
+  "schema": "harness.result/v1",
+  "id": "RES-0002",
+  "kind": "result",
+  "status": "SUBMITTED",
+  "task_id": "TASK-0006",
+  "claim_id": "CLM-0002",
+  "agent": "codex",
+  "summary": "Documented primary-worktree procedural decision ownership, shared Git-common sequencing and latest-marker enforcement, replay repair, and new-clone fail-closed behavior.",
+  "changed_files": [
+    "AGENTS.md",
+    "docs/APPROVALS.md",
+    "docs/COLLABORATION.md",
+    "docs/DATA_MODEL.md"
+  ],
+  "changed_file_states": {
+    "AGENTS.md": "FILE:b4bc0a9f43d46d35d34a7f2eee8a0f026bfde1661a0b7f485136d45b0a776dc1",
+    "docs/APPROVALS.md": "FILE:97a4fa00a09c4cf3c18d34d18bf0fe9535fdc944259a1189eb02ae77587985b6",
+    "docs/COLLABORATION.md": "FILE:8e8d8e52357bfd784accffb9df079deee6d62323c81a4af056b9da868d31c531",
+    "docs/DATA_MODEL.md": "FILE:daa8b05987f74bb4d6ba3635b3ad99419cecc31cdee51272530f8bfa8939a3bc"
+  },
+  "verification": [
+    {
+      "command": "python scripts/check_repo.py",
+      "outcome": "PASS"
+    },
+    {
+      "command": "python scripts/harness.py approval check APR-0001",
+      "outcome": "PASS"
+    },
+    {
+      "command": "python scripts/harness.py validate --strict",
+      "outcome": "PASS"
+    },
+    {
+      "command": "git diff --check -- AGENTS.md docs/APPROVALS.md docs/COLLABORATION.md docs/DATA_MODEL.md",
+      "outcome": "PASS"
+    }
+  ],
+  "verification_state": "PASS",
+  "evidence_refs": [],
+  "evidence_fingerprints": {},
+  "limitations": [
+    "The shared marker is coordination provenance rather than identity authentication and is intentionally not transported by Git.",
+    "Observed Windows line-ending and empty-directory checkout portability gaps are documented as remaining bootstrap work, not fixed by this documentation result."
+  ],
+  "task_fingerprint": "86e55a1b3b430bb5de39ab1cd7015c72e4f11d129d9d165662a3878ea3fc69d4",
+  "plan_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+  "base_commit": "e55f57cd1556da9337e1f98cd32c829661a810db",
+  "head_commit": "e55f57cd1556da9337e1f98cd32c829661a810db",
+  "submitted_at": "2026-09-01T06:22:28Z",
+  "build_fingerprint": "65172799d94d0c04b8403b7eb1bebe82e5649416c516d6c0a2bbbe50cd948114"
+}

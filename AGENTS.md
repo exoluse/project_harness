@@ -44,6 +44,7 @@ See `docs/APPROVALS.md` for the procedural plan-confirmation and cryptographic s
 - One normalized path and one logical resource may have only one active writer.
 - In one checkout, prefer an exclusive claim. For parallel writes, use separate Git worktrees and non-overlapping claims.
 - Shared Git-worktree leases and mailboxes live under `<git-common-dir>/project-harness-runtime/`; do not create competing repository-local coordination state.
+- Record procedural human decisions only from the primary integration worktree. Every linked worktree must validate the shared latest-decision marker and global procedural sequence under the Git-common runtime; a missing, conflicting, or superseding marker blocks the approval.
 - Do not edit another active claim's files. Shared files require a serial handoff or integrator task.
 - Dirty paths without a recorded owner are `USER_OR_UNKNOWN`; do not take them over silently.
 - Never broad-reset, clean, delete, or overwrite work to resolve an ownership conflict.

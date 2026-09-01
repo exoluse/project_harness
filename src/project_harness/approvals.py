@@ -295,6 +295,26 @@ def _allocate_procedural_authority_sequence(
     return value
 
 
+def _ensure_procedural_authority_sequence(
+    root: Path, authority_sequence: int
+) -> None:
+    """Advance the shared counter when repairing an already-recorded decision."""
+
+    if authority_sequence <= 0:
+        raise HarnessError("Procedural authority sequence must be positive")
+    counter_path = _decision_runtime_directory(root) / "procedural-sequence.txt"
+    counter = 0
+    if counter_path.is_file():
+        try:
+            counter = int(counter_path.read_text(encoding="ascii").strip())
+        except (OSError, ValueError) as exc:
+            raise HarnessError(
+                f"Invalid shared procedural decision sequence: {counter_path}"
+            ) from exc
+    if authority_sequence > counter:
+        atomic_write_text(counter_path, f"{authority_sequence}\n")
+
+
 @contextmanager
 def decision_mutex(root: Path, *, operation: str = "processing a human decision"):
     """Serialize decision recording and application across shared worktrees."""
@@ -573,6 +593,7 @@ def _verify_attestation(
     *,
     enforce_request_expiry: bool,
     require_current_ledger_decision: bool = True,
+    verify_procedural_marker: bool = True,
 ) -> tuple[bool, str]:
     if not isinstance(attestation, dict):
         return False, "approval attestation is required"
@@ -645,6 +666,12 @@ def _verify_attestation(
         )
         if attestation.get("confirmation_provenance_sha256") != provenance_digest:
             return False, "procedural confirmation provenance hash does not match"
+        if verify_procedural_marker:
+            marker_valid, marker_reason = _verify_procedural_marker(
+                root, expected=expected, attestation=attestation
+            )
+            if not marker_valid:
+                return False, marker_reason
         return True, (
             "procedural confirmation is current provenance only; "
             "human identity is not cryptographically authenticated"
@@ -756,6 +783,7 @@ def _record_approval_unlocked(
     decision_id: str | None = None,
     decision_at: str | None = None,
     assurance: str | None = None,
+    procedural_recording: bool = False,
 ) -> dict[str, Any]:
     if authority_role != "HUMAN_PROJECT_OWNER":
         raise HarnessError("Only HUMAN_PROJECT_OWNER decisions can be recorded as approvals")
@@ -779,6 +807,12 @@ def _record_approval_unlocked(
         )
     if inferred_assurance and inferred_assurance != assurance:
         raise HarnessError("Approval assurance does not match its attestation mode")
+    if assurance == "PROCEDURAL":
+        require_procedural_decision_writer(root)
+        if inferred_assurance == "PROCEDURAL" and not procedural_recording:
+            raise HarnessError(
+                "PROCEDURAL decisions must use record_procedural_approval"
+            )
     if decision == "APPROVED_WITH_CONDITIONS" and (
         not conditions or not condition_refs
     ):
@@ -904,6 +938,7 @@ def _record_approval_unlocked(
         attestation,
         expected_attestation,
         enforce_request_expiry=True,
+        verify_procedural_marker=not procedural_recording,
     )
     if not attestation_valid:
         raise HarnessError(f"Approval identity verification failed: {attestation_reason}")
@@ -957,6 +992,12 @@ def _record_approval_unlocked(
         "recorded_at": utc_now(),
     }
     atomic_write_json(directory / f"{approval_id}.json", value)
+    if procedural_recording:
+        if not isinstance(attestation, dict):
+            raise HarnessError("Procedural decision attestation is missing")
+        _write_procedural_marker(
+            root, expected=expected_attestation, attestation=attestation
+        )
     record_event(
         root,
         "HUMAN_DECISION_RECORDED",
@@ -1003,6 +1044,7 @@ def record_procedural_approval(
             "Procedural approval requires --acknowledge-procedural because it "
             "does not cryptographically authenticate the human"
         )
+    require_procedural_decision_writer(root)
     if approval_type not in PROCEDURAL_APPROVAL_TYPES:
         raise HarnessError(
             f"PROCEDURAL assurance is not permitted for {approval_type}"
@@ -1054,17 +1096,101 @@ def record_procedural_approval(
         )
     project_id = str(load_json(root / HARNESS_DIR / "project.json").get("id", ""))
     with decision_mutex(root, operation="recording a procedural human decision"):
+        require_procedural_decision_writer(root)
         directory = root / HARNESS_DIR / "approvals"
         existing_records = [load_json(item) for item in directory.glob("APR-*.json")]
         authority_id = "PROCEDURAL-LOCAL"
-        sequences = [
-            item.get("authority_sequence")
-            for item in existing_records
-            if item.get("authority_id") == authority_id
-            and isinstance(item.get("authority_sequence"), int)
-            and not isinstance(item.get("authority_sequence"), bool)
-        ]
-        authority_sequence = max(sequences, default=0) + 1
+        replay_expected = _attestation_expected(
+            project_id=project_id,
+            authority_id=authority_id,
+            authority_sequence=0,
+            decision_id="",
+            decision_at="",
+            approval_type=approval_type,
+            decision=decision,
+            authority_role="HUMAN_PROJECT_OWNER",
+            approver=approver,
+            basis=basis,
+            subject=subject,
+            relative=relative,
+            fingerprint=fingerprint,
+            conditions=conditions,
+            condition_refs=condition_refs,
+            authorized_actions=authorized_actions,
+            excluded_actions=excluded_actions,
+            assurance="PROCEDURAL",
+        )
+        payload_digest = sha256_bytes(
+            canonical_json(_procedural_payload(replay_expected)).encode("utf-8")
+        )
+        for existing in existing_records:
+            existing_attestation = existing.get("attestation")
+            if not isinstance(existing_attestation, dict):
+                continue
+            if existing_attestation.get("confirmation_id") != confirmation_id:
+                continue
+            replay_provenance = {
+                "mode": "PROCEDURAL_CONFIRMATION",
+                "confirmation_channel": confirmation_channel.strip(),
+                "confirmation_reference": confirmation_reference.strip(),
+                "confirmed_by": approver,
+                "confirmed_subject_fingerprint": fingerprint,
+            }
+            if (
+                existing_attestation.get("decision_payload_sha256") == payload_digest
+                and all(
+                    existing_attestation.get(field) == value
+                    for field, value in replay_provenance.items()
+                )
+            ):
+                status, reason = approval_status(
+                    root, existing, verify_procedural_marker=False
+                )
+                if status not in {"CURRENT", "NOT_APPROVED"}:
+                    raise HarnessError(
+                        f"Existing confirmation {confirmation_id} is {status}: {reason}"
+                    )
+                expected_existing = {
+                    field: existing.get(field) for field in SIGNED_REQUEST_FIELDS
+                }
+                expected_existing["assurance"] = approval_assurance(existing)
+                marker_path = _procedural_marker_path(
+                    root,
+                    approval_type=str(existing.get("approval_type", "")),
+                    subject_id=str(existing.get("subject_id", "")),
+                )
+                if marker_path.is_file():
+                    marker_valid, marker_reason = _verify_procedural_marker(
+                        root,
+                        expected=expected_existing,
+                        attestation=existing_attestation,
+                    )
+                    if not marker_valid:
+                        raise HarnessError(
+                            f"Existing confirmation {confirmation_id} cannot repair "
+                            f"the shared marker: {marker_reason}"
+                        )
+                else:
+                    _write_procedural_marker(
+                        root,
+                        expected=expected_existing,
+                        attestation=existing_attestation,
+                    )
+                existing_sequence = existing.get("authority_sequence")
+                if not isinstance(existing_sequence, int) or isinstance(
+                    existing_sequence, bool
+                ):
+                    raise HarnessError(
+                        "Existing procedural authority sequence is invalid"
+                    )
+                _ensure_procedural_authority_sequence(root, existing_sequence)
+                return existing
+            raise HarnessError(
+                f"confirmation_id {confirmation_id} was already used for another decision"
+            )
+        authority_sequence = _allocate_procedural_authority_sequence(
+            root, existing_records
+        )
         decision_id = f"DEC-{uuid.uuid4()}"
         decision_at = utc_now()
         expected = _attestation_expected(
@@ -1090,35 +1216,6 @@ def record_procedural_approval(
         payload_digest = sha256_bytes(
             canonical_json(_procedural_payload(expected)).encode("utf-8")
         )
-        for existing in existing_records:
-            existing_attestation = existing.get("attestation")
-            if not isinstance(existing_attestation, dict):
-                continue
-            if existing_attestation.get("confirmation_id") != confirmation_id:
-                continue
-            replay_provenance = {
-                "mode": "PROCEDURAL_CONFIRMATION",
-                "confirmation_channel": confirmation_channel.strip(),
-                "confirmation_reference": confirmation_reference.strip(),
-                "confirmed_by": approver,
-                "confirmed_subject_fingerprint": fingerprint,
-            }
-            if (
-                existing_attestation.get("decision_payload_sha256") == payload_digest
-                and all(
-                    existing_attestation.get(field) == value
-                    for field, value in replay_provenance.items()
-                )
-            ):
-                status, reason = approval_status(root, existing)
-                if status not in {"CURRENT", "NOT_APPROVED"}:
-                    raise HarnessError(
-                        f"Existing confirmation {confirmation_id} is {status}: {reason}"
-                    )
-                return existing
-            raise HarnessError(
-                f"confirmation_id {confirmation_id} was already used for another decision"
-            )
         attestation = {
             "mode": "PROCEDURAL_CONFIRMATION",
             "confirmation_id": confirmation_id,
@@ -1156,6 +1253,7 @@ def record_procedural_approval(
             decision_id=decision_id,
             decision_at=decision_at,
             assurance="PROCEDURAL",
+            procedural_recording=True,
         )
 
 
@@ -1373,7 +1471,12 @@ def _approval_integrity_conflict(
     return None
 
 
-def approval_status(root: Path, approval: dict[str, Any]) -> tuple[str, str]:
+def approval_status(
+    root: Path,
+    approval: dict[str, Any],
+    *,
+    verify_procedural_marker: bool = True,
+) -> tuple[str, str]:
     approval_id_match = re.fullmatch(
         r"APR-([0-9]+)", str(approval.get("id", ""))
     )
@@ -1452,9 +1555,13 @@ def approval_status(root: Path, approval: dict[str, Any]) -> tuple[str, str]:
         approval.get("attestation"),
         expected_attestation,
         enforce_request_expiry=False,
+        verify_procedural_marker=verify_procedural_marker,
     )
     if not attestation_valid:
-        if "superseded by protected authority sequence" in attestation_reason:
+        if (
+            "superseded by protected authority sequence" in attestation_reason
+            or "superseded by shared procedural decision" in attestation_reason
+        ):
             return "SUPERSEDED", attestation_reason
         return "INVALID", f"approval identity verification failed: {attestation_reason}"
     current_sequence = approval.get("record_sequence")
