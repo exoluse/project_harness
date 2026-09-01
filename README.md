@@ -11,7 +11,8 @@ Codex, Claude Code, and other agents use the same JSON records and command surfa
 - `G0`-`G3` open items stay active until their resolution is complete and propagated. Blocking gates fail closed.
 - Required criteria declare verification profiles and file or directory bindings. Missing, ambiguous, partial, failed, stale, or unrelated evidence cannot complete them.
 - Plan and human approval records are bound to canonical SHA-256 fingerprints. A changed subject invalidates the affected approval.
-- Human approvals require an SSH signature, a fixed external OS-protected authority configuration, and presence in a protected append ledger. Repository files and environment variables are not approval trust roots.
+- Approval assurance is policy-driven. A project may allow explicit `PROCEDURAL` confirmation for `PLAN`, while production, external, exception, customer-acceptance, closure, and other high-risk decisions remain `CRYPTOGRAPHIC` through the fixed external SSH authority and protected ledger.
+- Procedural plans are limited to local implementation, local tests, and documentation. High-impact task capabilities require explicit current cryptographic approval references in addition to plan approval.
 - Claims prevent overlapping path or logical-resource writers. Git common-directory leases and mailboxes coordinate separate worktrees.
 - A handoff records exact changed-file states and must be accepted explicitly. A submitted result is terminal for that work attempt and releases its claim.
 - The latest result attempt and its latest review determine task readiness; an older PASS cannot hide a newer failed or incomplete attempt.
@@ -45,7 +46,7 @@ git commit -m "Initialize project harness"
 
 The generated project vendors the dependency-free Python runtime under `.harness/tooling/`, copies the enforced schemas, shared agent policies, start prompts, and operator documentation, and therefore runs its own `scripts/harness.py` without installing this package. A generated project can initialize another equally self-contained project.
 
-Before recording any human approval, an administrator must establish the external authority and ledger described in [Human approval operations](docs/APPROVALS.md). Until that trust root is ready, `doctor` reports the authority as unavailable and approval-dependent task gates remain blocked.
+Before recording a cryptographic human approval, an administrator must establish the external authority and ledger described in [Human approval operations](docs/APPROVALS.md). A project whose policy permits procedural `PLAN` assurance can approve a plan without that trust root, but the project owner must personally run the exact confirmation; an agent cannot do so on the owner's behalf.
 
 ## Daily commands
 
@@ -63,7 +64,18 @@ python scripts/check_repo.py
 
 `scripts/check_repo.py` executes only its fixed repository checks. Verification strings stored in plans, results, or handoffs are records; the harness does not execute mutable project JSON as commands.
 
-`report decision-package` assembles the plan fingerprint, preflight, requirement-feature-criterion-task coverage, workstreams, action boundaries, unresolved items, authority readiness, and available decisions for one consolidated human review. `report completion` keeps feature gates, technical closure preflight, and fully authorized closure separate; it exits blocked until authorized closure truly passes.
+`report decision-package` assembles the plan fingerprint, preflight, requirement-feature-criterion-task coverage, workstreams, action boundaries, unresolved items, configured assurance readiness, and available decisions for one consolidated human review. `report completion` keeps feature gates, technical closure preflight, and fully authorized closure separate; it exits blocked until authorized closure truly passes.
+
+For a policy that permits procedural plan assurance, the human owner first copies the current fingerprint from `fingerprint`, checks the exact decision and action boundaries, and personally runs `approval confirm`. The acknowledgment records provenance only; it is not cryptographic identity authentication. Apply the returned decision explicitly before task work starts:
+
+```powershell
+$planFingerprint = python scripts/harness.py fingerprint .harness/plans/PLAN-0001.json
+python scripts/harness.py approval confirm --type PLAN --subject .harness/plans/PLAN-0001.json --decision APPROVED --approver owner@example.com --basis "Reviewed the exact plan" --confirm-fingerprint $planFingerprint --confirmation-id HCONF-PLAN-0001 --confirmation-channel TERMINAL --confirmation-reference "direct owner confirmation" --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION --excluded-action PRODUCTION_DEPLOYMENT --acknowledge-procedural
+python scripts/harness.py approval check APR-0001
+python scripts/harness.py plan apply-decision --approval APR-0001
+```
+
+Do not reuse a fingerprint after any approval dependency changes. Use the cryptographic prepare/sign/install/import workflow for assurance levels or approval types that do not permit procedural confirmation.
 
 ## Codex and Claude Code flow
 
@@ -104,11 +116,11 @@ No-Git mode can serialize one claim and detect changes from a full workspace sna
 
 - Canonical project records: `.harness/`
 - Shared live leases and agent mailboxes in Git projects: `<git-common-dir>/project-harness-runtime/`
-- Human approval authority on Windows: `C:\ProgramData\ProjectHarness\authorities\<project-id>.json`
-- Human approval authority on POSIX: `/etc/project-harness/authorities/<project-id>.json`
+- Cryptographic human approval authority on Windows: `C:\ProgramData\ProjectHarness\authorities\<project-id>.json`
+- Cryptographic human approval authority on POSIX: `/etc/project-harness/authorities/<project-id>.json`
 - Human-readable current handoff view: `HANDOFF.md`
 
-The external authority configuration, allowed signers, private keys, and decision ledger must not be stored in or made writable from the project repository.
+The external authority configuration, allowed signers, private keys, and decision ledger for `CRYPTOGRAPHIC` assurance must not be stored in or made writable from the project repository. A repository `PROCEDURAL` plan confirmation is intentionally weaker provenance and must never be described as authenticated human identity.
 
 The current CLI has no built-in production executor. It governs capability and approval records; a separately controlled deployment/messaging/data adapter must perform any authorized external action and return evidence.
 

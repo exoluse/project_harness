@@ -187,4 +187,4 @@ Recovery marks the old claim abandoned. It does not automatically take ownership
 
 Agent strings such as `codex`, `claude`, or `reviewer-2` are normalized routing/provenance labels. The local harness prevents accidental same-label self-review, but a same-privilege process can choose another label. When independent review is a security/compliance property, an external orchestrator must authenticate agent processes, isolate credentials/worktrees, control the harness version, and attest who ran each review.
 
-Human approval uses a separate cryptographic external authority; it does not turn agent IDs into authenticated identities.
+A project may use explicit procedural confirmation for a `PLAN`, but that record is provenance rather than authenticated human identity and no agent may run the confirmation for the owner. Every higher-impact approval uses the separate cryptographic external authority. Neither assurance mode turns agent IDs into authenticated identities.

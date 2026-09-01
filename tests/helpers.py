@@ -14,6 +14,7 @@ from project_harness.core import (
     subject_fingerprint,
     utc_now,
 )
+from project_harness.lifecycle import apply_plan_decision
 from project_harness.scaffold import init_project
 
 
@@ -122,7 +123,7 @@ def create_ready_project(root: Path, *, approve: bool = True) -> Path:
         "kind": "plan",
         "title": "Initial plan",
         "version": "1.0.0",
-        "status": "ACTIVE",
+        "status": "DECISION_READY",
         "approval_dependencies": [
             ".harness/requirements/REQ-0001.json",
             ".harness/features/FUNC-0001.json",
@@ -155,11 +156,11 @@ def create_ready_project(root: Path, *, approve: bool = True) -> Path:
     atomic_write_json(project_path, project)
     state_path = root / ".harness" / "state.json"
     state = load_json(state_path)
-    state["lifecycle_state"] = "APPROVED"
+    state["lifecycle_state"] = "DECISION_READY"
     state["active_plan"] = "PLAN-0001"
     atomic_write_json(state_path, state)
     if approve:
-        record_approval(
+        approval = record_approval(
             root,
             approval_type="PLAN",
             subject_path=".harness/plans/PLAN-0001.json",
@@ -172,6 +173,7 @@ def create_ready_project(root: Path, *, approve: bool = True) -> Path:
             excluded_actions=["PRODUCTION_DEPLOYMENT"],
             attestation={"mode": "TEST_MOCK"},
         )
+        apply_plan_decision(root, approval_id=approval["id"])
     return root
 
 

@@ -9,18 +9,18 @@
 | `.harness/requirements/` | `REQ-` | Versioned functional, non-functional, operational, and security requirements |
 | `.harness/features/` | `FUNC-` | Implementable capabilities and criterion-level completion contracts |
 | `.harness/plans/` | `PLAN-` | Versioned execution subject, workstreams, capabilities, exclusions, and verification strategy |
-| `.harness/work-items/` | `TASK-` | Bounded agent tasks, dependencies, criterion scope, write scope, locks, and checks |
+| `.harness/work-items/` | `TASK-` | Bounded agent tasks, dependencies, criterion scope, write scope, locks, checks, and capability-specific approval refs |
 | `.harness/open-items/` | `OI-` | Questions, decisions, assumptions, risks, dependencies, conflicts, and blockers |
 | `.harness/evidence/` | `EVD-` | Verification observations, profiles, subject fingerprints, bindings, and limitations |
-| `.harness/approvals/` | `APR-` | Imported signed human decisions bound to exact subjects and snapshots |
+| `.harness/approvals/` | `APR-` | Human decisions with declared assurance, exact subjects, actions, provenance/attestation, and snapshots |
 | `.harness/changes/` | `CR-` | New requests/artifacts, classification, affected scope, impact, and decision |
 | `.harness/results/` | `RES-` | Terminal worker-attempt results and build/evidence fingerprints |
 | `.harness/reviews/` | `VRD-` | Verdicts bound to one exact result/build |
 | `.harness/handoffs/` | `HOF-` | Immutable agent-to-agent exact-state transfer records |
 
-`.harness/project.json` contains project policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` points to the active plan/baselines/release and current lifecycle state.
+`.harness/project.json` contains project policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` points to the active plan, materialized `active_decision`, baselines, release, and current lifecycle state. An applied plan stores the matching `decision_ref` and stable `decision_applied_at`; these state fields do not replace the approval's independently checked currentness.
 
-Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
+Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Cryptographic approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
 
 ## Full trace
 
@@ -36,6 +36,8 @@ SRC/ART -> REQ -> FUNC -> completion criterion -> TASK
 `trace <id>` walks incoming and outgoing references across canonical records. Feature completion criteria and project closure criteria are indexed as first-class synthetic trace nodes even though they are nested in their owner JSON record.
 
 Plan preflight checks both directions: planned requirements need realizing features, required features/criteria need implementing tasks, and tasks must stay inside the plan's requirement/feature/criterion and capability boundaries.
+
+High-impact work-item capabilities use `capability_approval_refs`, a capability-to-`APR-*` map included in the task fingerprint. Production deployment/data change require their matching cryptographic approval types; external writes and destructive cleanup require a cryptographic exception until dedicated approval types exist. A stale, unrelated, mismatched, or non-current reference cannot satisfy the task gate.
 
 `report decision-package PLAN-*` projects this connected model into one human decision package. `report completion` projects required feature gates plus technical and authorized closure without changing canonical state.
 
@@ -83,7 +85,7 @@ Evidence states exactly what it proves, method, environment, subject version, ex
 
 A plan's `approval_subject` includes its requirement, feature, and work-item references, workstreams, verification strategy, authorized/excluded actions, and invalidation triggers. `approval_dependencies` lists the exact canonical records snapshotted with the plan decision.
 
-An `APR-*` stores authority/sequence/decision identity, approval type, subject ID/path/fingerprint, decision, actions/conditions, baseline snapshot manifest, and embedded signed-request attestation. Its currentness is re-evaluated against the fixed external authority and protected ledger; the highest authority sequence for a type/subject wins.
+An `APR-*` stores its assurance and local record sequence plus authority/decision identity, approval type, subject ID/path/fingerprint, decision, actions/conditions, baseline snapshot manifest, and attestation. A `PROCEDURAL` `PLAN` attestation records confirmation ID/channel/reference and the exact confirmed payload but does not authenticate human identity. A `CRYPTOGRAPHIC` attestation embeds the signed request and is re-evaluated against the fixed external authority and protected ledger. The latest local decision for a type/subject controls repository gates without falling back when that latest record is invalid; within a cryptographic authority, the highest valid authority sequence controls.
 
 ## Claims and shared mailboxes
 
@@ -101,4 +103,4 @@ A `VRD-*` stores reviewer alias, verdict, basis/checks, result fingerprint, and 
 
 ## Project closure contract
 
-The default closure criteria are `DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS`. Each required criterion declares profiles and evidence. Project closure additionally requires required features in the active approved plan, completed and Git-integrated tasks, each latest attempt independently reviewed PASS, zero active claims, no active `G0/G1`, a closure-ready lifecycle state, exact approval dependencies, and a current signed `PROJECT_CLOSURE` approval.
+The default closure criteria are `DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS`. Each required criterion declares profiles and evidence. Project closure additionally requires required features in the active approved plan, completed and Git-integrated tasks, each latest attempt independently reviewed PASS, zero active claims, no active `G0/G1`, a closure-ready lifecycle state, exact approval dependencies, and a current cryptographic `PROJECT_CLOSURE` approval.

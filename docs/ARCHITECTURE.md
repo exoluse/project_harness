@@ -1,6 +1,6 @@
 # Architecture
 
-The harness separates project truth, live coordination, human authority, and derived views. Keeping these stores distinct prevents a convenient agent-written file from becoming approval or acceptance.
+The harness separates project truth, live coordination, human decision assurance, protected cryptographic authority, and derived views. Keeping these stores distinct prevents a convenient agent-written file from becoming authenticated approval or acceptance.
 
 ```text
 Customer and external inputs
@@ -15,9 +15,9 @@ Canonical project model (.harness in the repository)
                  |                                      |
                  +------------------ gates -------------+
 
-Live coordination                         Human authority
-<git-common-dir>/project-harness-runtime  fixed OS-protected config
-  leases, inbox/outbox, acknowledgements    allowed signers + append ledger
+Live coordination                         Human decisions
+<git-common-dir>/project-harness-runtime  procedural PLAN confirmation, or
+  leases, inbox/outbox, acknowledgements    fixed config + signer + ledger
                  |                                      |
                  +--------------- CLI ------------------+
                                       |
@@ -54,20 +54,22 @@ Dependency references determine which work blocks. The absence of UI is not a gl
 
 ## Fingerprints and currentness
 
-Approved subjects expose fingerprinted fields. A human approval stores the exact subject fingerprint and immutable baseline snapshots of the subject and its declared approval dependencies. If the live subject changes, the approval becomes stale.
+Approved subjects expose fingerprinted fields. A human approval stores the exact subject fingerprint and immutable baseline snapshots of the subject and its declared approval dependencies. If the live subject or an approval dependency such as the assurance policy changes, the approval becomes stale.
 
 Completion-criterion fingerprints cover the normative statement, verification plan, required profiles, and required bindings. Evidence must carry the current criterion fingerprint and current hashes for every required file/directory binding. Directory hashes are deterministic tree hashes.
 
 Results bind the task fingerprint, plan fingerprint, base/head commit, exact changed-file states, and evidence fingerprints into a build fingerprint. Reviews bind both the result and build fingerprints. Gates use the numerically latest result for a task and the latest review of that result. Closure-grade integration additionally requires the result head to descend from its recorded base, the current integration HEAD to descend from the result head, and the committed path states to remain exact; an unrelated commit with the same tree is not accepted as integration.
 
-## Human authority plane
+## Human decision and authority plane
 
-Human approval verification deliberately does not consult repository policy or environment variables. The configuration location is fixed in code:
+Project policy selects the minimum approval assurance. `PROCEDURAL` is supported only for `PLAN` and binds an explicit human confirmation to the exact fingerprint, decision, actions, and confirmation provenance. It is stored as repository provenance and does not authenticate the human against a same-privilege process; agents may prepare the command but must not execute it for the human.
+
+Every other approval type remains `CRYPTOGRAPHIC`. Cryptographic approval verification does not accept repository or environment redirects for its trust root. The configuration location is fixed in code:
 
 - Windows: `C:\ProgramData\ProjectHarness\authorities\<project-id>.json`
 - POSIX: `/etc/project-harness/authorities/<project-id>.json`
 
-That configuration is bound to the project ID and resolved repository root. It points outside the repository to a pinned SSH allowed-signers file and a protected decision-ledger directory. Every approval status check re-verifies its signature, ledger presence, sequence, latest-decision status, subject fingerprint, and baseline snapshots. See [Human approval operations](APPROVALS.md).
+That configuration is bound to the project ID and resolved repository root. It points outside the repository to a pinned SSH allowed-signers file and a protected decision-ledger directory. Every cryptographic approval status check re-verifies its signature, ledger presence, sequence, latest-decision status, subject fingerprint, and baseline snapshots. See [Human approval operations](APPROVALS.md).
 
 ## Live coordination plane
 

@@ -42,6 +42,12 @@
       "EXCEPTION",
       "PROJECT_CLOSURE"
     ],
+    "approval_assurance": {
+      "default": "CRYPTOGRAPHIC",
+      "by_type": {
+        "PLAN": "PROCEDURAL"
+      }
+    },
     "default_claim_ttl_minutes": 120,
     "agent_identity_assurance": "PROCEDURAL_UNLESS_EXTERNAL_ORCHESTRATOR",
     "production_execution": "NO_BUILT_IN_EXECUTOR"

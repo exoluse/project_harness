@@ -1,0 +1,50 @@
+{
+  "schema": "harness.feature/v1",
+  "id": "FUNC-0006",
+  "kind": "feature",
+  "title": "Standalone distribution and operator guidance",
+  "version": "1.0.0",
+  "status": "PLANNED",
+  "required": true,
+  "requirement_refs": [
+    "REQ-0007"
+  ],
+  "customer_acceptance_required": false,
+  "completion_criteria": [
+    {
+      "id": "AC-FUNC-0006-001",
+      "statement": "A newly initialized project receives a vendored zero-dependency runtime, canonical directories, shared agent policies, schemas, and working CLI entry points.",
+      "required": true,
+      "verification_plan": [
+        "python -m unittest tests.test_scaffold_and_validation -v"
+      ],
+      "required_profiles": [
+        "AUTOMATED_TEST"
+      ],
+      "required_bindings": [
+        "src/project_harness/scaffold.py",
+        "scripts/harness.py",
+        "tests/test_scaffold_and_validation.py"
+      ],
+      "evidence_refs": []
+    },
+    {
+      "id": "AC-FUNC-0006-002",
+      "statement": "Operator and agent documentation explains lifecycle, authority, collaboration, evidence, change, completion, and known trust boundaries without making an unverified runtime claim.",
+      "required": true,
+      "verification_plan": [
+        "python scripts/harness.py validate --strict"
+      ],
+      "required_profiles": [
+        "STATIC"
+      ],
+      "required_bindings": [
+        "README.md",
+        "AGENTS.md",
+        "docs"
+      ],
+      "evidence_refs": []
+    }
+  ],
+  "created_at": "2026-09-01T02:00:00Z"
+}

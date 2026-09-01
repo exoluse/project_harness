@@ -67,6 +67,33 @@ APPROVAL_DECISIONS = {
     "REVOKED",
 }
 
+APPROVAL_ASSURANCE_LEVELS = {
+    "PROCEDURAL",
+    "CRYPTOGRAPHIC",
+}
+
+# Procedural confirmation records provenance but does not authenticate the
+# human identity.  Keep its use deliberately narrow; higher-impact decisions
+# retain the protected cryptographic authority path.
+PROCEDURAL_APPROVAL_TYPES = {"PLAN"}
+
+PROCEDURAL_PLAN_ACTIONS = {
+    "LOCAL_IMPLEMENTATION",
+    "LOCAL_TESTS",
+    "DOCUMENTATION",
+}
+
+CAPABILITY_APPROVAL_TYPES = {
+    "PRODUCTION_DEPLOYMENT": "PRODUCTION_DEPLOYMENT",
+    "PRODUCTION_DATA_CHANGE": "PRODUCTION_DATA_CHANGE",
+    # Until dedicated external-action/destructive-operation approval types
+    # exist, these capabilities require a cryptographic EXCEPTION decision.
+    "EXTERNAL_WRITE": "EXCEPTION",
+    "DESTRUCTIVE_CLEANUP": "EXCEPTION",
+}
+
+NEVER_AGENT_CAPABILITIES = {"HUMAN_PRIVATE_KEY_ACCESS"}
+
 EVIDENCE_RESULTS = {
     "NOT_TESTED",
     "COLLECTED",

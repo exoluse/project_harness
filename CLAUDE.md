@@ -30,6 +30,6 @@ Record exact `command::outcome` values, all changed files, evidence references, 
 
 An independent review is a separate record. A different agent label prevents procedural self-review, but labels are not cryptographic identities. Do not claim hostile reviewer isolation unless an external orchestrator or protected CI supplied that boundary.
 
-Claude Code may prepare a human approval request but may not sign it, place it in the protected external ledger, or infer approval. Follow `docs/APPROVALS.md`.
+Claude Code may prepare a decision package, a copyable procedural confirmation command, or a cryptographic approval request. It may not run `approval confirm` for the human, sign a request, place it in the protected external ledger, infer approval, or otherwise self-authorize. Procedural plan confirmation records provenance rather than authenticated identity; follow `docs/APPROVALS.md`.
 
 For a copyable bootstrap instruction, see `CLAUDE_START_PROMPT.md`.

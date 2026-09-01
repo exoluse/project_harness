@@ -171,6 +171,10 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
                 "EXCEPTION",
                 "PROJECT_CLOSURE",
             ],
+            "approval_assurance": {
+                "default": "CRYPTOGRAPHIC",
+                "by_type": {"PLAN": "PROCEDURAL"},
+            },
             "default_claim_ttl_minutes": 120,
         },
     }
@@ -303,6 +307,7 @@ def new_record(kind: str, record_id: str, title: str) -> dict:
             "verification": [],
             "risk": "LOW",
             "capabilities": [],
+            "capability_approval_refs": {},
             "forbidden_actions": [],
         }
     if kind == "open_item":

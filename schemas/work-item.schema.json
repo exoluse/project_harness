@@ -16,6 +16,13 @@
     "logical_locks": {"type": "array", "items": {"type": "string"}},
     "verification": {"type": "array", "items": {"type": "string"}},
     "capabilities": {"type": "array", "items": {"type": "string"}},
+    "capability_approval_refs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {"type": "string", "pattern": "^APR-[0-9]{4,}$"}
+      }
+    },
     "forbidden_actions": {"type": "array", "items": {"type": "string"}}
   },
   "additionalProperties": true

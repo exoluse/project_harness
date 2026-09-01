@@ -6,8 +6,10 @@ import sys
 from pathlib import Path
 
 from .approvals import (
+    approval_assurance,
     approval_status,
     prepare_approval_request,
+    record_procedural_approval,
     record_signed_approval,
 )
 from .collaboration import (
@@ -45,6 +47,7 @@ from .gates import (
     project_completion_gate,
     task_start_gate,
 )
+from .lifecycle import apply_plan_decision
 from .reporting import (
     completion_report,
     decision_package,
@@ -154,14 +157,50 @@ def cmd_approval_record(args: argparse.Namespace) -> int:
     return EXIT_PASS
 
 
+def cmd_approval_confirm(args: argparse.Namespace) -> int:
+    value = record_procedural_approval(
+        _root(args),
+        approval_type=args.type,
+        subject_path=args.subject,
+        decision=args.decision,
+        approver=args.approver,
+        basis=args.basis,
+        confirm_fingerprint=args.confirm_fingerprint,
+        confirmation_id=args.confirmation_id,
+        confirmation_channel=args.confirmation_channel,
+        confirmation_reference=args.confirmation_reference,
+        conditions=args.condition,
+        condition_refs=args.condition_ref,
+        authorized_actions=args.authorized_action,
+        excluded_actions=args.excluded_action,
+        acknowledge_procedural=args.acknowledge_procedural,
+    )
+    _print(value, args.json)
+    return EXIT_PASS
+
+
 def cmd_approval_check(args: argparse.Namespace) -> int:
     root = _root(args)
     approval = load_json(record_path(root, "approval", args.id))
     status, reason = approval_status(root, approval)
-    _print({"id": args.id, "status": status, "reason": reason}, args.json)
+    _print(
+        {
+            "id": args.id,
+            "status": status,
+            "reason": reason,
+            "assurance": approval_assurance(approval),
+        },
+        args.json,
+    )
     if status == "CURRENT":
         return EXIT_PASS
     return EXIT_STALE if status in {"STALE", "SUPERSEDED"} else EXIT_BLOCKED
+
+
+def cmd_plan_apply_decision(args: argparse.Namespace) -> int:
+    value = apply_plan_decision(_root(args), approval_id=args.approval)
+    _print(value, args.json)
+    return EXIT_PASS
 
 
 def _gate_result(result, as_json: bool) -> int:
@@ -381,9 +420,37 @@ def build_parser() -> argparse.ArgumentParser:
     approval_record.add_argument("--request", required=True)
     approval_record.add_argument("--signature", required=True)
     approval_record.set_defaults(func=cmd_approval_record)
+    approval_confirm = approval_sub.add_parser(
+        "confirm",
+        help="record a non-authenticating procedural PLAN confirmation",
+    )
+    approval_confirm.add_argument("--type", required=True)
+    approval_confirm.add_argument("--subject", required=True)
+    approval_confirm.add_argument("--decision", required=True)
+    approval_confirm.add_argument("--approver", required=True)
+    approval_confirm.add_argument("--basis", required=True)
+    approval_confirm.add_argument("--confirm-fingerprint", required=True)
+    approval_confirm.add_argument("--confirmation-id", required=True)
+    approval_confirm.add_argument("--confirmation-channel", required=True)
+    approval_confirm.add_argument("--confirmation-reference", required=True)
+    approval_confirm.add_argument("--condition", action="append", default=[])
+    approval_confirm.add_argument("--condition-ref", action="append", default=[])
+    approval_confirm.add_argument("--authorized-action", action="append", default=[])
+    approval_confirm.add_argument("--excluded-action", action="append", default=[])
+    approval_confirm.add_argument("--acknowledge-procedural", action="store_true")
+    approval_confirm.set_defaults(func=cmd_approval_confirm)
     approval_check = approval_sub.add_parser("check")
     approval_check.add_argument("id")
     approval_check.set_defaults(func=cmd_approval_check)
+
+    plan = sub.add_parser("plan", help="manage plan lifecycle decisions")
+    plan_sub = plan.add_subparsers(dest="plan_command", required=True)
+    plan_apply = plan_sub.add_parser(
+        "apply-decision",
+        help="materialize a current PLAN approval into plan and project state",
+    )
+    plan_apply.add_argument("--approval", required=True)
+    plan_apply.set_defaults(func=cmd_plan_apply_decision)
 
     gate = sub.add_parser("gate")
     gate_sub = gate.add_subparsers(dest="gate_command", required=True)

@@ -22,7 +22,25 @@
         }
       }
     },
-    "policy": {"type": "object"}
+    "policy": {
+      "type": "object",
+      "properties": {
+        "human_approval_required_for": {"type": "array", "items": {"type": "string"}},
+        "default_claim_ttl_minutes": {"type": "integer", "minimum": 1},
+        "approval_assurance": {
+          "type": "object",
+          "required": ["default", "by_type"],
+          "properties": {
+            "default": {"enum": ["PROCEDURAL", "CRYPTOGRAPHIC"]},
+            "by_type": {
+              "type": "object",
+              "additionalProperties": {"enum": ["PROCEDURAL", "CRYPTOGRAPHIC"]}
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
   },
   "additionalProperties": true
 }

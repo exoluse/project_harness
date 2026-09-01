@@ -3,7 +3,7 @@
 1. **Customer intent remains attributable.** Preserve raw requests and supplied artifacts; record interpretation and derived requirements separately.
 2. **The lifecycle adapts, the trace does not break.** Inputs may arrive in any order, but delivery must trace through requirement, feature, criterion, work, evidence, and review.
 3. **Uncertainty stays visible and fails closed.** Unknowns, conflicts, assumptions, and ambiguous evidence remain active open items until an authorized resolution is propagated and evidenced.
-4. **Authority is external and explicit.** Agents execute bounded work. Human commitments require an externally protected signer configuration and decision ledger that repository or environment changes cannot replace.
+4. **Authority is human, explicit, and proportionate.** Agents execute bounded work and never confirm for the owner. A low-risk local plan may use policy-declared procedural confirmation bound to its exact fingerprint and actions, while higher-impact capabilities and commitments require cryptographic external authority; procedural provenance is not identity authentication.
 5. **Progress is evidence-based.** Code existence is not verification, verification is not customer acceptance, and deployment is not closure.
 6. **Baselines are versioned.** Approved content is never silently overwritten. New information creates a change record, impact analysis, decision, and new version.
 7. **Collaboration preserves ownership.** Agents alternate through exact handoffs or use isolated worktrees with non-overlapping path and logical-resource claims.

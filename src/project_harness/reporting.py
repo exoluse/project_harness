@@ -10,9 +10,15 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from .collaboration import list_claims
-from .approvals import authority_config_path, authority_status
+from .approvals import (
+    authority_config_path,
+    authority_status,
+    effective_approval_assurance,
+    required_approval_assurance,
+)
 from .constants import HARNESS_DIR
 from .core import (
+    HarnessError,
     git_head,
     git_status,
     load_json,
@@ -45,6 +51,27 @@ def doctor_report(root: Path) -> dict[str, Any]:
     issues = validate_project(root)
     code, _output = run_git(root, "rev-parse", "--is-inside-work-tree")
     authority_state, authority_detail = authority_status(root)
+    plan_assurance = "UNKNOWN"
+    plan_assurance_detail = "Unable to determine PLAN approval assurance"
+    try:
+        plan_assurance = required_approval_assurance(root, "PLAN")
+        state = load_json(root / HARNESS_DIR / "state.json")
+        active_plan = state.get("active_plan")
+        if isinstance(active_plan, str):
+            plan_assurance = effective_approval_assurance(
+                root,
+                "PLAN",
+                subject=load_json(record_path(root, "plan", active_plan)),
+            )
+        plan_assurance_detail = (
+            "Direct owner confirmation is available; identity is not "
+            "cryptographically authenticated"
+            if plan_assurance == "PROCEDURAL"
+            else authority_detail
+        )
+    except HarnessError as exc:
+        # Doctor must still return the validation diagnosis for malformed state.
+        plan_assurance_detail = str(exc)
     return {
         "root": str(root),
         "python": sys.version.split()[0],
@@ -58,6 +85,15 @@ def doctor_report(root: Path) -> dict[str, Any]:
             "state": authority_state,
             "expected_config": str(authority_config_path(root)),
             "detail": authority_detail,
+        },
+        "plan_approval_assurance": {
+            "required": plan_assurance,
+            "ready": plan_assurance == "PROCEDURAL"
+            or (
+                plan_assurance == "CRYPTOGRAPHIC"
+                and authority_state == "READY"
+            ),
+            "detail": plan_assurance_detail,
         },
         "validation": issue_counts(issues),
     }
@@ -91,6 +127,7 @@ def status_report(root: Path) -> dict[str, Any]:
         "name": project.get("name"),
         "lifecycle_state": state.get("lifecycle_state"),
         "active_plan": state.get("active_plan"),
+        "active_decision": state.get("active_decision"),
         "active_baselines": state.get("active_baselines", {}),
         "active_release": state.get("active_release"),
         "record_counts": dict(sorted(counts.items())),
@@ -235,6 +272,9 @@ def decision_package(root: Path, plan_id: str) -> dict[str, Any]:
         and not _open_item_resolution_complete(record)
     ]
     authority_state, authority_detail = authority_status(root)
+    plan_assurance = effective_approval_assurance(
+        root, "PLAN", subject=plan
+    )
     return {
         "plan_id": plan_id,
         "plan_version": plan.get("version"),
@@ -254,6 +294,12 @@ def decision_package(root: Path, plan_id: str) -> dict[str, Any]:
         "human_authority": {
             "state": authority_state,
             "detail": authority_detail,
+        },
+        "approval_assurance": {
+            "required": plan_assurance,
+            "procedural_confirmation_available": plan_assurance == "PROCEDURAL",
+            "cryptographic_authority_required": plan_assurance
+            == "CRYPTOGRAPHIC",
         },
         "decision_options": [
             "APPROVED",

@@ -427,6 +427,11 @@ def _try_reclaim_filesystem_lock(
     owner: dict[str, Any] | None
     try:
         owner = load_json(lock / "owner.json")
+    except OSError:
+        # Windows can briefly deny shared reads while another process/thread
+        # atomically installs the owner file. Treat that as a live/contended
+        # lock and retry instead of attempting recovery or failing the caller.
+        return False
     except HarnessError:
         owner = None
 
@@ -608,6 +613,7 @@ def subject_fingerprint(record: dict[str, Any]) -> str:
                 "verification",
                 "risk",
                 "capabilities",
+                "capability_approval_refs",
                 "forbidden_actions",
             )
         }

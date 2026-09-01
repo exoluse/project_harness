@@ -8,11 +8,13 @@ from typing import Any, Iterable
 from .approvals import approval_status
 from .collaboration import RECOVERY_CHECK_NAMES, list_claims
 from .constants import (
+    APPROVAL_ASSURANCE_LEVELS,
     EVIDENCE_RESULTS,
     HARNESS_DIR,
     OPEN_ITEM_CLOSED_STATES,
     OPEN_ITEM_STATES,
     PROJECT_LIFECYCLE_STATES,
+    PROCEDURAL_APPROVAL_TYPES,
     RECORD_DIRECTORIES,
 )
 from .core import (
@@ -275,6 +277,56 @@ def validate_project(root: Path) -> list[Issue]:
         )
     if not isinstance(project.get("policy"), dict):
         issues.append(_issue("ERROR", "MALFORMED_PROJECT", "project policy must be an object"))
+    else:
+        assurance = project["policy"].get("approval_assurance")
+        if assurance is not None:
+            if not isinstance(assurance, dict):
+                issues.append(
+                    _issue(
+                        "ERROR",
+                        "INVALID_APPROVAL_ASSURANCE_POLICY",
+                        "approval_assurance must be an object",
+                    )
+                )
+            else:
+                default = assurance.get("default")
+                by_type = assurance.get("by_type")
+                if default not in APPROVAL_ASSURANCE_LEVELS or not isinstance(
+                    by_type, dict
+                ):
+                    issues.append(
+                        _issue(
+                            "ERROR",
+                            "INVALID_APPROVAL_ASSURANCE_POLICY",
+                            "approval_assurance requires a valid default and by_type map",
+                        )
+                    )
+                elif any(
+                    value not in APPROVAL_ASSURANCE_LEVELS
+                    for value in by_type.values()
+                ):
+                    issues.append(
+                        _issue(
+                            "ERROR",
+                            "INVALID_APPROVAL_ASSURANCE_POLICY",
+                            "approval_assurance by_type contains an invalid level",
+                        )
+                    )
+                else:
+                    forbidden = sorted(
+                        approval_type
+                        for approval_type, value in by_type.items()
+                        if value == "PROCEDURAL"
+                        and approval_type not in PROCEDURAL_APPROVAL_TYPES
+                    )
+                    if default == "PROCEDURAL" or forbidden:
+                        issues.append(
+                            _issue(
+                                "ERROR",
+                                "UNSAFE_PROCEDURAL_APPROVAL_POLICY",
+                                "PROCEDURAL assurance is permitted only by explicit PLAN override",
+                            )
+                        )
     project_dependencies = project.get("approval_dependencies")
     if not isinstance(project_dependencies, list) or any(
         not isinstance(item, str) for item in (project_dependencies or [])

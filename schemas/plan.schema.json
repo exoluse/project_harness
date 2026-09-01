@@ -8,6 +8,8 @@
     "id": {"type": "string", "pattern": "^PLAN-[0-9]{4,}$"},
     "kind": {"const": "plan"},
     "status": {"enum": ["DRAFT", "PREFLIGHT", "NOT_READY", "BLOCKED", "DECISION_READY", "APPROVED", "APPROVED_WITH_CONDITIONS", "ACTIVE", "PARTIALLY_STALE", "STALE", "SUPERSEDED", "CLOSED"]},
+    "decision_ref": {"type": ["string", "null"], "pattern": "^APR-[0-9]{4,}$"},
+    "decision_applied_at": {"type": ["string", "null"], "format": "date-time"},
     "approval_dependencies": {"type": "array", "items": {"type": "string"}},
     "approval_subject": {
       "type": "object",

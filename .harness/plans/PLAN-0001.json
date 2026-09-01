@@ -4,8 +4,9 @@
   "kind": "plan",
   "title": "Project Agent Harness bootstrap implementation",
   "version": "1.0.0",
-  "status": "DECISION_READY",
+  "status": "APPROVED",
   "approval_dependencies": [
+    ".harness/project.json",
     ".harness/requirements/REQ-0001.json",
     ".harness/requirements/REQ-0002.json",
     ".harness/requirements/REQ-0003.json",
@@ -53,18 +54,45 @@
       "TASK-0006"
     ],
     "workstreams": [
-      {"id": "model-and-gates", "readiness": "BOOTSTRAP_VERIFIED"},
-      {"id": "human-authority", "readiness": "BOOTSTRAP_VERIFIED"},
-      {"id": "multi-agent-coordination", "readiness": "BOOTSTRAP_VERIFIED"},
-      {"id": "flexible-input-and-change", "readiness": "BOOTSTRAP_VERIFIED"},
-      {"id": "distribution-and-docs", "readiness": "BOOTSTRAP_VERIFIED"}
+      {
+        "id": "model-and-gates",
+        "readiness": "BOOTSTRAP_VERIFIED"
+      },
+      {
+        "id": "human-authority",
+        "readiness": "BOOTSTRAP_VERIFIED"
+      },
+      {
+        "id": "multi-agent-coordination",
+        "readiness": "BOOTSTRAP_VERIFIED"
+      },
+      {
+        "id": "flexible-input-and-change",
+        "readiness": "BOOTSTRAP_VERIFIED"
+      },
+      {
+        "id": "distribution-and-docs",
+        "readiness": "BOOTSTRAP_VERIFIED"
+      }
     ],
     "verification_strategy": {
-      "required_profiles": ["AUTOMATED_TEST", "SECURITY_TEST", "STATIC"],
-      "closure_profiles": ["DELIVERY", "HANDOVER", "MAINTENANCE_READINESS"],
+      "required_profiles": [
+        "AUTOMATED_TEST",
+        "SECURITY_TEST",
+        "STATIC"
+      ],
+      "closure_profiles": [
+        "DELIVERY",
+        "HANDOVER",
+        "MAINTENANCE_READINESS"
+      ],
       "independent_review_required": true
     },
-    "authorized_actions": ["LOCAL_IMPLEMENTATION", "LOCAL_TESTS", "DOCUMENTATION"],
+    "authorized_actions": [
+      "LOCAL_IMPLEMENTATION",
+      "LOCAL_TESTS",
+      "DOCUMENTATION"
+    ],
     "excluded_actions": [
       "PRODUCTION_DEPLOYMENT",
       "PRODUCTION_DATA_CHANGE",
@@ -80,5 +108,7 @@
       "evidence binding or observed implementation change"
     ]
   },
-  "created_at": "2026-09-01T02:00:00Z"
+  "created_at": "2026-09-01T02:00:00Z",
+  "decision_ref": "APR-0001",
+  "decision_applied_at": "2026-09-01T06:04:24Z"
 }

@@ -7,7 +7,7 @@
   "status": "PLANNED",
   "required": true,
   "priority": "MUST",
-  "statement": "Agents shall not self-authorize plans, production actions, exceptions, customer acceptance, or project closure; decisions must be cryptographically bound to protected external human authority.",
+  "statement": "Agents shall not self-authorize plans, production actions, exceptions, customer acceptance, or project closure. A PLAN may use policy-declared PROCEDURAL human confirmation only for local implementation, local tests, and documentation, bound to its exact fingerprint, decision, and actions. Every higher-impact capability and every other approval type remains cryptographically bound to protected external human authority; procedural provenance is not identity authentication.",
   "source_refs": ["SRC-0001"],
   "acceptance_criteria": [
     "AC-FUNC-0003-001",

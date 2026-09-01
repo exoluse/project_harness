@@ -56,6 +56,8 @@ A `PLAN-*` approval subject names exact requirements, features, work items, work
 - required criteria have a verification plan and required bindings;
 - work-item verification commands exist;
 - task capabilities are included in plan actions and do not intersect exclusions;
+- procedural plans contain only local implementation, local test, and documentation actions;
+- each high-impact task capability has a current matching cryptographic approval in `capability_approval_refs`;
 - approval dependencies include every planned requirement, feature, and work item;
 - no active `G0` item remains.
 
@@ -67,13 +69,16 @@ python scripts/harness.py gate plan PLAN-0001
 python scripts/harness.py report decision-package PLAN-0001
 ```
 
-`report decision-package` is the consolidated human-review surface: it includes the plan fingerprint, preflight result, requirement-feature-criterion-task coverage, workstreams, verification strategy, action boundaries, unresolved items, external-authority readiness, and available decision options. It exits blocked when preflight fails.
+`report decision-package` is the consolidated human-review surface: it includes the plan fingerprint, preflight result, requirement-feature-criterion-task coverage, workstreams, verification strategy, action boundaries, unresolved items, configured assurance readiness, and available decision options. It exits blocked when preflight fails.
 
-After preflight passes, prepare one consolidated human decision against the exact plan and dependency fingerprints. The project owner signs and installs that decision through the external authority workflow in [Human approval operations](APPROVALS.md). Then verify authorization:
+After preflight passes, prepare one consolidated human decision against the exact plan and dependency fingerprints. When project policy permits `PROCEDURAL` `PLAN` assurance, the owner must personally confirm the exact fingerprint, decision, and authorized/excluded actions; an agent may prepare the command but must not run it. This records provenance, not authenticated identity. If policy requires `CRYPTOGRAPHIC` assurance, use the external signing and protected-ledger workflow in [Human approval operations](APPROVALS.md).
+
+Verify the returned approval and explicitly apply the decision to plan/state before task execution:
 
 ```powershell
 python scripts/harness.py approval check APR-0001
 python scripts/harness.py gate plan PLAN-0001 --require-approval
+python scripts/harness.py plan apply-decision --approval APR-0001
 ```
 
 An approval with conditions must include both human-readable conditions and `OI-*` condition references. An unresolved applicable condition continues to block execution.
@@ -142,7 +147,7 @@ The feature gate uses the latest evidence for a criterion/profile and rejects st
 python scripts/harness.py gate feature FUNC-0001
 ```
 
-If the feature contract requires customer acceptance, record a separately signed `CUSTOMER_ACCEPTANCE` approval. Technical verification does not manufacture customer acceptance.
+If the feature contract requires customer acceptance, record a separate cryptographic `CUSTOMER_ACCEPTANCE` approval. Technical verification does not manufacture customer acceptance.
 
 ## 9. Change control during development
 
@@ -152,7 +157,7 @@ When a new request, storyboard, image, HTML/CSS/JS bundle, constraint, or defect
 2. Create a `CR-*` change record.
 3. Classify it and identify affected requirements, features, criteria, work items, interfaces, verification, cost, and schedule.
 4. Record unresolved impact as `OI-*`; continue unaffected work.
-5. Obtain the required signed human decision.
+5. Obtain the required human decision at the assurance required for its approval type.
 6. Create new versions and update the active plan/baselines.
 7. Re-run validation and gates. Fingerprint mismatches make affected approvals/results/evidence stale.
 
@@ -160,7 +165,7 @@ Never edit an approved baseline in place to make a gate pass.
 
 ## 10. Delivery, closure, and maintenance
 
-Project closure requires more than feature evidence. The gate checks required features, the active approved plan, integrated/done tasks, latest independently reviewed PASS results, closure-contract evidence (`DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS` by default), no active claims, no active `G0/G1`, a closure-ready lifecycle state, complete approval dependencies, and a signed `PROJECT_CLOSURE` decision.
+Project closure requires more than feature evidence. The gate checks required features, the active approved plan, integrated/done tasks, latest independently reviewed PASS results, closure-contract evidence (`DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS` by default), no active claims, no active `G0/G1`, a closure-ready lifecycle state, complete approval dependencies, and a cryptographic `PROJECT_CLOSURE` decision.
 
 ```powershell
 python scripts/harness.py report completion
@@ -169,6 +174,6 @@ python scripts/harness.py gate project
 
 `report completion` shows each required feature gate, technical closure preflight without the final approval, and fully authorized closure as separate results. The command exits blocked until authorized closure passes.
 
-Production deployment/data changes require their own signed approval types and task capabilities; plan approval is not deployment approval. After closure, maintenance retains the delivered baselines and routes defects or enhancements back through source registration and change control.
+Production deployment/data changes require their own cryptographic approval types and task capabilities; plan approval is not deployment approval. After closure, maintenance retains the delivered baselines and routes defects or enhancements back through source registration and change control.
 
 The CLI does not execute production actions. A separately protected adapter/operator must perform an authorized deployment, external message, or data operation and return an exact receipt/evidence record.

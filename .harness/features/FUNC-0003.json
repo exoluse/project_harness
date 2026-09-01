@@ -2,7 +2,7 @@
   "schema": "harness.feature/v1",
   "id": "FUNC-0003",
   "kind": "feature",
-  "title": "Protected human approvals",
+  "title": "Policy-driven human approval assurance",
   "version": "1.0.0",
   "status": "PLANNED",
   "required": true,
@@ -11,27 +11,36 @@
   "completion_criteria": [
     {
       "id": "AC-FUNC-0003-001",
-      "statement": "A plan approval is accepted only when its SSH-signed request is present as the current sequence in an OS-ACL-protected or externally brokered authority ledger outside the repository.",
+      "statement": "A plan approval is accepted only at the assurance required by project policy and against its exact current fingerprint, decision, conditions, and nonempty authorized actions. PROCEDURAL PLAN confirmation records direct human provenance without authenticating identity and is limited to local implementation, local tests, and documentation; higher-impact capabilities require explicit current CRYPTOGRAPHIC approval refs.",
       "required": true,
-      "verification_plan": ["python -m unittest tests.test_approvals_and_gates.ApprovalGateTests.test_signed_human_approval_is_verified_against_external_trust -v"],
+      "verification_plan": ["python -m unittest tests.test_procedural_approvals -v"],
       "required_profiles": ["SECURITY_TEST"],
       "required_bindings": [
         "src/project_harness/approvals.py",
+        "src/project_harness/constants.py",
+        "src/project_harness/core.py",
+        "src/project_harness/gates.py",
+        "src/project_harness/lifecycle.py",
+        "schemas/approval.schema.json",
+        "schemas/project.schema.json",
         "schemas/authority.schema.json",
-        "tests/test_approvals_and_gates.py"
+        "schemas/work-item.schema.json",
+        "tests/test_procedural_approvals.py"
       ],
       "evidence_refs": []
     },
     {
       "id": "AC-FUNC-0003-002",
-      "statement": "Approval subject changes and later protected revocations make earlier decisions stale or superseded regardless of mutable repository timestamps.",
+      "statement": "Approval subject or declared dependency changes, assurance-policy changes, and later decisions make earlier approvals stale or superseded regardless of mutable repository timestamps; non-PLAN and high-impact decisions cannot fall back to PROCEDURAL assurance.",
       "required": true,
       "verification_plan": ["python -m unittest tests.test_approvals_and_gates -v"],
       "required_profiles": ["SECURITY_TEST"],
       "required_bindings": [
         "src/project_harness/approvals.py",
         "src/project_harness/core.py",
-        "tests/test_approvals_and_gates.py"
+        "src/project_harness/lifecycle.py",
+        "tests/test_approvals_and_gates.py",
+        "tests/test_procedural_approvals.py"
       ],
       "evidence_refs": []
     }

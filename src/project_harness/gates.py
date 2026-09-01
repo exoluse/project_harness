@@ -4,8 +4,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from .approvals import find_current_approval
-from .constants import HARNESS_DIR, OPEN_ITEM_CLOSED_STATES
+from .approvals import approval_status, find_current_approval
+from .constants import (
+    CAPABILITY_APPROVAL_TYPES,
+    HARNESS_DIR,
+    NEVER_AGENT_CAPABILITIES,
+    OPEN_ITEM_CLOSED_STATES,
+)
 from .core import (
     HarnessError,
     binding_status,
@@ -185,6 +190,112 @@ def _active_open_items(root: Path) -> list[dict[str, Any]]:
     return values
 
 
+def _task_capability_approval_blockers(
+    root: Path,
+    task: dict[str, Any],
+    records: dict[str, dict[str, Any]],
+) -> list[str]:
+    blockers: list[str] = []
+    task_id = str(task.get("id", ""))
+    capabilities = set(task.get("capabilities", []))
+    task_forbidden = set(task.get("forbidden_actions", []))
+    self_conflicts = sorted(capabilities.intersection(task_forbidden))
+    if self_conflicts:
+        blockers.append(
+            f"task {task_id} requests its own forbidden actions: "
+            + ", ".join(self_conflicts)
+        )
+    forbidden = sorted(capabilities.intersection(NEVER_AGENT_CAPABILITIES))
+    if forbidden:
+        blockers.append(
+            f"task {task_id} requests capabilities that agents may never receive: "
+            + ", ".join(forbidden)
+        )
+
+    approval_refs = task.get("capability_approval_refs", {})
+    if approval_refs is None:
+        approval_refs = {}
+    if not isinstance(approval_refs, dict):
+        return [
+            *blockers,
+            f"task {task_id} capability_approval_refs must be an object",
+        ]
+
+    task_scope = {task_id, *task.get("feature_refs", [])}
+    for capability, approval_type in CAPABILITY_APPROVAL_TYPES.items():
+        if capability not in capabilities:
+            continue
+        references = approval_refs.get(capability)
+        if (
+            not isinstance(references, list)
+            or not references
+            or any(not isinstance(item, str) for item in references)
+        ):
+            blockers.append(
+                f"task {task_id} capability {capability} requires explicit "
+                f"{approval_type} approval refs"
+            )
+            continue
+        reasons: list[str] = []
+        authorized = False
+        for reference in references:
+            approval = records.get(reference)
+            if not approval or approval.get("kind") != "approval":
+                reasons.append(f"{reference} is not an approval")
+                continue
+            if approval.get("approval_type") != approval_type:
+                reasons.append(
+                    f"{reference} is {approval.get('approval_type')}, not {approval_type}"
+                )
+                continue
+            if capability not in set(approval.get("authorized_actions", [])):
+                reasons.append(f"{reference} does not authorize {capability}")
+                continue
+            if capability in set(approval.get("excluded_actions", [])):
+                reasons.append(f"{reference} excludes {capability}")
+                continue
+            if approval_type in {"PRODUCTION_DATA_CHANGE", "EXCEPTION"}:
+                change = records.get(str(approval.get("subject_id", "")), {})
+                if not task_scope.intersection(set(change.get("affects", []))):
+                    reasons.append(f"{reference} change subject does not affect {task_id}")
+                    continue
+            status, reason = approval_status(root, approval)
+            if status != "CURRENT":
+                reasons.append(f"{reference} is {status}: {reason}")
+                continue
+            condition_refs = approval.get("condition_refs", [])
+            if approval.get("decision") == "APPROVED_WITH_CONDITIONS" and (
+                not isinstance(condition_refs, list) or not condition_refs
+            ):
+                reasons.append(f"{reference} has no enforceable condition refs")
+                continue
+            unresolved_conditions: list[str] = []
+            if isinstance(condition_refs, list):
+                for condition_ref in condition_refs:
+                    condition = records.get(str(condition_ref), {})
+                    if condition.get("kind") != "open_item":
+                        unresolved_conditions.append(
+                            f"{condition_ref} is missing or not an open item"
+                        )
+                    elif not _open_item_resolution_complete(condition):
+                        unresolved_conditions.append(str(condition_ref))
+            if unresolved_conditions:
+                reasons.append(
+                    f"{reference} has unresolved conditions: "
+                    + ", ".join(unresolved_conditions)
+                )
+                continue
+            authorized = True
+            break
+        if not authorized:
+            blockers.append(
+                f"task {task_id} capability {capability} lacks a current "
+                f"{approval_type} approval"
+                + (f" ({'; '.join(reasons)})" if reasons else "")
+            )
+    return blockers
+
+
 def plan_preflight_gate(root: Path, plan_id: str, *, require_approval: bool = False) -> GateResult:
     plan = _record(root, "plan", plan_id)
     records, _paths = load_record_index(root)
@@ -302,6 +413,7 @@ def plan_preflight_gate(root: Path, plan_id: str, *, require_approval: bool = Fa
         if not task.get("verification"):
             blockers.append(f"task {task_id} has no verification commands")
         capabilities = set(task.get("capabilities", []))
+        blockers.extend(_task_capability_approval_blockers(root, task, records))
         unauthorized = capabilities - plan_authorized
         if unauthorized:
             blockers.append(
@@ -351,13 +463,12 @@ def plan_preflight_gate(root: Path, plan_id: str, *, require_approval: bool = Fa
             approval_excluded = set(approval.get("excluded_actions", []))
             for task_id in planned_tasks:
                 capabilities = set(records.get(task_id, {}).get("capabilities", []))
-                if approval_authorized:
-                    unauthorized = capabilities - approval_authorized
-                    if unauthorized:
-                        blockers.append(
-                            f"approval does not authorize {task_id} actions: "
-                            + ", ".join(sorted(unauthorized))
-                        )
+                unauthorized = capabilities - approval_authorized
+                if unauthorized:
+                    blockers.append(
+                        f"approval does not authorize {task_id} actions: "
+                        + ", ".join(sorted(unauthorized))
+                    )
                 excluded = capabilities.intersection(approval_excluded)
                 if excluded:
                     blockers.append(
@@ -379,9 +490,20 @@ def plan_preflight_gate(root: Path, plan_id: str, *, require_approval: bool = Fa
                             f"conditional approval references missing open item {condition_ref}"
                         )
                     elif not _open_item_resolution_complete(condition):
-                        blockers.append(
-                            f"approval condition remains unresolved: {condition_ref}"
-                        )
+                        gate_level = condition.get("gate_level")
+                        if gate_level == "G0" or gate_level not in {
+                            "G1",
+                            "G2",
+                            "G3",
+                        }:
+                            blockers.append(
+                                f"approval condition remains unresolved: {condition_ref}"
+                            )
+                        else:
+                            warnings.append(
+                                "approval condition remains task-scoped: "
+                                f"{condition_ref} ({gate_level})"
+                            )
 
     return GateResult(
         gate="PLAN_AUTHORIZED" if require_approval else "PLAN_PREFLIGHT",
@@ -531,6 +653,15 @@ def task_start_gate(root: Path, task_id: str) -> GateResult:
             blockers.append(
                 f"task plan {plan_id} is not the active plan {state.get('active_plan')}"
             )
+        if state.get("lifecycle_state") not in {
+            "APPROVED",
+            "BUILDING",
+            "VERIFYING",
+            "MAINTAINING",
+        }:
+            blockers.append(
+                f"lifecycle state {state.get('lifecycle_state')} is not executable"
+            )
         if plan.get("status") not in {
             "APPROVED",
             "APPROVED_WITH_CONDITIONS",
@@ -545,14 +676,21 @@ def task_start_gate(root: Path, task_id: str) -> GateResult:
         if approval is None:
             blockers.append(reason)
         else:
+            if plan.get("decision_ref") != approval.get("id"):
+                blockers.append(
+                    "plan has not materialized the latest approval decision"
+                )
+            if state.get("active_decision") != approval.get("id"):
+                blockers.append(
+                    "project state has not materialized the latest approval decision"
+                )
             task_capabilities = set(task.get("capabilities", []))
             plan_authorized = set(plan_subject.get("authorized_actions", []))
             plan_excluded = set(plan_subject.get("excluded_actions", []))
             approval_authorized = set(approval.get("authorized_actions", []))
             approval_excluded = set(approval.get("excluded_actions", []))
             unauthorized = task_capabilities - plan_authorized
-            if approval_authorized:
-                unauthorized.update(task_capabilities - approval_authorized)
+            unauthorized.update(task_capabilities - approval_authorized)
             excluded = task_capabilities.intersection(
                 plan_excluded | approval_excluded
             )
@@ -588,6 +726,8 @@ def task_start_gate(root: Path, task_id: str) -> GateResult:
                     warnings.append(
                         f"unresolved approval condition is outside this task: {condition_ref}"
                     )
+
+    blockers.extend(_task_capability_approval_blockers(root, task, records))
 
     if task.get("status") not in {"READY", "APPROVED", "RUNNING"}:
         blockers.append(f"task status {task.get('status')} is not startable")

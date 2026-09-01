@@ -9,18 +9,31 @@ import shutil
 import subprocess
 import tempfile
 import uuid
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-from .constants import APPROVAL_DECISIONS, APPROVED_DECISIONS, HARNESS_DIR
+from .constants import (
+    APPROVAL_ASSURANCE_LEVELS,
+    APPROVAL_DECISIONS,
+    APPROVED_DECISIONS,
+    HARNESS_DIR,
+    PROCEDURAL_APPROVAL_TYPES,
+    PROCEDURAL_PLAN_ACTIONS,
+)
 from .core import (
     HarnessError,
     allocate_record_id,
     atomic_write_json,
+    atomic_write_text,
+    canonical_json,
+    filesystem_mutex,
+    git_common_dir,
     load_json,
     normalize_claim_path,
     parse_utc,
     record_event,
+    run_git,
     sha256_bytes,
     sha256_file,
     subject_fingerprint_for_path,
@@ -58,6 +71,282 @@ SIGNED_REQUEST_FIELDS = (
     "authorized_actions",
     "excluded_actions",
 )
+
+
+def required_approval_assurance(root: Path, approval_type: str) -> str:
+    """Return the configured minimum assurance, defaulting legacy projects closed."""
+
+    project = load_json(root / HARNESS_DIR / "project.json")
+    policy = project.get("policy", {})
+    if not isinstance(policy, dict):
+        raise HarnessError("Project approval policy is malformed")
+    assurance = policy.get("approval_assurance", {})
+    if assurance is None:
+        assurance = {}
+    if not isinstance(assurance, dict):
+        raise HarnessError("Project approval_assurance policy must be an object")
+    default = assurance.get("default", "CRYPTOGRAPHIC")
+    by_type = assurance.get("by_type", {})
+    if not isinstance(default, str) or default not in APPROVAL_ASSURANCE_LEVELS:
+        raise HarnessError("Project approval assurance default is invalid")
+    if not isinstance(by_type, dict):
+        raise HarnessError("Project approval assurance by_type must be an object")
+    value = by_type.get(approval_type, default)
+    if not isinstance(value, str) or value not in APPROVAL_ASSURANCE_LEVELS:
+        raise HarnessError(f"Approval assurance for {approval_type} is invalid")
+    if value == "PROCEDURAL" and approval_type not in PROCEDURAL_APPROVAL_TYPES:
+        raise HarnessError(
+            f"PROCEDURAL assurance is not permitted for {approval_type}"
+        )
+    return value
+
+
+def effective_approval_assurance(
+    root: Path,
+    approval_type: str,
+    *,
+    subject: dict[str, Any] | None = None,
+) -> str:
+    """Apply code-controlled risk escalation to the configured minimum."""
+
+    required = required_approval_assurance(root, approval_type)
+    if approval_type != "PLAN" or required != "PROCEDURAL" or subject is None:
+        return required
+    approval_subject = subject.get("approval_subject")
+    actions = (
+        approval_subject.get("authorized_actions", [])
+        if isinstance(approval_subject, dict)
+        else []
+    )
+    if not isinstance(actions, list) or any(not isinstance(item, str) for item in actions):
+        raise HarnessError("PLAN authorized_actions must be a string list")
+    return (
+        "CRYPTOGRAPHIC"
+        if set(actions) - PROCEDURAL_PLAN_ACTIONS
+        else "PROCEDURAL"
+    )
+
+
+def _assurance_satisfies(actual: str, required: str) -> bool:
+    rank = {"PROCEDURAL": 1, "CRYPTOGRAPHIC": 2}
+    return actual in rank and required in rank and rank[actual] >= rank[required]
+
+
+def _attestation_assurance(attestation: dict[str, Any] | None) -> str | None:
+    if not isinstance(attestation, dict):
+        return None
+    mode = attestation.get("mode")
+    if mode == "SSH_ALLOWED_SIGNERS":
+        return "CRYPTOGRAPHIC"
+    if mode == "PROCEDURAL_CONFIRMATION":
+        return "PROCEDURAL"
+    return None
+
+
+def approval_assurance(approval: dict[str, Any]) -> str | None:
+    """Return a declared assurance or infer the legacy SSH assurance."""
+
+    declared = approval.get("assurance")
+    if isinstance(declared, str):
+        return declared
+    return _attestation_assurance(approval.get("attestation"))
+
+
+def _decision_mutex_paths(root: Path) -> tuple[Path, Path]:
+    directory = _decision_runtime_directory(root)
+    return directory / "record.lock", directory / "lock-recoveries"
+
+
+def _decision_runtime_directory(root: Path) -> Path:
+    common = git_common_dir(root)
+    runtime = (
+        common / "project-harness-runtime"
+        if common is not None
+        else root / HARNESS_DIR / "runtime"
+    )
+    return runtime / "human-decisions"
+
+
+def _primary_git_worktree(root: Path) -> Path | None:
+    if git_common_dir(root) is None:
+        return None
+    code, output = run_git(root, "worktree", "list", "--porcelain")
+    if code != 0:
+        raise HarnessError("Unable to identify the primary Git worktree")
+    for line in output.splitlines():
+        if line.startswith("worktree "):
+            return Path(line.removeprefix("worktree ")).resolve()
+    raise HarnessError("Git did not report a primary worktree")
+
+
+def require_procedural_decision_writer(root: Path) -> None:
+    """Keep repository procedural history authoritative in one worktree."""
+
+    primary = _primary_git_worktree(root)
+    if primary is None:
+        return
+    if os.path.normcase(str(primary)) != os.path.normcase(str(root.resolve())):
+        raise HarnessError(
+            "PROCEDURAL decisions may be recorded only in the primary integration "
+            f"worktree: {primary}"
+        )
+
+
+def _procedural_marker_path(
+    root: Path, *, approval_type: str, subject_id: str
+) -> Path:
+    key = sha256_bytes(f"{approval_type}\0{subject_id}".encode("utf-8"))
+    return _decision_runtime_directory(root) / "latest-procedural" / f"{key}.json"
+
+
+def _write_procedural_marker(
+    root: Path,
+    *,
+    expected: dict[str, Any],
+    attestation: dict[str, Any],
+) -> None:
+    atomic_write_json(
+        _procedural_marker_path(
+            root,
+            approval_type=str(expected.get("approval_type", "")),
+            subject_id=str(expected.get("subject_id", "")),
+        ),
+        {
+            "schema": "harness.procedural-latest/v1",
+            "project_id": expected.get("project_id"),
+            "approval_type": expected.get("approval_type"),
+            "subject_id": expected.get("subject_id"),
+            "subject_fingerprint": expected.get("subject_fingerprint"),
+            "decision_id": expected.get("decision_id"),
+            "decision": expected.get("decision"),
+            "authority_id": expected.get("authority_id"),
+            "authority_sequence": expected.get("authority_sequence"),
+            "confirmation_id": attestation.get("confirmation_id"),
+            "recorded_at": expected.get("decision_at"),
+        },
+    )
+
+
+def _verify_procedural_marker(
+    root: Path,
+    *,
+    expected: dict[str, Any],
+    attestation: dict[str, Any],
+) -> tuple[bool, str]:
+    path = _procedural_marker_path(
+        root,
+        approval_type=str(expected.get("approval_type", "")),
+        subject_id=str(expected.get("subject_id", "")),
+    )
+    try:
+        marker = load_json(path)
+    except HarnessError as exc:
+        return False, f"shared latest procedural decision marker is unavailable: {exc}"
+    if marker.get("schema") != "harness.procedural-latest/v1":
+        return False, "shared latest procedural decision marker is malformed"
+    if marker.get("decision_id") != expected.get("decision_id"):
+        return False, (
+            "superseded by shared procedural decision "
+            f"{marker.get('decision_id')}"
+        )
+    comparisons = {
+        "project_id": expected.get("project_id"),
+        "approval_type": expected.get("approval_type"),
+        "subject_id": expected.get("subject_id"),
+        "subject_fingerprint": expected.get("subject_fingerprint"),
+        "decision": expected.get("decision"),
+        "authority_id": expected.get("authority_id"),
+        "authority_sequence": expected.get("authority_sequence"),
+        "confirmation_id": attestation.get("confirmation_id"),
+        "recorded_at": expected.get("decision_at"),
+    }
+    mismatches = [
+        field for field, value in comparisons.items() if marker.get(field) != value
+    ]
+    if mismatches:
+        return False, (
+            "shared latest procedural decision marker conflicts on: "
+            + ", ".join(sorted(mismatches))
+        )
+    return True, "shared latest procedural decision marker is current"
+
+
+def _allocate_procedural_authority_sequence(
+    root: Path, existing_records: list[dict[str, Any]]
+) -> int:
+    counter_path = _decision_runtime_directory(root) / "procedural-sequence.txt"
+    counter = 0
+    if counter_path.is_file():
+        try:
+            counter = int(counter_path.read_text(encoding="ascii").strip())
+        except (OSError, ValueError) as exc:
+            raise HarnessError(
+                f"Invalid shared procedural decision sequence: {counter_path}"
+            ) from exc
+    local_sequences = [
+        item.get("authority_sequence")
+        for item in existing_records
+        if item.get("authority_id") == "PROCEDURAL-LOCAL"
+        and isinstance(item.get("authority_sequence"), int)
+        and not isinstance(item.get("authority_sequence"), bool)
+    ]
+    value = max(counter, *local_sequences, 0) + 1
+    atomic_write_text(counter_path, f"{value}\n")
+    return value
+
+
+@contextmanager
+def decision_mutex(root: Path, *, operation: str = "processing a human decision"):
+    """Serialize decision recording and application across shared worktrees."""
+
+    lock, recovery = _decision_mutex_paths(root)
+    with filesystem_mutex(
+        lock,
+        recovery_directory=recovery,
+        timeout_message=f"Timed out {operation}",
+    ):
+        yield
+
+
+def _procedural_payload(expected: dict[str, Any]) -> dict[str, Any]:
+    fields = (
+        "project_id",
+        "approval_type",
+        "decision",
+        "authority_role",
+        "approved_by",
+        "basis",
+        "subject_id",
+        "subject_path",
+        "subject_fingerprint",
+        "conditions",
+        "condition_refs",
+        "authorized_actions",
+        "excluded_actions",
+        "assurance",
+    )
+    return {field: expected.get(field) for field in fields}
+
+
+def _procedural_provenance_payload(
+    attestation: dict[str, Any], expected: dict[str, Any]
+) -> dict[str, Any]:
+    return {
+        "mode": attestation.get("mode"),
+        "confirmation_id": attestation.get("confirmation_id"),
+        "confirmation_channel": attestation.get("confirmation_channel"),
+        "confirmation_reference": attestation.get("confirmation_reference"),
+        "confirmed_at": attestation.get("confirmed_at"),
+        "confirmed_by": attestation.get("confirmed_by"),
+        "confirmed_subject_fingerprint": attestation.get(
+            "confirmed_subject_fingerprint"
+        ),
+        "decision_payload_sha256": attestation.get("decision_payload_sha256"),
+        "authority_id": expected.get("authority_id"),
+        "authority_sequence": expected.get("authority_sequence"),
+        "decision_id": expected.get("decision_id"),
+        "decision_at": expected.get("decision_at"),
+    }
 
 
 def authority_config_path(root: Path) -> Path:
@@ -253,6 +542,7 @@ def _attestation_expected(
     condition_refs: list[str] | None,
     authorized_actions: list[str] | None,
     excluded_actions: list[str] | None,
+    assurance: str,
 ) -> dict[str, Any]:
     return {
         "project_id": project_id,
@@ -272,6 +562,7 @@ def _attestation_expected(
         "condition_refs": condition_refs or [],
         "authorized_actions": authorized_actions or [],
         "excluded_actions": excluded_actions or [],
+        "assurance": assurance,
     }
 
 
@@ -283,7 +574,83 @@ def _verify_attestation(
     enforce_request_expiry: bool,
     require_current_ledger_decision: bool = True,
 ) -> tuple[bool, str]:
-    if not isinstance(attestation, dict) or attestation.get("mode") != "SSH_ALLOWED_SIGNERS":
+    if not isinstance(attestation, dict):
+        return False, "approval attestation is required"
+    actual_assurance = expected.get("assurance") or _attestation_assurance(attestation)
+    if not isinstance(actual_assurance, str) or actual_assurance not in APPROVAL_ASSURANCE_LEVELS:
+        return False, "approval assurance is missing or invalid"
+    try:
+        approval_type = str(expected.get("approval_type", ""))
+        subject: dict[str, Any] | None = None
+        subject_path = expected.get("subject_path")
+        if approval_type == "PLAN" and isinstance(subject_path, str):
+            normalized_subject = normalize_claim_path(root, subject_path)
+            candidate_path = root / normalized_subject
+            if candidate_path.is_file():
+                subject = load_json(candidate_path)
+        required_assurance = effective_approval_assurance(
+            root, approval_type, subject=subject
+        )
+    except HarnessError as exc:
+        return False, str(exc)
+    if not _assurance_satisfies(actual_assurance, required_assurance):
+        return False, (
+            f"approval assurance {actual_assurance} does not satisfy "
+            f"required {required_assurance}"
+        )
+
+    if actual_assurance == "PROCEDURAL":
+        if attestation.get("mode") != "PROCEDURAL_CONFIRMATION":
+            return False, "procedural confirmation attestation is required"
+        if expected.get("approval_type") not in PROCEDURAL_APPROVAL_TYPES:
+            return False, "procedural assurance is not allowed for this approval type"
+        if attestation.get("confirmed_subject_fingerprint") != expected.get(
+            "subject_fingerprint"
+        ):
+            return False, "procedural confirmation fingerprint does not match"
+        confirmation_id = attestation.get("confirmation_id")
+        channel = attestation.get("confirmation_channel")
+        reference = attestation.get("confirmation_reference")
+        confirmed_by = attestation.get("confirmed_by")
+        confirmed_at = attestation.get("confirmed_at")
+        if not all(
+            isinstance(value, str) and value.strip()
+            for value in (
+                confirmation_id,
+                channel,
+                reference,
+                confirmed_by,
+                confirmed_at,
+            )
+        ):
+            return False, "procedural confirmation provenance is incomplete"
+        if not re.fullmatch(r"HCONF-[A-Za-z0-9_.-]{1,120}", str(confirmation_id)):
+            return False, "procedural confirmation ID is invalid"
+        if confirmed_by != expected.get("approved_by"):
+            return False, "procedural confirmer does not match approved_by"
+        try:
+            parse_utc(str(confirmed_at))
+        except (TypeError, ValueError):
+            return False, "procedural confirmation time is invalid"
+        if confirmed_at != expected.get("decision_at"):
+            return False, "procedural confirmation time does not match decision_at"
+        payload = _procedural_payload(expected)
+        digest = sha256_bytes(canonical_json(payload).encode("utf-8"))
+        if attestation.get("decision_payload_sha256") != digest:
+            return False, "procedural decision payload hash does not match"
+        provenance_digest = sha256_bytes(
+            canonical_json(
+                _procedural_provenance_payload(attestation, expected)
+            ).encode("utf-8")
+        )
+        if attestation.get("confirmation_provenance_sha256") != provenance_digest:
+            return False, "procedural confirmation provenance hash does not match"
+        return True, (
+            "procedural confirmation is current provenance only; "
+            "human identity is not cryptographically authenticated"
+        )
+
+    if attestation.get("mode") != "SSH_ALLOWED_SIGNERS":
         return False, "SSH approval attestation is required"
     encoded_request = attestation.get("request_base64")
     signature = attestation.get("signature")
@@ -301,6 +668,8 @@ def _verify_attestation(
     for field in SIGNED_REQUEST_FIELDS:
         if request.get(field) != expected.get(field):
             return False, f"signed approval field does not match: {field}"
+    if request.get("assurance", "CRYPTOGRAPHIC") != "CRYPTOGRAPHIC":
+        return False, "signed approval request assurance is not CRYPTOGRAPHIC"
     sequence = request.get("authority_sequence")
     if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence <= 0:
         return False, "signed approval authority_sequence is invalid"
@@ -368,7 +737,7 @@ def _canonical_subject_path(root: Path, subject: dict[str, Any]) -> str | None:
     return None
 
 
-def record_approval(
+def _record_approval_unlocked(
     root: Path,
     *,
     approval_type: str,
@@ -386,6 +755,7 @@ def record_approval(
     authority_sequence: int | None = None,
     decision_id: str | None = None,
     decision_at: str | None = None,
+    assurance: str | None = None,
 ) -> dict[str, Any]:
     if authority_role != "HUMAN_PROJECT_OWNER":
         raise HarnessError("Only HUMAN_PROJECT_OWNER decisions can be recorded as approvals")
@@ -395,6 +765,20 @@ def record_approval(
         raise HarnessError(f"Unsupported approval type: {approval_type}")
     if not approver.strip() or not basis.strip():
         raise HarnessError("Approval requires an approver and an explicit decision basis")
+    inferred_assurance = _attestation_assurance(attestation)
+    assurance = assurance or inferred_assurance or required_approval_assurance(
+        root, approval_type
+    )
+    if assurance not in APPROVAL_ASSURANCE_LEVELS:
+        raise HarnessError(f"Unsupported approval assurance: {assurance}")
+    required_assurance = required_approval_assurance(root, approval_type)
+    if not _assurance_satisfies(assurance, required_assurance):
+        raise HarnessError(
+            f"Approval assurance {assurance} does not satisfy required "
+            f"{required_assurance}"
+        )
+    if inferred_assurance and inferred_assurance != assurance:
+        raise HarnessError("Approval assurance does not match its attestation mode")
     if decision == "APPROVED_WITH_CONDITIONS" and (
         not conditions or not condition_refs
     ):
@@ -417,6 +801,12 @@ def record_approval(
         raise HarnessError(
             f"Approval subject must use its canonical path {canonical_path}, not {relative}"
         )
+    if (
+        approval_type == "PLAN"
+        and decision in APPROVED_DECISIONS
+        and not authorized_actions
+    ):
+        raise HarnessError("Approved PLAN decisions require explicit authorized_actions")
     if decision in APPROVED_DECISIONS:
         gate = None
         if approval_type == "PLAN":
@@ -441,14 +831,54 @@ def record_approval(
     fingerprint = subject_fingerprint_for_path(path)
     project_id = str(load_json(root / HARNESS_DIR / "project.json").get("id", ""))
     existing_sequences = []
+    existing_records: list[dict[str, Any]] = []
     for existing_path in (root / HARNESS_DIR / "approvals").glob("APR-*.json"):
-        existing_sequence = load_json(existing_path).get("authority_sequence")
+        existing = load_json(existing_path)
+        existing_records.append(existing)
+        existing_sequence = existing.get("authority_sequence")
         if isinstance(existing_sequence, int) and not isinstance(existing_sequence, bool):
             existing_sequences.append(existing_sequence)
     authority_id = authority_id or "TEST-MOCK-AUTHORITY"
     authority_sequence = authority_sequence or (max(existing_sequences, default=0) + 1)
     decision_id = decision_id or f"DEC-{uuid.uuid4()}"
     decision_at = decision_at or utc_now()
+    for existing in existing_records:
+        integrity_conflict = _approval_integrity_conflict(root, existing)
+        if integrity_conflict:
+            raise HarnessError(
+                "Existing approval decision history is inconsistent: "
+                + integrity_conflict
+            )
+    proposed_confirmation_id = (
+        attestation.get("confirmation_id")
+        if isinstance(attestation, dict)
+        and attestation.get("mode") == "PROCEDURAL_CONFIRMATION"
+        else None
+    )
+    for existing in existing_records:
+        if existing.get("decision_id") == decision_id:
+            raise HarnessError(f"Approval decision_id already exists: {decision_id}")
+        if (
+            existing.get("authority_id") == authority_id
+            and existing.get("authority_sequence") == authority_sequence
+        ):
+            raise HarnessError(
+                "Approval authority sequence already exists for this authority: "
+                f"{authority_id}#{authority_sequence}"
+            )
+        existing_attestation = existing.get("attestation")
+        if (
+            isinstance(proposed_confirmation_id, str)
+            and proposed_confirmation_id
+            and isinstance(existing_attestation, dict)
+            and existing_attestation.get("mode") == "PROCEDURAL_CONFIRMATION"
+            and existing_attestation.get("confirmation_id")
+            == proposed_confirmation_id
+        ):
+            raise HarnessError(
+                "Approval confirmation_id already exists: "
+                f"{proposed_confirmation_id}"
+            )
     expected_attestation = _attestation_expected(
         project_id=project_id,
         authority_id=authority_id,
@@ -467,6 +897,7 @@ def record_approval(
         condition_refs=condition_refs,
         authorized_actions=authorized_actions,
         excluded_actions=excluded_actions,
+        assurance=assurance,
     )
     attestation_valid, attestation_reason = _verify_attestation(
         root,
@@ -521,6 +952,8 @@ def record_approval(
         "authorized_actions": authorized_actions or [],
         "excluded_actions": excluded_actions or [],
         "attestation": attestation,
+        "assurance": assurance,
+        "record_sequence": int(approval_id.removeprefix("APR-")),
         "recorded_at": utc_now(),
     }
     atomic_write_json(directory / f"{approval_id}.json", value)
@@ -532,9 +965,198 @@ def record_approval(
             "approval_type": approval_type,
             "subject_id": subject.get("id"),
             "decision": decision,
+            "assurance": assurance,
         },
     )
     return value
+
+
+def record_approval(root: Path, **kwargs: Any) -> dict[str, Any]:
+    """Serialize approval IDs, authority sequences, snapshots, and events."""
+
+    with decision_mutex(root, operation="recording a human decision"):
+        return _record_approval_unlocked(root, **kwargs)
+
+
+def record_procedural_approval(
+    root: Path,
+    *,
+    approval_type: str,
+    subject_path: str,
+    decision: str,
+    approver: str,
+    basis: str,
+    confirm_fingerprint: str,
+    confirmation_id: str,
+    confirmation_channel: str,
+    confirmation_reference: str,
+    authorized_actions: list[str] | None = None,
+    excluded_actions: list[str] | None = None,
+    conditions: list[str] | None = None,
+    condition_refs: list[str] | None = None,
+    acknowledge_procedural: bool = False,
+) -> dict[str, Any]:
+    """Record an explicitly acknowledged, non-authenticating human decision."""
+
+    if not acknowledge_procedural:
+        raise HarnessError(
+            "Procedural approval requires --acknowledge-procedural because it "
+            "does not cryptographically authenticate the human"
+        )
+    if approval_type not in PROCEDURAL_APPROVAL_TYPES:
+        raise HarnessError(
+            f"PROCEDURAL assurance is not permitted for {approval_type}"
+        )
+    if required_approval_assurance(root, approval_type) != "PROCEDURAL":
+        raise HarnessError(
+            f"Project policy does not permit PROCEDURAL {approval_type} approval"
+        )
+    if not re.fullmatch(r"HCONF-[A-Za-z0-9_.-]{1,120}", confirmation_id):
+        raise HarnessError("confirmation_id must match HCONF-[A-Za-z0-9_.-]+")
+    if not confirmation_channel.strip() or not confirmation_reference.strip():
+        raise HarnessError("Procedural approval requires channel and reference")
+
+    relative = normalize_claim_path(root, subject_path)
+    path = root / relative
+    if not path.is_file():
+        raise HarnessError(f"Approval subject does not exist: {subject_path}")
+    subject = load_json(path)
+    fingerprint = subject_fingerprint_for_path(path)
+    if confirm_fingerprint != fingerprint:
+        raise HarnessError(
+            "Confirmed fingerprint does not match the current approval subject"
+        )
+    if authorized_actions is not None and (
+        not isinstance(authorized_actions, list)
+        or any(not isinstance(item, str) for item in authorized_actions)
+    ):
+        raise HarnessError("Procedural authorized_actions must be a string list")
+    requested_actions = set(authorized_actions or [])
+    plan_subject = subject.get("approval_subject")
+    raw_plan_actions = (
+        plan_subject.get("authorized_actions", [])
+        if isinstance(plan_subject, dict)
+        else []
+    )
+    if not isinstance(raw_plan_actions, list) or any(
+        not isinstance(item, str) for item in raw_plan_actions
+    ):
+        raise HarnessError("PLAN authorized_actions must be a string list")
+    plan_actions = set(raw_plan_actions)
+    unsafe_actions = sorted(
+        (requested_actions | plan_actions) - PROCEDURAL_PLAN_ACTIONS
+    )
+    if unsafe_actions:
+        raise HarnessError(
+            "PROCEDURAL PLAN approval is limited to local safe actions; "
+            "CRYPTOGRAPHIC assurance is required for: "
+            + ", ".join(unsafe_actions)
+        )
+    project_id = str(load_json(root / HARNESS_DIR / "project.json").get("id", ""))
+    with decision_mutex(root, operation="recording a procedural human decision"):
+        directory = root / HARNESS_DIR / "approvals"
+        existing_records = [load_json(item) for item in directory.glob("APR-*.json")]
+        authority_id = "PROCEDURAL-LOCAL"
+        sequences = [
+            item.get("authority_sequence")
+            for item in existing_records
+            if item.get("authority_id") == authority_id
+            and isinstance(item.get("authority_sequence"), int)
+            and not isinstance(item.get("authority_sequence"), bool)
+        ]
+        authority_sequence = max(sequences, default=0) + 1
+        decision_id = f"DEC-{uuid.uuid4()}"
+        decision_at = utc_now()
+        expected = _attestation_expected(
+            project_id=project_id,
+            authority_id=authority_id,
+            authority_sequence=authority_sequence,
+            decision_id=decision_id,
+            decision_at=decision_at,
+            approval_type=approval_type,
+            decision=decision,
+            authority_role="HUMAN_PROJECT_OWNER",
+            approver=approver,
+            basis=basis,
+            subject=subject,
+            relative=relative,
+            fingerprint=fingerprint,
+            conditions=conditions,
+            condition_refs=condition_refs,
+            authorized_actions=authorized_actions,
+            excluded_actions=excluded_actions,
+            assurance="PROCEDURAL",
+        )
+        payload_digest = sha256_bytes(
+            canonical_json(_procedural_payload(expected)).encode("utf-8")
+        )
+        for existing in existing_records:
+            existing_attestation = existing.get("attestation")
+            if not isinstance(existing_attestation, dict):
+                continue
+            if existing_attestation.get("confirmation_id") != confirmation_id:
+                continue
+            replay_provenance = {
+                "mode": "PROCEDURAL_CONFIRMATION",
+                "confirmation_channel": confirmation_channel.strip(),
+                "confirmation_reference": confirmation_reference.strip(),
+                "confirmed_by": approver,
+                "confirmed_subject_fingerprint": fingerprint,
+            }
+            if (
+                existing_attestation.get("decision_payload_sha256") == payload_digest
+                and all(
+                    existing_attestation.get(field) == value
+                    for field, value in replay_provenance.items()
+                )
+            ):
+                status, reason = approval_status(root, existing)
+                if status not in {"CURRENT", "NOT_APPROVED"}:
+                    raise HarnessError(
+                        f"Existing confirmation {confirmation_id} is {status}: {reason}"
+                    )
+                return existing
+            raise HarnessError(
+                f"confirmation_id {confirmation_id} was already used for another decision"
+            )
+        attestation = {
+            "mode": "PROCEDURAL_CONFIRMATION",
+            "confirmation_id": confirmation_id,
+            "confirmation_channel": confirmation_channel.strip(),
+            "confirmation_reference": confirmation_reference.strip(),
+            "confirmed_at": decision_at,
+            "confirmed_by": approver,
+            "confirmed_subject_fingerprint": fingerprint,
+            "decision_payload_sha256": payload_digest,
+            "limitation": (
+                "Records procedural provenance only; it does not authenticate "
+                "the human against a same-privilege process"
+            ),
+        }
+        attestation["confirmation_provenance_sha256"] = sha256_bytes(
+            canonical_json(
+                _procedural_provenance_payload(attestation, expected)
+            ).encode("utf-8")
+        )
+        return _record_approval_unlocked(
+            root,
+            approval_type=approval_type,
+            subject_path=relative,
+            decision=decision,
+            approver=approver,
+            authority_role="HUMAN_PROJECT_OWNER",
+            basis=basis,
+            conditions=conditions,
+            condition_refs=condition_refs,
+            authorized_actions=authorized_actions,
+            excluded_actions=excluded_actions,
+            attestation=attestation,
+            authority_id=authority_id,
+            authority_sequence=authority_sequence,
+            decision_id=decision_id,
+            decision_at=decision_at,
+            assurance="PROCEDURAL",
+        )
 
 
 def prepare_approval_request(
@@ -569,6 +1191,12 @@ def prepare_approval_request(
         raise HarnessError(
             "APPROVED_WITH_CONDITIONS requires conditions and open-item condition_refs"
         )
+    if (
+        approval_type == "PLAN"
+        and decision in APPROVED_DECISIONS
+        and not authorized_actions
+    ):
+        raise HarnessError("Approved PLAN requests require explicit authorized_actions")
     relative = normalize_claim_path(root, subject_path)
     path = root / relative
     subject = load_json(path)
@@ -630,6 +1258,7 @@ def prepare_approval_request(
             condition_refs=condition_refs,
             authorized_actions=authorized_actions,
             excluded_actions=excluded_actions,
+            assurance="CRYPTOGRAPHIC",
         ),
         "prepared_at": utc_now(),
         "expires_at": utc_after(ttl_minutes),
@@ -693,10 +1322,76 @@ def record_signed_approval(
         authority_sequence=request.get("authority_sequence"),
         decision_id=str(request.get("decision_id", "")),
         decision_at=str(request.get("decision_at", "")),
+        assurance="CRYPTOGRAPHIC",
     )
 
 
+def _approval_integrity_conflict(
+    root: Path, approval: dict[str, Any]
+) -> str | None:
+    current_id = str(approval.get("id", ""))
+    decision_id = approval.get("decision_id")
+    authority_id = approval.get("authority_id")
+    authority_sequence = approval.get("authority_sequence")
+    attestation = approval.get("attestation")
+    confirmation_id = (
+        attestation.get("confirmation_id")
+        if isinstance(attestation, dict)
+        and attestation.get("mode") == "PROCEDURAL_CONFIRMATION"
+        else None
+    )
+    for path in sorted((root / HARNESS_DIR / "approvals").glob("APR-*.json")):
+        if path.stem == current_id:
+            continue
+        candidate = load_json(path)
+        candidate_id = candidate.get("id", path.stem)
+        if isinstance(decision_id, str) and decision_id and candidate.get(
+            "decision_id"
+        ) == decision_id:
+            return f"decision_id is duplicated by {candidate_id}"
+        if (
+            isinstance(authority_id, str)
+            and authority_id
+            and isinstance(authority_sequence, int)
+            and not isinstance(authority_sequence, bool)
+            and candidate.get("authority_id") == authority_id
+            and candidate.get("authority_sequence") == authority_sequence
+        ):
+            return (
+                "authority sequence is duplicated by "
+                f"{candidate_id}: {authority_id}#{authority_sequence}"
+            )
+        candidate_attestation = candidate.get("attestation")
+        if (
+            isinstance(confirmation_id, str)
+            and confirmation_id
+            and isinstance(candidate_attestation, dict)
+            and candidate_attestation.get("mode") == "PROCEDURAL_CONFIRMATION"
+            and candidate_attestation.get("confirmation_id") == confirmation_id
+        ):
+            return f"confirmation_id is duplicated by {candidate_id}"
+    return None
+
+
 def approval_status(root: Path, approval: dict[str, Any]) -> tuple[str, str]:
+    approval_id_match = re.fullmatch(
+        r"APR-([0-9]+)", str(approval.get("id", ""))
+    )
+    if approval_id_match is None:
+        return "INVALID", "approval ID is invalid"
+    record_sequence = approval.get("record_sequence")
+    if record_sequence is not None and (
+        not isinstance(record_sequence, int)
+        or isinstance(record_sequence, bool)
+        or record_sequence != int(approval_id_match.group(1))
+    ):
+        return "INVALID", "approval record_sequence does not match its ID"
+    try:
+        integrity_conflict = _approval_integrity_conflict(root, approval)
+    except HarnessError as exc:
+        return "INVALID", f"approval decision history is unreadable: {exc}"
+    if integrity_conflict:
+        return "INVALID", integrity_conflict
     if approval.get("authority_role") != "HUMAN_PROJECT_OWNER":
         return "INVALID", "approval authority is not HUMAN_PROJECT_OWNER"
     if not str(approval.get("approved_by", "")).strip() or not str(
@@ -747,9 +1442,11 @@ def approval_status(root: Path, approval: dict[str, Any]) -> tuple[str, str]:
         return "INVALID", str(exc)
     if current != approval.get("subject_fingerprint"):
         return "STALE", "approval subject fingerprint changed"
+    assurance = approval_assurance(approval)
     expected_attestation = {
         field: approval.get(field) for field in SIGNED_REQUEST_FIELDS
     }
+    expected_attestation["assurance"] = assurance
     attestation_valid, attestation_reason = _verify_attestation(
         root,
         approval.get("attestation"),
@@ -760,6 +1457,25 @@ def approval_status(root: Path, approval: dict[str, Any]) -> tuple[str, str]:
         if "superseded by protected authority sequence" in attestation_reason:
             return "SUPERSEDED", attestation_reason
         return "INVALID", f"approval identity verification failed: {attestation_reason}"
+    current_sequence = approval.get("record_sequence")
+    if not isinstance(current_sequence, int) or isinstance(current_sequence, bool):
+        match = re.fullmatch(r"APR-([0-9]+)", str(approval.get("id", "")))
+        current_sequence = int(match.group(1)) if match else 0
+    for candidate_path in (root / HARNESS_DIR / "approvals").glob("APR-*.json"):
+        candidate = load_json(candidate_path)
+        if candidate.get("subject_id") != approval.get("subject_id") or candidate.get(
+            "approval_type"
+        ) != approval.get("approval_type"):
+            continue
+        candidate_sequence = candidate.get("record_sequence")
+        if not isinstance(candidate_sequence, int) or isinstance(candidate_sequence, bool):
+            match = re.fullmatch(r"APR-([0-9]+)", str(candidate.get("id", "")))
+            candidate_sequence = int(match.group(1)) if match else 0
+        if candidate_sequence > current_sequence:
+            return (
+                "SUPERSEDED",
+                f"superseded by later local decision {candidate.get('id')}",
+            )
     if approval.get("decision") not in APPROVED_DECISIONS:
         return "NOT_APPROVED", f"decision is {approval.get('decision')}"
     return "CURRENT", "approval fingerprint and decision are current"
@@ -782,16 +1498,17 @@ def find_current_approval(
         matches.append(approval)
     if not matches:
         return None, f"no {approval_type or ''} decision for {subject_id}".strip()
-    latest = max(
-        matches,
-        key=lambda item: (
-            int(item.get("authority_sequence", 0))
-            if isinstance(item.get("authority_sequence"), int)
-            and not isinstance(item.get("authority_sequence"), bool)
-            else 0,
-            str(item.get("id", "")),
-        ),
-    )
+    # Local APR creation order is the common ordering domain across assurance
+    # providers.  Provider-specific authority_sequence remains part of that
+    # provider's own replay/fork verification.
+    def record_order(item: dict[str, Any]) -> tuple[int, str]:
+        sequence = item.get("record_sequence")
+        if isinstance(sequence, int) and not isinstance(sequence, bool):
+            return sequence, str(item.get("id", ""))
+        match = re.fullmatch(r"APR-([0-9]+)", str(item.get("id", "")))
+        return (int(match.group(1)) if match else 0), str(item.get("id", ""))
+
+    latest = max(matches, key=record_order)
     status, reason = approval_status(root, latest)
     if status != "CURRENT":
         return None, f"latest decision {latest.get('id')} is {status}: {reason}"

@@ -1,0 +1,20 @@
+{
+  "schema": "harness.event/v1",
+  "id": "EVT-0002",
+  "kind": "event",
+  "event_type": "PLAN_DECISION_APPLIED",
+  "occurred_at": "2026-09-01T06:04:24Z",
+  "payload": {
+    "approval_id": "APR-0001",
+    "decision_id": "DEC-88ff75b1-e932-4bfe-93de-d07ab7014f1a",
+    "plan_id": "PLAN-0001",
+    "decision": "APPROVED",
+    "before_plan_status": "DECISION_READY",
+    "after_plan_status": "APPROVED",
+    "before_lifecycle_state": "DECISION_READY",
+    "after_lifecycle_state": "APPROVED",
+    "subject_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+    "assurance": "PROCEDURAL",
+    "applied_at": "2026-09-01T06:04:24Z"
+  }
+}
