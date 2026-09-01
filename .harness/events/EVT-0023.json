@@ -1,0 +1,12 @@
+{
+  "schema": "harness.event/v1",
+  "id": "EVT-0023",
+  "kind": "event",
+  "event_type": "CLAIM_RELEASED",
+  "occurred_at": "2026-09-01T08:16:04Z",
+  "payload": {
+    "claim_id": "CLM-0007",
+    "agent": "codex",
+    "disposition": "RELEASED"
+  }
+}

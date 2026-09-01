@@ -1,0 +1,35 @@
+{
+  "schema": "harness.result/v1",
+  "id": "RES-0007",
+  "kind": "result",
+  "status": "SUBMITTED",
+  "task_id": "TASK-0001",
+  "claim_id": "CLM-0007",
+  "agent": "codex",
+  "summary": "Recorded a clean committed integration verification for the fresh-clone bootstrap fixes at 7e0cd2e.",
+  "changed_files": [],
+  "changed_file_states": {},
+  "verification": [
+    {
+      "command": "python -m unittest discover -s . -p test_*.py -v",
+      "outcome": "PASS"
+    },
+    {
+      "command": "python scripts/check_repo.py",
+      "outcome": "PASS"
+    }
+  ],
+  "verification_state": "PASS",
+  "evidence_refs": [],
+  "evidence_fingerprints": {},
+  "limitations": [
+    "This audit-only attempt introduces no source changes; it verifies the already committed implementation and supersedes the in-progress failure record.",
+    "No live cross-model Codex and Claude Code session or production action was performed."
+  ],
+  "task_fingerprint": "9b75a135c52e8f842b1149335410dd4cea222f4c1956f3563fe25becaaf90e65",
+  "plan_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+  "base_commit": "7e0cd2e7fd635db373be9b78747f489c9662d57e",
+  "head_commit": "7e0cd2e7fd635db373be9b78747f489c9662d57e",
+  "submitted_at": "2026-09-01T08:16:04Z",
+  "build_fingerprint": "1e6b3f024623673c73c277f61597bb8bfa5b8f055475d184db82d3a053e7ac17"
+}

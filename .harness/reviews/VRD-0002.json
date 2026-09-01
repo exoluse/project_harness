@@ -1,0 +1,21 @@
+{
+  "schema": "harness.review/v1",
+  "id": "VRD-0002",
+  "kind": "review",
+  "status": "RECORDED",
+  "result_id": "RES-0008",
+  "reviewer": "final_diff_review",
+  "decision": "PASS",
+  "basis": "Current build 7e0cd2e was independently reviewed and verified to accept only valid-JSON CRLF-to-LF snapshot equivalence while rejecting non-EOL tampering, with the required approval suites and full repository gate passing; procedural identity and cryptographic-authority limits remain.",
+  "checks": [
+    "approval snapshot normalization scope",
+    "legacy autocrlf linked-worktree regression",
+    "non-EOL JSON tamper rejection",
+    "required approval and procedural suites",
+    "full repository gate and strict validation",
+    "current HEAD and result build binding"
+  ],
+  "result_fingerprint": "1798fde0b980f9041f45d5a4f3ee2712d610c64f6d7588ef2e87233297ff86a2",
+  "result_build_fingerprint": "aea55e16f5242c3d3363b327213ebf94b854898f0a3fbb07017a12c2d5914728",
+  "reviewed_at": "2026-09-01T08:20:07Z"
+}
