@@ -1,0 +1,40 @@
+{
+  "schema": "harness.feature/v1",
+  "id": "FUNC-0005",
+  "kind": "feature",
+  "title": "Flexible UI intake and controlled change",
+  "version": "1.0.0",
+  "status": "PLANNED",
+  "required": true,
+  "requirement_refs": ["REQ-0006", "REQ-0007"],
+  "customer_acceptance_required": false,
+  "completion_criteria": [
+    {
+      "id": "AC-FUNC-0005-001",
+      "statement": "UI and storyboard artifacts are registered with role, authority, execution trust, and hash, while unrelated missing UI artifacts do not block a backend task.",
+      "required": true,
+      "verification_plan": ["python -m unittest tests.test_approvals_and_gates.ApprovalGateTests.test_unrelated_missing_ui_artifact_does_not_block_backend_task -v"],
+      "required_profiles": ["AUTOMATED_TEST"],
+      "required_bindings": [
+        "src/project_harness/validation.py",
+        "src/project_harness/gates.py",
+        "tests/test_approvals_and_gates.py"
+      ],
+      "evidence_refs": []
+    },
+    {
+      "id": "AC-FUNC-0005-002",
+      "statement": "Requirement and UI changes are represented as new source/change/baseline records with explicit impact and fingerprint-based invalidation rather than silent overwrite.",
+      "required": true,
+      "verification_plan": ["python -m unittest discover -s . -p test_*.py -v"],
+      "required_profiles": ["STATIC"],
+      "required_bindings": [
+        "src/project_harness/validation.py",
+        "schemas/change.schema.json",
+        "docs/WORKFLOW.md"
+      ],
+      "evidence_refs": []
+    }
+  ],
+  "created_at": "2026-09-01T02:00:00Z"
+}

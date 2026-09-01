@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-harness.local/schemas/evidence.schema.json",
+  "type": "object",
+  "required": ["schema", "id", "kind", "observed_at", "claim", "supports", "profile", "method", "environment", "expected", "actual", "result", "ambiguity", "bindings", "limitations"],
+  "properties": {
+    "schema": {"const": "harness.evidence/v1"},
+    "id": {"type": "string", "pattern": "^EVD-[0-9]{4,}$"},
+    "kind": {"const": "evidence"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "supports": {"type": "array", "items": {"type": "string"}},
+    "result": {"enum": ["NOT_TESTED", "COLLECTED", "PARTIAL", "INCONCLUSIVE", "FAILED", "VERIFIED", "STALE", "REVOKED"]},
+    "ambiguity": {"$ref": "common.schema.json#/$defs/ambiguity"},
+    "bindings": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/binding"}},
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

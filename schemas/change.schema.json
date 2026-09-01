@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-harness.local/schemas/change.schema.json",
+  "type": "object",
+  "required": ["schema", "id", "kind", "status", "classification", "source_refs", "affects", "impact", "decision_ref"],
+  "properties": {
+    "schema": {"const": "harness.change/v1"},
+    "id": {"type": "string", "pattern": "^CR-[0-9]{4,}$"},
+    "kind": {"const": "change"},
+    "status": {"enum": ["RECEIVED", "ANALYZING", "DECISION_READY", "APPROVED", "REJECTED", "IMPLEMENTING", "VERIFIED", "CLOSED", "SUPERSEDED"]},
+    "classification": {"enum": ["UNCLASSIFIED", "CLARIFICATION", "DEFECT", "SCOPE_CHANGE", "UI_INPUT", "TECHNICAL_CONSTRAINT", "REGULATORY", "EMERGENCY"]},
+    "source_refs": {"type": "array", "items": {"type": "string", "pattern": "^SRC-"}},
+    "affects": {"type": "array", "items": {"type": "string"}},
+    "impact": {"type": "object"},
+    "decision_ref": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}

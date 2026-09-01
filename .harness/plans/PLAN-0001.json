@@ -1,0 +1,84 @@
+{
+  "schema": "harness.plan/v1",
+  "id": "PLAN-0001",
+  "kind": "plan",
+  "title": "Project Agent Harness bootstrap implementation",
+  "version": "1.0.0",
+  "status": "DECISION_READY",
+  "approval_dependencies": [
+    ".harness/requirements/REQ-0001.json",
+    ".harness/requirements/REQ-0002.json",
+    ".harness/requirements/REQ-0003.json",
+    ".harness/requirements/REQ-0004.json",
+    ".harness/requirements/REQ-0005.json",
+    ".harness/requirements/REQ-0006.json",
+    ".harness/requirements/REQ-0007.json",
+    ".harness/features/FUNC-0001.json",
+    ".harness/features/FUNC-0002.json",
+    ".harness/features/FUNC-0003.json",
+    ".harness/features/FUNC-0004.json",
+    ".harness/features/FUNC-0005.json",
+    ".harness/features/FUNC-0006.json",
+    ".harness/work-items/TASK-0001.json",
+    ".harness/work-items/TASK-0002.json",
+    ".harness/work-items/TASK-0003.json",
+    ".harness/work-items/TASK-0004.json",
+    ".harness/work-items/TASK-0005.json",
+    ".harness/work-items/TASK-0006.json"
+  ],
+  "approval_subject": {
+    "requirement_refs": [
+      "REQ-0001",
+      "REQ-0002",
+      "REQ-0003",
+      "REQ-0004",
+      "REQ-0005",
+      "REQ-0006",
+      "REQ-0007"
+    ],
+    "feature_refs": [
+      "FUNC-0001",
+      "FUNC-0002",
+      "FUNC-0003",
+      "FUNC-0004",
+      "FUNC-0005",
+      "FUNC-0006"
+    ],
+    "work_item_refs": [
+      "TASK-0001",
+      "TASK-0002",
+      "TASK-0003",
+      "TASK-0004",
+      "TASK-0005",
+      "TASK-0006"
+    ],
+    "workstreams": [
+      {"id": "model-and-gates", "readiness": "BOOTSTRAP_VERIFIED"},
+      {"id": "human-authority", "readiness": "BOOTSTRAP_VERIFIED"},
+      {"id": "multi-agent-coordination", "readiness": "BOOTSTRAP_VERIFIED"},
+      {"id": "flexible-input-and-change", "readiness": "BOOTSTRAP_VERIFIED"},
+      {"id": "distribution-and-docs", "readiness": "BOOTSTRAP_VERIFIED"}
+    ],
+    "verification_strategy": {
+      "required_profiles": ["AUTOMATED_TEST", "SECURITY_TEST", "STATIC"],
+      "closure_profiles": ["DELIVERY", "HANDOVER", "MAINTENANCE_READINESS"],
+      "independent_review_required": true
+    },
+    "authorized_actions": ["LOCAL_IMPLEMENTATION", "LOCAL_TESTS", "DOCUMENTATION"],
+    "excluded_actions": [
+      "PRODUCTION_DEPLOYMENT",
+      "PRODUCTION_DATA_CHANGE",
+      "EXTERNAL_WRITE",
+      "HUMAN_PRIVATE_KEY_ACCESS",
+      "DESTRUCTIVE_CLEANUP"
+    ],
+    "invalidation_triggers": [
+      "requirement statement or acceptance criteria change",
+      "feature completion contract change",
+      "task scope or verification change",
+      "authority policy change",
+      "evidence binding or observed implementation change"
+    ]
+  },
+  "created_at": "2026-09-01T02:00:00Z"
+}

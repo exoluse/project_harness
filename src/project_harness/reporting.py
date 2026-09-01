@@ -1,0 +1,289 @@
+from __future__ import annotations
+
+import json
+import shutil
+import subprocess
+import sys
+from collections import Counter, deque
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any, Iterable
+
+from .collaboration import list_claims
+from .approvals import authority_config_path, authority_status
+from .constants import HARNESS_DIR
+from .core import (
+    git_head,
+    git_status,
+    load_json,
+    load_record_index,
+    parse_utc,
+    record_path,
+    run_git,
+    subject_fingerprint_for_path,
+)
+from .validation import issue_counts, validate_project
+
+
+def _run_version(command: str, *args: str) -> str | None:
+    executable = shutil.which(command)
+    if not executable:
+        return None
+    process = subprocess.run(
+        [executable, *args],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+        timeout=10,
+    )
+    first = process.stdout.strip().splitlines()
+    return first[0] if first else executable
+
+
+def doctor_report(root: Path) -> dict[str, Any]:
+    issues = validate_project(root)
+    code, _output = run_git(root, "rev-parse", "--is-inside-work-tree")
+    authority_state, authority_detail = authority_status(root)
+    return {
+        "root": str(root),
+        "python": sys.version.split()[0],
+        "git": _run_version("git", "--version"),
+        "git_repository": code == 0,
+        "git_head": git_head(root),
+        "dirty_paths": git_status(root),
+        "codex": _run_version("codex", "--version"),
+        "claude": _run_version("claude", "--version"),
+        "human_approval_authority": {
+            "state": authority_state,
+            "expected_config": str(authority_config_path(root)),
+            "detail": authority_detail,
+        },
+        "validation": issue_counts(issues),
+    }
+
+
+def status_report(root: Path) -> dict[str, Any]:
+    from .gates import _open_item_resolution_complete
+
+    project = load_json(root / HARNESS_DIR / "project.json")
+    state = load_json(root / HARNESS_DIR / "state.json")
+    records, _paths = load_record_index(root)
+    counts = Counter(record.get("kind", "unknown") for record in records.values())
+    open_items = [
+        record
+        for record in records.values()
+        if record.get("kind") == "open_item"
+        and not _open_item_resolution_complete(record)
+    ]
+    active_claims = list_claims(root, active_only=True)
+    for claim in active_claims:
+        try:
+            claim["lease_state"] = (
+                "EXPIRED"
+                if parse_utc(str(claim.get("expires_at", ""))) <= datetime.now(UTC)
+                else "CURRENT"
+            )
+        except (TypeError, ValueError):
+            claim["lease_state"] = "INVALID"
+    return {
+        "project_id": project.get("id"),
+        "name": project.get("name"),
+        "lifecycle_state": state.get("lifecycle_state"),
+        "active_plan": state.get("active_plan"),
+        "active_baselines": state.get("active_baselines", {}),
+        "active_release": state.get("active_release"),
+        "record_counts": dict(sorted(counts.items())),
+        "open_items": {
+            "total": len(open_items),
+            "G0": sum(item.get("gate_level") == "G0" for item in open_items),
+            "G1": sum(item.get("gate_level") == "G1" for item in open_items),
+            "G2": sum(item.get("gate_level") == "G2" for item in open_items),
+            "G3": sum(item.get("gate_level") == "G3" for item in open_items),
+        },
+        "active_claims": active_claims,
+        "git_head": git_head(root),
+        "dirty_paths": git_status(root),
+    }
+
+
+REFERENCE_FIELDS = {
+    "source_refs",
+    "requirement_refs",
+    "feature_refs",
+    "work_item_refs",
+    "dependencies",
+    "blocked_by",
+    "blocks",
+    "affects",
+    "supports",
+    "evidence_refs",
+    "acceptance_criteria",
+    "decision_ref",
+    "plan_id",
+    "source_ref",
+}
+
+
+def _collect_refs(value: Any, field: str | None = None) -> Iterable[str]:
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key in REFERENCE_FIELDS:
+                if isinstance(child, str) and child:
+                    yield child
+                elif isinstance(child, list):
+                    yield from (item for item in child if isinstance(item, str))
+            yield from _collect_refs(child, key)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _collect_refs(child, field)
+
+
+def trace_report(root: Path, start_id: str) -> dict[str, Any]:
+    records, _paths = load_record_index(root)
+    if start_id not in records:
+        from .core import HarnessError
+
+        raise HarnessError(f"Unknown record ID: {start_id}")
+    outgoing = {record_id: sorted(set(_collect_refs(record))) for record_id, record in records.items()}
+    incoming: dict[str, list[str]] = {record_id: [] for record_id in records}
+    for source, targets in outgoing.items():
+        for target in targets:
+            if target in incoming:
+                incoming[target].append(source)
+    visited: set[str] = set()
+    queue = deque([start_id])
+    nodes: list[dict[str, Any]] = []
+    while queue:
+        current = queue.popleft()
+        if current in visited or current not in records:
+            continue
+        visited.add(current)
+        record = records[current]
+        nodes.append(
+            {
+                "id": current,
+                "kind": record.get("kind"),
+                "title": record.get("title") or record.get("claim") or "",
+                "outgoing": [target for target in outgoing[current] if target in records],
+                "incoming": sorted(incoming[current]),
+            }
+        )
+        queue.extend(nodes[-1]["outgoing"])
+        queue.extend(nodes[-1]["incoming"])
+    return {"start": start_id, "nodes": nodes}
+
+
+def decision_package(root: Path, plan_id: str) -> dict[str, Any]:
+    from .gates import _open_item_resolution_complete, plan_preflight_gate
+
+    records, _paths = load_record_index(root)
+    plan = load_json(record_path(root, "plan", plan_id))
+    subject = plan.get("approval_subject", {})
+    preflight = plan_preflight_gate(root, plan_id, require_approval=False)
+    requirements = []
+    for requirement_id in subject.get("requirement_refs", []):
+        requirement = records.get(requirement_id, {})
+        realizing = [
+            feature_id
+            for feature_id in subject.get("feature_refs", [])
+            if requirement_id in records.get(feature_id, {}).get("requirement_refs", [])
+        ]
+        requirements.append(
+            {
+                "id": requirement_id,
+                "title": requirement.get("title"),
+                "statement": requirement.get("statement"),
+                "features": realizing,
+                "acceptance_criteria": requirement.get("acceptance_criteria", []),
+            }
+        )
+    features = []
+    for feature_id in subject.get("feature_refs", []):
+        feature = records.get(feature_id, {})
+        tasks = [
+            task_id
+            for task_id in subject.get("work_item_refs", [])
+            if feature_id in records.get(task_id, {}).get("feature_refs", [])
+        ]
+        features.append(
+            {
+                "id": feature_id,
+                "title": feature.get("title"),
+                "criteria": [
+                    {
+                        "id": criterion.get("id"),
+                        "statement": criterion.get("statement"),
+                        "profiles": criterion.get("required_profiles", []),
+                    }
+                    for criterion in feature.get("completion_criteria", [])
+                ],
+                "tasks": tasks,
+            }
+        )
+    unresolved = [
+        {
+            "id": record.get("id"),
+            "gate_level": record.get("gate_level"),
+            "status": record.get("status"),
+            "title": record.get("title"),
+            "affects": record.get("affects", []),
+            "blocks": record.get("blocks", []),
+        }
+        for record in records.values()
+        if record.get("kind") == "open_item"
+        and not _open_item_resolution_complete(record)
+    ]
+    authority_state, authority_detail = authority_status(root)
+    return {
+        "plan_id": plan_id,
+        "plan_version": plan.get("version"),
+        "plan_fingerprint": subject_fingerprint_for_path(
+            record_path(root, "plan", plan_id)
+        ),
+        "preflight": preflight.as_dict(),
+        "requirements": requirements,
+        "features": features,
+        "workstreams": subject.get("workstreams", []),
+        "verification_strategy": subject.get("verification_strategy", {}),
+        "authorized_actions": subject.get("authorized_actions", []),
+        "excluded_actions": subject.get("excluded_actions", []),
+        "unresolved_items": sorted(
+            unresolved, key=lambda item: (str(item.get("gate_level")), str(item.get("id")))
+        ),
+        "human_authority": {
+            "state": authority_state,
+            "detail": authority_detail,
+        },
+        "decision_options": [
+            "APPROVED",
+            "APPROVED_WITH_CONDITIONS",
+            "REVISION_REQUIRED",
+            "DEFERRED",
+            "REJECTED",
+        ],
+    }
+
+
+def completion_report(root: Path) -> dict[str, Any]:
+    from .gates import feature_completion_gate, project_completion_gate
+
+    project = load_json(root / HARNESS_DIR / "project.json")
+    features = {
+        feature_id: feature_completion_gate(root, feature_id).as_dict()
+        for feature_id in project.get("required_features", [])
+    }
+    return {
+        "project_id": project.get("id"),
+        "features": features,
+        "technical_closure_preflight": project_completion_gate(
+            root, require_approval=False
+        ).as_dict(),
+        "authorized_closure": project_completion_gate(
+            root, require_approval=True
+        ).as_dict(),
+    }
+
+
+def pretty(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, indent=2)

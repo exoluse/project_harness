@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-harness.local/schemas/artifact.schema.json",
+  "type": "object",
+  "required": ["schema", "id", "kind", "source_ref", "path", "media_type", "sha256", "execution_trust", "safe_to_execute"],
+  "properties": {
+    "schema": {"const": "harness.artifact/v1"},
+    "id": {"type": "string", "pattern": "^ART-[0-9]{4,}$"},
+    "kind": {"const": "artifact"},
+    "source_ref": {"type": "string", "pattern": "^SRC-"},
+    "path": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "execution_trust": {"enum": ["UNTRUSTED", "STATIC_INSPECTED", "SANDBOX_APPROVED", "TRUSTED_BASELINE"]},
+    "safe_to_execute": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

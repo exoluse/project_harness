@@ -1,0 +1,20 @@
+{
+  "schema": "harness.work_item/v1",
+  "id": "TASK-0004",
+  "kind": "work_item",
+  "title": "Implement Codex and Claude collaboration protocol",
+  "status": "READY",
+  "plan_id": "PLAN-0001",
+  "feature_refs": ["FUNC-0004"],
+  "criterion_refs": ["AC-FUNC-0004-001", "AC-FUNC-0004-002"],
+  "dependencies": [],
+  "blocked_by": [],
+  "write_scope": ["src/project_harness", "schemas", "tests/test_collaboration.py"],
+  "preexisting_dirty_paths": [],
+  "logical_locks": ["claim-registry", "mailbox-protocol", "result-protocol"],
+  "verification": ["python -m unittest tests.test_collaboration -v"],
+  "risk": "HIGH",
+  "capabilities": ["LOCAL_IMPLEMENTATION", "LOCAL_TESTS"],
+  "forbidden_actions": ["PRODUCTION_DEPLOYMENT", "EXTERNAL_WRITE", "DESTRUCTIVE_CLEANUP"],
+  "created_at": "2026-09-01T02:00:00Z"
+}

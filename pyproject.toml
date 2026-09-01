@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-agent-harness"
+version = "0.1.0"
+description = "Evidence-gated project harness for Codex, Claude Code, and human project owners"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Project Harness Contributors"}]
+dependencies = []
+
+[project.scripts]
+project-harness = "project_harness.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
