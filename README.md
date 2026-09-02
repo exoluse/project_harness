@@ -68,6 +68,8 @@ python scripts/check_repo.py full
 
 The bare `scripts/check_repo.py` command is exactly equivalent to `scripts/check_repo.py full`. The `fast` tier provides short contract-focused feedback; only `full` runs the entire test discovery. Both tiers compile code, run their declared tests, and finish with strict harness validation. The script executes only fixed repository checks. Verification strings stored in plans, results, or handoffs are records; the harness does not execute mutable project JSON as commands.
 
+During a governed retry, strict validation defers an older result's changed-file drift only while one current same-task claim owns every drifted path. Expired, mismatched, partial-scope, task/plan, evidence, manifest, or fingerprint drift still fails closed; the submitted retry then becomes the latest result.
+
 `report decision-package` assembles the plan fingerprint, preflight, requirement-feature-criterion-task coverage, workstreams, action boundaries, unresolved items, configured assurance readiness, and available decisions for one consolidated human review. `report completion` keeps feature gates, technical closure preflight, and fully authorized closure separate; it exits blocked until authorized closure truly passes.
 
 For a policy that permits procedural plan assurance, the human owner first copies the current fingerprint from `fingerprint`, checks the exact decision and action boundaries, and personally runs `approval confirm`. The acknowledgment records provenance only; it is not cryptographic identity authentication. Apply the returned decision explicitly before task work starts:
