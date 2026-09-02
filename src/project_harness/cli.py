@@ -48,6 +48,7 @@ from .gates import (
     task_start_gate,
 )
 from .lifecycle import apply_plan_decision
+from .mutations import record_evidence, transition_record
 from .reporting import (
     completion_report,
     decision_package,
@@ -369,6 +370,43 @@ def cmd_review_record(args: argparse.Namespace) -> int:
     return EXIT_PASS
 
 
+def cmd_evidence_record(args: argparse.Namespace) -> int:
+    value = record_evidence(
+        _root(args),
+        claim_id=args.claim_id,
+        agent=args.agent,
+        claim_text=args.claim_text,
+        supports=args.support,
+        profile=args.profile,
+        method=args.method,
+        environment=args.environment,
+        expected=args.expected,
+        actual=args.actual,
+        result=args.result,
+        ambiguity_level=args.ambiguity_level,
+        ambiguity_reasons=args.ambiguity_reason,
+        binding_paths=args.binding,
+        limitations=args.limitation,
+    )
+    _print(value, args.json)
+    return EXIT_PASS
+
+
+def cmd_transition_record(args: argparse.Namespace) -> int:
+    value = transition_record(
+        _root(args),
+        claim_id=args.claim_id,
+        agent=args.agent,
+        kind=args.kind,
+        record_id=args.id,
+        target_status=args.to,
+        reason=args.reason,
+        rework=args.rework,
+    )
+    _print(value, args.json)
+    return EXIT_PASS
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="project-harness")
     parser.add_argument("--root", default=".", help="project directory or a path inside it")
@@ -554,6 +592,56 @@ def build_parser() -> argparse.ArgumentParser:
     review_record.add_argument("--basis", required=True)
     review_record.add_argument("--check", action="append", default=[])
     review_record.set_defaults(func=cmd_review_record)
+
+    evidence = sub.add_parser("evidence", help="record governed criterion evidence")
+    evidence_sub = evidence.add_subparsers(dest="evidence_command", required=True)
+    evidence_record = evidence_sub.add_parser("record")
+    evidence_record.add_argument("--claim-id", required=True)
+    evidence_record.add_argument("--agent", required=True)
+    evidence_record.add_argument("--claim-text", required=True)
+    evidence_record.add_argument("--support", action="append", required=True)
+    evidence_record.add_argument("--profile", required=True)
+    evidence_record.add_argument("--method", required=True)
+    evidence_record.add_argument("--environment", required=True)
+    evidence_record.add_argument("--expected", required=True)
+    evidence_record.add_argument("--actual", required=True)
+    evidence_record.add_argument(
+        "--result",
+        required=True,
+        choices=[
+            "NOT_TESTED",
+            "COLLECTED",
+            "PARTIAL",
+            "INCONCLUSIVE",
+            "FAILED",
+            "VERIFIED",
+            "STALE",
+            "REVOKED",
+        ],
+    )
+    evidence_record.add_argument(
+        "--ambiguity-level",
+        default="NONE",
+        choices=["NONE", "LOW", "MEDIUM", "HIGH", "CRITICAL"],
+    )
+    evidence_record.add_argument("--ambiguity-reason", action="append", default=[])
+    evidence_record.add_argument("--binding", action="append", default=[])
+    evidence_record.add_argument("--limitation", action="append", default=[])
+    evidence_record.set_defaults(func=cmd_evidence_record)
+
+    transition = sub.add_parser("transition", help="apply a governed record transition")
+    transition.add_argument(
+        "--kind",
+        required=True,
+        choices=["project", "requirement", "feature", "work_item"],
+    )
+    transition.add_argument("--id", required=True)
+    transition.add_argument("--to", required=True)
+    transition.add_argument("--claim-id", required=True)
+    transition.add_argument("--agent", required=True)
+    transition.add_argument("--reason", required=True)
+    transition.add_argument("--rework", action="store_true")
+    transition.set_defaults(func=cmd_transition_record)
 
     trace = sub.add_parser("trace")
     trace.add_argument("id")

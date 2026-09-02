@@ -26,6 +26,7 @@ SCHEMA_FILES = {
     "recovery": "recovery.schema.json",
     "claim": "claim.schema.json",
     "authority": "authority.schema.json",
+    "event": "event.schema.json",
 }
 
 

@@ -28,6 +28,7 @@ from .core import (
     run_git,
     subject_fingerprint_for_path,
 )
+from .evaluation import EvaluationContext
 from .validation import issue_counts, validate_project
 
 
@@ -272,10 +273,13 @@ def trace_report(root: Path, start_id: str) -> dict[str, Any]:
 def decision_package(root: Path, plan_id: str) -> dict[str, Any]:
     from .gates import _open_item_resolution_complete, plan_preflight_gate
 
-    records, _paths = load_record_index(root)
+    context = EvaluationContext.load(root)
+    records = context.records
     plan = load_json(record_path(root, "plan", plan_id))
     subject = plan.get("approval_subject", {})
-    preflight = plan_preflight_gate(root, plan_id, require_approval=False)
+    preflight = plan_preflight_gate(
+        root, plan_id, require_approval=False, context=context
+    )
     requirements = []
     for requirement_id in subject.get("requirement_refs", []):
         requirement = records.get(requirement_id, {})
@@ -373,18 +377,21 @@ def completion_report(root: Path) -> dict[str, Any]:
     from .gates import feature_completion_gate, project_completion_gate
 
     project = load_json(root / HARNESS_DIR / "project.json")
+    context = EvaluationContext.load(root)
     features = {
-        feature_id: feature_completion_gate(root, feature_id).as_dict()
+        feature_id: feature_completion_gate(
+            root, feature_id, context=context
+        ).as_dict()
         for feature_id in project.get("required_features", [])
     }
     return {
         "project_id": project.get("id"),
         "features": features,
         "technical_closure_preflight": project_completion_gate(
-            root, require_approval=False
+            root, require_approval=False, context=context
         ).as_dict(),
         "authorized_closure": project_completion_gate(
-            root, require_approval=True
+            root, require_approval=True, context=context
         ).as_dict(),
     }
 

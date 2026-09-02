@@ -24,6 +24,7 @@ from .core import (
     subject_fingerprint,
     subject_fingerprint_for_path,
 )
+from .evaluation import EvaluationContext
 
 
 @dataclass
@@ -77,9 +78,17 @@ def _known_references(value: Any, known_ids: set[str]) -> set[str]:
 
 
 def _reachable_paths(
-    root: Path, seeds: set[str], *, expand_plans: bool
+    root: Path,
+    seeds: set[str],
+    *,
+    expand_plans: bool,
+    context: EvaluationContext | None = None,
 ) -> set[str]:
-    records, paths = load_record_index(root)
+    if context is not None:
+        context.require_root(root)
+        records, paths = context.records, context.paths
+    else:
+        records, paths = load_record_index(root)
     known = set(records)
     reachable = set(value for value in seeds if value in known)
     changed = True
@@ -129,10 +138,13 @@ def _validation_blockers(
     relevant_ids: set[str] | None = None,
     project_wide: bool = False,
     expand_plans: bool = True,
+    context: EvaluationContext | None = None,
 ) -> list[str]:
-    from .validation import validate_project
-
-    issues = [issue for issue in validate_project(root) if issue.severity == "ERROR"]
+    if context is None:
+        context = EvaluationContext.load(root)
+    else:
+        context.require_root(root)
+    issues = [issue for issue in context.validation_issues if issue.severity == "ERROR"]
     if project_wide:
         selected = issues
     else:
@@ -140,7 +152,10 @@ def _validation_blockers(
         if relevant_ids:
             try:
                 relevant_paths = _reachable_paths(
-                    root, relevant_ids, expand_plans=expand_plans
+                    root,
+                    relevant_ids,
+                    expand_plans=expand_plans,
+                    context=context,
                 )
             except HarnessError:
                 # Structural/index corruption is selected through GLOBAL_INTEGRITY_CODES.
@@ -156,7 +171,18 @@ def _validation_blockers(
     ]
 
 
-def _record(root: Path, kind: str, record_id: str) -> dict[str, Any]:
+def _record(
+    root: Path,
+    kind: str,
+    record_id: str,
+    context: EvaluationContext | None = None,
+) -> dict[str, Any]:
+    if context is not None:
+        context.require_root(root)
+        record = context.records.get(record_id)
+        if record is None or record.get("kind") != kind:
+            raise HarnessError(f"Missing {kind} record: {record_id}")
+        return record
     path = record_path(root, kind, record_id)
     return load_json(path)
 
@@ -179,7 +205,17 @@ def _open_item_resolution_complete(value: dict[str, Any]) -> bool:
     return True
 
 
-def _active_open_items(root: Path) -> list[dict[str, Any]]:
+def _active_open_items(
+    root: Path, context: EvaluationContext | None = None
+) -> list[dict[str, Any]]:
+    if context is not None:
+        context.require_root(root)
+        return [
+            value
+            for value in context.records.values()
+            if value.get("kind") == "open_item"
+            and not _open_item_resolution_complete(value)
+        ]
     directory = root / HARNESS_DIR / "open-items"
     values = []
     for path in directory.glob("OI-*.json"):
@@ -296,13 +332,23 @@ def _task_capability_approval_blockers(
     return blockers
 
 
-def plan_preflight_gate(root: Path, plan_id: str, *, require_approval: bool = False) -> GateResult:
-    plan = _record(root, "plan", plan_id)
-    records, _paths = load_record_index(root)
+def plan_preflight_gate(
+    root: Path,
+    plan_id: str,
+    *,
+    require_approval: bool = False,
+    context: EvaluationContext | None = None,
+) -> GateResult:
+    context = context or EvaluationContext.load(root)
+    context.require_root(root)
+    plan = _record(root, "plan", plan_id, context)
+    records = context.records
     subject = plan.get("approval_subject", {})
     blockers: list[str] = []
     warnings: list[str] = []
-    validation_errors = _validation_blockers(root, relevant_ids={plan_id})
+    validation_errors = _validation_blockers(
+        root, relevant_ids={plan_id}, context=context
+    )
     if validation_errors:
         return GateResult(
             gate="PLAN_AUTHORIZED" if require_approval else "PLAN_PREFLIGHT",
@@ -446,7 +492,7 @@ def plan_preflight_gate(root: Path, plan_id: str, *, require_approval: bool = Fa
                     f"required criterion {criterion_id} has no implementing task"
                 )
 
-    for item in _active_open_items(root):
+    for item in _active_open_items(root, context):
         if item.get("gate_level") == "G0":
             blockers.append(f"G0 open item {item.get('id')}: {item.get('title')}")
         elif item.get("gate_level") == "G2":
@@ -618,12 +664,19 @@ def _latest_task_result_assessment(
     return result, review, reasons
 
 
-def task_start_gate(root: Path, task_id: str) -> GateResult:
-    task = _record(root, "work_item", task_id)
+def task_start_gate(
+    root: Path,
+    task_id: str,
+    *,
+    context: EvaluationContext | None = None,
+) -> GateResult:
+    context = context or EvaluationContext.load(root)
+    context.require_root(root)
+    task = _record(root, "work_item", task_id, context)
     blockers: list[str] = []
     warnings: list[str] = []
     validation_errors = _validation_blockers(
-        root, relevant_ids={task_id}, expand_plans=False
+        root, relevant_ids={task_id}, expand_plans=False, context=context
     )
     if validation_errors:
         return GateResult(
@@ -633,7 +686,7 @@ def task_start_gate(root: Path, task_id: str) -> GateResult:
             blockers=validation_errors,
             subject=task,
         )
-    records, _paths = load_record_index(root)
+    records = context.records
     task_features = set(task.get("feature_refs", []))
     task_criteria = set(task.get("criterion_refs", []))
     task_scope_ids = {task_id, *task_features, *task_criteria}
@@ -641,7 +694,7 @@ def task_start_gate(root: Path, task_id: str) -> GateResult:
     if not isinstance(plan_id, str) or not plan_id:
         blockers.append("task has no plan_id")
     else:
-        plan = _record(root, "plan", plan_id)
+        plan = _record(root, "plan", plan_id, context)
         plan_subject = plan.get("approval_subject", {})
         if not isinstance(plan_subject, dict):
             blockers.append("task plan approval_subject is malformed")
@@ -731,6 +784,27 @@ def task_start_gate(root: Path, task_id: str) -> GateResult:
 
     if task.get("status") not in {"READY", "APPROVED", "RUNNING"}:
         blockers.append(f"task status {task.get('status')} is not startable")
+    for declared_blocker in task.get("blocked_by", []):
+        record = records.get(declared_blocker)
+        if record is None:
+            blockers.append(f"declared blocker {declared_blocker} is missing")
+            continue
+        if record.get("kind") == "open_item":
+            resolved = _open_item_resolution_complete(record)
+        elif record.get("kind") == "work_item":
+            resolved = record.get("status") in {"INTEGRATED", "DONE", "CLOSED"}
+        else:
+            resolved = record.get("status") in {
+                "DONE",
+                "CLOSED",
+                "VERIFIED",
+                "ACCEPTED",
+                "RESOLVED",
+            }
+        if not resolved:
+            blockers.append(
+                f"declared blocker {declared_blocker} is unresolved"
+            )
     for dependency in task.get("dependencies", []):
         record = records.get(dependency)
         if not record:
@@ -765,7 +839,7 @@ def task_start_gate(root: Path, task_id: str) -> GateResult:
                 )
         elif record.get("status") not in {"DONE", "CLOSED", "VERIFIED", "ACCEPTED"}:
             blockers.append(f"dependency {dependency} is not complete")
-    for item in _active_open_items(root):
+    for item in _active_open_items(root, context):
         affected = set(item.get("blocks", [])) | set(item.get("affects", []))
         if item.get("gate_level") == "G0" or (
             item.get("gate_level") == "G1"
@@ -852,13 +926,21 @@ def _evidence_is_eligible(
 
 
 def feature_completion_gate(
-    root: Path, feature_id: str, *, require_customer_approval: bool = True
+    root: Path,
+    feature_id: str,
+    *,
+    require_customer_approval: bool = True,
+    context: EvaluationContext | None = None,
 ) -> GateResult:
-    feature = _record(root, "feature", feature_id)
-    records, _paths = load_record_index(root)
+    context = context or EvaluationContext.load(root)
+    context.require_root(root)
+    feature = _record(root, "feature", feature_id, context)
+    records = context.records
     blockers: list[str] = []
     warnings: list[str] = []
-    validation_errors = _validation_blockers(root, relevant_ids={feature_id})
+    validation_errors = _validation_blockers(
+        root, relevant_ids={feature_id}, context=context
+    )
     if validation_errors:
         return GateResult(
             gate="FEATURE_COMPLETION",
@@ -919,7 +1001,7 @@ def feature_completion_gate(
                 )
 
     criterion_ids = {item.get("id") for item in criteria}
-    for item in _active_open_items(root):
+    for item in _active_open_items(root, context):
         affected = set(item.get("affects", [])) | set(item.get("blocks", []))
         if item.get("gate_level") in {"G0", "G1"} and (
             feature_id in affected or criterion_ids.intersection(affected)
@@ -943,13 +1025,22 @@ def feature_completion_gate(
     )
 
 
-def project_completion_gate(root: Path, *, require_approval: bool = True) -> GateResult:
+def project_completion_gate(
+    root: Path,
+    *,
+    require_approval: bool = True,
+    context: EvaluationContext | None = None,
+) -> GateResult:
+    context = context or EvaluationContext.load(root)
+    context.require_root(root)
     project = load_json(root / HARNESS_DIR / "project.json")
     state = load_json(root / HARNESS_DIR / "state.json")
-    records, paths = load_record_index(root)
+    records, paths = context.records, context.paths
     blockers: list[str] = []
     warnings: list[str] = []
-    validation_errors = _validation_blockers(root, project_wide=True)
+    validation_errors = _validation_blockers(
+        root, project_wide=True, context=context
+    )
     if validation_errors:
         return GateResult(
             gate="PROJECT_COMPLETION",
@@ -969,7 +1060,12 @@ def project_completion_gate(root: Path, *, require_approval: bool = True) -> Gat
         blockers.append("project has no active plan")
     else:
         try:
-            plan_gate = plan_preflight_gate(root, active_plan, require_approval=True)
+            plan_gate = plan_preflight_gate(
+                root,
+                active_plan,
+                require_approval=True,
+                context=context,
+            )
         except HarnessError as exc:
             blockers.append(str(exc))
         else:
@@ -1002,7 +1098,7 @@ def project_completion_gate(root: Path, *, require_approval: bool = True) -> Gat
                 )
 
     for feature_id in required_features:
-        gate = feature_completion_gate(root, feature_id)
+        gate = feature_completion_gate(root, feature_id, context=context)
         blockers.extend(f"{feature_id}: {value}" for value in gate.blockers)
         warnings.extend(gate.warnings)
         expected_dependencies.add(
@@ -1148,7 +1244,7 @@ def project_completion_gate(root: Path, *, require_approval: bool = True) -> Gat
                     f"evidence ({'; '.join(detail)})"
                 )
 
-    for item in _active_open_items(root):
+    for item in _active_open_items(root, context):
         if item.get("gate_level") in {"G0", "G1"}:
             blockers.append(f"open item {item.get('id')} blocks project completion")
         elif item.get("gate_level") == "G2":

@@ -26,6 +26,18 @@ from .helpers import HarnessTestCase, add_verified_evidence, create_ready_projec
 
 
 class ScaffoldValidationTests(HarnessTestCase):
+    def test_event_files_are_part_of_strict_project_validation(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            event = sorted((root / ".harness" / "events").glob("EVT-*.json"))[0]
+            atomic_write_json(event, {})
+
+            issues = validate_project(root)
+            self.assertTrue(
+                any(issue.code == "INVALID_EVENT" for issue in issues),
+                [issue.as_dict() for issue in issues],
+            )
+
     def test_init_creates_required_structure(self):
         with tempfile.TemporaryDirectory() as temp:
             root = init_project(Path(temp) / "demo", "DEMO", "Demo")

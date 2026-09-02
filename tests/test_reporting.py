@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
-from project_harness.reporting import trace_report
+from project_harness.reporting import completion_report, trace_report
+from project_harness.validation import validate_project
 
 from .helpers import (
     HarnessTestCase,
@@ -14,6 +16,16 @@ from .helpers import (
 
 
 class TraceReportingTests(HarnessTestCase):
+    def test_completion_report_validates_once_per_command(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            with patch(
+                "project_harness.evaluation.validate_project",
+                wraps=validate_project,
+            ) as mocked:
+                completion_report(root)
+            self.assertEqual(mocked.call_count, 1)
+
     def test_trace_connects_criteria_tasks_evidence_results_and_reviews(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo")

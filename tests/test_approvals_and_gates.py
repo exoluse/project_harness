@@ -20,6 +20,41 @@ from .helpers import HarnessTestCase, add_verified_evidence, create_ready_projec
 
 
 class ApprovalGateTests(HarnessTestCase):
+    def test_declared_blocked_by_is_enforced_without_reverse_open_item_scope(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            task_path = record_path(root, "work_item", "TASK-0001")
+            task = load_json(task_path)
+            task["blocked_by"] = ["OI-0001"]
+            atomic_write_json(task_path, task)
+            write_record(
+                root,
+                "open_item",
+                "OI-0001",
+                {
+                    "schema": "harness.open_item/v1",
+                    "id": "OI-0001",
+                    "kind": "open_item",
+                    "title": "Explicit task blocker",
+                    "category": "DEPENDENCY",
+                    "gate_level": "G3",
+                    "status": "OPEN",
+                    "owner": "coordinator",
+                    "decision_authority": "HUMAN_PROJECT_OWNER",
+                    "affects": [],
+                    "blocks": [],
+                    "if_unresolved": "TASK-0001 must not start",
+                    "resolution": None,
+                },
+            )
+
+            gate = task_start_gate(root, "TASK-0001")
+            self.assertFalse(gate.passed)
+            self.assertIn(
+                "declared blocker OI-0001 is unresolved",
+                gate.blockers,
+            )
+
     def test_plan_preflight_and_authorization_pass(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo")

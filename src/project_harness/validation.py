@@ -267,6 +267,31 @@ def validate_project(root: Path) -> list[Issue]:
         )
     if state.get("project_id") != project.get("id"):
         issues.append(_issue("ERROR", "STATE_PROJECT_MISMATCH", "state project_id does not match project id"))
+    event_ids: set[str] = set()
+    for event_path in sorted((harness / "events").glob("EVT-*.json")):
+        try:
+            event = load_json(event_path)
+        except HarnessError as exc:
+            issues.append(_issue("ERROR", "INVALID_EVENT", str(exc), event_path))
+            continue
+        for message in schema_set.validate(event, SCHEMA_FILES["event"]):
+            issues.append(_issue("ERROR", "INVALID_EVENT", message, event_path))
+        event_id = event.get("id")
+        if event_path.stem != event_id:
+            issues.append(
+                _issue(
+                    "ERROR",
+                    "INVALID_EVENT",
+                    f"filename {event_path.stem} does not match id {event_id}",
+                    event_path,
+                )
+            )
+        if isinstance(event_id, str):
+            if event_id in event_ids:
+                issues.append(
+                    _issue("ERROR", "DUPLICATE_ID", f"duplicate event id {event_id}", event_path)
+                )
+            event_ids.add(event_id)
     if state.get("lifecycle_state") not in PROJECT_LIFECYCLE_STATES:
         issues.append(_issue("ERROR", "INVALID_LIFECYCLE", f"invalid lifecycle state {state.get('lifecycle_state')}"))
     if not isinstance(project.get("required_features"), list) or any(
