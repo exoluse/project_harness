@@ -11,6 +11,7 @@ from project_harness.constants import RECORD_DIRECTORIES
 from project_harness.scaffold import init_project
 from project_harness.collaboration import acquire_claim, result_build_fingerprint
 from project_harness.core import (
+    HarnessError,
     atomic_write_json,
     load_json,
     record_path,
@@ -27,6 +28,40 @@ from .helpers import HarnessTestCase, add_verified_evidence, create_ready_projec
 
 
 class ScaffoldValidationTests(HarnessTestCase):
+    def test_force_init_repairs_distribution_without_rewriting_records(self):
+        with tempfile.TemporaryDirectory() as temp:
+            workspace = Path(temp)
+            root = init_project(workspace / "demo", "DEMO", "Demo")
+            project_path = root / ".harness" / "project.json"
+            state_path = root / ".harness" / "state.json"
+            marker_path = root / ".harness" / "requirements" / "REQ-9999.json"
+            marker_path.write_text('{"sentinel": true}\n', encoding="utf-8")
+            before = {
+                path: path.read_bytes()
+                for path in (project_path, state_path, marker_path)
+            }
+            vendored_cli = root / ".harness" / "tooling" / "project_harness" / "cli.py"
+            vendored_cli.unlink()
+
+            init_project(root, "DEMO", "Demo", force=True)
+
+            self.assertTrue(vendored_cli.is_file())
+            self.assertEqual(
+                before,
+                {path: path.read_bytes() for path in before},
+            )
+            with self.assertRaisesRegex(HarnessError, "repair-only"):
+                init_project(root, "OTHER", "Demo", force=True)
+
+            orphan_root = workspace / "orphan"
+            orphan_record = (
+                orphan_root / ".harness" / "requirements" / "REQ-0001.json"
+            )
+            orphan_record.parent.mkdir(parents=True)
+            orphan_record.write_text("{}\n", encoding="utf-8")
+            with self.assertRaisesRegex(HarnessError, "without a canonical project.json"):
+                init_project(orphan_root, "ORPHAN", "Orphan", force=True)
+
     def test_active_rework_claim_defers_only_covered_result_file_drift(self):
         def exercise(root: Path, claim_path: str) -> list[str]:
             create_ready_project(root)
