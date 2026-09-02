@@ -1,0 +1,12 @@
+{
+  "schema": "harness.event/v1",
+  "id": "EVT-0074",
+  "kind": "event",
+  "event_type": "RESULT_SUBMITTED",
+  "occurred_at": "2026-09-02T05:07:44Z",
+  "payload": {
+    "result_id": "RES-0023",
+    "task_id": "TASK-0006",
+    "agent": "codex"
+  }
+}
