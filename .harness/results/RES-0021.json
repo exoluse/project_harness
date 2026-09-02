@@ -1,0 +1,46 @@
+{
+  "schema": "harness.result/v1",
+  "id": "RES-0021",
+  "kind": "result",
+  "status": "SUBMITTED",
+  "task_id": "TASK-0001",
+  "claim_id": "CLM-0022",
+  "agent": "codex",
+  "summary": "Split governed mutations into transaction, evidence, and lifecycle authority boundaries behind a stable facade",
+  "changed_files": [
+    "src/project_harness/mutations.py",
+    "src/project_harness/mutation_service.py",
+    "src/project_harness/evidence_mutations.py",
+    "src/project_harness/lifecycle_mutations.py",
+    "tests/test_mutations.py"
+  ],
+  "changed_file_states": {
+    "src/project_harness/mutations.py": "FILE:e08fe64e7aa811587987aa3e993dd4d3a21d13bab5d7f339bea3027cc97d55a3",
+    "src/project_harness/mutation_service.py": "FILE:f6936b369f3f6c0c82c4146beb674a47801934340bcea91e373e035fce98714d",
+    "src/project_harness/evidence_mutations.py": "FILE:c6c4053090215134322e4bcd50d035af7e74d64927fc0f08675a733b8a3868a0",
+    "src/project_harness/lifecycle_mutations.py": "FILE:3bc703d4ce21e878f1767af73f0d15e7ba9e70a00f5923f319438994f866fa3d",
+    "tests/test_mutations.py": "FILE:13b55cde69e309461cd560c00ea4dfcc40c27ec98e54e5b804dc85356bf5d4f2"
+  },
+  "verification": [
+    {
+      "command": "python scripts/check_repo.py fast",
+      "outcome": "PASS"
+    },
+    {
+      "command": "python -m unittest discover -s . -p test_*.py -v",
+      "outcome": "PASS"
+    }
+  ],
+  "verification_state": "PASS",
+  "evidence_refs": [],
+  "evidence_fingerprints": {},
+  "limitations": [
+    "Refactor preserves the existing CLI facade; no independent review or external/runtime acceptance was performed"
+  ],
+  "task_fingerprint": "9b75a135c52e8f842b1149335410dd4cea222f4c1956f3563fe25becaaf90e65",
+  "plan_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+  "base_commit": "b50dbedf9c36ad3ef486fb5c7ace23d481714641",
+  "head_commit": "dedb0d9ac7aa1497638e11a36c1108f48e5ff312",
+  "submitted_at": "2026-09-02T04:45:22Z",
+  "build_fingerprint": "b5d063f9c216b1fe04086ce7a2bdfca35ab95bd98d8596a41df2b1ef282d186d"
+}
