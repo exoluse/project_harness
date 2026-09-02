@@ -29,6 +29,7 @@ from .core import (
     subject_fingerprint_for_path,
 )
 from .evaluation import EvaluationContext
+from .policy import claim_mode, execution_mode, record_mode, user_directed
 from .validation import issue_counts, validate_project
 
 
@@ -52,13 +53,18 @@ def doctor_report(root: Path) -> dict[str, Any]:
     issues = validate_project(root)
     code, _output = run_git(root, "rev-parse", "--is-inside-work-tree")
     authority_state, authority_detail = authority_status(root)
-    plan_assurance = "UNKNOWN"
-    plan_assurance_detail = "Unable to determine PLAN approval assurance"
+    plan_assurance = "NOT_REQUIRED" if user_directed(root) else "UNKNOWN"
+    plan_assurance_detail = (
+        "Plans are reference material in USER_DIRECTED mode"
+        if user_directed(root)
+        else "Unable to determine PLAN approval assurance"
+    )
     try:
-        plan_assurance = required_approval_assurance(root, "PLAN")
+        if not user_directed(root):
+            plan_assurance = required_approval_assurance(root, "PLAN")
         state = load_json(root / HARNESS_DIR / "state.json")
         active_plan = state.get("active_plan")
-        if isinstance(active_plan, str):
+        if not user_directed(root) and isinstance(active_plan, str):
             plan_assurance = effective_approval_assurance(
                 root,
                 "PLAN",
@@ -89,7 +95,7 @@ def doctor_report(root: Path) -> dict[str, Any]:
         },
         "plan_approval_assurance": {
             "required": plan_assurance,
-            "ready": plan_assurance == "PROCEDURAL"
+            "ready": plan_assurance in {"NOT_REQUIRED", "PROCEDURAL"}
             or (
                 plan_assurance == "CRYPTOGRAPHIC"
                 and authority_state == "READY"
@@ -127,6 +133,9 @@ def status_report(root: Path) -> dict[str, Any]:
         "project_id": project.get("id"),
         "name": project.get("name"),
         "lifecycle_state": state.get("lifecycle_state"),
+        "execution_mode": execution_mode(root),
+        "claim_mode": claim_mode(root),
+        "record_mode": record_mode(root),
         "active_plan": state.get("active_plan"),
         "active_decision": state.get("active_decision"),
         "active_baselines": state.get("active_baselines", {}),

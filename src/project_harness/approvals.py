@@ -17,6 +17,7 @@ from .constants import (
     APPROVAL_ASSURANCE_LEVELS,
     APPROVAL_DECISIONS,
     APPROVED_DECISIONS,
+    CRYPTOGRAPHIC_APPROVAL_TYPES,
     HARNESS_DIR,
     PROCEDURAL_APPROVAL_TYPES,
     PROCEDURAL_PLAN_ACTIONS,
@@ -49,6 +50,8 @@ APPROVAL_SUBJECT_KINDS = {
     "CHANGE": "change",
     "PRODUCTION_DEPLOYMENT": "project",
     "PRODUCTION_DATA_CHANGE": "change",
+    "DESTRUCTIVE_ACTION": "change",
+    "SECRET_ACCESS": "change",
     "EXCEPTION": "change",
 }
 
@@ -92,6 +95,8 @@ def required_approval_assurance(root: Path, approval_type: str) -> str:
     if not isinstance(by_type, dict):
         raise HarnessError("Project approval assurance by_type must be an object")
     value = by_type.get(approval_type, default)
+    if approval_type in CRYPTOGRAPHIC_APPROVAL_TYPES:
+        value = "CRYPTOGRAPHIC"
     if not isinstance(value, str) or value not in APPROVAL_ASSURANCE_LEVELS:
         raise HarnessError(f"Approval assurance for {approval_type} is invalid")
     if value == "PROCEDURAL" and approval_type not in PROCEDURAL_APPROVAL_TYPES:

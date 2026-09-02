@@ -152,17 +152,42 @@ class AtomicMutationService:
 def authorize_claim_targets(
     root: Path,
     *,
-    claim_id: str,
+    claim_id: str | None,
     agent: str,
     targets: list[str],
 ) -> dict[str, Any]:
     """Enforce writer authority before a canonical mutation is prepared."""
     normalized_agent = normalize_agent_id(agent)
+    normalized_targets = [normalize_claim_path(root, value) for value in targets]
+    if claim_id is None:
+        from .collaboration import list_claims, paths_overlap
+        from .policy import claim_mode, user_directed
+
+        if not user_directed(root) or claim_mode(root) != "WHEN_CONCURRENT":
+            raise HarnessError("Canonical mutation requires an active claim")
+        conflicts = [
+            claim.get("id", "UNKNOWN")
+            for claim in list_claims(root, active_only=True)
+            if any(
+                paths_overlap(target, owned)
+                for target in normalized_targets
+                for owned in claim.get("paths", [])
+            )
+        ]
+        if conflicts:
+            raise HarnessError(
+                "Unclaimed mutation overlaps active ownership: "
+                + ", ".join(sorted(conflicts))
+            )
+        return {
+            "status": "UNCLAIMED",
+            "agent": normalized_agent,
+            "paths": normalized_targets,
+        }
     claim, _path = get_claim(root, claim_id)
     if claim.get("status") != "ACTIVE" or claim.get("agent") != normalized_agent:
         raise HarnessError("Canonical mutation requires the agent's active claim")
     ensure_claim_current(root, claim)
-    normalized_targets = [normalize_claim_path(root, value) for value in targets]
     outside = [
         value
         for value in normalized_targets

@@ -26,6 +26,7 @@ from .mutation_service import (
     authorize_claim_targets,
     validate_records,
 )
+from .policy import record_mode, user_directed
 
 
 WORK_ITEM_TRANSITIONS = {
@@ -81,7 +82,7 @@ PROJECT_TRANSITIONS = {
 def transition_record(
     root: Path,
     *,
-    claim_id: str,
+    claim_id: str | None,
     agent: str,
     kind: str,
     record_id: str,
@@ -124,7 +125,11 @@ def transition_record(
         gate = task_start_gate(root, record_id, context=context)
         if not gate.passed:
             raise HarnessError("Work item cannot enter RUNNING: " + "; ".join(gate.blockers))
-    if kind == "work_item" and target_status in {"REVIEWED", "INTEGRATED", "DONE", "CLOSED"}:
+    if (
+        kind == "work_item"
+        and record_mode(root) == "REQUIRED"
+        and target_status in {"REVIEWED", "INTEGRATED", "DONE", "CLOSED"}
+    ):
         plan_id = str(record.get("plan_id"))
         result, review, reasons = _latest_task_result_assessment(
             root,
@@ -170,7 +175,7 @@ def transition_record(
 def transition_project(
     root: Path,
     *,
-    claim_id: str,
+    claim_id: str | None,
     agent: str,
     target_state: str,
     reason: str,
@@ -198,11 +203,14 @@ def transition_project(
     if target_state == "APPROVED":
         raise HarnessError("APPROVED is materialized only by plan apply-decision")
     if target_state == "BUILDING":
-        if not isinstance(active_plan, str):
+        if user_directed(root):
+            pass
+        elif not isinstance(active_plan, str):
             raise HarnessError("Project cannot enter BUILDING without an active plan")
-        gate = plan_preflight_gate(root, active_plan, require_approval=True, context=context)
-        if not gate.passed:
-            raise HarnessError("Project cannot enter BUILDING: " + "; ".join(gate.blockers))
+        else:
+            gate = plan_preflight_gate(root, active_plan, require_approval=True, context=context)
+            if not gate.passed:
+                raise HarnessError("Project cannot enter BUILDING: " + "; ".join(gate.blockers))
     if target_state == "CUSTOMER_ACCEPTANCE":
         project = load_json(root / HARNESS_DIR / "project.json")
         feature_blockers: list[str] = []

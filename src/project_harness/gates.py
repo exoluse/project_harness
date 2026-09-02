@@ -25,6 +25,7 @@ from .core import (
     subject_fingerprint_for_path,
 )
 from .evaluation import EvaluationContext
+from .policy import approval_required, record_mode, user_directed
 
 
 @dataclass
@@ -290,7 +291,12 @@ def _task_capability_approval_blockers(
             if capability in set(approval.get("excluded_actions", [])):
                 reasons.append(f"{reference} excludes {capability}")
                 continue
-            if approval_type in {"PRODUCTION_DATA_CHANGE", "EXCEPTION"}:
+            if approval_type in {
+                "PRODUCTION_DATA_CHANGE",
+                "DESTRUCTIVE_ACTION",
+                "SECRET_ACCESS",
+                "EXCEPTION",
+            }:
                 change = records.get(str(approval.get("subject_id", "")), {})
                 if not task_scope.intersection(set(change.get("affects", []))):
                     reasons.append(f"{reference} change subject does not affect {task_id}")
@@ -691,94 +697,97 @@ def task_start_gate(
     task_criteria = set(task.get("criterion_refs", []))
     task_scope_ids = {task_id, *task_features, *task_criteria}
     plan_id = task.get("plan_id")
-    if not isinstance(plan_id, str) or not plan_id:
-        blockers.append("task has no plan_id")
-    else:
-        plan = _record(root, "plan", plan_id, context)
-        plan_subject = plan.get("approval_subject", {})
-        if not isinstance(plan_subject, dict):
-            blockers.append("task plan approval_subject is malformed")
-            plan_subject = {}
-        if task_id not in plan_subject.get("work_item_refs", []):
-            blockers.append(f"task {task_id} is outside the approved plan subject")
-        state = load_json(root / HARNESS_DIR / "state.json")
-        if state.get("active_plan") != plan_id:
-            blockers.append(
-                f"task plan {plan_id} is not the active plan {state.get('active_plan')}"
-            )
-        if state.get("lifecycle_state") not in {
-            "APPROVED",
-            "BUILDING",
-            "VERIFYING",
-            "MAINTAINING",
-        }:
-            blockers.append(
-                f"lifecycle state {state.get('lifecycle_state')} is not executable"
-            )
-        if plan.get("status") not in {
-            "APPROVED",
-            "APPROVED_WITH_CONDITIONS",
-            "ACTIVE",
-        }:
-            blockers.append(
-                f"plan status {plan.get('status')} is not executable"
-            )
-        approval, reason = find_current_approval(
-            root, subject_id=plan_id, approval_type="PLAN"
-        )
-        if approval is None:
-            blockers.append(reason)
+    if not user_directed(root):
+        if not isinstance(plan_id, str) or not plan_id:
+            blockers.append("task has no plan_id")
         else:
-            if plan.get("decision_ref") != approval.get("id"):
+            plan = _record(root, "plan", plan_id, context)
+            plan_subject = plan.get("approval_subject", {})
+            if not isinstance(plan_subject, dict):
+                blockers.append("task plan approval_subject is malformed")
+                plan_subject = {}
+            if task_id not in plan_subject.get("work_item_refs", []):
+                blockers.append(f"task {task_id} is outside the approved plan subject")
+            state = load_json(root / HARNESS_DIR / "state.json")
+            if state.get("active_plan") != plan_id:
                 blockers.append(
-                    "plan has not materialized the latest approval decision"
+                    f"task plan {plan_id} is not the active plan {state.get('active_plan')}"
                 )
-            if state.get("active_decision") != approval.get("id"):
+            if state.get("lifecycle_state") not in {
+                "APPROVED",
+                "BUILDING",
+                "VERIFYING",
+                "MAINTAINING",
+            }:
                 blockers.append(
-                    "project state has not materialized the latest approval decision"
+                    f"lifecycle state {state.get('lifecycle_state')} is not executable"
                 )
-            task_capabilities = set(task.get("capabilities", []))
-            plan_authorized = set(plan_subject.get("authorized_actions", []))
-            plan_excluded = set(plan_subject.get("excluded_actions", []))
-            approval_authorized = set(approval.get("authorized_actions", []))
-            approval_excluded = set(approval.get("excluded_actions", []))
-            unauthorized = task_capabilities - plan_authorized
-            unauthorized.update(task_capabilities - approval_authorized)
-            excluded = task_capabilities.intersection(
-                plan_excluded | approval_excluded
+            if plan.get("status") not in {
+                "APPROVED",
+                "APPROVED_WITH_CONDITIONS",
+                "ACTIVE",
+            }:
+                blockers.append(
+                    f"plan status {plan.get('status')} is not executable"
+                )
+            approval, reason = find_current_approval(
+                root, subject_id=plan_id, approval_type="PLAN"
             )
-            if unauthorized:
-                blockers.append(
-                    "task requests actions outside the current plan approval: "
-                    + ", ".join(sorted(unauthorized))
-                )
-            if excluded:
-                blockers.append(
-                    "task requests explicitly excluded actions: "
-                    + ", ".join(sorted(excluded))
-                )
-            for condition_ref in approval.get("condition_refs", []):
-                condition = records.get(condition_ref)
-                if not condition or condition.get("kind") != "open_item":
+            if approval is None:
+                blockers.append(reason)
+            else:
+                if plan.get("decision_ref") != approval.get("id"):
                     blockers.append(
-                        f"approval condition references missing open item {condition_ref}"
+                        "plan has not materialized the latest approval decision"
                     )
-                    continue
-                if _open_item_resolution_complete(condition):
-                    continue
-                affected = set(condition.get("affects", [])) | set(
-                    condition.get("blocks", [])
-                )
-                if condition.get("gate_level") == "G0" or task_scope_ids.intersection(
-                    affected
-                ):
+                if state.get("active_decision") != approval.get("id"):
                     blockers.append(
-                        f"approval condition blocks this task: {condition_ref}"
+                        "project state has not materialized the latest approval decision"
                     )
-                else:
-                    warnings.append(
-                        f"unresolved approval condition is outside this task: {condition_ref}"
+                task_capabilities = set(task.get("capabilities", []))
+                plan_authorized = set(plan_subject.get("authorized_actions", []))
+                plan_excluded = set(plan_subject.get("excluded_actions", []))
+                approval_authorized = set(approval.get("authorized_actions", []))
+                approval_excluded = set(approval.get("excluded_actions", []))
+                unauthorized = task_capabilities - plan_authorized
+                unauthorized.update(task_capabilities - approval_authorized)
+                excluded = task_capabilities.intersection(
+                    plan_excluded | approval_excluded
+                )
+                if unauthorized:
+                    blockers.append(
+                        "task requests actions outside the current plan approval: "
+                        + ", ".join(sorted(unauthorized))
                     )
+                if excluded:
+                    blockers.append(
+                        "task requests explicitly excluded actions: "
+                        + ", ".join(sorted(excluded))
+                    )
+                for condition_ref in approval.get("condition_refs", []):
+                    condition = records.get(condition_ref)
+                    if not condition or condition.get("kind") != "open_item":
+                        blockers.append(
+                            f"approval condition references missing open item {condition_ref}"
+                        )
+                        continue
+                    if _open_item_resolution_complete(condition):
+                        continue
+                    affected = set(condition.get("affects", [])) | set(
+                        condition.get("blocks", [])
+                    )
+                    if condition.get("gate_level") == "G0" or task_scope_ids.intersection(
+                        affected
+                    ):
+                        blockers.append(
+                            f"approval condition blocks this task: {condition_ref}"
+                        )
+                    else:
+                        warnings.append(
+                            f"unresolved approval condition is outside this task: {condition_ref}"
+                        )
+    elif isinstance(plan_id, str) and plan_id and plan_id not in records:
+        blockers.append(f"task reference plan {plan_id} is missing")
 
     blockers.extend(_task_capability_approval_blockers(root, task, records))
 
@@ -791,7 +800,7 @@ def task_start_gate(
             continue
         if record.get("kind") == "open_item":
             resolved = _open_item_resolution_complete(record)
-        elif record.get("kind") == "work_item":
+        elif record.get("kind") == "work_item" and record_mode(root) == "REQUIRED":
             resolved = record.get("status") in {"INTEGRATED", "DONE", "CLOSED"}
         else:
             resolved = record.get("status") in {
@@ -810,34 +819,32 @@ def task_start_gate(
         if not record:
             blockers.append(f"dependency {dependency} is not complete")
         elif record.get("kind") == "work_item":
-            dependency_plan = record.get("plan_id")
-            dependency_plan_path = (
-                record_path(root, "plan", dependency_plan)
-                if isinstance(dependency_plan, str)
-                else None
-            )
-            result, review, reasons = _latest_task_result_assessment(
-                root,
-                dependency,
-                records,
-                current_task_fingerprint=subject_fingerprint(record),
-                current_plan_fingerprint=(
-                    subject_fingerprint_for_path(dependency_plan_path)
-                    if dependency_plan_path is not None
+            if record.get("status") not in {"INTEGRATED", "DONE", "CLOSED"}:
+                blockers.append(f"dependency {dependency} is not complete")
+            elif record_mode(root) == "REQUIRED":
+                dependency_plan = record.get("plan_id")
+                dependency_plan_path = (
+                    record_path(root, "plan", dependency_plan)
+                    if isinstance(dependency_plan, str)
                     else None
-                ),
-            )
-            if (
-                record.get("status") not in {"INTEGRATED", "DONE", "CLOSED"}
-                or result is None
-                or review is None
-                or reasons
-            ):
-                blockers.append(
-                    f"dependency {dependency} lacks a current independently reviewed PASS result"
-                    + (f" ({'; '.join(reasons)})" if reasons else "")
                 )
-        elif record.get("status") not in {"DONE", "CLOSED", "VERIFIED", "ACCEPTED"}:
+                result, review, reasons = _latest_task_result_assessment(
+                    root,
+                    dependency,
+                    records,
+                    current_task_fingerprint=subject_fingerprint(record),
+                    current_plan_fingerprint=(
+                        subject_fingerprint_for_path(dependency_plan_path)
+                        if dependency_plan_path is not None
+                        else None
+                    ),
+                )
+                if result is None or review is None or reasons:
+                    blockers.append(
+                        f"dependency {dependency} lacks a current independently reviewed PASS result"
+                        + (f" ({'; '.join(reasons)})" if reasons else "")
+                    )
+        elif record.get("status") not in {"DONE", "CLOSED", "VERIFIED", "ACCEPTED", "INTEGRATED"}:
             blockers.append(f"dependency {dependency} is not complete")
     for item in _active_open_items(root, context):
         affected = set(item.get("blocks", [])) | set(item.get("affects", []))
@@ -1056,9 +1063,9 @@ def project_completion_gate(
     active_plan = state.get("active_plan")
     plan: dict[str, Any] = {}
     expected_dependencies: set[str] = set()
-    if not isinstance(active_plan, str) or not active_plan:
+    if not user_directed(root) and (not isinstance(active_plan, str) or not active_plan):
         blockers.append("project has no active plan")
-    else:
+    elif isinstance(active_plan, str) and active_plan:
         try:
             plan_gate = plan_preflight_gate(
                 root,
@@ -1124,7 +1131,7 @@ def project_completion_gate(
                 )
 
     task_result_evidence: dict[str, set[str]] = {}
-    if plan:
+    if plan and record_mode(root) == "REQUIRED":
         current_plan_fingerprint = subject_fingerprint_for_path(
             record_path(root, "plan", active_plan)
         )
@@ -1283,7 +1290,7 @@ def project_completion_gate(
         if not (root / normalized).is_file():
             blockers.append(f"project approval dependency is missing: {dependency}")
 
-    if require_approval:
+    if require_approval and approval_required(root, "PROJECT_CLOSURE"):
         approval, reason = find_current_approval(
             root, subject_id=project.get("id"), approval_type="PROJECT_CLOSURE"
         )

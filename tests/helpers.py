@@ -47,6 +47,29 @@ def write_record(root: Path, kind: str, record_id: str, value: dict) -> Path:
 
 def create_ready_project(root: Path, *, approve: bool = True) -> Path:
     init_project(root, "TESTPROJ", "Test Project")
+    # Most historical fixtures intentionally exercise the legacy, plan-gated
+    # compatibility mode. New-project behavior is covered separately.
+    project_path = root / ".harness" / "project.json"
+    project = load_json(project_path)
+    project["policy"].update(
+        {
+            "execution_mode": "PLAN_GATED",
+            "claim_mode": "REQUIRED",
+            "record_mode": "REQUIRED",
+            "human_approval_required_for": [
+                "PLAN",
+                "PRODUCTION_DEPLOYMENT",
+                "PRODUCTION_DATA_CHANGE",
+                "EXCEPTION",
+                "PROJECT_CLOSURE",
+            ],
+            "approval_assurance": {
+                "default": "CRYPTOGRAPHIC",
+                "by_type": {"PLAN": "PROCEDURAL"},
+            },
+        }
+    )
+    atomic_write_json(project_path, project)
     now = utc_now()
     source = {
         "schema": "harness.source/v1",
@@ -150,7 +173,6 @@ def create_ready_project(root: Path, *, approve: bool = True) -> Path:
     write_record(root, "work_item", "TASK-0001", task)
     write_record(root, "plan", "PLAN-0001", plan)
 
-    project_path = root / ".harness" / "project.json"
     project = load_json(project_path)
     project["required_features"] = ["FUNC-0001"]
     atomic_write_json(project_path, project)

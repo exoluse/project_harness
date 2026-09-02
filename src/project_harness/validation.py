@@ -9,6 +9,7 @@ from .approvals import approval_status
 from .collaboration import RECOVERY_CHECK_NAMES, list_claims
 from .constants import (
     APPROVAL_ASSURANCE_LEVELS,
+    CRYPTOGRAPHIC_APPROVAL_TYPES,
     EVIDENCE_RESULTS,
     HARNESS_DIR,
     OPEN_ITEM_CLOSED_STATES,
@@ -34,6 +35,7 @@ from .core import (
     sha256_file,
 )
 from .schema_validation import SCHEMA_FILES, SchemaSet
+from .policy import CLAIM_MODES, EXECUTION_MODES, RECORD_MODES, record_mode
 
 
 @dataclass(frozen=True)
@@ -355,6 +357,21 @@ def validate_project(root: Path) -> list[Issue]:
     if not isinstance(project.get("policy"), dict):
         issues.append(_issue("ERROR", "MALFORMED_PROJECT", "project policy must be an object"))
     else:
+        policy = project["policy"]
+        for field, allowed, legacy_default in (
+            ("execution_mode", EXECUTION_MODES, "PLAN_GATED"),
+            ("claim_mode", CLAIM_MODES, "REQUIRED"),
+            ("record_mode", RECORD_MODES, "REQUIRED"),
+        ):
+            value = policy.get(field, legacy_default)
+            if value not in allowed:
+                issues.append(
+                    _issue(
+                        "ERROR",
+                        "INVALID_EXECUTION_POLICY",
+                        f"{field} has unsupported value {value!r}",
+                    )
+                )
         assurance = project["policy"].get("approval_assurance")
         if assurance is not None:
             if not isinstance(assurance, dict):
@@ -396,12 +413,18 @@ def validate_project(root: Path) -> list[Issue]:
                         if value == "PROCEDURAL"
                         and approval_type not in PROCEDURAL_APPROVAL_TYPES
                     )
-                    if default == "PROCEDURAL" or forbidden:
+                    unsafe_high_risk = sorted(
+                        approval_type
+                        for approval_type, value in by_type.items()
+                        if approval_type in CRYPTOGRAPHIC_APPROVAL_TYPES
+                        and value != "CRYPTOGRAPHIC"
+                    )
+                    if forbidden or unsafe_high_risk:
                         issues.append(
                             _issue(
                                 "ERROR",
                                 "UNSAFE_PROCEDURAL_APPROVAL_POLICY",
-                                "PROCEDURAL assurance is permitted only by explicit PLAN override",
+                                "cryptographic assurance is mandatory for production, destructive, secret-access, and customer-acceptance approvals",
                             )
                         )
     project_dependencies = project.get("approval_dependencies")
@@ -833,7 +856,7 @@ def validate_project(root: Path) -> list[Issue]:
             }
             reviewed_statuses = {"REVIEWED", "INTEGRATED", "DONE", "CLOSED"}
             integrated_statuses = {"INTEGRATED", "DONE", "CLOSED"}
-            if status in result_required_statuses:
+            if record_mode(root) == "REQUIRED" and status in result_required_statuses:
                 latest_result = latest_results.get(record_id)
                 if latest_result is None:
                     issues.append(

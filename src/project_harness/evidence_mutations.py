@@ -26,7 +26,7 @@ from .mutation_service import (
 def record_evidence(
     root: Path,
     *,
-    claim_id: str,
+    claim_id: str | None = None,
     agent: str,
     claim_text: str,
     supports: list[str],
