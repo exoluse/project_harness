@@ -9,7 +9,7 @@ from pathlib import Path
 
 from project_harness.constants import RECORD_DIRECTORIES
 from project_harness.scaffold import init_project
-from project_harness.collaboration import result_build_fingerprint
+from project_harness.collaboration import acquire_claim, result_build_fingerprint
 from project_harness.core import (
     atomic_write_json,
     load_json,
@@ -17,6 +17,7 @@ from project_harness.core import (
     subject_fingerprint,
     subject_fingerprint_for_path,
     sha256_bytes,
+    sha256_file,
     utc_now,
 )
 from project_harness.reporting import decision_package
@@ -26,6 +27,64 @@ from .helpers import HarnessTestCase, add_verified_evidence, create_ready_projec
 
 
 class ScaffoldValidationTests(HarnessTestCase):
+    def test_active_rework_claim_defers_only_covered_result_file_drift(self):
+        def exercise(root: Path, claim_path: str) -> list[str]:
+            create_ready_project(root)
+            target = root / "src" / "example.py"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("before\n", encoding="utf-8")
+            task = load_json(record_path(root, "work_item", "TASK-0001"))
+            result = {
+                "schema": "harness.result/v1",
+                "id": "RES-0001",
+                "kind": "result",
+                "status": "SUBMITTED",
+                "task_id": "TASK-0001",
+                "claim_id": "CLM-0000",
+                "agent": "codex",
+                "summary": "Earlier implementation",
+                "changed_files": ["src/example.py"],
+                "changed_file_states": {
+                    "src/example.py": f"FILE:{sha256_file(target)}"
+                },
+                "verification": [
+                    {"command": "python -m unittest", "outcome": "PASS"}
+                ],
+                "verification_state": "PASS",
+                "evidence_refs": [],
+                "evidence_fingerprints": {},
+                "limitations": [],
+                "task_fingerprint": subject_fingerprint(task),
+                "plan_fingerprint": subject_fingerprint_for_path(
+                    record_path(root, "plan", "PLAN-0001")
+                ),
+                "base_commit": None,
+                "head_commit": None,
+                "submitted_at": utc_now(),
+            }
+            result["build_fingerprint"] = result_build_fingerprint(result)
+            write_record(root, "result", "RES-0001", result)
+            acquire_claim(
+                root,
+                agent="codex",
+                task_id="TASK-0001",
+                paths=[claim_path],
+            )
+            target.write_text("during rework\n", encoding="utf-8")
+            return [
+                issue.code
+                for issue in validate_project(root)
+                if issue.code == "STALE_RESULT_BUILD"
+            ]
+
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            self.assertEqual(exercise(base / "covered", "src/example.py"), [])
+            self.assertEqual(
+                exercise(base / "uncovered", "tests/example.py"),
+                ["STALE_RESULT_BUILD"],
+            )
+
     def test_event_files_are_part_of_strict_project_validation(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo")

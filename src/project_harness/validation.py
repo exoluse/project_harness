@@ -21,6 +21,7 @@ from .core import (
     HarnessError,
     binding_status,
     git_changed_paths,
+    is_path_within,
     iter_record_files,
     load_json,
     normalize_claim_path,
@@ -68,6 +69,57 @@ def _record_number(value: dict[str, Any]) -> int:
         return int(record_id.rsplit("-", 1)[1])
     except (IndexError, ValueError):
         return -1
+
+
+def _active_rework_claim_covers_stale_build(
+    root: Path,
+    result: dict[str, Any],
+    reasons: list[str],
+    claims: list[dict[str, Any]],
+    records: dict[str, dict[str, Any]],
+    record_paths: dict[str, Path],
+) -> bool:
+    """Recognize expected result drift only inside a current rework claim.
+
+    Every currentness failure must be a changed file covered by one live claim
+    for the same task. Task, plan, evidence, manifest, and fingerprint drift is
+    never deferred.
+    """
+    prefix = "changed file is no longer current: "
+    if not reasons or any(not reason.startswith(prefix) for reason in reasons):
+        return False
+    stale_paths = [reason.removeprefix(prefix) for reason in reasons]
+    task_id = result.get("task_id")
+    task = records.get(str(task_id))
+    if not task or task.get("kind") != "work_item":
+        return False
+    plan_path = record_paths.get(str(task.get("plan_id")))
+    if plan_path is None:
+        return False
+    task_fingerprint = subject_fingerprint(task)
+    plan_fingerprint = subject_fingerprint_for_path(plan_path)
+    now = datetime.now(UTC)
+    for claim in claims:
+        if claim.get("task_id") != task_id:
+            continue
+        try:
+            same_worktree = Path(str(claim.get("worktree", ""))).resolve() == root.resolve()
+            live = parse_utc(str(claim.get("expires_at", ""))) > now
+        except (OSError, RuntimeError, TypeError, ValueError):
+            continue
+        if not same_worktree or not live:
+            continue
+        if claim.get("task_fingerprint") != task_fingerprint:
+            continue
+        if claim.get("plan_fingerprint") != plan_fingerprint:
+            continue
+        paths = claim.get("paths")
+        if not isinstance(paths, list) or not all(
+            is_path_within(stale_path, paths) for stale_path in stale_paths
+        ):
+            continue
+        return True
+    return False
 
 
 def _check_secret_fields(value: Any, path: str = "") -> list[str]:
@@ -489,6 +541,7 @@ def validate_project(root: Path) -> list[Issue]:
     for result_id, group in review_groups.items():
         latest_reviews[result_id] = max(group, key=_record_number)
 
+    claims = list_claims(root, active_only=True)
     for record_id, record in records.items():
         path = record_paths[record_id]
         kind = record.get("kind")
@@ -1243,7 +1296,10 @@ def validate_project(root: Path) -> list[Issue]:
             from .collaboration import result_currentness
 
             current, reasons = result_currentness(root, record)
-            if record_id in latest_result_ids and not current:
+            deferred_by_rework = _active_rework_claim_covers_stale_build(
+                root, record, reasons, claims, records, record_paths
+            )
+            if record_id in latest_result_ids and not current and not deferred_by_rework:
                 issues.append(
                     _issue(
                         "WARNING",
@@ -1307,7 +1363,6 @@ def validate_project(root: Path) -> list[Issue]:
                     )
                 )
 
-    claims = list_claims(root, active_only=True)
     for claim in claims:
         try:
             expires_at = parse_utc(str(claim.get("expires_at", "")))
