@@ -46,6 +46,8 @@ git commit -m "Initialize project harness"
 
 The generated project vendors the dependency-free Python runtime under `.harness/tooling/`, copies the enforced schemas, shared agent policies, start prompts, and operator documentation, and therefore runs its own `scripts/harness.py` without installing this package. A generated project can initialize another equally self-contained project.
 
+`init --force` is a repair operation, not a reset. It requires the supplied project ID and name to match the existing canonical project record exactly, preserves `project.json`, `state.json`, and all project records, and refreshes only the distributed runtime plus missing scaffold files. Use governed lifecycle and change commands for project metadata changes.
+
 Before recording a cryptographic human approval, an administrator must establish the external authority and ledger described in [Human approval operations](docs/APPROVALS.md). A project whose policy permits procedural `PLAN` assurance can approve a plan without that trust root, but the project owner must personally run the exact confirmation; an agent cannot do so on the owner's behalf.
 
 ## Daily commands
@@ -59,10 +61,11 @@ python scripts/harness.py validate --strict
 python scripts/harness.py trace REQ-0001
 python scripts/harness.py report decision-package PLAN-0001
 python scripts/harness.py report completion
-python scripts/check_repo.py
+python scripts/check_repo.py fast
+python scripts/check_repo.py full
 ```
 
-`scripts/check_repo.py` executes only its fixed repository checks. Verification strings stored in plans, results, or handoffs are records; the harness does not execute mutable project JSON as commands.
+`scripts/check_repo.py` defaults to `full`. The `fast` tier provides short contract-focused feedback; only `full` runs the entire test discovery. Both tiers compile code, run their declared tests, and finish with strict harness validation. The script executes only fixed repository checks. Verification strings stored in plans, results, or handoffs are records; the harness does not execute mutable project JSON as commands.
 
 `report decision-package` assembles the plan fingerprint, preflight, requirement-feature-criterion-task coverage, workstreams, action boundaries, unresolved items, configured assurance readiness, and available decisions for one consolidated human review. `report completion` keeps feature gates, technical closure preflight, and fully authorized closure separate; it exits blocked until authorized closure truly passes.
 

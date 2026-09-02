@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 from .constants import HARNESS_DIR, RECORD_DIRECTORIES
-from .core import HarnessError, atomic_write_json, atomic_write_text, utc_now
+from .core import HarnessError, atomic_write_json, atomic_write_text, load_json, utc_now
 
 
 RUNTIME_DIRECTORIES = [
@@ -30,6 +30,7 @@ GENERATED_WRAPPER = """from pathlib import Path\nimport sys\n\nROOT = Path(__fil
 
 GENERATED_CHECK_REPO = """from __future__ import annotations
 
+import argparse
 import subprocess
 import sys
 from pathlib import Path
@@ -38,16 +39,28 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def run(command: list[str]) -> bool:
-    print(f"[check] {' '.join(command)}")
+def run(label: str, command: list[str]) -> bool:
+    print(f"[{label}] {' '.join(command)}")
     result = subprocess.run(command, cwd=ROOT, check=False)
-    print(f"[check] exit={result.returncode}")
+    print(f"[{label}] exit={result.returncode}")
     return result.returncode == 0
 
 
-def main() -> int:
-    command = [sys.executable, "scripts/harness.py", "validate", "--strict"]
-    return 0 if run(command) else 1
+def checks_for(tier: str) -> list[tuple[str, list[str]]]:
+    checks = [("compile", [sys.executable, "-m", "compileall", "-q", ".harness/tooling", "scripts", "tests"])]
+    if tier == "full":
+        checks.append(("tests-full", [sys.executable, "-m", "unittest", "discover", "-s", ".", "-p", "test_*.py", "-v"]))
+    checks.append(("harness-strict", [sys.executable, "scripts/harness.py", "validate", "--strict"]))
+    return checks
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Run fixed project verification")
+    parser.add_argument("tier", nargs="?", choices=("fast", "full"), default="full")
+    args = parser.parse_args(argv)
+    print(f"[check-repo] tier={args.tier}")
+    outcomes = [run(label, command) for label, command in checks_for(args.tier)]
+    return 0 if all(outcomes) else 1
 
 
 if __name__ == "__main__":
@@ -125,8 +138,27 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
     root.mkdir(parents=True, exist_ok=True)
     harness = root / HARNESS_DIR
     project_path = harness / "project.json"
-    if project_path.exists() and not force:
-        raise HarnessError(f"Project harness already exists at {root}")
+    repairing = project_path.exists()
+    if repairing:
+        if not force:
+            raise HarnessError(f"Project harness already exists at {root}")
+        existing = load_json(project_path)
+        existing_id = existing.get("id") if isinstance(existing, dict) else None
+        existing_name = existing.get("name") if isinstance(existing, dict) else None
+        if existing_id != project_id or existing_name != name:
+            raise HarnessError(
+                "init --force is repair-only: project id and name must exactly "
+                "match the existing canonical project record"
+            )
+    elif harness.exists() and any(
+        candidate.is_file()
+        for candidate in harness.rglob("*.json")
+        if "tooling" not in candidate.relative_to(harness).parts
+    ):
+        raise HarnessError(
+            "Cannot initialize over harness records without a canonical "
+            "project.json; recover or remove the ambiguous records explicitly"
+        )
 
     for directory in sorted({value[0] for value in RECORD_DIRECTORIES.values()}):
         record_directory = harness / directory
@@ -137,62 +169,63 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
     for directory in RUNTIME_DIRECTORIES:
         (harness / directory).mkdir(parents=True, exist_ok=True)
 
-    created = utc_now()
-    project = {
-        "schema": "harness.project/v1",
-        "id": project_id,
-        "kind": "project",
-        "name": name,
-        "schema_version": 1,
-        "created_at": created,
-        "required_features": [],
-        "approval_dependencies": [],
-        "closure_contract": [
-            {
-                "id": "DELIVERY",
-                "required": True,
-                "required_profiles": ["DELIVERY"],
-                "evidence_refs": [],
-            },
-            {
-                "id": "HANDOVER",
-                "required": True,
-                "required_profiles": ["HANDOVER"],
-                "evidence_refs": [],
-            },
-            {
-                "id": "MAINTENANCE_READINESS",
-                "required": True,
-                "required_profiles": ["MAINTENANCE_READINESS"],
-                "evidence_refs": [],
-            },
-        ],
-        "policy": {
-            "human_approval_required_for": [
-                "PLAN",
-                "PRODUCTION_DEPLOYMENT",
-                "PRODUCTION_DATA_CHANGE",
-                "EXCEPTION",
-                "PROJECT_CLOSURE",
+    if not repairing:
+        created = utc_now()
+        project = {
+            "schema": "harness.project/v1",
+            "id": project_id,
+            "kind": "project",
+            "name": name,
+            "schema_version": 1,
+            "created_at": created,
+            "required_features": [],
+            "approval_dependencies": [],
+            "closure_contract": [
+                {
+                    "id": "DELIVERY",
+                    "required": True,
+                    "required_profiles": ["DELIVERY"],
+                    "evidence_refs": [],
+                },
+                {
+                    "id": "HANDOVER",
+                    "required": True,
+                    "required_profiles": ["HANDOVER"],
+                    "evidence_refs": [],
+                },
+                {
+                    "id": "MAINTENANCE_READINESS",
+                    "required": True,
+                    "required_profiles": ["MAINTENANCE_READINESS"],
+                    "evidence_refs": [],
+                },
             ],
-            "approval_assurance": {
-                "default": "CRYPTOGRAPHIC",
-                "by_type": {"PLAN": "PROCEDURAL"},
+            "policy": {
+                "human_approval_required_for": [
+                    "PLAN",
+                    "PRODUCTION_DEPLOYMENT",
+                    "PRODUCTION_DATA_CHANGE",
+                    "EXCEPTION",
+                    "PROJECT_CLOSURE",
+                ],
+                "approval_assurance": {
+                    "default": "CRYPTOGRAPHIC",
+                    "by_type": {"PLAN": "PROCEDURAL"},
+                },
+                "default_claim_ttl_minutes": 120,
             },
-            "default_claim_ttl_minutes": 120,
-        },
-    }
-    state = {
-        "schema": "harness.state/v1",
-        "project_id": project_id,
-        "lifecycle_state": "DISCOVERY",
-        "active_plan": None,
-        "active_baselines": {},
-        "active_release": None,
-        "updated_at": created,
-    }
-    atomic_write_json(project_path, project)
-    atomic_write_json(harness / "state.json", state)
+        }
+        state = {
+            "schema": "harness.state/v1",
+            "project_id": project_id,
+            "lifecycle_state": "DISCOVERY",
+            "active_plan": None,
+            "active_baselines": {},
+            "active_release": None,
+            "updated_at": created,
+        }
+        atomic_write_json(project_path, project)
+        atomic_write_json(harness / "state.json", state)
 
     _install_guidance(root)
 

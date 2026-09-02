@@ -177,3 +177,9 @@ python scripts/harness.py gate project
 Production deployment/data changes require their own cryptographic approval types and task capabilities; plan approval is not deployment approval. After closure, maintenance retains the delivered baselines and routes defects or enhancements back through source registration and change control.
 
 The CLI does not execute production actions. A separately protected adapter/operator must perform an authorized deployment, external message, or data operation and return an exact receipt/evidence record.
+
+## 11. Scaffold repair and verification tiers
+
+Re-running `init --force` against an initialized project is fail-closed repair. The supplied project ID and name must exactly match `.harness/project.json`; the operation preserves canonical project/state and record files while refreshing the vendored runtime and creating only missing scaffold files. It is not a project reset or metadata-edit command.
+
+Use `python scripts/check_repo.py fast` during a local edit loop and `python scripts/check_repo.py full` before a handoff or result. The default is `full`. A fast pass is deliberately not evidence that the full regression passed, and both tiers still require strict harness validation.
