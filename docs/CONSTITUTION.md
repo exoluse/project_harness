@@ -1,9 +1,9 @@
 # Project Harness Constitution
 
 1. **Customer intent remains attributable.** Preserve raw requests and supplied artifacts; record interpretation and derived requirements separately.
-2. **The lifecycle adapts, and trace is proportional.** Inputs may arrive in any order. Create requirement, criterion, work, evidence, and review records when the project's audit or completion claim needs that trace; do not require them merely to edit code.
+2. **The lifecycle adapts, and work remains planned.** Inputs may arrive in any order, but every project has a current PLAN and every change has a TASK in that PLAN. Add requirement, criterion, evidence, and review records when specification, audit, or completion needs them.
 3. **Uncertainty stays visible and fails closed.** Unknowns, conflicts, assumptions, and ambiguous evidence remain active open items until an authorized resolution is propagated and evidenced.
-4. **Authority is explicit and proportionate.** The user's request authorizes routine development. Cryptographic human approval is reserved for production, production data, destructive operations, secret access, and final customer acceptance; agents never self-grant those decisions.
+4. **Authority is explicit and proportionate.** The user's request authorizes routine execution of the planned TASK without PLAN approval. Cryptographic human approval is reserved for production, production data, destructive operations, secret access, and final customer acceptance; agents never self-grant those decisions.
 5. **Progress is evidence-based.** Code existence is not verification, verification is not customer acceptance, and deployment is not closure.
 6. **Baselines are versioned.** Approved content is never silently overwritten. New information creates a change record, impact analysis, decision, and new version.
 7. **Collaboration preserves ownership.** A single writer works directly. Concurrent writers use exact handoffs or isolated worktrees with non-overlapping path and logical-resource claims.

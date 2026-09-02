@@ -117,7 +117,15 @@ def transition_record(
             raise HarnessError("Rework resume requires a nonempty reason")
     else:
         transitions = WORK_ITEM_TRANSITIONS if kind == "work_item" else SIMPLE_TRANSITIONS[kind]
-        if target_status not in transitions.get(before, set()):
+        allowed = set(transitions.get(before, set()))
+        if (
+            kind == "work_item"
+            and user_directed(root)
+            and record_mode(root) == "ON_DEMAND"
+            and before == "RUNNING"
+        ):
+            allowed.add("DONE")
+        if target_status not in allowed:
             raise HarnessError(f"Illegal {kind} transition: {before} -> {target_status}")
 
     context = EvaluationContext.load(root)

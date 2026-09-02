@@ -680,6 +680,9 @@ class ProceduralApprovalTests(unittest.TestCase):
             state = load_json(state_path)
             state["lifecycle_state"] = "CLOSED"
             atomic_write_json(state_path, state)
+            plan = load_json(plan_path)
+            plan["status"] = "DECISION_READY"
+            atomic_write_json(plan_path, plan)
             second = self._confirm(root, confirmation_id="HCONF-second-0001")
 
             with self.assertRaisesRegex(HarnessError, "only from DECISION_READY"):
@@ -688,9 +691,6 @@ class ProceduralApprovalTests(unittest.TestCase):
             state = load_json(state_path)
             state["lifecycle_state"] = "DECISION_READY"
             atomic_write_json(state_path, state)
-            plan = load_json(plan_path)
-            plan["status"] = "DECISION_READY"
-            atomic_write_json(plan_path, plan)
             applied = apply_plan_decision(root, approval_id=second["id"])
 
             self.assertNotEqual(applied["applied_at"], "2000-01-01T00:00:00Z")

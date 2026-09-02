@@ -2,13 +2,14 @@
 
 ## Default path
 
-`USER_DIRECTED` is the default execution mode. An explicit user request is sufficient for ordinary implementation, tests, documentation, commits, fetch, conflict resolution, and a normal push to the configured upstream.
+`USER_DIRECTED` is the default execution mode. PLAN and TASK are mandatory: the project has a `state.current_plan`, and every requested change is a TASK listed in that PLAN. The explicit user request authorizes ordinary execution of the TASK without PLAN approval.
 
 ```text
-request -> inspect worktree -> implement -> test -> commit -> fetch/resolve -> push
+request -> identify/update PLAN -> create/select TASK -> inspect worktree
+-> implement -> test -> commit -> fetch/resolve -> push
 ```
 
-Plans and work items can organize the work, but they do not gate this path. A routine task does not need a claim, result, event, or evidence record.
+The PLAN/TASK link and task gate are required. A routine task does not need PLAN approval, a claim, result, event, or evidence record.
 
 ## When the harness becomes strict
 
@@ -21,14 +22,14 @@ The harness adds a gate only where the consequence needs one:
 
 Unknown state, invalid events, stale evidence, unsafe paths, and malformed high-risk approvals fail closed.
 
-## Optional trace
+## Required work trace and optional audit trace
 
 ```text
 source -> requirement -> feature -> completion criterion -> work item
                                                         -> evidence/result -> review
 ```
 
-Create only the records the project needs. A plan remains useful for sequencing and impact analysis. A result is useful for independent review or release lineage. Evidence is useful for an asserted criterion, acceptance, or closure state. None is paperwork required merely to start editing.
+PLAN and TASK are always present for sequencing, scope, dependencies, and accountability. Source, requirement, feature, result, review, and evidence records are added according to the project's specification, audit, release, and completion needs.
 
 ## Lifecycle
 
@@ -40,7 +41,7 @@ OPPORTUNITY -> DISCOVERY -> CONTRACTED -> SPECIFYING -> PLANNING
 -> CUSTOMER_ACCEPTANCE -> DEPLOYING -> CLOSED -> MAINTAINING
 ```
 
-In `USER_DIRECTED` mode, entering `BUILDING` does not require an active plan. Entering production or final customer acceptance still uses the high-risk boundary. Project closure may require evidence when the project actually claims its closure contract.
+In `USER_DIRECTED` mode, `current_plan` is mandatory but `active_plan`, `active_decision`, and PLAN approval are not. Entering production or final customer acceptance still uses the high-risk boundary. Project closure may require evidence when the project actually claims its closure contract.
 
 ## Checks
 

@@ -60,7 +60,10 @@ def doctor_report(root: Path) -> dict[str, Any]:
         directed = user_directed(root)
         if directed:
             plan_assurance = "NOT_REQUIRED"
-            plan_assurance_detail = "Plans are reference material in USER_DIRECTED mode"
+            plan_assurance_detail = (
+                "A current PLAN is required; PLAN approval is not required "
+                "in USER_DIRECTED mode"
+            )
         else:
             plan_assurance = required_approval_assurance(root, "PLAN")
         state = load_json(root / HARNESS_DIR / "state.json")
@@ -138,6 +141,7 @@ def status_report(root: Path) -> dict[str, Any]:
         "execution_mode": execution_mode(root),
         "claim_mode": claim_mode(root),
         "record_mode": record_mode(root),
+        "current_plan": state.get("current_plan"),
         "active_plan": state.get("active_plan"),
         "active_decision": state.get("active_decision"),
         "active_baselines": state.get("active_baselines", {}),

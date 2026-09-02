@@ -1,0 +1,16 @@
+{
+  "schema": "harness.event/v1",
+  "id": "EVT-0082",
+  "kind": "event",
+  "event_type": "RECORD_TRANSITIONED",
+  "occurred_at": "2026-09-02T05:47:04Z",
+  "payload": {
+    "record_id": "TASK-0007",
+    "kind": "work_item",
+    "before": "READY",
+    "after": "RUNNING",
+    "reason": "User explicitly requested mandatory PLAN and TASK structure",
+    "claim_id": null,
+    "agent": "codex"
+  }
+}

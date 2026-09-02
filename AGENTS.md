@@ -7,11 +7,11 @@ This policy governs Codex, Claude Code, and every other agent in this repository
 1. Read `AGENTS.md`, the tool adapter when present, `.harness/project.json`, `.harness/state.json`, and `HANDOFF.md`.
 2. Run `python scripts/harness.py doctor`, `python scripts/harness.py status`, and `python scripts/harness.py validate --strict` when the harness is operational.
 3. Inspect `git status --short`. Preserve user and unknown work; never silently reset it.
-4. Read a plan or work item when useful for scope. A plan is reference material, not routine execution authority.
+4. Identify the current `PLAN-*` and the `TASK-*` being executed. Create or update both before changing project files when the requested work is not already represented.
 
 ## Routine execution authority
 
-An explicit user request authorizes the requested local development, file edits, tests, formatting, commits, `git fetch`, ordinary conflict resolution, and a normal push to the current branch's already-configured upstream. No PLAN approval, task record, claim, result, event, or evidence record is required for those routine operations.
+Every project must have a current PLAN, and every development operation must be represented by a TASK listed in that PLAN. An explicit user request authorizes execution of that TASK, including local development, file edits, tests, formatting, commits, `git fetch`, ordinary conflict resolution, and a normal push to the current branch's already-configured upstream. No PLAN approval, claim, result, event, or evidence record is required for those routine operations.
 
 Before a normal push, fetch the configured remote, inspect divergence, preserve dirty work, and resolve conflicts without discarding either side. Force pushes, tag pushes, branch deletion, pushing to another branch or remote, and rewriting published history require separate explicit user authorization.
 
@@ -27,9 +27,11 @@ Use a claim only when multiple agents or other writers can modify the project co
 - Dirty paths with no known owner remain `USER_OR_UNKNOWN`; preserve them.
 - Use a handoff when ownership of in-progress concurrent work moves to another agent.
 
-## Plans and records
+## Plans, tasks, and records
 
-`PLAN-*` records describe intended work, dependencies, and historical decisions. They may be consulted, validated, or explicitly approved, but they are not mandatory permission slips in `USER_DIRECTED` mode.
+`PLAN-*` and `TASK-*` are mandatory structure. `state.current_plan` identifies the current planning reference; it does not grant execution authority. Every TASK must point back to its PLAN and be listed by that PLAN. A PLAN may be validated or explicitly approved, but PLAN approval is not required in `USER_DIRECTED` mode.
+
+Before ordinary development, ensure the current PLAN contains a TASK for the requested change and that `gate task` passes. Creating or selecting this structure is bookkeeping for scope and traceability, not a separate human approval step.
 
 Results, events, and evidence are on demand:
 
@@ -52,7 +54,7 @@ Cryptographic human approval is required only for:
 
 These categories fail closed and cannot be weakened by project configuration. Agents may prepare a request but may not sign, install, infer, or self-grant the human decision. `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability.
 
-Other planning, change, exception, and project-closure records are optional process records. They do not turn routine development into a gated workflow.
+PLAN approval plus change, exception, and project-closure approval records are optional process records. The required PLAN/TASK structure does not turn routine development into a human-approval workflow.
 
 ## Safety and verification
 

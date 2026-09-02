@@ -16,13 +16,13 @@ RUNTIME_DIRECTORIES = [
 ]
 
 
-GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. An explicit user request authorizes ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream. Plans are reference material. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
+GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. Every project requires a current PLAN and every change requires a TASK listed in that PLAN. An explicit user request authorizes ordinary execution of that TASK without PLAN approval. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
 
-GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. Claims and handoffs are for concurrent writers; plans and audit records are optional unless the requested risk or asserted completion state needs them.\n"""
+GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. PLAN and TASK are mandatory structure, but PLAN approval is not required. Claims and handoffs are for concurrent writers; audit records are created only when needed.\n"""
 
-GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md`, inspect current state and Git status, then perform the explicit user request. Use claims only for concurrent editing and records only when needed. Never infer high-risk human approval.\n"""
+GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md`, inspect current state and Git status, identify or create the mandatory current PLAN and TASK, then perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
 
-GENERATED_CLAUDE_PROMPT = """# Claude Code Start Prompt\n\nRead `AGENTS.md` and `CLAUDE.md`, inspect current state and Git status, then perform the explicit user request. Use claims only for concurrent editing and records only when needed. Never infer high-risk human approval.\n"""
+GENERATED_CLAUDE_PROMPT = """# Claude Code Start Prompt\n\nRead `AGENTS.md` and `CLAUDE.md`, inspect current state and Git status, identify or create the mandatory current PLAN and TASK, then perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
 
 GENERATED_HANDOFF = """# Current Handoff\n\nNo accepted handoff has been recorded yet. Canonical records live in `.harness/handoffs/`.\n"""
 
@@ -238,6 +238,7 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
             "schema": "harness.state/v1",
             "project_id": project_id,
             "lifecycle_state": "DISCOVERY",
+            "current_plan": "PLAN-0001",
             "active_plan": None,
             "active_baselines": {},
             "active_release": None,
@@ -245,6 +246,70 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
         }
         atomic_write_json(project_path, project)
         atomic_write_json(harness / "state.json", state)
+        bootstrap_task = {
+            "schema": "harness.work_item/v1",
+            "id": "TASK-0001",
+            "kind": "work_item",
+            "title": "Define project scope and requirements",
+            "task_type": "PROJECT_SETUP",
+            "status": "READY",
+            "plan_id": "PLAN-0001",
+            "feature_refs": [],
+            "criterion_refs": [],
+            "dependencies": [],
+            "blocked_by": [],
+            "write_scope": ["README.md", "docs"],
+            "preexisting_dirty_paths": [],
+            "logical_locks": ["project-definition"],
+            "verification": ["python scripts/harness.py validate --strict"],
+            "risk": "LOW",
+            "capabilities": ["DOCUMENTATION"],
+            "capability_approval_refs": {},
+            "forbidden_actions": [
+                "PRODUCTION_DEPLOYMENT",
+                "PRODUCTION_DATA_CHANGE",
+                "DESTRUCTIVE_CLEANUP",
+                "SECRET_ACCESS",
+            ],
+            "created_at": created,
+        }
+        bootstrap_plan = {
+            "schema": "harness.plan/v1",
+            "id": "PLAN-0001",
+            "kind": "plan",
+            "title": "Initial project definition",
+            "version": "0.1.0",
+            "status": "ACTIVE",
+            "execution_role": "CURRENT_PLANNING_REFERENCE",
+            "approval_dependencies": [
+                ".harness/work-items/TASK-0001.json",
+            ],
+            "approval_subject": {
+                "requirement_refs": [],
+                "feature_refs": [],
+                "work_item_refs": ["TASK-0001"],
+                "workstreams": [
+                    {"id": "project-definition", "readiness": "READY_TO_BUILD"}
+                ],
+                "verification_strategy": {"required_profiles": ["STATIC"]},
+                "authorized_actions": ["DOCUMENTATION"],
+                "excluded_actions": [
+                    "PRODUCTION_DEPLOYMENT",
+                    "PRODUCTION_DATA_CHANGE",
+                    "DESTRUCTIVE_CLEANUP",
+                    "SECRET_ACCESS",
+                ],
+                "invalidation_triggers": [
+                    "project scope changes",
+                    "task structure changes",
+                ],
+            },
+            "created_at": created,
+        }
+        atomic_write_json(
+            harness / "work-items" / "TASK-0001.json", bootstrap_task
+        )
+        atomic_write_json(harness / "plans" / "PLAN-0001.json", bootstrap_plan)
 
     _install_guidance(root)
 

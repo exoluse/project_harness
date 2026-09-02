@@ -63,12 +63,17 @@ class ExecutionPolicyTests(HarnessTestCase):
             self.assertEqual(project["policy"]["claim_mode"], "WHEN_CONCURRENT")
             self.assertEqual(project["policy"]["record_mode"], "ON_DEMAND")
             self.assertNotIn("PLAN", project["policy"]["human_approval_required_for"])
+            state = load_json(root / ".harness" / "state.json")
+            self.assertEqual(state["current_plan"], "PLAN-0001")
+            self.assertTrue(record_path(root, "plan", "PLAN-0001").is_file())
+            self.assertTrue(record_path(root, "work_item", "TASK-0001").is_file())
+            self.assertTrue(task_start_gate(root, "TASK-0001").passed)
             self.assertEqual(
                 doctor_report(root)["plan_approval_assurance"]["required"],
                 "NOT_REQUIRED",
             )
 
-    def test_task_runs_without_active_plan_or_plan_approval_authority(self):
+    def test_task_runs_with_current_plan_but_without_plan_approval_authority(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo")
             self._enable_user_directed(root)
@@ -76,11 +81,53 @@ class ExecutionPolicyTests(HarnessTestCase):
             task = load_json(task_path)
             task["capabilities"].append("EXTERNAL_WRITE")
             atomic_write_json(task_path, task)
+            plan_path = record_path(root, "plan", "PLAN-0001")
+            plan = load_json(plan_path)
+            plan["approval_subject"]["authorized_actions"].append("EXTERNAL_WRITE")
+            atomic_write_json(plan_path, plan)
 
             gate = task_start_gate(root, "TASK-0001")
 
             self.assertTrue(gate.passed, gate.blockers)
+            self.assertEqual(status_report(root)["current_plan"], "PLAN-0001")
             self.assertIsNone(status_report(root)["active_plan"])
+
+    def test_missing_current_plan_or_task_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            state_path = root / ".harness" / "state.json"
+            state = load_json(state_path)
+            state["current_plan"] = "PLAN-9999"
+            atomic_write_json(state_path, state)
+            record_path(root, "work_item", "TASK-0001").unlink()
+
+            from project_harness.validation import validate_project
+
+            codes = {issue.code for issue in validate_project(root)}
+            self.assertIn("MISSING_CURRENT_PLAN", codes)
+            self.assertIn("MISSING_WORK_ITEM", codes)
+
+    def test_task_must_be_listed_by_its_current_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            self._enable_user_directed(root)
+            plan_path = record_path(root, "plan", "PLAN-0001")
+            plan = load_json(plan_path)
+            plan["approval_subject"]["work_item_refs"] = []
+            plan["approval_dependencies"] = [
+                value
+                for value in plan["approval_dependencies"]
+                if "TASK-0001" not in value
+            ]
+            atomic_write_json(plan_path, plan)
+
+            gate = task_start_gate(root, "TASK-0001")
+
+            self.assertFalse(gate.passed)
+            self.assertTrue(
+                any("not listed" in blocker for blocker in gate.blockers),
+                gate.blockers,
+            )
 
     def test_claimless_transition_is_allowed_when_no_concurrent_owner_exists(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -99,6 +146,16 @@ class ExecutionPolicyTests(HarnessTestCase):
 
             self.assertEqual(result["record"]["status"], "RUNNING")
             self.assertTrue(str(result["transaction"]["event_id"]).startswith("EVT-"))
+            completed = transition_record(
+                root,
+                claim_id=None,
+                agent="codex",
+                kind="work_item",
+                record_id="TASK-0001",
+                target_status="DONE",
+                reason="User-directed task completed without a formal result record",
+            )
+            self.assertEqual(completed["record"]["status"], "DONE")
 
     def test_claimless_mutation_fails_when_a_concurrent_claim_overlaps(self):
         with tempfile.TemporaryDirectory() as temp:

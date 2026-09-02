@@ -1,6 +1,6 @@
 # Project Agent Harness
 
-Project Agent Harness is a repository-native coordination and evidence layer for work performed by people and coding agents. Its default model is deliberately lightweight: the user's explicit request drives ordinary execution, while the harness becomes strict only at concurrency, high-risk action, and claimed-completion boundaries.
+Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. Every project has a current PLAN and every change has a TASK; the user's explicit request authorizes routine execution of that structure.
 
 ## Default operating model
 
@@ -16,8 +16,10 @@ New projects use:
 
 This means:
 
-- ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed by an explicit user request;
-- `PLAN-*` is planning/reference material, not a per-task permission token;
+- every initialized project starts with a current `PLAN-*` and a setup `TASK-*`;
+- every later change is represented by a TASK listed in its PLAN;
+- ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed by an explicit user request for that TASK;
+- PLAN approval is not a per-task permission token;
 - a claim is needed only when multiple writers are active;
 - results, events, and evidence are created automatically by commands that need them or explicitly when audit, review, release, acceptance, or completion proof requires them;
 - cryptographic approval is reserved for production deployment, production data changes, destructive operations, secret access, and final customer acceptance.
@@ -42,6 +44,8 @@ python scripts/harness.py validate --strict
 
 ```powershell
 git status --short
+python scripts/harness.py status
+python scripts/harness.py gate task TASK-0001
 # implement the user's request
 python scripts/check_repo.py fast
 git add -- <explicit paths>
@@ -72,7 +76,7 @@ source -> requirement -> feature -> criterion -> work item
                                       -> evidence/result -> review
 ```
 
-Plans help organize that trace but do not authorize routine execution in `USER_DIRECTED` mode. Evidence is required when a command asserts a governed verification, customer acceptance, production outcome, or project closure—not just because a developer edits a file.
+PLAN and TASK form the mandatory execution structure. `state.current_plan` names the current planning reference, every TASK points to a PLAN, and every PLAN lists its TASKs. PLAN approval does not authorize routine execution in `USER_DIRECTED` mode; the explicit user request does. Evidence is required when a command asserts a governed verification, customer acceptance, production outcome, or project closure—not just because a developer edits a file.
 
 ## Verification tiers
 
@@ -100,9 +104,9 @@ The protected authority configuration and ledger live outside the repository. Ag
 ## Key paths
 
 - `.harness/project.json`: project policy and completion contract
-- `.harness/state.json`: current lifecycle and active references
-- `.harness/plans/`: optional planning and historical baselines
-- `.harness/work-items/`: optional decomposed work
+- `.harness/state.json`: current lifecycle, mandatory `current_plan`, and optional approval references
+- `.harness/plans/`: mandatory current planning structure and historical baselines
+- `.harness/work-items/`: mandatory executable work units
 - `.harness/events/`, `results/`, `evidence/`: on-demand audit records
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 

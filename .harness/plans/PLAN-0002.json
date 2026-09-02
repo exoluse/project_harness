@@ -1,0 +1,45 @@
+{
+  "schema": "harness.plan/v1",
+  "id": "PLAN-0002",
+  "kind": "plan",
+  "title": "Require PLAN and TASK as the project execution structure",
+  "version": "1.0.0",
+  "status": "ACTIVE",
+  "execution_role": "CURRENT_PLANNING_REFERENCE",
+  "approval_dependencies": [
+    ".harness/requirements/REQ-0001.json",
+    ".harness/requirements/REQ-0002.json",
+    ".harness/requirements/REQ-0007.json",
+    ".harness/features/FUNC-0001.json",
+    ".harness/features/FUNC-0006.json",
+    ".harness/work-items/TASK-0007.json"
+  ],
+  "approval_subject": {
+    "requirement_refs": ["REQ-0001", "REQ-0002", "REQ-0007"],
+    "feature_refs": ["FUNC-0001", "FUNC-0006"],
+    "work_item_refs": ["TASK-0007"],
+    "workstreams": [
+      {"id": "execution-structure", "readiness": "READY_TO_BUILD"}
+    ],
+    "verification_strategy": {
+      "required_profiles": ["AUTOMATED_TEST", "STATIC"]
+    },
+    "authorized_actions": [
+      "LOCAL_IMPLEMENTATION",
+      "LOCAL_TESTS",
+      "DOCUMENTATION",
+      "HARNESS_CONTROL_CHANGE"
+    ],
+    "excluded_actions": [
+      "PRODUCTION_DEPLOYMENT",
+      "PRODUCTION_DATA_CHANGE",
+      "DESTRUCTIVE_CLEANUP",
+      "SECRET_ACCESS"
+    ],
+    "invalidation_triggers": [
+      "PLAN or TASK mandatory-structure policy changes",
+      "task scope changes"
+    ]
+  },
+  "created_at": "2026-09-02T05:46:00Z"
+}

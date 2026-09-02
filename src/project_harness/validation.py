@@ -547,6 +547,59 @@ def validate_project(root: Path) -> list[Issue]:
                 _issue("ERROR", "DUPLICATE_ID", f"duplicate closure criterion id {criterion_id}")
             )
     known_ids = set(records) | set(criteria) | set(closure_criteria)
+    plan_ids = {
+        record_id
+        for record_id, record in records.items()
+        if record.get("kind") == "plan"
+    }
+    task_ids = {
+        record_id
+        for record_id, record in records.items()
+        if record.get("kind") == "work_item"
+    }
+    if not plan_ids:
+        issues.append(
+            _issue("ERROR", "MISSING_CURRENT_PLAN", "project requires at least one PLAN")
+        )
+    if not task_ids:
+        issues.append(
+            _issue("ERROR", "MISSING_WORK_ITEM", "project requires at least one TASK")
+        )
+    current_plan_id = state.get("current_plan")
+    current_plan = records.get(str(current_plan_id))
+    if not current_plan or current_plan.get("kind") != "plan":
+        issues.append(
+            _issue(
+                "ERROR",
+                "MISSING_CURRENT_PLAN",
+                f"current plan {current_plan_id!r} does not exist",
+            )
+        )
+    else:
+        if current_plan.get("status") in {"CLOSED", "SUPERSEDED", "STALE"}:
+            issues.append(
+                _issue(
+                    "ERROR",
+                    "MISSING_CURRENT_PLAN",
+                    f"current plan {current_plan_id} is retired or stale",
+                    record_paths.get(str(current_plan_id)),
+                )
+            )
+        current_subject = current_plan.get("approval_subject", {})
+        current_tasks = (
+            current_subject.get("work_item_refs", [])
+            if isinstance(current_subject, dict)
+            else []
+        )
+        if not isinstance(current_tasks, list) or not current_tasks:
+            issues.append(
+                _issue(
+                    "ERROR",
+                    "MISSING_WORK_ITEM",
+                    f"current plan {current_plan_id} requires at least one TASK",
+                    record_paths.get(str(current_plan_id)),
+                )
+            )
     latest_result_ids: set[str] = set()
     latest_results: dict[str, dict[str, Any]] = {}
     result_groups: dict[str, list[dict[str, Any]]] = {}
@@ -851,8 +904,28 @@ def validate_project(root: Path) -> list[Issue]:
                     normalize_claim_path(root, value)
                 except HarnessError as exc:
                     issues.append(_issue("ERROR", "UNSAFE_PATH", str(exc), path))
-            if not record.get("feature_refs"):
+            if (
+                not record.get("feature_refs")
+                and record.get("task_type") != "PROJECT_SETUP"
+            ):
                 issues.append(_issue("WARNING", "ORPHAN_TASK", f"task {record_id} has no feature basis", path))
+            plan = records.get(str(plan_id))
+            if plan and plan.get("kind") == "plan":
+                plan_subject = plan.get("approval_subject", {})
+                planned_tasks = (
+                    plan_subject.get("work_item_refs", [])
+                    if isinstance(plan_subject, dict)
+                    else []
+                )
+                if record_id not in planned_tasks:
+                    issues.append(
+                        _issue(
+                            "ERROR",
+                            "TASK_NOT_IN_PLAN",
+                            f"task {record_id} is not listed by plan {plan_id}",
+                            path,
+                        )
+                    )
             status = record.get("status")
             result_required_statuses = {
                 "SUBMITTED",

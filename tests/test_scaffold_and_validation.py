@@ -147,6 +147,14 @@ class ScaffoldValidationTests(HarnessTestCase):
             self.assertTrue((root / "CLAUDE_START_PROMPT.md").is_file())
             self.assertTrue((root / "docs" / "APPROVALS.md").is_file())
             self.assertTrue((root / ".harness" / "project.json").is_file())
+            state = load_json(root / ".harness" / "state.json")
+            self.assertEqual(state["current_plan"], "PLAN-0001")
+            self.assertTrue(
+                (root / ".harness" / "plans" / "PLAN-0001.json").is_file()
+            )
+            self.assertTrue(
+                (root / ".harness" / "work-items" / "TASK-0001.json").is_file()
+            )
             self.assertTrue((root / ".harness" / "results").is_dir())
             record_directories = {
                 directory for directory, _prefix in RECORD_DIRECTORIES.values()

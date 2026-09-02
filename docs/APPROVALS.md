@@ -1,6 +1,6 @@
 # Human Approval Operations
 
-Routine implementation does not use this workflow. An explicit user request is sufficient for ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream.
+Routine implementation does not use this approval workflow. It still requires a current PLAN and a TASK listed in that PLAN; an explicit user request authorizes ordinary execution of the TASK without PLAN approval.
 
 Cryptographic approval is reserved for five high-risk boundaries:
 
@@ -12,7 +12,7 @@ Cryptographic approval is reserved for five high-risk boundaries:
 | `SECRET_ACCESS` | change | `CRYPTOGRAPHIC` |
 | `CUSTOMER_ACCEPTANCE` | feature | `CRYPTOGRAPHIC` |
 
-`PLAN`, `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` may remain as historical/process records, but they are not routine execution authority in `USER_DIRECTED` mode. `PLAN-0001` in this repository is one such bootstrap history record.
+PLAN records are mandatory planning structure, while PLAN approval is optional in `USER_DIRECTED` mode. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records. `PLAN-0001` in this repository is historical; `state.current_plan` identifies its successor.
 
 ## Protected authority
 
