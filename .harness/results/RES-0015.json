@@ -1,0 +1,38 @@
+{
+  "schema": "harness.result/v1",
+  "id": "RES-0015",
+  "kind": "result",
+  "status": "SUBMITTED",
+  "task_id": "TASK-0004",
+  "claim_id": "CLM-0016",
+  "agent": "codex",
+  "summary": "Enforced one active writer per TASK across worktrees and prevented direct claim release when workspace changes remain; preserved validated result and handoff terminal paths.",
+  "changed_files": [
+    "src/project_harness/collaboration.py",
+    "src/project_harness/workflow.py",
+    "tests/test_collaboration.py"
+  ],
+  "changed_file_states": {
+    "src/project_harness/collaboration.py": "FILE:d4aba08f8ef32d83bd99415edad8961a4ad3d47af9361952f9a6ae1743e136df",
+    "src/project_harness/workflow.py": "FILE:9d133872913085ee51b2818874266cf88128ca1feb75e5a6a66a959bf8a90e19",
+    "tests/test_collaboration.py": "FILE:19e1117e269411d38f4853fbb2c4d434e2c530e801fb87849430a76f0b74219e"
+  },
+  "verification": [
+    {
+      "command": "python -m unittest tests.test_collaboration -v",
+      "outcome": "PASS"
+    }
+  ],
+  "verification_state": "PASS",
+  "evidence_refs": [],
+  "evidence_fingerprints": {},
+  "limitations": [
+    "python scripts/check_repo.py was run: compile PASS and 77 tests PASS, but strict validation FAIL on pre-existing cross-task stale RES-0010 binding to core.py."
+  ],
+  "task_fingerprint": "98db923b2be8bc0a758cad4a8d530abcb67ae0337a16c521eb4269bf46c12be2",
+  "plan_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+  "base_commit": "27ce3eaea5ac8571e8fcedeb57c6478bb56b793a",
+  "head_commit": "2334d8228914ac47339697b800a08f5f22b5a70e",
+  "submitted_at": "2026-09-02T04:08:14Z",
+  "build_fingerprint": "80d0389bf16eb482e714f6428837a25d9636c6a08487e89ec1c8312037686621"
+}
