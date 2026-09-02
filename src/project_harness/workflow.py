@@ -137,6 +137,7 @@ def submit_result(
         claim_id=claim_id,
         agent=agent,
         reason=f"result {result_id} submitted",
+        validate_clean=False,
     )
     return value
 

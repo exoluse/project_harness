@@ -587,6 +587,12 @@ def acquire_claim(
         if git_common_dir(root) is None and active:
             conflicts.append("parallel write claims require a Git repository and isolated worktrees")
         for existing in active:
+            if existing.get("task_id") == task_id:
+                conflicts.append(
+                    f"{existing.get('id')} already owns the same task {task_id}; "
+                    "parallel attempts require separate work items"
+                )
+                continue
             if _same_resolved_worktree(root, existing.get("worktree")):
                 conflicts.append(
                     f"{existing.get('id')} already writes this resolved worktree; "
@@ -679,6 +685,7 @@ def release_claim(
     agent: str,
     disposition: str = "RELEASED",
     reason: str | None = None,
+    validate_clean: bool = True,
 ) -> dict[str, Any]:
     agent = normalize_agent_id(agent)
     with _runtime_mutex(root):
@@ -687,6 +694,27 @@ def release_claim(
             raise HarnessError(f"Claim {claim_id} is not active")
         if claim.get("agent") != agent:
             raise HarnessError(f"Claim {claim_id} belongs to {claim.get('agent')}")
+        if validate_clean:
+            baseline = claim.get("worktree_snapshot")
+            if not isinstance(baseline, dict):
+                raise HarnessError("Claim lacks its acquisition worktree snapshot")
+            current = (
+                _change_snapshot(root, claim.get("base_commit"))
+                if claim.get("snapshot_mode") == "GIT"
+                else _full_worktree_snapshot(root)
+            )
+            if current is None:
+                raise HarnessError("Claim Git worktree is no longer available")
+            drift = sorted(
+                value
+                for value in set(baseline) | set(current)
+                if baseline.get(value) != current.get(value)
+            )
+            if drift:
+                raise HarnessError(
+                    "Claim has unrecorded workspace changes; submit a result or "
+                    "create a handoff before release: " + ", ".join(drift)
+                )
         claim["status"] = disposition
         claim["released_at"] = utc_now()
         claim["release_reason"] = reason
@@ -1069,7 +1097,13 @@ def create_handoff(
         mailbox_directory(root, "inbox", to_agent) / f"{handoff_id}.json", value
     )
     render_handoff(root)
-    release_claim(root, claim_id=claim_id, agent=from_agent, reason=f"handoff {handoff_id}")
+    release_claim(
+        root,
+        claim_id=claim_id,
+        agent=from_agent,
+        reason=f"handoff {handoff_id}",
+        validate_clean=False,
+    )
     record_event(root, "HANDOFF_CREATED", {"handoff_id": handoff_id, "task_id": task_id})
     return value
 

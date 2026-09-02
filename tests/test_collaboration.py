@@ -92,10 +92,49 @@ class CollaborationTests(HarnessTestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo")
             acquire_claim(root, agent="codex", task_id="TASK-0001", paths=["src"])
-            with self.assertRaisesRegex(HarnessError, "resolved worktree"):
+            with self.assertRaisesRegex(HarnessError, "same task"):
                 acquire_claim(
                     root, agent="claude", task_id="TASK-0001", paths=["tests"]
                 )
+
+    def test_same_task_claims_in_different_worktrees_are_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            workspace = Path(temp)
+            root = create_ready_project(workspace / "demo")
+            commit_fixture(root)
+            linked = workspace / "linked"
+            git(root, "worktree", "add", "-b", "worker", str(linked))
+            try:
+                first = acquire_claim(
+                    root, agent="codex", task_id="TASK-0001", paths=["src"]
+                )
+                stored, claim_path = get_claim(root, first["id"])
+                stored["logical_locks"] = []
+                atomic_write_json(claim_path, stored)
+                with self.assertRaisesRegex(HarnessError, "same task"):
+                    acquire_claim(
+                        linked,
+                        agent="claude",
+                        task_id="TASK-0001",
+                        paths=["tests"],
+                    )
+                release_claim(root, claim_id=first["id"], agent="codex")
+            finally:
+                git(root, "worktree", "remove", "--force", str(linked))
+
+    def test_direct_release_rejects_unrecorded_workspace_changes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            source = root / "src" / "core.py"
+            source.parent.mkdir(parents=True, exist_ok=True)
+            claim = acquire_claim(
+                root, agent="codex", task_id="TASK-0001", paths=["src"]
+            )
+            source.write_text("changed = True\n", encoding="utf-8")
+            with self.assertRaisesRegex(HarnessError, "submit a result or create a handoff"):
+                release_claim(root, claim_id=claim["id"], agent="codex")
+            stored, _path = get_claim(root, claim["id"])
+            self.assertEqual(stored["status"], "ACTIVE")
 
     def test_handoff_view_is_system_managed_and_uses_latest_canonical_record(self):
         with tempfile.TemporaryDirectory() as temp:
