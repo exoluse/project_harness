@@ -12,7 +12,7 @@ Cryptographic approval is reserved for five high-risk boundaries:
 | `SECRET_ACCESS` | change | `CRYPTOGRAPHIC` |
 | `CUSTOMER_ACCEPTANCE` | feature | `CRYPTOGRAPHIC` |
 
-PLAN records are mandatory planning structure, while PLAN approval is optional in `USER_DIRECTED` mode. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records. `PLAN-0001` in this repository is historical; `state.current_plan` identifies its successor.
+PLAN records are mandatory once execution is prepared, while initial discovery may have none and PLAN approval is optional in `USER_DIRECTED` mode. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records. `PLAN-0001` in this repository is historical; `state.current_plan` identifies its successor.
 
 ## Protected authority
 

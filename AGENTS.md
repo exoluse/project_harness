@@ -7,11 +7,11 @@ This policy governs Codex, Claude Code, and every other agent in this repository
 1. Read `AGENTS.md`, the tool adapter when present, `.harness/project.json`, `.harness/state.json`, and `HANDOFF.md`.
 2. Run `python scripts/harness.py doctor`, `python scripts/harness.py status`, and `python scripts/harness.py validate --strict` when the harness is operational.
 3. Inspect `git status --short`. Preserve user and unknown work; never silently reset it.
-4. Identify the current `PLAN-*` and the `TASK-*` being executed. Create or update both before changing project files when the requested work is not already represented.
+4. Classify the request as discovery/specification or execution. Discovery and specification records may be created without placeholder PLAN/TASK records; create or select both before implementation begins.
 
 ## Routine execution authority
 
-Every project must have a current PLAN, and every development operation must be represented by a TASK listed in that PLAN. An explicit user request authorizes execution of that TASK, including local development, file edits, tests, formatting, commits, `git fetch`, ordinary conflict resolution, and a normal push to the current branch's already-configured upstream. No PLAN approval, claim, result, event, or evidence record is required for those routine operations.
+A newly initialized project may remain in discovery with `state.current_plan: null` and no PLAN/TASK records. The explicit user request authorizes discovery and specification records. Before deliverable implementation begins, the project must select a current PLAN and represent the operation with a TASK listed in that PLAN. The request then authorizes execution of that TASK, including local development, file edits, tests, formatting, commits, `git fetch`, ordinary conflict resolution, and a normal push to the current branch's already-configured upstream. No PLAN approval, claim, result, event, or evidence record is required for those routine operations.
 
 Before a normal push, fetch the configured remote, inspect divergence, preserve dirty work, and resolve conflicts without discarding either side. Force pushes, tag pushes, branch deletion, pushing to another branch or remote, and rewriting published history require separate explicit user authorization.
 
@@ -29,7 +29,7 @@ Use a claim only when multiple agents or other writers can modify the project co
 
 ## Plans, tasks, and records
 
-`PLAN-*` and `TASK-*` are mandatory structure. `state.current_plan` identifies the current planning reference; it does not grant execution authority. Every TASK must point back to its PLAN and be listed by that PLAN. A PLAN may be validated or explicitly approved, but PLAN approval is not required in `USER_DIRECTED` mode.
+`PLAN-*` and `TASK-*` are mandatory execution structure, not initialization placeholders. Do not invent bootstrap records before their content is known. Once execution is planned, `state.current_plan` identifies the current planning reference; it does not grant execution authority. Every TASK must point back to its PLAN and be listed by that PLAN. A PLAN may be validated or explicitly approved, but PLAN approval is not required in `USER_DIRECTED` mode.
 
 Before ordinary development, ensure the current PLAN contains a TASK for the requested change and that `gate task` passes. Creating or selecting this structure is bookkeeping for scope and traceability, not a separate human approval step.
 
@@ -54,7 +54,7 @@ Cryptographic human approval is required only for:
 
 These categories fail closed and cannot be weakened by project configuration. Agents may prepare a request but may not sign, install, infer, or self-grant the human decision. `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability.
 
-PLAN approval plus change, exception, and project-closure approval records are optional process records. The required PLAN/TASK structure does not turn routine development into a human-approval workflow.
+PLAN approval plus change, exception, and project-closure approval records are optional process records. Requiring PLAN/TASK before execution does not turn routine development into a human-approval workflow.
 
 ## Safety and verification
 

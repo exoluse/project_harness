@@ -7,7 +7,7 @@
     "schema": {"const": "harness.state/v1"},
     "project_id": {"type": "string", "minLength": 1},
     "lifecycle_state": {"enum": ["OPPORTUNITY", "DISCOVERY", "CONTRACTED", "SPECIFYING", "PLANNING", "DECISION_READY", "APPROVED", "BUILDING", "VERIFYING", "CUSTOMER_ACCEPTANCE", "DEPLOYING", "CLOSED", "MAINTAINING", "ON_HOLD", "CANCELLED"]},
-    "current_plan": {"type": "string", "pattern": "^PLAN-[0-9]{4,}$"},
+    "current_plan": {"type": ["string", "null"], "pattern": "^PLAN-[0-9]{4,}$"},
     "active_plan": {"type": ["string", "null"]},
     "active_decision": {"type": ["string", "null"], "pattern": "^APR-[0-9]{4,}$"},
     "active_baselines": {"type": "object"},

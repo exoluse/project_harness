@@ -3,7 +3,7 @@
 The harness separates three concerns that should not be confused:
 
 ```text
-current PLAN -> TASK -> user-directed routine execution
+discovery -> current PLAN -> TASK -> user-directed routine execution
 concurrent writers -> claims / worktrees / handoffs
 high-risk action -> protected cryptographic approval
 ```
@@ -21,7 +21,7 @@ New projects use the first value in each pair. Missing fields retain legacy beha
 ## Stores
 
 - Canonical records live in `.harness/` and are versioned with the repository.
-- `state.current_plan` is mandatory planning context. Every TASK points to that PLAN and is listed by it.
+- `state.current_plan` may be null during initial discovery. It becomes mandatory execution context before implementation; every TASK points to that PLAN and is listed by it.
 - `state.active_plan` and `active_decision` are optional legacy/approval materialization fields; neither is needed for routine `USER_DIRECTED` execution.
 - Claims, mutexes, and mailboxes live under the Git common runtime so linked worktrees share concurrency state.
 - Protected approval configuration, allowed signers, and decision ledgers live outside the repository.

@@ -1,6 +1,6 @@
 # Project Agent Harness
 
-Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. Every project has a current PLAN and every change has a TASK; the user's explicit request authorizes routine execution of that structure.
+Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. A project may begin with discovery alone; before implementation, it selects a current PLAN and every change has a TASK in that PLAN. The user's explicit request authorizes routine execution of that structure.
 
 ## Default operating model
 
@@ -16,7 +16,8 @@ New projects use:
 
 This means:
 
-- every initialized project starts with a current `PLAN-*` and a setup `TASK-*`;
+- a newly initialized project starts in `DISCOVERY` with `current_plan: null` and no invented PLAN/TASK placeholders;
+- before implementation, the project selects a current `PLAN-*` and creates a `TASK-*` listed in it;
 - every later change is represented by a TASK listed in its PLAN;
 - ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed by an explicit user request for that TASK;
 - PLAN approval is not a per-task permission token;
@@ -76,7 +77,7 @@ source -> requirement -> feature -> criterion -> work item
                                       -> evidence/result -> review
 ```
 
-PLAN and TASK form the mandatory execution structure. `state.current_plan` names the current planning reference, every TASK points to a PLAN, and every PLAN lists its TASKs. PLAN approval does not authorize routine execution in `USER_DIRECTED` mode; the explicit user request does. Evidence is required when a command asserts a governed verification, customer acceptance, production outcome, or project closure—not just because a developer edits a file.
+PLAN and TASK form the mandatory execution structure but are not generated as empty initialization placeholders. Discovery and specification may happen before they exist. Once implementation is ready, `state.current_plan` names the current planning reference, every TASK points to a PLAN, and every PLAN lists its TASKs. PLAN approval does not authorize routine execution in `USER_DIRECTED` mode; the explicit user request does. Evidence is required when a command asserts a governed verification, customer acceptance, production outcome, or project closure—not just because a developer edits a file.
 
 ## Verification tiers
 
@@ -104,9 +105,9 @@ The protected authority configuration and ledger live outside the repository. Ag
 ## Key paths
 
 - `.harness/project.json`: project policy and completion contract
-- `.harness/state.json`: current lifecycle, mandatory `current_plan`, and optional approval references
-- `.harness/plans/`: mandatory current planning structure and historical baselines
-- `.harness/work-items/`: mandatory executable work units
+- `.harness/state.json`: current lifecycle, nullable discovery-time `current_plan`, and optional approval references
+- `.harness/plans/`: execution planning and historical baselines
+- `.harness/work-items/`: executable work units required before implementation
 - `.harness/events/`, `results/`, `evidence/`: on-demand audit records
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 

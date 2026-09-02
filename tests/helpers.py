@@ -179,6 +179,7 @@ def create_ready_project(root: Path, *, approve: bool = True) -> Path:
     state_path = root / ".harness" / "state.json"
     state = load_json(state_path)
     state["lifecycle_state"] = "DECISION_READY"
+    state["current_plan"] = "PLAN-0001"
     state["active_plan"] = "PLAN-0001"
     atomic_write_json(state_path, state)
     if approve:

@@ -8,8 +8,8 @@
 | `.harness/artifacts/` | `ART-` | Registered file/bundle path, media type, digest, and execution trust |
 | `.harness/requirements/` | `REQ-` | Versioned functional, non-functional, operational, and security requirements |
 | `.harness/features/` | `FUNC-` | Implementable capabilities and criterion-level completion contracts |
-| `.harness/plans/` | `PLAN-` | Mandatory planning reference, workstreams, dependencies, capabilities, exclusions, and verification strategy |
-| `.harness/work-items/` | `TASK-` | Mandatory executable work units, dependencies, criterion scope, write scope, locks, checks, and capability-specific approval refs |
+| `.harness/plans/` | `PLAN-` | Execution planning reference, workstreams, dependencies, capabilities, exclusions, and verification strategy |
+| `.harness/work-items/` | `TASK-` | Executable work units required before implementation, with dependencies, criterion scope, write scope, locks, checks, and capability-specific approval refs |
 | `.harness/open-items/` | `OI-` | Questions, decisions, assumptions, risks, dependencies, conflicts, and blockers |
 | `.harness/evidence/` | `EVD-` | Verification observations, profiles, subject fingerprints, bindings, and limitations |
 | `.harness/approvals/` | `APR-` | Human decisions with declared assurance, exact subjects, actions, provenance/attestation, and snapshots |
@@ -18,7 +18,7 @@
 | `.harness/reviews/` | `VRD-` | Verdicts bound to one exact result/build |
 | `.harness/handoffs/` | `HOF-` | Immutable agent-to-agent exact-state transfer records |
 
-`.harness/project.json` contains execution/claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and mandatory `current_plan`. In `USER_DIRECTED` mode, `active_plan` and `active_decision` may be null because PLAN approval is not execution authority.
+`.harness/project.json` contains execution/claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. In `USER_DIRECTED` mode, `active_plan` and `active_decision` may be null because PLAN approval is not execution authority.
 
 Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Cryptographic approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
 

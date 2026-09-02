@@ -61,8 +61,9 @@ def doctor_report(root: Path) -> dict[str, Any]:
         if directed:
             plan_assurance = "NOT_REQUIRED"
             plan_assurance_detail = (
-                "A current PLAN is required; PLAN approval is not required "
-                "in USER_DIRECTED mode"
+                "Discovery may precede PLAN/TASK creation; both are required "
+                "before execution, while PLAN approval is not required in "
+                "USER_DIRECTED mode"
             )
         else:
             plan_assurance = required_approval_assurance(root, "PLAN")

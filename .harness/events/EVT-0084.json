@@ -1,0 +1,16 @@
+{
+  "schema": "harness.event/v1",
+  "id": "EVT-0084",
+  "kind": "event",
+  "event_type": "RECORD_TRANSITIONED",
+  "occurred_at": "2026-09-02T06:27:42Z",
+  "payload": {
+    "record_id": "TASK-0008",
+    "kind": "work_item",
+    "before": "RUNNING",
+    "after": "DONE",
+    "reason": "Deferred bootstrap PLAN and TASK creation until deliverable execution",
+    "claim_id": null,
+    "agent": "codex"
+  }
+}

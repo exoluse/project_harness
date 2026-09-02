@@ -4,7 +4,7 @@ The harness is a coordination and gate engine, not a sandbox. Mutable repository
 
 ## Authority boundary
 
-After the requested work is represented by the mandatory current PLAN and TASK, an explicit user request authorizes routine development operations, including ordinary commits, fetch, conflict resolution, and a normal push to the configured upstream. Cryptographic human approval is code-forced only for:
+Discovery may begin without PLAN/TASK placeholders. After executable work is represented by a current PLAN and TASK, an explicit user request authorizes routine development operations, including ordinary commits, fetch, conflict resolution, and a normal push to the configured upstream. Cryptographic human approval is code-forced only for:
 
 - production deployment;
 - production data changes;

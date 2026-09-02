@@ -212,7 +212,37 @@ def transition_project(
         raise HarnessError("APPROVED is materialized only by plan apply-decision")
     if target_state == "BUILDING":
         if user_directed(root):
-            pass
+            current_plan_id = state.get("current_plan")
+            current_plan = (
+                context.records.get(current_plan_id)
+                if isinstance(current_plan_id, str)
+                else None
+            )
+            if not current_plan or current_plan.get("kind") != "plan":
+                raise HarnessError(
+                    "Project cannot enter BUILDING without a current PLAN"
+                )
+            if current_plan.get("status") not in {
+                "APPROVED",
+                "APPROVED_WITH_CONDITIONS",
+                "ACTIVE",
+            }:
+                raise HarnessError(
+                    "Project cannot enter BUILDING: current PLAN is not executable"
+                )
+            plan_subject = current_plan.get("approval_subject", {})
+            planned_tasks = (
+                plan_subject.get("work_item_refs", [])
+                if isinstance(plan_subject, dict)
+                else []
+            )
+            if not planned_tasks or not any(
+                context.records.get(task_id, {}).get("kind") == "work_item"
+                for task_id in planned_tasks
+            ):
+                raise HarnessError(
+                    "Project cannot enter BUILDING without a TASK in the current PLAN"
+                )
         elif not isinstance(active_plan, str):
             raise HarnessError("Project cannot enter BUILDING without an active plan")
         else:

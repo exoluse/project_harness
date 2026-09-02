@@ -2,14 +2,14 @@
 
 ## Default path
 
-`USER_DIRECTED` is the default execution mode. PLAN and TASK are mandatory: the project has a `state.current_plan`, and every requested change is a TASK listed in that PLAN. The explicit user request authorizes ordinary execution of the TASK without PLAN approval.
+`USER_DIRECTED` is the default execution mode. A project may start in discovery with `state.current_plan: null` and no PLAN/TASK records. When planning becomes concrete, create the PLAN; before implementation, select it as `state.current_plan` and create a TASK listed in that PLAN. The explicit user request authorizes ordinary execution of the TASK without PLAN approval.
 
 ```text
-request -> identify/update PLAN -> create/select TASK -> inspect worktree
+request -> discovery/specification -> identify/update PLAN -> create/select TASK -> inspect worktree
 -> implement -> test -> commit -> fetch/resolve -> push
 ```
 
-The PLAN/TASK link and task gate are required. A routine task does not need PLAN approval, a claim, result, event, or evidence record.
+The PLAN/TASK link and task gate are required when execution begins. Discovery itself does not need placeholder records. A routine task does not need PLAN approval, a claim, result, event, or evidence record.
 
 ## When the harness becomes strict
 
@@ -29,7 +29,7 @@ source -> requirement -> feature -> completion criterion -> work item
                                                         -> evidence/result -> review
 ```
 
-PLAN and TASK are always present for sequencing, scope, dependencies, and accountability. Source, requirement, feature, result, review, and evidence records are added according to the project's specification, audit, release, and completion needs.
+PLAN and TASK are present once execution is prepared, providing sequencing, scope, dependencies, and accountability. Source, requirement, feature, result, review, and evidence records are added according to the project's specification, audit, release, and completion needs.
 
 ## Lifecycle
 
@@ -41,7 +41,7 @@ OPPORTUNITY -> DISCOVERY -> CONTRACTED -> SPECIFYING -> PLANNING
 -> CUSTOMER_ACCEPTANCE -> DEPLOYING -> CLOSED -> MAINTAINING
 ```
 
-In `USER_DIRECTED` mode, `current_plan` is mandatory but `active_plan`, `active_decision`, and PLAN approval are not. Entering production or final customer acceptance still uses the high-risk boundary. Project closure may require evidence when the project actually claims its closure contract.
+In `USER_DIRECTED` mode, `current_plan` may be null during discovery but is mandatory before `BUILDING`. `active_plan`, `active_decision`, and PLAN approval are not required for routine execution. Entering production or final customer acceptance still uses the high-risk boundary. Project closure may require evidence when the project actually claims its closure contract.
 
 ## Checks
 

@@ -61,6 +61,16 @@ class Issue:
         }
 
 
+EXECUTION_LIFECYCLE_STATES = {
+    "BUILDING",
+    "VERIFYING",
+    "CUSTOMER_ACCEPTANCE",
+    "DEPLOYING",
+    "CLOSED",
+    "MAINTAINING",
+}
+
+
 def _issue(severity: str, code: str, message: str, path: Path | None = None) -> Issue:
     return Issue(severity, code, message, str(path) if path else None)
 
@@ -547,27 +557,36 @@ def validate_project(root: Path) -> list[Issue]:
                 _issue("ERROR", "DUPLICATE_ID", f"duplicate closure criterion id {criterion_id}")
             )
     known_ids = set(records) | set(criteria) | set(closure_criteria)
-    plan_ids = {
-        record_id
-        for record_id, record in records.items()
-        if record.get("kind") == "plan"
-    }
     task_ids = {
         record_id
         for record_id, record in records.items()
         if record.get("kind") == "work_item"
     }
-    if not plan_ids:
-        issues.append(
-            _issue("ERROR", "MISSING_CURRENT_PLAN", "project requires at least one PLAN")
-        )
-    if not task_ids:
-        issues.append(
-            _issue("ERROR", "MISSING_WORK_ITEM", "project requires at least one TASK")
-        )
     current_plan_id = state.get("current_plan")
-    current_plan = records.get(str(current_plan_id))
-    if not current_plan or current_plan.get("kind") != "plan":
+    lifecycle_requires_execution_structure = (
+        state.get("lifecycle_state") in EXECUTION_LIFECYCLE_STATES
+    )
+    current_plan = (
+        records.get(current_plan_id) if isinstance(current_plan_id, str) else None
+    )
+    if current_plan_id is None:
+        if lifecycle_requires_execution_structure:
+            issues.append(
+                _issue(
+                    "ERROR",
+                    "MISSING_CURRENT_PLAN",
+                    f"lifecycle {state.get('lifecycle_state')} requires a current PLAN",
+                )
+            )
+        if lifecycle_requires_execution_structure and not task_ids:
+            issues.append(
+                _issue(
+                    "ERROR",
+                    "MISSING_WORK_ITEM",
+                    f"lifecycle {state.get('lifecycle_state')} requires at least one TASK",
+                )
+            )
+    elif not current_plan or current_plan.get("kind") != "plan":
         issues.append(
             _issue(
                 "ERROR",
@@ -591,12 +610,16 @@ def validate_project(root: Path) -> list[Issue]:
             if isinstance(current_subject, dict)
             else []
         )
-        if not isinstance(current_tasks, list) or not current_tasks:
+        if (
+            current_plan.get("status")
+            in {"APPROVED", "APPROVED_WITH_CONDITIONS", "ACTIVE"}
+            and (not isinstance(current_tasks, list) or not current_tasks)
+        ):
             issues.append(
                 _issue(
                     "ERROR",
                     "MISSING_WORK_ITEM",
-                    f"current plan {current_plan_id} requires at least one TASK",
+                    f"executable current plan {current_plan_id} requires at least one TASK",
                     record_paths.get(str(current_plan_id)),
                 )
             )

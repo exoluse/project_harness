@@ -11,7 +11,7 @@ from project_harness.core import (
     record_path,
 )
 from project_harness.gates import task_start_gate
-from project_harness.lifecycle_mutations import transition_record
+from project_harness.lifecycle_mutations import transition_project, transition_record
 from project_harness.mutation_service import authorize_claim_targets
 from project_harness.reporting import doctor_report, status_report
 from project_harness.scaffold import init_project
@@ -64,10 +64,14 @@ class ExecutionPolicyTests(HarnessTestCase):
             self.assertEqual(project["policy"]["record_mode"], "ON_DEMAND")
             self.assertNotIn("PLAN", project["policy"]["human_approval_required_for"])
             state = load_json(root / ".harness" / "state.json")
-            self.assertEqual(state["current_plan"], "PLAN-0001")
-            self.assertTrue(record_path(root, "plan", "PLAN-0001").is_file())
-            self.assertTrue(record_path(root, "work_item", "TASK-0001").is_file())
-            self.assertTrue(task_start_gate(root, "TASK-0001").passed)
+            self.assertIsNone(state["current_plan"])
+            self.assertEqual(list((root / ".harness" / "plans").glob("PLAN-*.json")), [])
+            self.assertEqual(
+                list((root / ".harness" / "work-items").glob("TASK-*.json")),
+                [],
+            )
+            with self.assertRaisesRegex(HarnessError, "Missing work_item"):
+                task_start_gate(root, "TASK-0001")
             self.assertEqual(
                 doctor_report(root)["plan_approval_assurance"]["required"],
                 "NOT_REQUIRED",
@@ -92,20 +96,45 @@ class ExecutionPolicyTests(HarnessTestCase):
             self.assertEqual(status_report(root)["current_plan"], "PLAN-0001")
             self.assertIsNone(status_report(root)["active_plan"])
 
-    def test_missing_current_plan_or_task_fails_closed(self):
+    def test_discovery_without_plan_or_task_validates_but_execution_fails_closed(self):
         with tempfile.TemporaryDirectory() as temp:
             root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            from project_harness.validation import validate_project
+
+            atomic_write_json(
+                record_path(root, "source", "SRC-0001"),
+                {
+                    "schema": "harness.source/v1",
+                    "id": "SRC-0001",
+                    "kind": "source",
+                    "authority": "RAW_INPUT",
+                    "artifact_role": "REFERENCE",
+                    "interpretation_status": "EXPLICIT",
+                    "origin": "user discovery request",
+                    "summary": "Discovery can be recorded before planning.",
+                },
+            )
+            self.assertEqual(validate_project(root), [])
+
             state_path = root / ".harness" / "state.json"
             state = load_json(state_path)
-            state["current_plan"] = "PLAN-9999"
+            state["lifecycle_state"] = "BUILDING"
             atomic_write_json(state_path, state)
-            record_path(root, "work_item", "TASK-0001").unlink()
-
-            from project_harness.validation import validate_project
 
             codes = {issue.code for issue in validate_project(root)}
             self.assertIn("MISSING_CURRENT_PLAN", codes)
             self.assertIn("MISSING_WORK_ITEM", codes)
+
+            state["lifecycle_state"] = "APPROVED"
+            atomic_write_json(state_path, state)
+            with self.assertRaisesRegex(HarnessError, "current PLAN"):
+                transition_project(
+                    root,
+                    claim_id=None,
+                    agent="codex",
+                    target_state="BUILDING",
+                    reason="Execution requires its structure",
+                )
 
     def test_task_must_be_listed_by_its_current_plan(self):
         with tempfile.TemporaryDirectory() as temp:
