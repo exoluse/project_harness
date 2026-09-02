@@ -14,6 +14,8 @@ Cryptographic approval is reserved for five high-risk boundaries:
 
 PLAN records are mandatory once execution is prepared, while initial discovery may have none and PLAN approval is optional in `USER_DIRECTED` mode. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records. `PLAN-0001` in this repository is historical; `state.current_plan` identifies its successor.
 
+PLAN approval subjects are canonical `PLAN-*.md` records. Approval fingerprints and snapshots bind the parsed front matter and declared dependencies; the explanatory Markdown body does not grant authority. Baseline snapshots preserve the complete file for review.
+
 ## Protected authority
 
 The authority config is fixed outside the repository:

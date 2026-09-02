@@ -16,7 +16,12 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterable
 
-from .constants import HARNESS_DIR, RECORD_DIRECTORIES
+from .constants import HARNESS_DIR, RECORD_DIRECTORIES, RECORD_EXTENSIONS
+from .record_documents import (
+    MarkdownRecordError,
+    read_markdown_record,
+    render_markdown_record,
+)
 
 
 _LOCAL_FILESYSTEM_MUTEXES: dict[str, threading.RLock] = {}
@@ -85,6 +90,12 @@ def sha256_path(path: Path) -> str:
 
 
 def load_json(path: Path) -> dict[str, Any]:
+    if path.suffix.casefold() == ".md":
+        try:
+            value, _body = read_markdown_record(path)
+        except MarkdownRecordError as exc:
+            raise HarnessError(f"Invalid Markdown record in {path}: {exc}") from exc
+        return value
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
@@ -111,6 +122,17 @@ def atomic_write_text(path: Path, content: str) -> None:
 
 
 def atomic_write_json(path: Path, value: dict[str, Any]) -> None:
+    if path.suffix.casefold() == ".md":
+        body: str | None = None
+        if path.is_file():
+            try:
+                _record, body = read_markdown_record(path)
+            except MarkdownRecordError as exc:
+                raise HarnessError(
+                    f"Refusing to overwrite invalid Markdown record {path}: {exc}"
+                ) from exc
+        atomic_write_text(path, render_markdown_record(value, body))
+        return
     atomic_write_text(path, json.dumps(value, ensure_ascii=False, indent=2) + "\n")
 
 
@@ -211,7 +233,11 @@ def record_path(root: Path, kind: str, record_id: str) -> Path:
     directory, prefix = RECORD_DIRECTORIES[kind]
     if not re.fullmatch(rf"{re.escape(prefix)}\d{{4,}}", record_id):
         raise HarnessError(f"Invalid {kind} ID: {record_id!r}; expected {prefix}<digits>")
-    return root / HARNESS_DIR / directory / f"{record_id}.json"
+    canonical = root / HARNESS_DIR / directory / f"{record_id}{RECORD_EXTENSIONS[kind]}"
+    if canonical.is_file() or RECORD_EXTENSIONS[kind] == ".json":
+        return canonical
+    legacy = canonical.with_suffix(".json")
+    return legacy if legacy.is_file() else canonical
 
 
 def iter_record_files(root: Path) -> Iterable[tuple[str, Path]]:
@@ -219,7 +245,12 @@ def iter_record_files(root: Path) -> Iterable[tuple[str, Path]]:
         base = root / HARNESS_DIR / directory
         if not base.exists():
             continue
-        for path in sorted(base.glob("*.json")):
+        patterns = ("*.md", "*.json") if RECORD_EXTENSIONS[kind] == ".md" else ("*.json",)
+        paths = sorted(
+            {path for pattern in patterns for path in base.glob(pattern)},
+            key=lambda path: path.name.casefold(),
+        )
+        for path in paths:
             yield kind, path
 
 
@@ -271,7 +302,9 @@ def next_id(directory: Path, prefix: str, width: int = 4) -> str:
     highest = 0
     pattern = re.compile(rf"^{re.escape(prefix)}(\d+)$", re.IGNORECASE)
     if directory.exists():
-        for path in directory.glob("*.json"):
+        for path in directory.iterdir():
+            if not path.is_file() or path.suffix.casefold() not in {".json", ".md"}:
+                continue
             match = pattern.match(path.stem)
             if match:
                 highest = max(highest, int(match.group(1)))

@@ -65,9 +65,9 @@ class ExecutionPolicyTests(HarnessTestCase):
             self.assertNotIn("PLAN", project["policy"]["human_approval_required_for"])
             state = load_json(root / ".harness" / "state.json")
             self.assertIsNone(state["current_plan"])
-            self.assertEqual(list((root / ".harness" / "plans").glob("PLAN-*.json")), [])
+            self.assertEqual(list((root / ".harness" / "plans").glob("PLAN-*")), [])
             self.assertEqual(
-                list((root / ".harness" / "work-items").glob("TASK-*.json")),
+                list((root / ".harness" / "work-items").glob("TASK-*")),
                 [],
             )
             with self.assertRaisesRegex(HarnessError, "Missing work_item"):

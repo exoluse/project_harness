@@ -16,7 +16,7 @@ class FingerprintTests(HarnessTestCase):
     def test_plan_fingerprint_excludes_closure_evidence_but_binds_contract(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo")
-            plan_path = root / ".harness" / "plans" / "PLAN-0001.json"
+            plan_path = root / ".harness" / "plans" / "PLAN-0001.md"
             project_path = root / ".harness" / "project.json"
 
             plan = load_json(plan_path)

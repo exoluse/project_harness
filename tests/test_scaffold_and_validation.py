@@ -28,6 +28,46 @@ from .helpers import HarnessTestCase, add_verified_evidence, create_ready_projec
 
 
 class ScaffoldValidationTests(HarnessTestCase):
+    def test_plan_and_task_use_markdown_and_preserve_human_notes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            plan_path = record_path(root, "plan", "PLAN-0001")
+            task_path = record_path(root, "work_item", "TASK-0001")
+            self.assertEqual(plan_path.suffix, ".md")
+            self.assertEqual(task_path.suffix, ".md")
+            self.assertTrue(plan_path.read_text(encoding="utf-8").startswith("---\n"))
+            fingerprint_before_notes = subject_fingerprint_for_path(plan_path)
+
+            plan_path.write_text(
+                plan_path.read_text(encoding="utf-8")
+                + "\n## Human notes\n\nKeep this explanation.\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                subject_fingerprint_for_path(plan_path), fingerprint_before_notes
+            )
+            plan = load_json(plan_path)
+            plan["title"] = "Updated plan title"
+            atomic_write_json(plan_path, plan)
+
+            self.assertEqual(load_json(plan_path)["title"], "Updated plan title")
+            self.assertIn(
+                "Keep this explanation.", plan_path.read_text(encoding="utf-8")
+            )
+
+    def test_malformed_markdown_record_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            path = root / ".harness" / "plans" / "PLAN-0001.md"
+            path.write_text("# missing front matter\n", encoding="utf-8")
+
+            issues = validate_project(root)
+
+            self.assertTrue(
+                any(issue.code == "INVALID_JSON" for issue in issues),
+                [issue.as_dict() for issue in issues],
+            )
+
     def test_force_init_repairs_distribution_without_rewriting_records(self):
         with tempfile.TemporaryDirectory() as temp:
             workspace = Path(temp)
@@ -150,10 +190,10 @@ class ScaffoldValidationTests(HarnessTestCase):
             state = load_json(root / ".harness" / "state.json")
             self.assertIsNone(state["current_plan"])
             self.assertEqual(
-                list((root / ".harness" / "plans").glob("PLAN-*.json")), []
+                list((root / ".harness" / "plans").glob("PLAN-*")), []
             )
             self.assertEqual(
-                list((root / ".harness" / "work-items").glob("TASK-*.json")),
+                list((root / ".harness" / "work-items").glob("TASK-*")),
                 [],
             )
             self.assertTrue((root / ".harness" / "results").is_dir())
@@ -177,7 +217,11 @@ class ScaffoldValidationTests(HarnessTestCase):
                 (root / ".harness" / ".gitattributes").read_text(
                     encoding="utf-8"
                 ),
-                "*.json text eol=lf\n",
+                (
+                    "*.json text eol=lf\n"
+                    "plans/*.md text eol=lf\n"
+                    "work-items/*.md text eol=lf\n"
+                ),
             )
             root_schemas = sorted((root / "schemas").glob("*.json"))
             vendored_schemas = sorted(

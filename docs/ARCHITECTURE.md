@@ -21,6 +21,7 @@ New projects use the first value in each pair. Missing fields retain legacy beha
 ## Stores
 
 - Canonical records live in `.harness/` and are versioned with the repository.
+- Human-authored PLAN/TASK records use Markdown with strict YAML-style front matter; machine state and audit records use JSON.
 - `state.current_plan` may be null during initial discovery. It becomes mandatory execution context before implementation; every TASK points to that PLAN and is listed by it.
 - `state.active_plan` and `active_decision` are optional legacy/approval materialization fields; neither is needed for routine `USER_DIRECTED` execution.
 - Claims, mutexes, and mailboxes live under the Git common runtime so linked worktrees share concurrency state.
@@ -32,6 +33,8 @@ New projects use the first value in each pair. Missing fields retain legacy beha
 Evidence attachment and lifecycle transitions use one atomic mutation service. In `WHEN_CONCURRENT` mode they may run without a claim when no active claim overlaps their targets. If an overlapping claim exists, the unclaimed mutation fails closed. In legacy `REQUIRED` mode a current matching claim is mandatory.
 
 Explicit record-producing commands may emit an event atomically. Ordinary filesystem development does not create audit events merely to obtain permission.
+
+When a PLAN or TASK mutation is written, the mutation service rewrites only its canonical front matter and preserves the Markdown body. Parsing, schema validation, and atomic commit all complete before the record becomes visible. Invalid front matter, duplicate keys, mixed container types, odd indentation, and unquoted invalid scalars fail closed.
 
 ## Evaluation
 

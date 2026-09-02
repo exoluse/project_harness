@@ -11,6 +11,8 @@ request -> discovery/specification -> identify/update PLAN -> create/select TASK
 
 The PLAN/TASK link and task gate are required when execution begins. Discovery itself does not need placeholder records. A routine task does not need PLAN approval, a claim, result, event, or evidence record.
 
+PLAN and TASK are created as `.md` files. Agents update governed fields in the YAML-style front matter and may use the body for human-readable rationale, sequencing notes, or implementation context. Only front matter participates in validation and authority.
+
 ## When the harness becomes strict
 
 The harness adds a gate only where the consequence needs one:

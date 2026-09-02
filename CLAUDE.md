@@ -6,4 +6,6 @@ A newly initialized project may stay in discovery without PLAN/TASK records, and
 
 Use claims and handoffs only when multiple writers are active. Treat the required PLAN as planning structure rather than human authorization. Create results or evidence only when coordination, audit, release, acceptance, or an asserted completion state needs them.
 
+PLAN and TASK are Markdown files with canonical YAML-style front matter. Edit governed fields in the front matter; use the body only for explanatory notes. State, events, evidence, approvals, results, and reviews remain JSON.
+
 Never self-authorize production, destructive work, secret access, production data changes, or final customer acceptance. Those boundaries use the cryptographic workflow in `docs/APPROVALS.md`.

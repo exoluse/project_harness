@@ -8,8 +8,8 @@
 | `.harness/artifacts/` | `ART-` | Registered file/bundle path, media type, digest, and execution trust |
 | `.harness/requirements/` | `REQ-` | Versioned functional, non-functional, operational, and security requirements |
 | `.harness/features/` | `FUNC-` | Implementable capabilities and criterion-level completion contracts |
-| `.harness/plans/` | `PLAN-` | Execution planning reference, workstreams, dependencies, capabilities, exclusions, and verification strategy |
-| `.harness/work-items/` | `TASK-` | Executable work units required before implementation, with dependencies, criterion scope, write scope, locks, checks, and capability-specific approval refs |
+| `.harness/plans/` | `PLAN-*.md` | Execution planning reference, workstreams, dependencies, capabilities, exclusions, and verification strategy |
+| `.harness/work-items/` | `TASK-*.md` | Executable work units required before implementation, with dependencies, criterion scope, write scope, locks, checks, and capability-specific approval refs |
 | `.harness/open-items/` | `OI-` | Questions, decisions, assumptions, risks, dependencies, conflicts, and blockers |
 | `.harness/evidence/` | `EVD-` | Verification observations, profiles, subject fingerprints, bindings, and limitations |
 | `.harness/approvals/` | `APR-` | Human decisions with declared assurance, exact subjects, actions, provenance/attestation, and snapshots |
@@ -21,6 +21,12 @@
 `.harness/project.json` contains execution/claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. In `USER_DIRECTED` mode, `active_plan` and `active_decision` may be null because PLAN approval is not execution authority.
 
 Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Cryptographic approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
+
+### PLAN and TASK Markdown
+
+PLAN and TASK use `.md` files because people create and review them directly. A strict YAML-style front matter block contains the complete schema-validated record. The Markdown body that follows is reserved for readable explanations and is preserved by lifecycle mutations. Gates and fingerprints consume only the front matter, so body prose cannot silently grant capabilities or alter execution authority.
+
+The front matter grammar is dependency-free and intentionally narrow: two-space indentation, string keys, and JSON-compatible quoted scalars, arrays, and objects. Duplicate keys, tabs, invalid indentation, mixed list/object blocks, missing delimiters, and malformed values are errors. Legacy PLAN/TASK JSON can still be read so existing projects do not fail abruptly; newly created records and this repository use Markdown.
 
 ## Full trace
 

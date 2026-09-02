@@ -1,7 +1,7 @@
 # Project Harness Constitution
 
 1. **Customer intent remains attributable.** Preserve raw requests and supplied artifacts; record interpretation and derived requirements separately.
-2. **The lifecycle adapts, and work remains planned.** Inputs may arrive in any order, but every project has a current PLAN and every change has a TASK in that PLAN. Add requirement, criterion, evidence, and review records when specification, audit, or completion needs them.
+2. **The lifecycle adapts, and work remains planned.** Inputs may arrive in any order and discovery may precede PLAN/TASK creation, but implementation requires a current PLAN and every change has a TASK in that PLAN. Add requirement, criterion, evidence, and review records when specification, audit, or completion needs them.
 3. **Uncertainty stays visible and fails closed.** Unknowns, conflicts, assumptions, and ambiguous evidence remain active open items until an authorized resolution is propagated and evidenced.
 4. **Authority is explicit and proportionate.** The user's request authorizes routine execution of the planned TASK without PLAN approval. Cryptographic human approval is reserved for production, production data, destructive operations, secret access, and final customer acceptance; agents never self-grant those decisions.
 5. **Progress is evidence-based.** Code existence is not verification, verification is not customer acceptance, and deployment is not closure.

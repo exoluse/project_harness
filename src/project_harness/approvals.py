@@ -33,6 +33,7 @@ from .core import (
     load_json,
     normalize_claim_path,
     parse_utc,
+    record_path,
     record_event,
     run_git,
     sha256_bytes,
@@ -764,8 +765,7 @@ def _canonical_subject_path(root: Path, subject: dict[str, Any]) -> str | None:
         from .constants import RECORD_DIRECTORIES
 
         if kind in RECORD_DIRECTORIES:
-            directory, _prefix = RECORD_DIRECTORIES[kind]
-            return f"{HARNESS_DIR}/{directory}/{subject_id}.json"
+            return record_path(root, kind, subject_id).relative_to(root).as_posix()
     return None
 
 
@@ -774,7 +774,7 @@ def _approval_snapshot_hash_matches(path: Path, expected: str) -> bool:
 
     if sha256_file(path) == expected:
         return True
-    if path.suffix.casefold() != ".json":
+    if path.suffix.casefold() not in {".json", ".md"}:
         return False
     try:
         raw = path.read_bytes()
@@ -977,7 +977,8 @@ def _record_approval_unlocked(
         snapshot_path = (
             root / HARNESS_DIR / "baselines" / approval_id / snapshot_relative
         )
-        atomic_write_json(snapshot_path, load_json(source_path))
+        load_json(source_path)
+        atomic_write_text(snapshot_path, source_path.read_text(encoding="utf-8"))
         snapshot_manifest.append(
             {
                 "path": snapshot_relative,

@@ -83,7 +83,7 @@ class ProceduralApprovalTests(unittest.TestCase):
         return record_procedural_approval(
             root,
             approval_type="PLAN",
-            subject_path=".harness/plans/PLAN-0001.json",
+            subject_path=".harness/plans/PLAN-0001.md",
             decision=decision,
             approver="human-test-owner",
             basis=basis,
@@ -134,7 +134,7 @@ class ProceduralApprovalTests(unittest.TestCase):
                     "--type",
                     "PLAN",
                     "--subject",
-                    ".harness/plans/PLAN-0001.json",
+                    ".harness/plans/PLAN-0001.md",
                     "--decision",
                     "APPROVED",
                     "--approver",
@@ -261,7 +261,7 @@ class ProceduralApprovalTests(unittest.TestCase):
                 record_procedural_approval(
                     root,
                     approval_type="SECRET_ACCESS",
-                    subject_path=".harness/plans/PLAN-0001.json",
+                    subject_path=".harness/plans/PLAN-0001.md",
                     decision="APPROVED",
                     approver="human-test-owner",
                     basis="Secret access requires cryptographic assurance",
@@ -348,7 +348,7 @@ class ProceduralApprovalTests(unittest.TestCase):
                 plan_approval = record_approval(
                     root,
                     approval_type="PLAN",
-                    subject_path=".harness/plans/PLAN-0001.json",
+                    subject_path=".harness/plans/PLAN-0001.md",
                     decision="APPROVED",
                     approver="human-test-owner",
                     authority_role="HUMAN_PROJECT_OWNER",

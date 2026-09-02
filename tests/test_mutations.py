@@ -23,7 +23,7 @@ def approve_fixture(root: Path) -> None:
     approval = record_approval(
         root,
         approval_type="PLAN",
-        subject_path=".harness/plans/PLAN-0001.json",
+        subject_path=".harness/plans/PLAN-0001.md",
         decision="APPROVED",
         approver="human-test-owner",
         authority_role="HUMAN_PROJECT_OWNER",
@@ -157,7 +157,7 @@ class MutationTests(HarnessTestCase):
                 "id": "TASK-0002",
                 "title": "Control rework transitions",
                 "status": "READY",
-                "write_scope": [".harness/work-items/TASK-0001.json"],
+                "write_scope": [".harness/work-items/TASK-0001.md"],
                 "logical_locks": ["task-lifecycle"],
             }
             atomic_write_json(record_path(root, "work_item", "TASK-0002"), task_two)
@@ -165,7 +165,7 @@ class MutationTests(HarnessTestCase):
             plan = load_json(plan_path)
             plan["approval_subject"]["work_item_refs"].append("TASK-0002")
             plan["approval_dependencies"].append(
-                ".harness/work-items/TASK-0002.json"
+                ".harness/work-items/TASK-0002.md"
             )
             atomic_write_json(plan_path, plan)
             approve_fixture(root)
@@ -173,7 +173,7 @@ class MutationTests(HarnessTestCase):
                 root,
                 agent="coordinator",
                 task_id="TASK-0002",
-                paths=[".harness/work-items/TASK-0001.json"],
+                paths=[".harness/work-items/TASK-0001.md"],
             )
 
             result = transition_record(

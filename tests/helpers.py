@@ -150,7 +150,7 @@ def create_ready_project(root: Path, *, approve: bool = True) -> Path:
         "approval_dependencies": [
             ".harness/requirements/REQ-0001.json",
             ".harness/features/FUNC-0001.json",
-            ".harness/work-items/TASK-0001.json",
+            ".harness/work-items/TASK-0001.md",
         ],
         "approval_subject": {
             "requirement_refs": ["REQ-0001"],
@@ -186,7 +186,7 @@ def create_ready_project(root: Path, *, approve: bool = True) -> Path:
         approval = record_approval(
             root,
             approval_type="PLAN",
-            subject_path=".harness/plans/PLAN-0001.json",
+            subject_path=".harness/plans/PLAN-0001.md",
             decision="APPROVED",
             approver="human-test-owner",
             authority_role="HUMAN_PROJECT_OWNER",

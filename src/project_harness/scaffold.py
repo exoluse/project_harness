@@ -16,9 +16,9 @@ RUNTIME_DIRECTORIES = [
 ]
 
 
-GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. A newly initialized project may remain in discovery without a PLAN or TASK, and discovery/specification records may be created directly from the user's request. Before deliverable implementation, create or select a current PLAN and a TASK listed in it. An explicit user request authorizes ordinary execution of that TASK without PLAN approval. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
+GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. A newly initialized project may remain in discovery without a PLAN or TASK, and discovery/specification records may be created directly from the user's request. Before deliverable implementation, create or select a current PLAN and a TASK listed in it. PLAN and TASK use Markdown with canonical machine-validated YAML-style front matter; their bodies are explanatory only. An explicit user request authorizes ordinary execution of that TASK without PLAN approval. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
 
-GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. Discovery may precede PLAN/TASK creation; both become mandatory before implementation. PLAN approval is not required. Claims and handoffs are for concurrent writers; audit records are created only when needed.\n"""
+GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. Discovery may precede PLAN/TASK creation; both become mandatory before implementation. PLAN and TASK use Markdown with machine-validated YAML-style front matter. PLAN approval is not required. Claims and handoffs are for concurrent writers; audit records are created only when needed.\n"""
 
 GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md`, inspect current state and Git status, and determine whether the request is discovery/specification or execution. Discovery/specification records may precede PLAN/TASK; before deliverable implementation, create or select the current PLAN and its TASK. Perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
 
@@ -258,7 +258,11 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
         "HANDOFF.md": GENERATED_HANDOFF,
         "scripts/harness.py": GENERATED_WRAPPER,
         "scripts/check_repo.py": GENERATED_CHECK_REPO,
-        ".harness/.gitattributes": "*.json text eol=lf\n",
+        ".harness/.gitattributes": (
+            "*.json text eol=lf\n"
+            "plans/*.md text eol=lf\n"
+            "work-items/*.md text eol=lf\n"
+        ),
         ".harness/.gitignore": "/runtime/\n",
         ".harness/templates/allowed_signers.example": "# Documentation only. Never use a repository file as the approval trust root.\n",
     }

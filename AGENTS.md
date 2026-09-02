@@ -31,6 +31,8 @@ Use a claim only when multiple agents or other writers can modify the project co
 
 `PLAN-*` and `TASK-*` are mandatory execution structure, not initialization placeholders. Do not invent bootstrap records before their content is known. Once execution is planned, `state.current_plan` identifies the current planning reference; it does not grant execution authority. Every TASK must point back to its PLAN and be listed by that PLAN. A PLAN may be validated or explicitly approved, but PLAN approval is not required in `USER_DIRECTED` mode.
 
+PLAN and TASK records use `.md` files. Their strict YAML-style front matter is the machine-validated canonical record; the Markdown body is preserved for human explanation but does not change gates, fingerprints, or authority. Other canonical state and audit records remain JSON. Invalid front matter fails closed.
+
 Before ordinary development, ensure the current PLAN contains a TASK for the requested change and that `gate task` passes. Creating or selecting this structure is bookkeeping for scope and traceability, not a separate human approval step.
 
 Results, events, and evidence are on demand:

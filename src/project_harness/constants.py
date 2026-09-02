@@ -19,6 +19,11 @@ RECORD_DIRECTORIES = {
     "recovery": ("recoveries", "RCV-"),
 }
 
+RECORD_EXTENSIONS = {
+    kind: ".md" if kind in {"plan", "work_item"} else ".json"
+    for kind in RECORD_DIRECTORIES
+}
+
 RECORD_KIND_ALIASES = {
     "task": "work_item",
     "work-item": "work_item",

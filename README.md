@@ -18,6 +18,7 @@ This means:
 
 - a newly initialized project starts in `DISCOVERY` with `current_plan: null` and no invented PLAN/TASK placeholders;
 - before implementation, the project selects a current `PLAN-*` and creates a `TASK-*` listed in it;
+- PLAN and TASK are readable `.md` documents with strict machine-validated front matter; state and audit records remain JSON;
 - every later change is represented by a TASK listed in its PLAN;
 - ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed by an explicit user request for that TASK;
 - PLAN approval is not a per-task permission token;
@@ -79,6 +80,8 @@ source -> requirement -> feature -> criterion -> work item
 
 PLAN and TASK form the mandatory execution structure but are not generated as empty initialization placeholders. Discovery and specification may happen before they exist. Once implementation is ready, `state.current_plan` names the current planning reference, every TASK points to a PLAN, and every PLAN lists its TASKs. PLAN approval does not authorize routine execution in `USER_DIRECTED` mode; the explicit user request does. Evidence is required when a command asserts a governed verification, customer acceptance, production outcome, or project closure—not just because a developer edits a file.
 
+PLAN and TASK files use strict YAML-style front matter followed by a normal Markdown body. The front matter is canonical for validation, fingerprints, and gates. The body is preserved across harness mutations for human notes, but it is non-authoritative. The parser uses a deliberately small dependency-free subset: two-space indentation, quoted JSON scalars, arrays, and objects. Malformed front matter fails closed. Legacy PLAN/TASK JSON remains readable for compatibility, while newly created records use Markdown.
+
 ## Verification tiers
 
 ```powershell
@@ -88,7 +91,7 @@ python scripts/check_repo.py full
 python scripts/check_repo.py
 ```
 
-Both tiers compile and run strict harness validation. `fast` runs focused contract tests; `full` runs all tests. Commands stored in mutable JSON are never auto-executed.
+Both tiers compile and run strict harness validation. `fast` runs focused contract tests; `full` runs all tests. Commands stored in mutable records are never auto-executed.
 
 ## High-risk approval
 
@@ -106,8 +109,8 @@ The protected authority configuration and ledger live outside the repository. Ag
 
 - `.harness/project.json`: project policy and completion contract
 - `.harness/state.json`: current lifecycle, nullable discovery-time `current_plan`, and optional approval references
-- `.harness/plans/`: execution planning and historical baselines
-- `.harness/work-items/`: executable work units required before implementation
+- `.harness/plans/PLAN-*.md`: human-readable execution plans
+- `.harness/work-items/TASK-*.md`: human-readable executable work units
 - `.harness/events/`, `results/`, `evidence/`: on-demand audit records
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
