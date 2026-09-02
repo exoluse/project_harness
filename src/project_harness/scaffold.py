@@ -56,7 +56,13 @@ def checks_for(tier: str) -> list[tuple[str, list[str]]]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run fixed project verification")
-    parser.add_argument("tier", nargs="?", choices=("fast", "full"), default="full")
+    parser.add_argument(
+        "tier",
+        nargs="?",
+        choices=("fast", "full"),
+        default="full",
+        help="full is the default when the tier is omitted",
+    )
     args = parser.parse_args(argv)
     print(f"[check-repo] tier={args.tier}")
     outcomes = [run(label, command) for label, command in checks_for(args.tier)]
@@ -127,6 +133,10 @@ def _install_guidance(root: Path) -> None:
 
 
 def init_project(path: Path, project_id: str, name: str, *, force: bool = False) -> Path:
+    """Create a harness, or safely repair its distribution when forced.
+
+    Repair never rewrites canonical project identity, lifecycle state, or records.
+    """
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", project_id):
         raise HarnessError(
             "project_id must start with a letter or number and contain only "

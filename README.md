@@ -61,11 +61,12 @@ python scripts/harness.py validate --strict
 python scripts/harness.py trace REQ-0001
 python scripts/harness.py report decision-package PLAN-0001
 python scripts/harness.py report completion
+python scripts/check_repo.py
 python scripts/check_repo.py fast
 python scripts/check_repo.py full
 ```
 
-`scripts/check_repo.py` defaults to `full`. The `fast` tier provides short contract-focused feedback; only `full` runs the entire test discovery. Both tiers compile code, run their declared tests, and finish with strict harness validation. The script executes only fixed repository checks. Verification strings stored in plans, results, or handoffs are records; the harness does not execute mutable project JSON as commands.
+The bare `scripts/check_repo.py` command is exactly equivalent to `scripts/check_repo.py full`. The `fast` tier provides short contract-focused feedback; only `full` runs the entire test discovery. Both tiers compile code, run their declared tests, and finish with strict harness validation. The script executes only fixed repository checks. Verification strings stored in plans, results, or handoffs are records; the harness does not execute mutable project JSON as commands.
 
 `report decision-package` assembles the plan fingerprint, preflight, requirement-feature-criterion-task coverage, workstreams, action boundaries, unresolved items, configured assurance readiness, and available decisions for one consolidated human review. `report completion` keeps feature gates, technical closure preflight, and fully authorized closure separate; it exits blocked until authorized closure truly passes.
 

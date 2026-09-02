@@ -182,4 +182,4 @@ The CLI does not execute production actions. A separately protected adapter/oper
 
 Re-running `init --force` against an initialized project is fail-closed repair. The supplied project ID and name must exactly match `.harness/project.json`; the operation preserves canonical project/state and record files while refreshing the vendored runtime and creating only missing scaffold files. It is not a project reset or metadata-edit command.
 
-Use `python scripts/check_repo.py fast` during a local edit loop and `python scripts/check_repo.py full` before a handoff or result. The default is `full`. A fast pass is deliberately not evidence that the full regression passed, and both tiers still require strict harness validation.
+Use `python scripts/check_repo.py fast` during a local edit loop and the required bare `python scripts/check_repo.py` before a handoff or result. The bare command defaults to `full` and is equivalent to `python scripts/check_repo.py full`. A fast pass is deliberately not evidence that the full regression passed, and both tiers still require strict harness validation.

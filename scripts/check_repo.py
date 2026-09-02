@@ -62,7 +62,10 @@ def main(argv: list[str] | None = None) -> int:
         nargs="?",
         choices=("fast", "full"),
         default="full",
-        help="fast runs contract-focused tests; full runs the entire suite (default)",
+        help=(
+            "fast runs contract-focused tests; full runs the entire suite "
+            "(default, equivalent to omitting the tier)"
+        ),
     )
     args = parser.parse_args(argv)
     print(f"[check-repo] tier={args.tier}")
