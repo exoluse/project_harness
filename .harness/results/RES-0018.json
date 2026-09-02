@@ -1,0 +1,40 @@
+{
+  "schema": "harness.result/v1",
+  "id": "RES-0018",
+  "kind": "result",
+  "status": "SUBMITTED",
+  "task_id": "TASK-0006",
+  "claim_id": "CLM-0019",
+  "agent": "codex",
+  "summary": "Clarified bare full gate and exposed stale-result rework deadlock",
+  "changed_files": [
+    "README.md",
+    "docs/WORKFLOW.md",
+    "scripts/check_repo.py",
+    "src/project_harness/scaffold.py"
+  ],
+  "changed_file_states": {
+    "README.md": "FILE:4bb8ad7316d81f7c9f87b6165f951212d3ae3281f61152106cdcedcd1de0b0fd",
+    "docs/WORKFLOW.md": "FILE:cc9812f462760c399746cf8795076357ab3568770f9ac7484a05789581cb256d",
+    "scripts/check_repo.py": "FILE:1564b4f50bda4517f21651e0500602fde3a5705f828130972a62d37d04d9ce3e",
+    "src/project_harness/scaffold.py": "FILE:8984acbae9121b8c488671b11459285ef0af6aa29d5207e29a7edbcae37ec615"
+  },
+  "verification": [
+    {
+      "command": "python scripts/check_repo.py",
+      "outcome": "FAIL"
+    }
+  ],
+  "verification_state": "FAIL",
+  "evidence_refs": [],
+  "evidence_fingerprints": {},
+  "limitations": [
+    "All 84 tests passed; strict validation failed only because RES-0017 became stale during this governed retry"
+  ],
+  "task_fingerprint": "86e55a1b3b430bb5de39ab1cd7015c72e4f11d129d9d165662a3878ea3fc69d4",
+  "plan_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+  "base_commit": "e321992ada2aba50668dce4a27377912052f69b9",
+  "head_commit": "31c7f18087ef371130f9c721feadd17679526e33",
+  "submitted_at": "2026-09-02T04:30:29Z",
+  "build_fingerprint": "bcbe2e169718a12bc80612ff41d7916c7abcb74e105e7f4f338110c4ed5afdc1"
+}
