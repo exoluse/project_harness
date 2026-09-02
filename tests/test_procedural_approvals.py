@@ -4,9 +4,11 @@ import json
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Event
 from unittest.mock import patch
 
 from project_harness.approvals import (
@@ -18,6 +20,7 @@ from project_harness.approvals import (
 from project_harness.core import (
     HarnessError,
     atomic_write_json,
+    filesystem_mutex,
     load_json,
     record_path,
     sha256_file,
@@ -32,6 +35,27 @@ from .helpers import create_ready_project, write_record
 
 
 class ProceduralApprovalTests(unittest.TestCase):
+    def test_same_process_mutex_queue_does_not_consume_filesystem_timeout(self):
+        with tempfile.TemporaryDirectory() as temp:
+            lock = Path(temp) / "decision.lock"
+            entered = Event()
+
+            def holder() -> None:
+                with filesystem_mutex(lock, timeout_seconds=0.05):
+                    entered.set()
+                    time.sleep(0.2)
+
+            def waiter() -> bool:
+                self.assertTrue(entered.wait(timeout=1))
+                with filesystem_mutex(lock, timeout_seconds=0.05):
+                    return True
+
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                holding = executor.submit(holder)
+                waiting = executor.submit(waiter)
+                holding.result()
+                self.assertTrue(waiting.result())
+
     def _git(self, root: Path, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             ["git", "-C", str(root), *args],

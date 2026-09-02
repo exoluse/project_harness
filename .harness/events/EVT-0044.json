@@ -1,0 +1,12 @@
+{
+  "schema": "harness.event/v1",
+  "id": "EVT-0044",
+  "kind": "event",
+  "event_type": "CLAIM_ACQUIRED",
+  "occurred_at": "2026-09-02T03:58:38Z",
+  "payload": {
+    "claim_id": "CLM-0014",
+    "agent": "codex",
+    "task_id": "TASK-0003"
+  }
+}

@@ -8,6 +8,7 @@ import shutil
 import socket
 import subprocess
 import tempfile
+import threading
 import time
 import uuid
 from contextlib import contextmanager
@@ -16,6 +17,18 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from .constants import HARNESS_DIR, RECORD_DIRECTORIES
+
+
+_LOCAL_FILESYSTEM_MUTEXES: dict[str, threading.RLock] = {}
+_LOCAL_FILESYSTEM_MUTEXES_GUARD = threading.Lock()
+
+
+def _local_filesystem_mutex(lock: Path) -> threading.RLock:
+    """Queue same-process contenders before starting the filesystem timeout."""
+
+    key = os.path.normcase(str(lock.resolve(strict=False)))
+    with _LOCAL_FILESYSTEM_MUTEXES_GUARD:
+        return _LOCAL_FILESYSTEM_MUTEXES.setdefault(key, threading.RLock())
 
 
 class HarnessError(RuntimeError):
@@ -486,56 +499,57 @@ def filesystem_mutex(
         raise HarnessError("Filesystem lock timeout must be greater than zero")
     if lease_seconds <= 0:
         raise HarnessError("Filesystem lock lease must be greater than zero")
-    lock.parent.mkdir(parents=True, exist_ok=True)
-    deadline = time.monotonic() + timeout_seconds
-    nonce = uuid.uuid4().hex
-    owner = {
-        "schema": "harness.filesystem-lock/v1",
-        "kind": "filesystem_lock",
-        "nonce": nonce,
-        "pid": os.getpid(),
-        "host": socket.gethostname(),
-        "process_start_token": _process_start_token(os.getpid()),
-        "acquired_at": utc_now(),
-        "expires_at": (
-            datetime.now(UTC) + timedelta(seconds=lease_seconds)
-        ).isoformat(timespec="seconds").replace("+00:00", "Z"),
-    }
-    while True:
-        try:
-            lock.mkdir()
+    with _local_filesystem_mutex(lock):
+        lock.parent.mkdir(parents=True, exist_ok=True)
+        deadline = time.monotonic() + timeout_seconds
+        nonce = uuid.uuid4().hex
+        owner = {
+            "schema": "harness.filesystem-lock/v1",
+            "kind": "filesystem_lock",
+            "nonce": nonce,
+            "pid": os.getpid(),
+            "host": socket.gethostname(),
+            "process_start_token": _process_start_token(os.getpid()),
+            "acquired_at": utc_now(),
+            "expires_at": (
+                datetime.now(UTC) + timedelta(seconds=lease_seconds)
+            ).isoformat(timespec="seconds").replace("+00:00", "Z"),
+        }
+        while True:
             try:
-                atomic_write_json(lock / "owner.json", owner)
-            except Exception:
-                shutil.rmtree(lock, ignore_errors=True)
-                raise
-            break
-        except FileExistsError:
-            if _try_reclaim_filesystem_lock(
-                lock,
-                stale_after_seconds=lease_seconds,
-                recovery_directory=recovery_directory,
-            ):
-                continue
-            if time.monotonic() >= deadline:
-                raise HarnessError(timeout_message)
-            time.sleep(0.05)
-    try:
-        yield owner
-    finally:
+                lock.mkdir()
+                try:
+                    atomic_write_json(lock / "owner.json", owner)
+                except Exception:
+                    shutil.rmtree(lock, ignore_errors=True)
+                    raise
+                break
+            except FileExistsError:
+                if _try_reclaim_filesystem_lock(
+                    lock,
+                    stale_after_seconds=lease_seconds,
+                    recovery_directory=recovery_directory,
+                ):
+                    continue
+                if time.monotonic() >= deadline:
+                    raise HarnessError(timeout_message)
+                time.sleep(0.05)
         try:
-            current_owner = load_json(lock / "owner.json")
-        except HarnessError:
-            current_owner = None
-        if current_owner is not None and current_owner.get("nonce") == nonce:
+            yield owner
+        finally:
             try:
-                (lock / "owner.json").unlink()
-                lock.rmdir()
-            except FileNotFoundError:
-                pass
-            except OSError:
-                # Never remove a directory whose contents changed while held.
-                pass
+                current_owner = load_json(lock / "owner.json")
+            except HarnessError:
+                current_owner = None
+            if current_owner is not None and current_owner.get("nonce") == nonce:
+                try:
+                    (lock / "owner.json").unlink()
+                    lock.rmdir()
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    # Never remove a directory whose contents changed while held.
+                    pass
 
 
 def allocate_record_id(root: Path, directory: Path, prefix: str, width: int = 4) -> str:
