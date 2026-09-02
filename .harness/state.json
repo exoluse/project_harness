@@ -2,12 +2,12 @@
   "schema": "harness.state/v1",
   "project_id": "PROJECT-HARNESS",
   "lifecycle_state": "APPROVED",
-  "active_plan": "PLAN-0001",
+  "active_plan": null,
   "active_baselines": {
-    "requirements": "PLAN-0001",
     "implementation": "working-tree-bootstrap"
   },
+  "historical_plan_refs": ["PLAN-0001"],
   "active_release": null,
-  "updated_at": "2026-09-01T06:04:24Z",
-  "active_decision": "APR-0001"
+  "updated_at": "2026-09-02T05:30:00Z",
+  "active_decision": null
 }

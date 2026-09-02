@@ -1,198 +1,36 @@
-# Codex, Claude Code, and Multi-Agent Collaboration
+# Collaboration
 
-Agents are assigned bounded task roles rather than permanent powers. Codex may implement and Claude Code may review, or the direction may be reversed. A coordinator owns dispatch and an integrator owns shared merges/full gates when the plan says so.
+## Claims are concurrency control
 
-The protocol supports safe alternating or parallel work. It does not claim that two installed CLIs have actually completed a live cross-model session.
+A claim is needed only while multiple writers can edit concurrently. It is not routine execution authority, human approval, or a prerequisite for a single-agent task.
 
-## Shared runtime
-
-In a Git repository, all worktrees resolve the same live coordination root:
-
-```text
-<git-common-dir>/project-harness-runtime/
-  leases/
-  mailboxes/inbox/<agent>/
-  mailboxes/outbox/<agent>/
-  mailboxes/acks/<agent>/
-  handoff-acceptances/
-  human-decisions/
-    record.lock/
-    procedural-sequence.txt
-    latest-procedural/<subject-key>.json
-```
-
-Claims, mailbox copies, acknowledgements, handoff acceptance, and procedural latest-decision markers are runtime coordination, not committed project truth. Durable `APR-*`, `HOF-*`, `RES-*`, and `VRD-*` records remain under `.harness/`. `HANDOFF.md` is a rendered current view.
-
-Only the primary integration worktree may record a procedural human decision. The shared sequence and latest marker prevent linked worktrees from creating divergent decision orderings and make a primary-worktree revocation immediately fail closed in worktrees that still contain an older `APR-*`. A missing marker also fails closed. Because Git does not transport this runtime, a new clone needs the owner to repeat the exact procedural confirmation in its primary worktree before the committed approval becomes executable there.
-
-In no-Git mode the runtime falls back to `.harness/runtime/`, only one active claim is permitted, and a full workspace snapshot detects out-of-claim changes. Because no-Git results have no committed base/head identity, they cannot satisfy dependency or project-closure integration checks.
-
-## Dispatch and inbox
-
-The coordinator can dispatch only a task whose task-start gate passes:
+Before concurrent work:
 
 ```powershell
-python scripts/harness.py dispatch `
-  --task TASK-0001 `
-  --to-agent claude `
-  --issued-by coordinator `
-  --instructions "Implement only the declared feature and criterion scope"
+git status --short
+python scripts/harness.py mailbox list --box inbox --agent <agent-id>
+python scripts/harness.py claim acquire --agent <agent-id> --task TASK-0001 --paths <path> [<path> ...]
 ```
 
-The recipient reads and optionally acknowledges its mailbox:
+Use separate Git worktrees, non-overlapping paths, and non-overlapping logical locks. The runtime under `<git-common-dir>/project-harness-runtime/` makes claims visible across linked worktrees. Do not edit another active claim's files.
+
+## Handoff
+
+Use a handoff only when ownership of in-progress work moves between agents. It records exact changed files, file states, verification, limits, risks, and the next action, then releases the sender's claim. The receiver accepts it while acquiring its own claim.
 
 ```powershell
-python scripts/harness.py mailbox list --box inbox --agent claude
-python scripts/harness.py mailbox ack --box inbox --agent claude --id DSP-0001
+python scripts/harness.py handoff create --claim CLM-0001 --from-agent codex --to-agent claude --task TASK-0001 --summary "Continue implementation" --changed-file src/example.py --verification "python -m unittest::PASS" --next-action "Review and continue"
+python scripts/harness.py claim acquire --agent claude --task TASK-0001 --paths src/example.py --handoff HOF-0001
 ```
 
-Acknowledgment only hides the item from the default listing. It does not approve the plan, start work, acquire ownership, or accept a handoff.
+## Results and reviews
 
-## Acquire a claim
+Results are on-demand audit objects. Use one when a task attempt needs independent review, immutable build lineage, a release gate, or a formal handback. A routine commit does not require one.
 
-Before writing, re-run the task gate and acquire a subset of the work item's declared scope:
+When a result is used, its latest attempt controls that audited workflow. A newer failed or incomplete attempt cannot be hidden by an older PASS. Reviewer IDs are provenance strings, not cryptographic identities; hostile separation needs protected CI or an external orchestrator.
 
-```powershell
-python scripts/harness.py gate task TASK-0001
-python scripts/harness.py claim acquire `
-  --agent claude `
-  --task TASK-0001 `
-  --paths src/service.py tests/test_service.py `
-  --logical-lock public-api `
-  --ttl-minutes 120
-```
+## Dirty work and recovery
 
-The lease binds:
+Unowned dirty paths remain `USER_OR_UNKNOWN`. Never reset, clean, delete, or overwrite them to satisfy a claim. Recovery may abandon a stale lease after its structured checks, but it does not take ownership of dirty files.
 
-- agent and work item;
-- task and active-plan fingerprints;
-- normalized path prefixes and logical locks;
-- base commit and exact worktree;
-- acquisition snapshot and expiry;
-- required verification commands.
-
-Overlapping path ancestors/descendants or logical locks conflict across all linked worktrees. Dirty paths inside the request must have been explicitly acknowledged by the work item or an exact handoff; unowned dirty work remains `USER_OR_UNKNOWN`.
-
-Refresh a current claim before expiry:
-
-```powershell
-python scripts/harness.py claim refresh CLM-0001 --agent claude --ttl-minutes 120
-```
-
-## Sequential handoff
-
-```text
-approved TASK -> sender claim -> bounded edits/checks -> HOF record
--> sender claim released -> recipient exact-state acceptance/new claim
--> continuation or independent review
-```
-
-The sender declares every actual changed path and at least one exact `command::outcome`:
-
-```powershell
-python scripts/harness.py handoff create `
-  --claim CLM-0001 `
-  --from-agent claude `
-  --to-agent codex `
-  --task TASK-0001 `
-  --summary "API slice implemented; integration still pending" `
-  --changed-file src/service.py `
-  --changed-file tests/test_service.py `
-  --verification "python -m unittest tests.test_service::PASS" `
-  --unverified "No browser or production execution" `
-  --risk "Shared consumer has not been integration-tested" `
-  --next-action "Inspect the diff, accept HOF-0001, and run the integration test"
-```
-
-Handoff creation stores file hashes/states, copies the record to the recipient inbox, updates `HANDOFF.md`, and releases the sender's claim. It is terminal for that claim.
-
-The recipient must accept the handoff while acquiring a fresh claim:
-
-```powershell
-python scripts/harness.py claim acquire `
-  --agent codex `
-  --task TASK-0001 `
-  --paths src/service.py tests/test_service.py `
-  --logical-lock public-api `
-  --handoff HOF-0001
-```
-
-Acceptance is allowed exactly once. It rejects the wrong recipient/task, stale task or plan fingerprints, paths outside the new claim, or any changed handed-off file state.
-
-## Terminal worker result
-
-When an attempt is ready for review rather than continuation, submit a result:
-
-```powershell
-python scripts/harness.py result submit `
-  --claim CLM-0002 `
-  --agent codex `
-  --summary "TASK-0001 implementation complete" `
-  --changed-file src/service.py `
-  --changed-file tests/test_service.py `
-  --verification "python -m unittest tests.test_service::PASS" `
-  --evidence EVD-0001 `
-  --limitation "Production deployment not performed"
-```
-
-Submission writes canonical `RES-*`, copies it to the author's outbox, records task/plan/build/evidence fingerprints, and releases the claim. It is terminal for that attempt. The author cannot continue editing under the released claim; new work requires a startable new attempt and claim.
-
-Read results from the producing agent's outbox:
-
-```powershell
-python scripts/harness.py mailbox list --box outbox --agent codex
-python scripts/harness.py mailbox ack --box outbox --agent codex --id RES-0001
-```
-
-## Latest-attempt review
-
-A result is a claim, not acceptance. A differently named reviewer records an explicit verdict:
-
-```powershell
-python scripts/harness.py review record `
-  --result RES-0001 `
-  --reviewer claude `
-  --decision PASS `
-  --basis "Reviewed current diff, evidence bindings, and test output" `
-  --check "python -m unittest tests.test_service"
-```
-
-Valid verdicts are `PASS`, `CHANGES_REQUIRED`, `REJECTED`, and `INCONCLUSIVE`. PASS is refused if result verification is failed/incomplete or its task, plan, changed files, evidence, or build fingerprint is stale.
-
-Readiness always uses the numerically latest `RES-*` for the task and then the latest `VRD-*` for that result. Consequences:
-
-- an older PASS cannot compensate for a newer FAIL or incomplete result;
-- reviewing an old attempt does not approve a newer attempt;
-- changing a bound result file/evidence invalidates its review/currentness;
-- task dependencies and project closure require a current latest PASS plus committed Git integration.
-
-## Parallel worktrees
-
-For true parallel writes:
-
-1. Create one Git worktree/branch per writer.
-2. Define disjoint work items, path scopes, and logical locks.
-3. Acquire claims; shared Git-common-dir leases expose conflicts across worktrees.
-4. Submit exact handoffs/results and independent reviews.
-5. Give a designated integrator the shared files/merge logical locks.
-6. Commit the integration and run the plan's full verification gate.
-
-Human procedural decisions are an exception to parallel writers: record them only in the primary integration worktree. Linked worktrees consume the shared decision marker but never write competing decisions.
-
-Formatters, generated clients, lockfiles, migrations, schema registries, public APIs, and release manifests often touch shared state even when the initial source paths differ. Model them with a common logical lock or serialize them.
-
-## Expiry and recovery
-
-Do not silently steal an expired lease. Inspect processes, worktree, diff, outbox, and possible external side effects, then record recovery:
-
-```powershell
-python scripts/harness.py claim recover CLM-0001 --agent coordinator --reason "Owner process ended; diff and external effects inspected"
-```
-
-Recovery marks the old claim abandoned. It does not automatically take ownership; acquire a new claim after resolving dirty-path ownership.
-
-## Identity boundary
-
-Agent strings such as `codex`, `claude`, or `reviewer-2` are normalized routing/provenance labels. The local harness prevents accidental same-label self-review, but a same-privilege process can choose another label. When independent review is a security/compliance property, an external orchestrator must authenticate agent processes, isolate credentials/worktrees, control the harness version, and attest who ran each review.
-
-A project may use explicit procedural confirmation for a `PLAN`, but that record is provenance rather than authenticated human identity and no agent may run the confirmation for the owner. Every higher-impact approval uses the separate cryptographic external authority. Neither assurance mode turns agent IDs into authenticated identities.
+No-Git claims serialize writers but cannot prove committed lineage. Use Git and isolated worktrees for parallel work or release-grade integration.

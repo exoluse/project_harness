@@ -16,13 +16,13 @@ RUNTIME_DIRECTORIES = [
 ]
 
 
-GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, the active plan, and `HANDOFF.md`. Run `python scripts/harness.py doctor` and `status`, inspect Git status, then acquire a valid non-overlapping claim before writing. Agents may not self-approve plans, production actions, exceptions, or completion. Preserve exact verification and limitations in every handoff.\n"""
+GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. An explicit user request authorizes ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream. Plans are reference material. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
 
-GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Read it and the current harness state, verify the approved plan fingerprint, acquire the task claim, remain within its write scope, and create an exact handoff before release.\n"""
+GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. Claims and handoffs are for concurrent writers; plans and audit records are optional unless the requested risk or asserted completion state needs them.\n"""
 
-GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md` and the current harness records, verify the task gate, acquire only the approved claim scope, and finish with an exact result or handoff. Never infer human approval.\n"""
+GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md`, inspect current state and Git status, then perform the explicit user request. Use claims only for concurrent editing and records only when needed. Never infer high-risk human approval.\n"""
 
-GENERATED_CLAUDE_PROMPT = """# Claude Code Start Prompt\n\nRead `AGENTS.md`, `CLAUDE.md`, and the current harness records, verify the task gate, acquire only the approved claim scope, and finish with an exact result or handoff. Never infer human approval.\n"""
+GENERATED_CLAUDE_PROMPT = """# Claude Code Start Prompt\n\nRead `AGENTS.md` and `CLAUDE.md`, inspect current state and Git status, then perform the explicit user request. Use claims only for concurrent editing and records only when needed. Never infer high-risk human approval.\n"""
 
 GENERATED_HANDOFF = """# Current Handoff\n\nNo accepted handoff has been recorded yet. Canonical records live in `.harness/handoffs/`.\n"""
 
@@ -280,13 +280,11 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
                 "allowed_signers_sha256": "REPLACE_WITH_SHA256",
                 "decision_ledger_path": "REPLACE_WITH_ABSOLUTE_EXTERNAL_PATH",
                 "approval_types": [
-                    "PLAN",
-                    "CUSTOMER_ACCEPTANCE",
-                    "PROJECT_CLOSURE",
-                    "CHANGE",
                     "PRODUCTION_DEPLOYMENT",
                     "PRODUCTION_DATA_CHANGE",
-                    "EXCEPTION",
+                    "DESTRUCTIVE_ACTION",
+                    "SECRET_ACCESS",
+                    "CUSTOMER_ACCEPTANCE",
                 ],
             },
         )

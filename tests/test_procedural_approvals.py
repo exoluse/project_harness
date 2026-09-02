@@ -251,20 +251,20 @@ class ProceduralApprovalTests(unittest.TestCase):
             self.assertEqual(status, "INVALID")
             self.assertIn("does not satisfy required CRYPTOGRAPHIC", reason)
 
-    def test_procedural_assurance_is_rejected_outside_plan_decisions(self):
+    def test_procedural_assurance_is_rejected_for_secret_access(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo", approve=False)
 
             with self.assertRaisesRegex(
-                HarnessError, "PROCEDURAL assurance is not permitted for CHANGE"
+                HarnessError, "PROCEDURAL assurance is not permitted for SECRET_ACCESS"
             ):
                 record_procedural_approval(
                     root,
-                    approval_type="CHANGE",
+                    approval_type="SECRET_ACCESS",
                     subject_path=".harness/plans/PLAN-0001.json",
                     decision="APPROVED",
                     approver="human-test-owner",
-                    basis="A change may not use plan-only assurance",
+                    basis="Secret access requires cryptographic assurance",
                     confirm_fingerprint=self._fingerprint(root),
                     confirmation_id="HCONF-change-0001",
                     confirmation_channel="UNIT_TEST",

@@ -35,17 +35,24 @@
     }
   ],
   "policy": {
+    "execution_mode": "USER_DIRECTED",
+    "claim_mode": "WHEN_CONCURRENT",
+    "record_mode": "ON_DEMAND",
     "human_approval_required_for": [
-      "PLAN",
       "PRODUCTION_DEPLOYMENT",
       "PRODUCTION_DATA_CHANGE",
-      "EXCEPTION",
-      "PROJECT_CLOSURE"
+      "DESTRUCTIVE_ACTION",
+      "SECRET_ACCESS",
+      "CUSTOMER_ACCEPTANCE"
     ],
     "approval_assurance": {
-      "default": "CRYPTOGRAPHIC",
+      "default": "PROCEDURAL",
       "by_type": {
-        "PLAN": "PROCEDURAL"
+        "PRODUCTION_DEPLOYMENT": "CRYPTOGRAPHIC",
+        "PRODUCTION_DATA_CHANGE": "CRYPTOGRAPHIC",
+        "DESTRUCTIVE_ACTION": "CRYPTOGRAPHIC",
+        "SECRET_ACCESS": "CRYPTOGRAPHIC",
+        "CUSTOMER_ACCEPTANCE": "CRYPTOGRAPHIC"
       }
     },
     "default_claim_ttl_minutes": 120,

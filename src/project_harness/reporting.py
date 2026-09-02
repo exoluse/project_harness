@@ -53,29 +53,31 @@ def doctor_report(root: Path) -> dict[str, Any]:
     issues = validate_project(root)
     code, _output = run_git(root, "rev-parse", "--is-inside-work-tree")
     authority_state, authority_detail = authority_status(root)
-    plan_assurance = "NOT_REQUIRED" if user_directed(root) else "UNKNOWN"
-    plan_assurance_detail = (
-        "Plans are reference material in USER_DIRECTED mode"
-        if user_directed(root)
-        else "Unable to determine PLAN approval assurance"
-    )
+    directed = False
+    plan_assurance = "UNKNOWN"
+    plan_assurance_detail = "Unable to determine PLAN approval assurance"
     try:
-        if not user_directed(root):
+        directed = user_directed(root)
+        if directed:
+            plan_assurance = "NOT_REQUIRED"
+            plan_assurance_detail = "Plans are reference material in USER_DIRECTED mode"
+        else:
             plan_assurance = required_approval_assurance(root, "PLAN")
         state = load_json(root / HARNESS_DIR / "state.json")
         active_plan = state.get("active_plan")
-        if not user_directed(root) and isinstance(active_plan, str):
+        if not directed and isinstance(active_plan, str):
             plan_assurance = effective_approval_assurance(
                 root,
                 "PLAN",
                 subject=load_json(record_path(root, "plan", active_plan)),
             )
-        plan_assurance_detail = (
-            "Direct owner confirmation is available; identity is not "
-            "cryptographically authenticated"
-            if plan_assurance == "PROCEDURAL"
-            else authority_detail
-        )
+        if not directed:
+            plan_assurance_detail = (
+                "Direct owner confirmation is available; identity is not "
+                "cryptographically authenticated"
+                if plan_assurance == "PROCEDURAL"
+                else authority_detail
+            )
     except HarnessError as exc:
         # Doctor must still return the validation diagnosis for malformed state.
         plan_assurance_detail = str(exc)

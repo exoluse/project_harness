@@ -4,7 +4,10 @@
   "kind": "plan",
   "title": "Project Agent Harness bootstrap implementation",
   "version": "1.0.0",
-  "status": "APPROVED",
+  "status": "CLOSED",
+  "execution_role": "HISTORICAL_BOOTSTRAP_REFERENCE",
+  "retired_from_execution_at": "2026-09-02T05:30:00Z",
+  "retirement_reason": "Bootstrap plan retained for history; USER_DIRECTED policy now governs routine execution",
   "approval_dependencies": [
     ".harness/project.json",
     ".harness/requirements/REQ-0001.json",

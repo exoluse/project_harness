@@ -35,7 +35,14 @@ from .core import (
     sha256_file,
 )
 from .schema_validation import SCHEMA_FILES, SchemaSet
-from .policy import CLAIM_MODES, EXECUTION_MODES, RECORD_MODES, record_mode
+from .policy import (
+    CLAIM_MODES,
+    EXECUTION_MODES,
+    RECORD_MODES,
+    approval_required,
+    record_mode,
+    user_directed,
+)
 
 
 @dataclass(frozen=True)
@@ -1165,11 +1172,16 @@ def validate_project(root: Path) -> list[Issue]:
                             )
                         )
             status, reason = approval_status(root, record)
-            if status == "STALE":
+            approval_is_active = (
+                not user_directed(root)
+                or approval_required(root, str(record.get("approval_type")))
+                or state.get("active_decision") == record_id
+            )
+            if status == "STALE" and approval_is_active:
                 issues.append(_issue("WARNING", "STALE_APPROVAL", reason, path))
-            elif status == "SUPERSEDED":
+            elif status == "SUPERSEDED" and approval_is_active:
                 issues.append(_issue("WARNING", "SUPERSEDED_APPROVAL", reason, path))
-            elif status == "INVALID":
+            elif status == "INVALID" and approval_is_active:
                 issues.append(_issue("ERROR", "INVALID_APPROVAL", reason, path))
         elif kind == "change":
             for reference in [*_refs(record.get("source_refs")), *_refs(record.get("affects"))]:
@@ -1281,7 +1293,8 @@ def validate_project(root: Path) -> list[Issue]:
                 issues.append(_issue("ERROR", "DANGLING_REFERENCE", f"result references missing task {task_id}", path))
             else:
                 if (
-                    record_id in latest_result_ids
+                    record_mode(root) == "REQUIRED"
+                    and record_id in latest_result_ids
                     and record.get("task_fingerprint")
                     != subject_fingerprint(records[task_id])
                 ):
@@ -1290,7 +1303,8 @@ def validate_project(root: Path) -> list[Issue]:
                 plan_path = record_paths.get(task_plan)
                 if plan_path:
                     if (
-                        record_id in latest_result_ids
+                        record_mode(root) == "REQUIRED"
+                        and record_id in latest_result_ids
                         and record.get("plan_fingerprint")
                         != subject_fingerprint_for_path(plan_path)
                     ):
@@ -1322,7 +1336,12 @@ def validate_project(root: Path) -> list[Issue]:
             deferred_by_rework = _active_rework_claim_covers_stale_build(
                 root, record, reasons, claims, records, record_paths
             )
-            if record_id in latest_result_ids and not current and not deferred_by_rework:
+            if (
+                record_mode(root) == "REQUIRED"
+                and record_id in latest_result_ids
+                and not current
+                and not deferred_by_rework
+            ):
                 issues.append(
                     _issue(
                         "WARNING",

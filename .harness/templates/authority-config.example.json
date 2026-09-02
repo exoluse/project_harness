@@ -9,12 +9,10 @@
   "allowed_signers_sha256": "REPLACE_WITH_SHA256",
   "decision_ledger_path": "REPLACE_WITH_ABSOLUTE_EXTERNAL_PATH",
   "approval_types": [
-    "PLAN",
-    "CUSTOMER_ACCEPTANCE",
-    "PROJECT_CLOSURE",
-    "CHANGE",
     "PRODUCTION_DEPLOYMENT",
     "PRODUCTION_DATA_CHANGE",
-    "EXCEPTION"
+    "DESTRUCTIVE_ACTION",
+    "SECRET_ACCESS",
+    "CUSTOMER_ACCEPTANCE"
   ]
 }

@@ -8,7 +8,7 @@
 | `.harness/artifacts/` | `ART-` | Registered file/bundle path, media type, digest, and execution trust |
 | `.harness/requirements/` | `REQ-` | Versioned functional, non-functional, operational, and security requirements |
 | `.harness/features/` | `FUNC-` | Implementable capabilities and criterion-level completion contracts |
-| `.harness/plans/` | `PLAN-` | Versioned execution subject, workstreams, capabilities, exclusions, and verification strategy |
+| `.harness/plans/` | `PLAN-` | Optional planning reference, workstreams, dependencies, capabilities, exclusions, and verification strategy |
 | `.harness/work-items/` | `TASK-` | Bounded agent tasks, dependencies, criterion scope, write scope, locks, checks, and capability-specific approval refs |
 | `.harness/open-items/` | `OI-` | Questions, decisions, assumptions, risks, dependencies, conflicts, and blockers |
 | `.harness/evidence/` | `EVD-` | Verification observations, profiles, subject fingerprints, bindings, and limitations |
@@ -18,7 +18,7 @@
 | `.harness/reviews/` | `VRD-` | Verdicts bound to one exact result/build |
 | `.harness/handoffs/` | `HOF-` | Immutable agent-to-agent exact-state transfer records |
 
-`.harness/project.json` contains project policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` points to the active plan, materialized `active_decision`, baselines, release, and current lifecycle state. An applied plan stores the matching `decision_ref` and stable `decision_applied_at`; these state fields do not replace the approval's independently checked currentness.
+`.harness/project.json` contains execution/claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and optional active references. In `USER_DIRECTED` mode, `active_plan` and `active_decision` may be null; a historical plan remains a reference rather than execution authority.
 
 Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Cryptographic approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
 
@@ -35,7 +35,7 @@ SRC/ART -> REQ -> FUNC -> completion criterion -> TASK
 
 `trace <id>` walks incoming and outgoing references across canonical records. Feature completion criteria and project closure criteria are indexed as first-class synthetic trace nodes even though they are nested in their owner JSON record.
 
-Plan preflight checks both directions: planned requirements need realizing features, required features/criteria need implementing tasks, and tasks must stay inside the plan's requirement/feature/criterion and capability boundaries.
+When a project explicitly evaluates a plan, plan preflight checks both directions: planned requirements need realizing features, required features/criteria need implementing tasks, and tasks must stay inside the plan's declared boundaries. Routine work in `USER_DIRECTED` mode does not run this as a permission gate.
 
 High-impact work-item capabilities use `capability_approval_refs`, a capability-to-`APR-*` map included in the task fingerprint. Production deployment/data change require their matching cryptographic approval types; external writes and destructive cleanup require a cryptographic exception until dedicated approval types exist. A stale, unrelated, mismatched, or non-current reference cannot satisfy the task gate.
 
@@ -105,4 +105,4 @@ A `VRD-*` stores reviewer alias, verdict, basis/checks, result fingerprint, and 
 
 ## Project closure contract
 
-The default closure criteria are `DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS`. Each required criterion declares profiles and evidence. Project closure additionally requires required features in the active approved plan, completed and Git-integrated tasks, each latest attempt independently reviewed PASS, zero active claims, no active `G0/G1`, a closure-ready lifecycle state, exact approval dependencies, and a current cryptographic `PROJECT_CLOSURE` approval.
+The default closure criteria are `DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS`. When closure is asserted, each required criterion needs eligible evidence, no active `G0/G1`, no outstanding concurrent claims, and a closure-ready lifecycle state. `USER_DIRECTED` closure does not require an active approved plan, mandatory task results/reviews, or a cryptographic `PROJECT_CLOSURE` record. Final customer acceptance remains a separate cryptographic boundary when required.

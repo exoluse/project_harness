@@ -3,9 +3,16 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from project_harness.core import atomic_write_json, load_json, record_path
+from project_harness.collaboration import acquire_claim
+from project_harness.core import (
+    HarnessError,
+    atomic_write_json,
+    load_json,
+    record_path,
+)
 from project_harness.gates import task_start_gate
 from project_harness.lifecycle_mutations import transition_record
+from project_harness.mutation_service import authorize_claim_targets
 from project_harness.reporting import doctor_report, status_report
 from project_harness.scaffold import init_project
 
@@ -92,3 +99,38 @@ class ExecutionPolicyTests(HarnessTestCase):
 
             self.assertEqual(result["record"]["status"], "RUNNING")
             self.assertTrue(str(result["transaction"]["event_id"]).startswith("EVT-"))
+
+    def test_claimless_mutation_fails_when_a_concurrent_claim_overlaps(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            self._enable_user_directed(root)
+            acquire_claim(
+                root,
+                agent="codex",
+                task_id="TASK-0001",
+                paths=["src"],
+            )
+
+            with self.assertRaisesRegex(HarnessError, "overlaps active ownership"):
+                authorize_claim_targets(
+                    root,
+                    claim_id=None,
+                    agent="claude",
+                    targets=["src/core.py"],
+                )
+
+    def test_destructive_capability_still_requires_cryptographic_approval(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = create_ready_project(Path(temp) / "demo")
+            self._enable_user_directed(root)
+            task_path = record_path(root, "work_item", "TASK-0001")
+            task = load_json(task_path)
+            task["capabilities"].append("DESTRUCTIVE_CLEANUP")
+            atomic_write_json(task_path, task)
+
+            gate = task_start_gate(root, "TASK-0001")
+
+            self.assertFalse(gate.passed)
+            self.assertTrue(
+                any("DESTRUCTIVE_ACTION approval refs" in item for item in gate.blockers)
+            )
