@@ -644,9 +644,25 @@ def subject_fingerprint(record: dict[str, Any]) -> str:
             )
         }
     elif kind == "project":
+        projected_closure_contract = []
+        for criterion in record.get("closure_contract", []):
+            if not isinstance(criterion, dict):
+                projected_closure_contract.append(criterion)
+                continue
+            projected_closure_contract.append(
+                {
+                    key: criterion.get(key)
+                    for key in (
+                        "id",
+                        "required",
+                        "required_profiles",
+                    )
+                }
+                | {"evidence_refs": []}
+            )
         projected = {
             "required_features": record.get("required_features"),
-            "closure_contract": record.get("closure_contract"),
+            "closure_contract": projected_closure_contract,
             "policy": record.get("policy"),
         }
     else:
