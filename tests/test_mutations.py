@@ -37,6 +37,15 @@ def approve_fixture(root: Path) -> None:
 
 
 class MutationTests(HarnessTestCase):
+    def test_mutation_facade_preserves_authority_boundaries(self):
+        self.assertEqual(
+            AtomicMutationService.__module__, "project_harness.mutation_service"
+        )
+        self.assertEqual(record_evidence.__module__, "project_harness.evidence_mutations")
+        self.assertEqual(
+            transition_record.__module__, "project_harness.lifecycle_mutations"
+        )
+
     def test_project_transition_requires_current_plan_and_updates_state_atomically(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo", approve=False)
