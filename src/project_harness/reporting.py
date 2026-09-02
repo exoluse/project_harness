@@ -145,9 +145,11 @@ def status_report(root: Path) -> dict[str, Any]:
 
 
 REFERENCE_FIELDS = {
+    "required_features",
     "source_refs",
     "requirement_refs",
     "feature_refs",
+    "criterion_refs",
     "work_item_refs",
     "dependencies",
     "blocked_by",
@@ -156,38 +158,90 @@ REFERENCE_FIELDS = {
     "supports",
     "evidence_refs",
     "acceptance_criteria",
+    "condition_refs",
+    "propagated_to",
     "decision_ref",
     "plan_id",
+    "task_id",
+    "result_id",
+    "feature_id",
+    "project_id",
+    "subject_id",
     "source_ref",
 }
 
+REFERENCE_MAPPING_FIELDS = {
+    "capability_approval_refs",
+}
 
-def _collect_refs(value: Any, field: str | None = None) -> Iterable[str]:
+
+def _direct_refs(value: Any) -> Iterable[str]:
+    if isinstance(value, str) and value:
+        yield value
+    elif isinstance(value, list):
+        yield from (item for item in value if isinstance(item, str) and item)
+
+
+def _collect_reference_edges(value: Any) -> Iterable[tuple[str, str]]:
     if isinstance(value, dict):
         for key, child in value.items():
             if key in REFERENCE_FIELDS:
-                if isinstance(child, str) and child:
-                    yield child
-                elif isinstance(child, list):
-                    yield from (item for item in child if isinstance(item, str))
-            yield from _collect_refs(child, key)
+                yield from ((target, key) for target in _direct_refs(child))
+            elif key in REFERENCE_MAPPING_FIELDS and isinstance(child, dict):
+                for mapping_key, references in child.items():
+                    yield from (
+                        (target, f"{key}.{mapping_key}")
+                        for target in _direct_refs(references)
+                    )
+            yield from _collect_reference_edges(child)
     elif isinstance(value, list):
         for child in value:
-            yield from _collect_refs(child, field)
+            yield from _collect_reference_edges(child)
+
+
+def _collect_refs(value: Any, field: str | None = None) -> Iterable[str]:
+    del field  # Retained for compatibility with the previous private helper signature.
+    yield from (target for target, _edge_field in _collect_reference_edges(value))
+
+
+def _trace_record_index(root: Path) -> dict[str, dict[str, Any]]:
+    records, _paths = load_record_index(root)
+    project_path = root / HARNESS_DIR / "project.json"
+    project = load_json(project_path)
+    project_id = project.get("id")
+    if not isinstance(project_id, str) or not project_id:
+        raise HarnessError("Project record has no traceable ID")
+    if project_id in records:
+        raise HarnessError(f"Duplicate project or canonical record ID {project_id}")
+    records[project_id] = project
+    return records
 
 
 def trace_report(root: Path, start_id: str) -> dict[str, Any]:
-    records, _paths = load_record_index(root)
+    records = _trace_record_index(root)
     if start_id not in records:
-        from .core import HarnessError
-
         raise HarnessError(f"Unknown record ID: {start_id}")
-    outgoing = {record_id: sorted(set(_collect_refs(record))) for record_id, record in records.items()}
-    incoming: dict[str, list[str]] = {record_id: [] for record_id in records}
-    for source, targets in outgoing.items():
-        for target in targets:
-            if target in incoming:
-                incoming[target].append(source)
+    outgoing_edges: dict[str, list[dict[str, str]]] = {}
+    incoming_edges: dict[str, list[dict[str, str]]] = {
+        record_id: [] for record_id in records
+    }
+    for source, record in records.items():
+        edges = sorted(
+            {
+                (target, field)
+                for target, field in _collect_reference_edges(record)
+                if target in records
+            },
+            key=lambda item: (item[0], item[1]),
+        )
+        outgoing_edges[source] = [
+            {"field": field, "target": target} for target, field in edges
+        ]
+        for target, field in edges:
+            incoming_edges[target].append({"field": field, "source": source})
+    for edges in incoming_edges.values():
+        edges.sort(key=lambda item: (item["source"], item["field"]))
+
     visited: set[str] = set()
     queue = deque([start_id])
     nodes: list[dict[str, Any]] = []
@@ -197,17 +251,21 @@ def trace_report(root: Path, start_id: str) -> dict[str, Any]:
             continue
         visited.add(current)
         record = records[current]
+        outgoing = sorted({edge["target"] for edge in outgoing_edges[current]})
+        incoming = sorted({edge["source"] for edge in incoming_edges[current]})
         nodes.append(
             {
                 "id": current,
                 "kind": record.get("kind"),
                 "title": record.get("title") or record.get("claim") or "",
-                "outgoing": [target for target in outgoing[current] if target in records],
-                "incoming": sorted(incoming[current]),
+                "outgoing": outgoing,
+                "incoming": incoming,
+                "outgoing_edges": outgoing_edges[current],
+                "incoming_edges": incoming_edges[current],
             }
         )
-        queue.extend(nodes[-1]["outgoing"])
-        queue.extend(nodes[-1]["incoming"])
+        queue.extend(outgoing)
+        queue.extend(incoming)
     return {"start": start_id, "nodes": nodes}
 
 
