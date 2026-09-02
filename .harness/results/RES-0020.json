@@ -1,0 +1,34 @@
+{
+  "schema": "harness.result/v1",
+  "id": "RES-0020",
+  "kind": "result",
+  "status": "SUBMITTED",
+  "task_id": "TASK-0006",
+  "claim_id": "CLM-0021",
+  "agent": "codex",
+  "summary": "Verified repair-only initialization and fast/full distribution flow after bounded rework fix",
+  "changed_files": [
+    "README.md"
+  ],
+  "changed_file_states": {
+    "README.md": "FILE:55643c5b6fa09bfa5da7270e248a254f2d139208b4c0e65ba910fb833cf76adc"
+  },
+  "verification": [
+    {
+      "command": "python scripts/check_repo.py",
+      "outcome": "PASS"
+    }
+  ],
+  "verification_state": "PASS",
+  "evidence_refs": [],
+  "evidence_fingerprints": {},
+  "limitations": [
+    "Fast remains subset-only; no independent reviewer, browser, live environment, customer acceptance, or production action was performed"
+  ],
+  "task_fingerprint": "86e55a1b3b430bb5de39ab1cd7015c72e4f11d129d9d165662a3878ea3fc69d4",
+  "plan_fingerprint": "64010a79164114bf2ced0304a4c0af6713dc22ddeadaa0cde995796d58a2e199",
+  "base_commit": "7e201ce38fa6151a3affe33c5f549f60f152ba9e",
+  "head_commit": "3ee642a3c09584d91d6e3b918276fee5fac1a28c",
+  "submitted_at": "2026-09-02T04:37:27Z",
+  "build_fingerprint": "6cf8e7cac119adf040f55826d8f83b703046ffba3426e17f4a2b70f56b9e4a27"
+}
