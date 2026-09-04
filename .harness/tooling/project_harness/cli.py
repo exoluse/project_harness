@@ -77,7 +77,7 @@ def _print(value, as_json: bool = False) -> None:
 
 
 def cmd_init(args: argparse.Namespace) -> int:
-    root = init_project(Path(args.path), args.project_id, args.name, force=args.force)
+    root = init_project(_root(args), args.name, force=args.force)
     print(f"Initialized project harness at {root}")
     return EXIT_PASS
 
@@ -497,10 +497,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--json", action="store_true", help="emit JSON")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    init = sub.add_parser("init", help="initialize a project harness")
-    init.add_argument("path")
-    init.add_argument("--project-id", required=True)
-    init.add_argument("--name", required=True)
+    init = sub.add_parser(
+        "init", help="initialize the harness records of this repository"
+    )
+    init.add_argument(
+        "--name", help="human label for the project; defaults to the directory name"
+    )
     init.add_argument("--force", action="store_true")
     init.set_defaults(func=cmd_init)
 
@@ -510,7 +512,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     reset.add_argument(
         "--confirm",
-        help="the exact project id; required because a reset clears every record",
+        help="the harness directory name; required because a reset clears every record",
     )
     reset.add_argument(
         "--dry-run",

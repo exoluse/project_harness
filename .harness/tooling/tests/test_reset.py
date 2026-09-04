@@ -7,8 +7,9 @@ from pathlib import Path
 
 from project_harness.core import HarnessError, load_json
 from project_harness.reset import PRESERVED_RUNTIME, reset_project
-from project_harness.scaffold import init_project
 from project_harness.validation import issue_counts, validate_project
+
+from .helpers import init_harness
 
 
 def tree(root: Path, *, skip_runtime: bool = True) -> dict[str, bytes]:
@@ -27,7 +28,7 @@ def tree(root: Path, *, skip_runtime: bool = True) -> dict[str, bytes]:
 
 class ResetTests(unittest.TestCase):
     def _project(self, temp: Path, name: str = "used") -> Path:
-        return init_project(temp / name, "demo", "Demo")
+        return init_harness(temp / name)
 
     def _populate(self, root: Path) -> list[Path]:
         """Write records across every shape a reset has to clear."""
@@ -56,9 +57,9 @@ class ResetTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = self._project(Path(temp))
             self._populate(root)
-            reference = init_project(Path(temp) / "reference", "demo", "Demo")
+            reference = init_harness(Path(temp) / "reference")
 
-            reset_project(root, confirm="demo")
+            reset_project(root, confirm="used")
 
             after, expected = tree(root), tree(reference)
             self.assertEqual(sorted(after), sorted(expected))
@@ -91,20 +92,20 @@ class ResetTests(unittest.TestCase):
             extended = root / ".gitignore"
             extended.write_text("__pycache__/\nbuild/\n", encoding="utf-8")
 
-            reset_project(root, confirm="demo")
+            reset_project(root, confirm="used")
 
             self.assertEqual(source.read_text(encoding="utf-8"), "print('hello')\n")
             self.assertEqual(extended.read_text(encoding="utf-8"), "__pycache__/\nbuild/\n")
 
-    def test_reset_requires_the_exact_project_id(self):
+    def test_reset_requires_the_exact_directory_name(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self._project(Path(temp))
             before = tree(root)
 
-            for confirm in (None, "", "Demo", "demo-2"):
+            for confirm in (None, "", "Demo", "used-2"):
                 with self.assertRaises(HarnessError) as raised:
                     reset_project(root, confirm=confirm)
-                self.assertIn("--confirm demo", str(raised.exception))
+                self.assertIn("--confirm used", str(raised.exception))
             self.assertEqual(tree(root), before)
 
     def test_dry_run_reports_without_writing(self):
@@ -120,7 +121,7 @@ class ResetTests(unittest.TestCase):
             self.assertIsNone(summary["snapshot"])
             self.assertIn(".harness/plans/PLAN-0001.md", summary["removed_records"])
             self.assertIn(".harness/state.json", summary["regenerated"])
-            self.assertIn("reset --confirm demo", summary["confirm_command"])
+            self.assertIn("reset --confirm used", summary["confirm_command"])
 
     def test_snapshot_round_trips_every_removed_record(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -128,13 +129,13 @@ class ResetTests(unittest.TestCase):
             self._populate(root)
             before = tree(root)
 
-            summary = reset_project(root, confirm="demo")
+            summary = reset_project(root, confirm="used")
 
             snapshot = root / summary["snapshot"]
             for relative in summary["removed_records"] + summary["regenerated"]:
                 self.assertEqual((snapshot / "tree" / relative).read_bytes(), before[relative])
             manifest = load_json(snapshot / "reset.json")
-            self.assertEqual(manifest["project_id"], "demo")
+            self.assertEqual(manifest["root"], str(root))
             self.assertEqual(manifest["removed_records"], summary["removed_records"])
 
     def test_reset_preserves_the_human_decision_runtime(self):
@@ -147,7 +148,7 @@ class ResetTests(unittest.TestCase):
                 (runtime / name).mkdir(parents=True, exist_ok=True)
                 (runtime / name / "marker.txt").write_text("kept", encoding="utf-8")
 
-            reset_project(root, confirm="demo")
+            reset_project(root, confirm="used")
 
             self.assertFalse((runtime / "leases").exists())
             for name in PRESERVED_RUNTIME:
@@ -160,7 +161,7 @@ class ResetTests(unittest.TestCase):
             root = self._project(Path(temp))
             self._populate(root)
 
-            reset_project(root, confirm="demo")
+            reset_project(root, confirm="used")
 
             state = load_json(root / ".harness" / "state.json")
             self.assertEqual(state["lifecycle_state"], "DISCOVERY")

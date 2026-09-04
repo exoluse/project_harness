@@ -23,9 +23,11 @@ Project configuration cannot lower these categories to procedural assurance. `HU
 | Protected external authority | signer allowlist, private-key boundary, append decision ledger |
 | Protected CI/orchestrator | hostile separation and regulated enforcement |
 
-Windows authority config: `C:\ProgramData\ProjectHarness\authorities\<project-id>.json`
+Windows authority config: `C:\ProgramData\ProjectHarness\authorities\<directory>-<root-digest>.json`
 
-POSIX authority config: `/etc/project-harness/authorities/<project-id>.json`
+POSIX authority config: `/etc/project-harness/authorities/<directory>-<root-digest>.json`
+
+The name is derived from the repository root the configuration is bound to; `doctor` reports the exact path.
 
 ## Operational rules
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -8,7 +9,6 @@ import unittest
 from pathlib import Path
 
 from project_harness.constants import RECORD_DIRECTORIES
-from project_harness.scaffold import init_project
 from project_harness.collaboration import acquire_claim, result_build_fingerprint
 from project_harness.core import (
     HarnessError,
@@ -22,10 +22,19 @@ from project_harness.core import (
     utc_now,
 )
 from project_harness.reporting import decision_package
+from project_harness.schema_validation import SCHEMA_DIR
+from project_harness.scaffold import init_project
 from project_harness.validation import issue_counts, validate_project
 
 from . import REPO
-from .helpers import HarnessTestCase, add_verified_evidence, create_ready_project, write_record
+from .helpers import (
+    HarnessTestCase,
+    add_verified_evidence,
+    copy_harness_tree,
+    create_ready_project,
+    init_harness,
+    write_record,
+)
 
 
 class ScaffoldValidationTests(HarnessTestCase):
@@ -58,7 +67,7 @@ class ScaffoldValidationTests(HarnessTestCase):
 
     def test_malformed_markdown_record_fails_closed(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             path = root / ".harness" / "plans" / "PLAN-0001.md"
             path.write_text("# missing front matter\n", encoding="utf-8")
 
@@ -69,10 +78,10 @@ class ScaffoldValidationTests(HarnessTestCase):
                 [issue.as_dict() for issue in issues],
             )
 
-    def test_force_init_repairs_distribution_without_rewriting_records(self):
+    def test_force_init_repairs_structure_without_rewriting_records(self):
         with tempfile.TemporaryDirectory() as temp:
             workspace = Path(temp)
-            root = init_project(workspace / "demo", "DEMO", "Demo")
+            root = init_harness(workspace / "demo")
             project_path = root / ".harness" / "project.json"
             state_path = root / ".harness" / "state.json"
             marker_path = root / ".harness" / "requirements" / "REQ-9999.json"
@@ -81,18 +90,19 @@ class ScaffoldValidationTests(HarnessTestCase):
                 path: path.read_bytes()
                 for path in (project_path, state_path, marker_path)
             }
-            vendored_cli = root / ".harness" / "tooling" / "project_harness" / "cli.py"
-            vendored_cli.unlink()
+            shutil.rmtree(root / ".harness" / "results")
+            (root / "HANDOFF.md").unlink()
 
-            init_project(root, "DEMO", "Demo", force=True)
+            init_project(root, force=True)
 
-            self.assertTrue(vendored_cli.is_file())
+            self.assertTrue((root / ".harness" / "results" / ".gitkeep").is_file())
+            self.assertTrue((root / "HANDOFF.md").is_file())
             self.assertEqual(
                 before,
                 {path: path.read_bytes() for path in before},
             )
             with self.assertRaisesRegex(HarnessError, "repair-only"):
-                init_project(root, "OTHER", "Demo", force=True)
+                init_project(root, "Other name", force=True)
 
             orphan_root = workspace / "orphan"
             orphan_record = (
@@ -101,7 +111,7 @@ class ScaffoldValidationTests(HarnessTestCase):
             orphan_record.parent.mkdir(parents=True)
             orphan_record.write_text("{}\n", encoding="utf-8")
             with self.assertRaisesRegex(HarnessError, "without a canonical project.json"):
-                init_project(orphan_root, "ORPHAN", "Orphan", force=True)
+                init_project(orphan_root, "Orphan", force=True)
 
     def test_active_rework_claim_defers_only_covered_result_file_drift(self):
         def exercise(root: Path, claim_path: str) -> list[str]:
@@ -175,7 +185,8 @@ class ScaffoldValidationTests(HarnessTestCase):
 
     def test_init_creates_required_structure(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = copy_harness_tree(Path(temp) / "demo")
+            init_project(root, "Demo")
             self.assertTrue((root / "AGENTS.md").is_file())
             self.assertTrue((root / "CLAUDE.md").is_file())
             self.assertEqual(
@@ -224,17 +235,6 @@ class ScaffoldValidationTests(HarnessTestCase):
                     "work-items/*.md text eol=lf\n"
                 ),
             )
-            root_schemas = sorted((root / "schemas").glob("*.json"))
-            vendored_schemas = sorted(
-                (
-                    root / ".harness" / "tooling" / "project_harness" / "assets" / "schemas"
-                ).glob("*.json")
-            )
-            self.assertGreaterEqual(len(root_schemas), 8)
-            self.assertEqual(
-                [path.name for path in root_schemas],
-                [path.name for path in vendored_schemas],
-            )
             self.assertEqual(issue_counts(validate_project(root))["errors"], 0)
             result = subprocess.run(
                 [sys.executable, "scripts/harness.py", "status"],
@@ -246,36 +246,11 @@ class ScaffoldValidationTests(HarnessTestCase):
             )
             self.assertEqual(result.returncode, 0, result.stdout)
 
-            nested = root / "nested"
-            nested_result = subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/harness.py",
-                    "init",
-                    str(nested),
-                    "--project-id",
-                    "NESTED",
-                    "--name",
-                    "Nested",
-                ],
-                cwd=root,
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                check=False,
-            )
-            self.assertEqual(nested_result.returncode, 0, nested_result.stdout)
-            self.assertTrue((nested / "schemas" / "project.schema.json").is_file())
-            self.assertEqual(
-                (nested / "AGENTS.md").read_text(encoding="utf-8"),
-                (root / "AGENTS.md").read_text(encoding="utf-8"),
-            )
-            self.assertTrue((nested / "docs" / "COLLABORATION.md").is_file())
-
     def test_git_clone_preserves_scaffold_and_strict_validation(self):
         with tempfile.TemporaryDirectory() as temp:
             workspace = Path(temp)
-            root = init_project(workspace / "source", "DEMO", "Demo")
+            root = copy_harness_tree(workspace / "source")
+            init_project(root, "Demo")
             runtime_probe = root / ".harness" / "runtime" / "not-tracked.txt"
             runtime_probe.write_text("ephemeral\n", encoding="utf-8")
 
@@ -357,7 +332,7 @@ class ScaffoldValidationTests(HarnessTestCase):
             self.assertEqual(package["decision_options"][0], "APPROVED")
 
     def test_schema_files_are_valid_json(self):
-        schema_paths = list((REPO / "schemas").glob("*.json"))
+        schema_paths = list(SCHEMA_DIR.glob("*.json"))
         self.assertGreaterEqual(len(schema_paths), 8)
         for path in schema_paths:
             with self.subTest(path=path.name):

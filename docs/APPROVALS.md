@@ -20,10 +20,12 @@ PLAN approval subjects are canonical `PLAN-*.md` records. Approval fingerprints 
 
 The authority config is fixed outside the repository:
 
-- Windows: `C:\ProgramData\ProjectHarness\authorities\<project-id>.json`
-- POSIX: `/etc/project-harness/authorities/<project-id>.json`
+- Windows: `C:\ProgramData\ProjectHarness\authorities\<directory>-<root-digest>.json`
+- POSIX: `/etc/project-harness/authorities/<directory>-<root-digest>.json`
 
-It identifies the project and repository root, a pinned SSH allowed-signers file, a signature namespace, the permitted high-risk approval types, and a protected append-only decision ledger. The coding-agent account must not be able to modify the config, signer list, private key, ledger, or authoritative verifier.
+The name is derived from the repository the harness governs, so several harnesses on one machine stay distinct without any of them carrying a project identity, and `doctor` reports the exact path this repository expects.
+
+It identifies the repository root, a pinned SSH allowed-signers file, a signature namespace, the permitted high-risk approval types, and a protected append-only decision ledger. The coding-agent account must not be able to modify the config, signer list, private key, ledger, or authoritative verifier.
 
 ## Request and import flow
 

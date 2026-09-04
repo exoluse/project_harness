@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 from .constants import (
     CAPABILITY_APPROVAL_TYPES,
     HARNESS_DIR,
     PROCEDURAL_PLAN_ACTIONS,
+    PROJECT_RECORD_ID,
     RECORD_DIRECTORIES,
 )
 from .core import HarnessError, atomic_write_json, atomic_write_text, load_json, utc_now
@@ -21,99 +21,52 @@ RUNTIME_DIRECTORIES = [
 ]
 
 
-ASSETS = Path(__file__).resolve().parent / "assets"
-
-# Every file the distribution hands to a project lives under ``assets`` and is
-# packaged with the runtime, so a generated project receives the same policy,
-# schemas, and scripts whether ``init`` ran from a source checkout, a vendored
-# runtime, or an installed package.  Guidance and scripts are written only when
-# absent; a project may extend its own copies.
-GUIDANCE_FILES = (
-    "AGENTS.md",
-    "CLAUDE.md",
-    "CODEX_START_PROMPT.md",
-    "CLAUDE_START_PROMPT.md",
+GENERATED_HANDOFF = (
+    "# Current Handoff\n\nNo accepted handoff has been recorded yet. "
+    "Canonical records live in `.harness/handoffs/`.\n"
 )
-SCRIPT_FILES = ("harness.py", "check_repo.py")
 
-GENERATED_HANDOFF = """# Current Handoff\n\nNo accepted handoff has been recorded yet. Canonical records live in `.harness/handoffs/`.\n"""
-
-
-def asset_text(relative: str) -> str:
-    path = ASSETS / relative
-    if not path.is_file():
-        raise HarnessError(f"Harness distribution asset is missing: {relative}")
-    return path.read_text(encoding="utf-8")
-
-
-def _install_runtime(harness: Path) -> None:
-    source_package = Path(__file__).resolve().parent
-    target_package = (harness / "tooling" / "project_harness").resolve()
-    if not (ASSETS / "schemas").is_dir():
-        raise HarnessError("Harness schema assets are missing from the distribution")
-    # Initializing the template folder itself: the runtime is already in place.
-    if target_package != source_package:
-        target_package.mkdir(parents=True, exist_ok=True)
-        for source in sorted(source_package.glob("*.py")):
-            atomic_write_text(
-                target_package / source.name, source.read_text(encoding="utf-8")
-            )
-        for source in sorted(ASSETS.rglob("*")):
-            if not source.is_file() or "__pycache__" in source.parts:
-                continue
-            relative = source.relative_to(source_package)
-            atomic_write_text(
-                target_package / relative, source.read_text(encoding="utf-8")
-            )
-    # Operator-visible copy; the vendored runtime carries the canonical set.
-    for source in sorted((ASSETS / "schemas").glob("*.json")):
-        atomic_write_text(
-            harness.parent / "schemas" / source.name, source.read_text(encoding="utf-8")
-        )
+# Files a harness owns but a project may extend.  They are written only when
+# absent, so re-running init never overwrites an operator's version.
+GENERATED_FILES = {
+    ".gitignore": "__pycache__/\n*.py[cod]\n.venv/\n.harness/runtime/\n",
+    "HANDOFF.md": GENERATED_HANDOFF,
+    ".harness/.gitattributes": (
+        "*.json text eol=lf\n"
+        "plans/*.md text eol=lf\n"
+        "work-items/*.md text eol=lf\n"
+    ),
+    ".harness/.gitignore": "/runtime/\n",
+    ".harness/templates/allowed_signers.example": (
+        "# Documentation only. Never use a repository file as the approval trust root.\n"
+    ),
+}
 
 
-def _install_guidance(root: Path) -> None:
-    for relative in GUIDANCE_FILES:
-        target = root / relative
-        if not target.exists():
-            atomic_write_text(target, asset_text(f"guidance/{relative}"))
-    for source in sorted((ASSETS / "guidance" / "docs").glob("*.md")):
-        target = root / "docs" / source.name
-        if not target.exists():
-            atomic_write_text(target, source.read_text(encoding="utf-8"))
-    for relative in SCRIPT_FILES:
-        target = root / "scripts" / relative
-        if not target.exists():
-            atomic_write_text(target, asset_text(f"scripts/{relative}"))
+def init_project(path: Path, name: str | None = None, *, force: bool = False) -> Path:
+    """Initialize the harness records of the repository at ``path``.
 
-
-def init_project(path: Path, project_id: str, name: str, *, force: bool = False) -> Path:
-    """Create a harness, or safely repair its distribution when forced.
-
-    Repair never rewrites canonical project identity, lifecycle state, or records.
+    A harness governs one project, and that project is the repository it sits
+    in, so this creates records rather than generating a project somewhere else.
+    The runtime, guidance, and scripts are already part of the tree; ``init``
+    adds the canonical project record, lifecycle state, and the record
+    directories.  Repair never rewrites canonical identity, state, or records.
     """
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", project_id):
-        raise HarnessError(
-            "project_id must start with a letter or number and contain only "
-            "letters, numbers, dot, underscore, or hyphen"
-        )
-    if not name.strip():
-        raise HarnessError("project name must not be empty")
     root = path.resolve()
     root.mkdir(parents=True, exist_ok=True)
     harness = root / HARNESS_DIR
     project_path = harness / "project.json"
     repairing = project_path.exists()
+    existing_name: str | None = None
     if repairing:
         if not force:
             raise HarnessError(f"Project harness already exists at {root}")
         existing = load_json(project_path)
-        existing_id = existing.get("id") if isinstance(existing, dict) else None
         existing_name = existing.get("name") if isinstance(existing, dict) else None
-        if existing_id != project_id or existing_name != name:
+        if name is not None and name.strip() != existing_name:
             raise HarnessError(
-                "init --force is repair-only: project id and name must exactly "
-                "match the existing canonical project record"
+                "init --force is repair-only: --name must match the existing "
+                "canonical project record, or be omitted"
             )
     elif harness.exists() and any(
         candidate.is_file()
@@ -124,6 +77,12 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
             "Cannot initialize over harness records without a canonical "
             "project.json; recover or remove the ambiguous records explicitly"
         )
+
+    # The directory the harness lives in names the project when nobody says
+    # otherwise; the name is a human label, never an addressing key.
+    project_name = (name or "").strip() or existing_name or root.name
+    if not project_name:
+        raise HarnessError("project name must not be empty")
 
     for directory in sorted({value[0] for value in RECORD_DIRECTORIES.values()}):
         record_directory = harness / directory
@@ -136,61 +95,53 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
 
     if not repairing:
         created = utc_now()
-        atomic_write_json(project_path, fresh_project_record(project_id, name, created))
-        atomic_write_json(
-            harness / "state.json", fresh_state_record(project_id, created)
-        )
+        atomic_write_json(project_path, fresh_project_record(project_name, created))
+        atomic_write_json(harness / "state.json", fresh_state_record(created))
 
-    _install_guidance(root)
-
-    root_files = {
-        ".gitignore": "__pycache__/\n*.py[cod]\n.venv/\n.harness/runtime/\n",
-        "HANDOFF.md": GENERATED_HANDOFF,
-        ".harness/.gitattributes": (
-            "*.json text eol=lf\n"
-            "plans/*.md text eol=lf\n"
-            "work-items/*.md text eol=lf\n"
-        ),
-        ".harness/.gitignore": "/runtime/\n",
-        ".harness/templates/allowed_signers.example": "# Documentation only. Never use a repository file as the approval trust root.\n",
-    }
-    for relative, content in root_files.items():
+    for relative, content in GENERATED_FILES.items():
         target = root / relative
         if not target.exists():
             atomic_write_text(target, content)
     authority_example = harness / "templates" / "authority-config.example.json"
     if not authority_example.exists():
-        atomic_write_json(
-            authority_example,
-            {
-                "schema": "harness.authority/v1",
-                "project_id": project_id,
-                "authority_id": "REPLACE_WITH_PROTECTED_AUTHORITY_ID",
-                "repository_root": str(root),
-                "protection": "OS_ACL_OR_EXTERNAL_BROKER",
-                "signature_namespace": "project-harness",
-                "allowed_signers_path": "REPLACE_WITH_ABSOLUTE_EXTERNAL_PATH",
-                "allowed_signers_sha256": "REPLACE_WITH_SHA256",
-                "decision_ledger_path": "REPLACE_WITH_ABSOLUTE_EXTERNAL_PATH",
-                "approval_types": [
-                    "PRODUCTION_DEPLOYMENT",
-                    "PRODUCTION_DATA_CHANGE",
-                    "DESTRUCTIVE_ACTION",
-                    "SECRET_ACCESS",
-                    "CUSTOMER_ACCEPTANCE",
-                ],
-            },
-        )
-    _install_runtime(harness)
+        atomic_write_json(authority_example, authority_config_example(root))
     return root
 
 
-def fresh_project_record(project_id: str, name: str, created: str) -> dict:
+def authority_config_example(root: Path) -> dict:
+    """The external authority configuration this harness expects.
+
+    It is bound to the repository root rather than to a project name: the
+    verifier locates the file by that root and refuses a configuration that
+    declares a different one.  ``doctor`` reports the exact path it must be
+    installed at.
+    """
+
+    return {
+        "schema": "harness.authority/v1",
+        "authority_id": "REPLACE_WITH_PROTECTED_AUTHORITY_ID",
+        "repository_root": str(root),
+        "protection": "OS_ACL_OR_EXTERNAL_BROKER",
+        "signature_namespace": "project-harness",
+        "allowed_signers_path": "REPLACE_WITH_ABSOLUTE_EXTERNAL_PATH",
+        "allowed_signers_sha256": "REPLACE_WITH_SHA256",
+        "decision_ledger_path": "REPLACE_WITH_ABSOLUTE_EXTERNAL_PATH",
+        "approval_types": [
+            "PRODUCTION_DEPLOYMENT",
+            "PRODUCTION_DATA_CHANGE",
+            "DESTRUCTIVE_ACTION",
+            "SECRET_ACCESS",
+            "CUSTOMER_ACCEPTANCE",
+        ],
+    }
+
+
+def fresh_project_record(name: str, created: str) -> dict:
     """The canonical project record a newly initialized harness carries."""
 
     return {
         "schema": "harness.project/v1",
-        "id": project_id,
+        "id": PROJECT_RECORD_ID,
         "kind": "project",
         "name": name,
         "schema_version": 1,
@@ -245,12 +196,11 @@ def fresh_project_record(project_id: str, name: str, created: str) -> dict:
     }
 
 
-def fresh_state_record(project_id: str, created: str) -> dict:
+def fresh_state_record(created: str) -> dict:
     """The canonical state record a newly initialized harness carries."""
 
     return {
         "schema": "harness.state/v1",
-        "project_id": project_id,
         "lifecycle_state": "DISCOVERY",
         "current_plan": None,
         "active_plan": None,

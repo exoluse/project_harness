@@ -57,7 +57,7 @@ APPROVAL_SUBJECT_KINDS = {
 }
 
 SIGNED_REQUEST_FIELDS = (
-    "project_id",
+    "repository_root",
     "authority_id",
     "authority_sequence",
     "decision_id",
@@ -219,7 +219,7 @@ def _write_procedural_marker(
         ),
         {
             "schema": "harness.procedural-latest/v1",
-            "project_id": expected.get("project_id"),
+            "repository_root": expected.get("repository_root"),
             "approval_type": expected.get("approval_type"),
             "subject_id": expected.get("subject_id"),
             "subject_fingerprint": expected.get("subject_fingerprint"),
@@ -256,7 +256,7 @@ def _verify_procedural_marker(
             f"{marker.get('decision_id')}"
         )
     comparisons = {
-        "project_id": expected.get("project_id"),
+        "repository_root": expected.get("repository_root"),
         "approval_type": expected.get("approval_type"),
         "subject_id": expected.get("subject_id"),
         "subject_fingerprint": expected.get("subject_fingerprint"),
@@ -336,7 +336,7 @@ def decision_mutex(root: Path, *, operation: str = "processing a human decision"
 
 def _procedural_payload(expected: dict[str, Any]) -> dict[str, Any]:
     fields = (
-        "project_id",
+        "repository_root",
         "approval_type",
         "decision",
         "authority_role",
@@ -378,20 +378,24 @@ def _procedural_provenance_payload(
 def authority_config_path(root: Path) -> Path:
     """Return the non-overridable machine trust configuration path.
 
+    A harness governs one project, so the configuration is addressed by the
+    repository it governs: a readable directory name plus a digest of the
+    absolute root, which keeps several harnesses on one machine distinct
+    without either of them carrying a project identity.
+
     Environment variables and repository policy are deliberately not consulted:
     both are writable by an ordinary coding-agent process.  Deployments that need
     a different location must wrap this verifier in a protected approval broker.
     """
 
-    project = load_json(root / HARNESS_DIR / "project.json")
-    project_id = str(project.get("id", ""))
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", project_id):
-        raise HarnessError("Project ID is unsafe for the external authority path")
+    resolved = root.resolve()
+    label = re.sub(r"[^A-Za-z0-9_.-]", "-", resolved.name).strip("-")[:48] or "harness"
+    digest = sha256_bytes(str(resolved).casefold().encode("utf-8"))[:16]
     if os.name == "nt":
         base = Path("C:/ProgramData/ProjectHarness/authorities")
     else:
         base = Path("/etc/project-harness/authorities")
-    return base / f"{project_id}.json"
+    return base / f"{label}-{digest}.json"
 
 
 def _outside_repository(root: Path, path: Path, label: str) -> Path:
@@ -406,10 +410,8 @@ def _outside_repository(root: Path, path: Path, label: str) -> Path:
 def _load_authority_config(root: Path) -> dict[str, Any]:
     config_path = _outside_repository(root, authority_config_path(root), "authority config")
     config = load_json(config_path)
-    project = load_json(root / HARNESS_DIR / "project.json")
     required = {
         "schema": "harness.authority/v1",
-        "project_id": project.get("id"),
         "protection": "OS_ACL_OR_EXTERNAL_BROKER",
     }
     for field, expected in required.items():
@@ -513,8 +515,8 @@ def _validated_ledger_entries(
             raise HarnessError(f"Invalid authority ledger request {request_path}: {exc}") from exc
         if not isinstance(request, dict) or request.get("schema") != "harness.approval-request/v1":
             raise HarnessError(f"Invalid authority ledger request schema: {request_path}")
-        if request.get("project_id") != config.get("project_id"):
-            raise HarnessError(f"Authority ledger request has wrong project: {request_path}")
+        if request.get("repository_root") != config.get("repository_root"):
+            raise HarnessError(f"Authority ledger request has wrong repository: {request_path}")
         if request.get("authority_id") != config.get("authority_id"):
             raise HarnessError(f"Authority ledger request has wrong authority: {request_path}")
         sequence = request.get("authority_sequence")
@@ -551,7 +553,7 @@ def _validated_ledger_entries(
 
 def _attestation_expected(
     *,
-    project_id: str,
+    repository_root: str,
     authority_id: str,
     authority_sequence: int,
     decision_id: str,
@@ -571,7 +573,7 @@ def _attestation_expected(
     assurance: str,
 ) -> dict[str, Any]:
     return {
-        "project_id": project_id,
+        "repository_root": repository_root,
         "authority_id": authority_id,
         "authority_sequence": authority_sequence,
         "decision_id": decision_id,
@@ -884,7 +886,7 @@ def _record_approval_unlocked(
                 + "; ".join(gate.blockers)
             )
     fingerprint = subject_fingerprint_for_path(path)
-    project_id = str(load_json(root / HARNESS_DIR / "project.json").get("id", ""))
+    repository_root = str(root.resolve())
     existing_sequences = []
     existing_records: list[dict[str, Any]] = []
     for existing_path in (root / HARNESS_DIR / "approvals").glob("APR-*.json"):
@@ -935,7 +937,7 @@ def _record_approval_unlocked(
                 f"{proposed_confirmation_id}"
             )
     expected_attestation = _attestation_expected(
-        project_id=project_id,
+        repository_root=repository_root,
         authority_id=authority_id,
         authority_sequence=authority_sequence,
         decision_id=decision_id,
@@ -992,7 +994,7 @@ def _record_approval_unlocked(
         "kind": "approval",
         "approval_type": approval_type,
         "decision": decision,
-        "project_id": project_id,
+        "repository_root": repository_root,
         "authority_id": authority_id,
         "authority_sequence": authority_sequence,
         "decision_id": decision_id,
@@ -1116,14 +1118,14 @@ def record_procedural_approval(
             "CRYPTOGRAPHIC assurance is required for: "
             + ", ".join(unsafe_actions)
         )
-    project_id = str(load_json(root / HARNESS_DIR / "project.json").get("id", ""))
+    repository_root = str(root.resolve())
     with decision_mutex(root, operation="recording a procedural human decision"):
         require_procedural_decision_writer(root)
         directory = root / HARNESS_DIR / "approvals"
         existing_records = [load_json(item) for item in directory.glob("APR-*.json")]
         authority_id = "PROCEDURAL-LOCAL"
         replay_expected = _attestation_expected(
-            project_id=project_id,
+            repository_root=repository_root,
             authority_id=authority_id,
             authority_sequence=0,
             decision_id="",
@@ -1216,7 +1218,7 @@ def record_procedural_approval(
         decision_id = f"DEC-{uuid.uuid4()}"
         decision_at = utc_now()
         expected = _attestation_expected(
-            project_id=project_id,
+            repository_root=repository_root,
             authority_id=authority_id,
             authority_sequence=authority_sequence,
             decision_id=decision_id,
@@ -1357,11 +1359,11 @@ def prepare_approval_request(
         ),
         default=0,
     ) + 1
-    project_id = str(load_json(root / HARNESS_DIR / "project.json").get("id", ""))
+    repository_root = str(root.resolve())
     request = {
         "schema": "harness.approval-request/v1",
         **_attestation_expected(
-            project_id=project_id,
+            repository_root=repository_root,
             authority_id=str(config["authority_id"]),
             authority_sequence=authority_sequence,
             decision_id=f"DEC-{uuid.uuid4()}",

@@ -18,7 +18,7 @@ from .core import (
     normalize_claim_path,
     utc_now,
 )
-from .schema_validation import SCHEMA_FILES, SchemaSet
+from .schema_validation import SCHEMA_DIR, SCHEMA_FILES, SchemaSet
 
 
 MutationValidator = Callable[[], None]
@@ -203,7 +203,7 @@ def authorize_claim_targets(
 
 def validate_records(root: Path, values: list[tuple[str, dict[str, Any]]]) -> None:
     """Validate every prospective record before transaction preparation."""
-    schemas = SchemaSet(root / "schemas")
+    schemas = SchemaSet(SCHEMA_DIR)
     errors: list[str] = []
     for kind, value in values:
         errors.extend(schemas.validate(value, SCHEMA_FILES[kind]))

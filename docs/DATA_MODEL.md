@@ -18,7 +18,7 @@
 | `.harness/reviews/` | `VRD-` | Verdicts bound to one exact result/build |
 | `.harness/handoffs/` | `HOF-` | Immutable agent-to-agent exact-state transfer records |
 
-`.harness/project.json` contains the PLAN-gated execution, claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. Before implementation, `active_plan` and `active_decision` must materialize the current human PLAN approval.
+`.harness/project.json` identifies the project only by a human `name` and a fixed `id` of `PROJECT`; it contains the PLAN-gated execution, claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. Before implementation, `active_plan` and `active_decision` must materialize the current human PLAN approval.
 
 Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Cryptographic approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
 

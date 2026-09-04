@@ -7,6 +7,10 @@ from pathlib import Path
 from typing import Any
 
 
+# The schemas describe harness records, not project content, so the runtime
+# carries the single copy instead of installing one into the project tree.
+SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
+
 SCHEMA_FILES = {
     "project": "project.schema.json",
     "state": "state.schema.json",

@@ -2,6 +2,11 @@ from __future__ import annotations
 
 HARNESS_DIR = ".harness"
 
+# A harness governs exactly one project: the repository it lives in.  The
+# project record therefore carries a fixed marker rather than a chosen
+# identity, so nothing addresses the project by name.
+PROJECT_RECORD_ID = "PROJECT"
+
 RECORD_DIRECTORIES = {
     "source": ("sources", "SRC-"),
     "artifact": ("artifacts", "ART-"),

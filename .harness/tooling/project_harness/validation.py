@@ -15,6 +15,7 @@ from .constants import (
     OPEN_ITEM_CLOSED_STATES,
     OPEN_ITEM_STATES,
     PROJECT_LIFECYCLE_STATES,
+    PROJECT_RECORD_ID,
     PROCEDURAL_APPROVAL_TYPES,
     RECORD_DIRECTORIES,
 )
@@ -34,7 +35,7 @@ from .core import (
     sha256_bytes,
     sha256_file,
 )
-from .schema_validation import SCHEMA_FILES, SchemaSet
+from .schema_validation import SCHEMA_DIR, SCHEMA_FILES, SchemaSet
 from .policy import (
     CLAIM_MODES,
     EXECUTION_MODES,
@@ -186,7 +187,7 @@ SHAPE_FIELDS: dict[str, dict[str, type]] = {
         "limitations": list,
     },
     "approval": {
-        "project_id": str,
+        "repository_root": str,
         "authority_id": str,
         "authority_sequence": int,
         "decision_id": str,
@@ -309,7 +310,8 @@ def validate_project(root: Path) -> list[Issue]:
         root / "HANDOFF.md",
         harness / "project.json",
         harness / "state.json",
-        *(root / "schemas" / name for name in sorted(set(SCHEMA_FILES.values()))),
+        # The schemas belong to the runtime, not to the project tree.
+        *(SCHEMA_DIR / name for name in sorted(set(SCHEMA_FILES.values()))),
     ]
     for path in required_files:
         if not path.is_file():
@@ -326,7 +328,7 @@ def validate_project(root: Path) -> list[Issue]:
         state = load_json(harness / "state.json")
     except HarnessError as exc:
         return [_issue("ERROR", "INVALID_JSON", str(exc))]
-    schema_set = SchemaSet(root / "schemas")
+    schema_set = SchemaSet(SCHEMA_DIR)
     for value, schema_kind, path in (
         (project, "project", harness / "project.json"),
         (state, "state", harness / "state.json"),
@@ -335,8 +337,15 @@ def validate_project(root: Path) -> list[Issue]:
             _issue("ERROR", "SCHEMA_VIOLATION", message, path)
             for message in schema_set.validate(value, SCHEMA_FILES[schema_kind])
         )
-    if state.get("project_id") != project.get("id"):
-        issues.append(_issue("ERROR", "STATE_PROJECT_MISMATCH", "state project_id does not match project id"))
+    if project.get("id") != PROJECT_RECORD_ID:
+        issues.append(
+            _issue(
+                "ERROR",
+                "PROJECT_RECORD_ID",
+                f"project record id must be {PROJECT_RECORD_ID}",
+                harness / "project.json",
+            )
+        )
     event_ids: set[str] = set()
     for event_path in sorted((harness / "events").glob("EVT-*.json")):
         try:
@@ -1231,7 +1240,7 @@ def validate_project(root: Path) -> list[Issue]:
                             {
                                 **closure_criteria[supported_id],
                                 "kind": "closure_criterion",
-                                "project_id": project.get("id"),
+                                "project_id": PROJECT_RECORD_ID,
                             }
                         )
                         if closure_fingerprints.get(supported_id) != expected:

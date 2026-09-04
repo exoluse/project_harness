@@ -9,8 +9,10 @@ from project_harness.core import HarnessError, atomic_write_json, load_json, rec
 from project_harness.gates import task_start_gate
 from project_harness.guidance import next_step
 from project_harness.lifecycle_mutations import transition_record
-from project_harness.scaffold import init_project, new_record
+from project_harness.scaffold import new_record
 from project_harness.validation import validate_project
+
+from .helpers import init_harness
 
 
 def _plan(root: Path, plan_id: str = "PLAN-0001") -> dict:
@@ -28,7 +30,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_new_plan_authorizes_routine_work_and_excludes_high_risk(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             subject = _write_plan(root, "PLAN-0001", "Login")["approval_subject"]
             self.assertEqual(
                 subject["authorized_actions"],
@@ -39,7 +41,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_new_feature_is_a_warning_until_it_is_specified(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             feature = new_record("feature", "FUNC-0001", "Login")
             path = record_path(root, "feature", "FUNC-0001")
             atomic_write_json(path, feature)
@@ -54,7 +56,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_create_work_item_links_both_sides_of_the_plan_relationship(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             created = create_work_item(
                 root,
@@ -76,7 +78,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_create_work_item_rejects_capabilities_the_plan_does_not_authorize(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             with self.assertRaises(HarnessError) as caught:
                 create_work_item(
@@ -91,7 +93,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_create_work_item_requires_an_existing_plan(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             with self.assertRaises(HarnessError) as caught:
                 create_work_item(
                     root, task_id="TASK-0001", title="Login", plan_id="PLAN-0009"
@@ -100,7 +102,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_activate_plan_is_refused_without_a_human_decision(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             create_work_item(
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
@@ -110,7 +112,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_activate_plan_cannot_bypass_the_approval_workflow(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             for plan_id in ("PLAN-0001", "PLAN-0002"):
                 _write_plan(root, plan_id, plan_id)
             create_work_item(
@@ -124,7 +126,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_activate_plan_requires_a_task(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             with self.assertRaises(HarnessError) as caught:
                 activate_plan(root, plan_id="PLAN-0001")
@@ -133,7 +135,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_execution_mode_cannot_restore_direct_plan_activation(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             create_work_item(
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
@@ -144,7 +146,7 @@ class AuthoringTests(unittest.TestCase):
 
     def test_sync_plan_restores_hand_removed_dependencies(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             create_work_item(
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
@@ -166,7 +168,7 @@ class AuthoringTests(unittest.TestCase):
 class GuidanceTests(unittest.TestCase):
     def test_fresh_project_reaches_a_startable_task_without_editing_records(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
 
             self.assertEqual(next_step(root)["state"], "NEEDS_PLAN")
             _write_plan(root, "PLAN-0001", "Login")
@@ -188,7 +190,7 @@ class GuidanceTests(unittest.TestCase):
 
     def test_next_points_at_the_repair_command_for_derived_dependencies(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             create_work_item(
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
@@ -206,7 +208,7 @@ class GuidanceTests(unittest.TestCase):
 
     def test_next_reports_the_approval_workflow_for_plan_gated_projects(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             create_work_item(
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
@@ -224,7 +226,7 @@ class GuidanceTests(unittest.TestCase):
 
     def test_next_asks_for_a_new_task_when_every_task_is_complete(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             create_work_item(
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
@@ -234,7 +236,7 @@ class GuidanceTests(unittest.TestCase):
 
     def test_next_surfaces_warnings_that_strict_validation_would_fail_on(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
             create_work_item(
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"

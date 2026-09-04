@@ -14,9 +14,8 @@ from project_harness.gates import (
     plan_preflight_gate,
     task_start_gate,
 )
-from project_harness.scaffold import init_project
 
-from .helpers import HarnessTestCase, add_verified_evidence, create_ready_project, write_record
+from .helpers import HarnessTestCase, add_verified_evidence, create_ready_project, init_harness, write_record
 
 
 class ApprovalGateTests(HarnessTestCase):
@@ -151,7 +150,7 @@ class ApprovalGateTests(HarnessTestCase):
 
     def test_fresh_project_cannot_be_approved_for_closure(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             from project_harness.approvals import record_approval
             from project_harness.core import HarnessError
 
@@ -201,7 +200,6 @@ class ApprovalGateTests(HarnessTestCase):
                 authority_config,
                 {
                     "schema": "harness.authority/v1",
-                    "project_id": "TESTPROJ",
                     "authority_id": "test-owner-ledger",
                     "repository_root": str(root.resolve()),
                     "protection": "OS_ACL_OR_EXTERNAL_BROKER",

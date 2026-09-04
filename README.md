@@ -30,30 +30,30 @@ This means:
 
 ## Use it: copy the folder
 
-This folder is the harness. Copy it (or clone it, or use it as a GitHub
-template) to where the project lives, name the project, and start:
+This folder is the harness, and the harness governs one project: the repository
+it sits in. Copy it (or clone it, or use it as a GitHub template) to where the
+project lives and start:
 
 ```powershell
 git clone <this-repository> C:\work\my-project     # or copy the folder into an existing repo
 cd C:\work\my-project
-python scripts/harness.py next                      # → NEEDS_PROJECT_IDENTITY, with the command below
-python scripts/harness.py init . --project-id MYPROJECT --name "My Project"
-python scripts/harness.py next                      # → NEEDS_PLAN
+python scripts/harness.py next                      # -> NEEDS_INIT, with the command below
+python scripts/harness.py init                      # --name is optional; the directory names it
+python scripts/harness.py next                      # -> NEEDS_PLAN
 ```
 
-`init .` writes the project identity (`.harness/project.json`, `state.json`),
-the empty record directories, and any root file that is missing; it never
-overwrites a file you already have. The runtime lives in `.harness/tooling/`,
-so the project depends on nothing outside its own tree. Dropping the same
-files into an existing repository works the same way.
+There is no project id. `project.json` carries a fixed `PROJECT` marker and a
+human `name`, `state.json` records lifecycle only, and the external approval
+authority is bound to the repository root — so nothing in the harness addresses
+a project by name, and nothing has to be kept unique across projects.
 
-Everything a project receives — the agent policy, schemas, verification
-script, and runtime — comes from `.harness/tooling/project_harness/assets/`;
-the root `AGENTS.md`, `docs/`, `schemas/`, and `scripts/` are copies of it.
-`init --force` repairs the runtime without touching canonical records.
-
-The package can also be installed (`pip install <this-folder>`) and used as
-`project-harness init <path> ...` to generate a project elsewhere.
+`init` creates the canonical project record, the lifecycle state, the empty
+record directories, and any root file that is missing; it never overwrites a
+file you already have and it never generates a project somewhere else. The
+policy, docs, schemas, scripts, and runtime are already in the tree you copied:
+the runtime and its schemas live in `.harness/tooling/project_harness/`, and
+`AGENTS.md`, `docs/`, and `scripts/` exist once, at the root. `init --force`
+repairs the record structure without touching canonical records.
 
 ## Start over: `reset`
 
@@ -63,7 +63,7 @@ canonical files:
 
 ```powershell
 python scripts/harness.py reset --dry-run                  # what it would clear
-python scripts/harness.py reset --confirm MYPROJECT        # do it
+python scripts/harness.py reset --confirm my-project       # the directory name
 ```
 
 It clears every canonical record along with `events/`, `baselines/`, and
@@ -75,13 +75,13 @@ record start at `0001` again.
 
 Files `init` does not create are never touched: your sources, your extended
 `.gitignore`, and your filled-in authority template survive. `--confirm` must
-be the exact project id, and everything the reset removes is copied to
+be the harness directory name, and everything the reset removes is copied to
 `.harness/runtime/reset-<timestamp>/` first — a git-ignored path, so a snapshot
 never enters project history.
 
-Two things deliberately survive a reset. The project's identity and policy
-(`id`, `name`, `closure_contract`, `policy`) stay, because a reset restarts the
-work rather than the project. And the human decision runtime
+Two things deliberately survive a reset. The project's name and policy
+(`name`, `closure_contract`, `policy`) stay, because a reset restarts the work
+rather than the project. And the human decision runtime
 (`human-decisions/`) stays, because its monotonic sequence and latest-decision
 markers are what make a recorded human confirmation non-replayable; a reset is
 reachable by an agent, so it must not roll back a control that bounds human
@@ -154,20 +154,24 @@ python scripts/check_repo.py full
 python scripts/check_repo.py
 ```
 
-Both tiers compile the project and run strict harness validation. `full` also runs the project's own `tests/` and reports `SKIPPED` when there are none yet, so a freshly named project passes its own verification before the first test is written. Commands stored in mutable records are never auto-executed.
+Both tiers compile the project and run strict harness validation. `full` also runs the project's own `tests/` and reports `SKIPPED` when there are none yet, so a freshly initialized project passes its own verification before the first test is written. Commands stored in mutable records are never auto-executed.
 
 `--self-test` additionally runs the harness runtime's own tests under `.harness/tooling/tests/`; a project's verification is otherwise about the project, not the harness.
 
 ## Developing the harness
 
-The runtime is edited in place at `.harness/tooling/project_harness/`; its tests sit beside it. This repository carries no project identity of its own, so `next` on a fresh checkout reports `NEEDS_PROJECT_IDENTITY` — that is the state a copied folder starts in.
+The runtime is edited in place at `.harness/tooling/project_harness/`; its tests
+sit beside it. A fresh checkout has no records yet, so `next` reports
+`NEEDS_INIT` — the state a copied folder starts in.
 
 ```powershell
-python scripts/check_repo.py full --self-test          # runtime tests on the bare template
-python scripts/harness.py init . --project-id DEV --name "Dev"   # then exercise it as a project
+python scripts/check_repo.py full --self-test   # runtime tests on a bare copy
+python scripts/harness.py init                  # then exercise it as a project
 ```
 
-A drift test fails when a root copy (`AGENTS.md`, `docs/`, `schemas/`, `scripts/`) no longer matches its asset.
+Each file exists once: the schemas ship with the runtime, and `AGENTS.md`,
+`docs/`, and `scripts/` live only at the root, so there is nothing to keep in
+sync and no packaging step that turns the harness into a project generator.
 
 ## High-risk approval
 
@@ -183,12 +187,12 @@ The protected authority configuration and ledger live outside the repository. Ag
 
 ## Key paths
 
-- `.harness/project.json`: project policy and completion contract
+- `.harness/project.json`: the project's human name, policy, and completion contract
 - `.harness/state.json`: current lifecycle, nullable discovery-time `current_plan`, and the active human PLAN decision before implementation
 - `.harness/plans/PLAN-*.md`: human-readable execution plans
 - `.harness/work-items/TASK-*.md`: human-readable executable work units
 - `.harness/events/`, `results/`, `evidence/`: on-demand audit records
-- `.harness/tooling/project_harness/`: the runtime and its `assets/` (policy, schemas, scripts)
+- `.harness/tooling/project_harness/`: the runtime and the record `schemas/` it validates against
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
 Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md).

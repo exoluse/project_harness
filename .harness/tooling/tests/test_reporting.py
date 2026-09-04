@@ -79,13 +79,16 @@ class TraceReportingTests(HarnessTestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo")
 
-            report = trace_report(root, "TESTPROJ")
+            report = trace_report(root, "PROJECT")
             nodes = {node["id"]: node for node in report["nodes"]}
 
-            self.assertIn("FUNC-0001", nodes["TESTPROJ"]["outgoing"])
-            self.assertIn("DELIVERY", nodes["TESTPROJ"]["incoming"])
-            self.assertEqual(nodes["DELIVERY"]["outgoing"], ["TESTPROJ"])
+            # The project is one node keyed by its fixed marker; the closure
+            # criteria nested inside it point back at it the way a completion
+            # criterion points at its feature.
+            self.assertIn("FUNC-0001", nodes["PROJECT"]["outgoing"])
+            self.assertIn("DELIVERY", nodes["PROJECT"]["incoming"])
+            self.assertEqual(nodes["DELIVERY"]["outgoing"], ["PROJECT"])
             self.assertIn(
                 {"field": "project_id", "source": "DELIVERY"},
-                nodes["TESTPROJ"]["incoming_edges"],
+                nodes["PROJECT"]["incoming_edges"],
             )

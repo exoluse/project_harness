@@ -10,6 +10,7 @@ from .constants import (
     HARNESS_DIR,
     NEVER_AGENT_CAPABILITIES,
     OPEN_ITEM_CLOSED_STATES,
+    PROJECT_RECORD_ID,
 )
 from .core import (
     HarnessError,
@@ -1221,7 +1222,7 @@ def project_completion_gate(
                 contract_record = {
                     **contract,
                     "kind": "closure_criterion",
-                    "project_id": project.get("id"),
+                    "project_id": PROJECT_RECORD_ID,
                 }
                 subject = evidence.get("subject")
                 fingerprints = (

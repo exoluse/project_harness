@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -16,6 +17,8 @@ from project_harness.core import (
 )
 from project_harness.lifecycle import apply_plan_decision
 from project_harness.scaffold import init_project
+
+from . import REPO
 
 
 class HarnessTestCase(unittest.TestCase):
@@ -39,6 +42,42 @@ class HarnessTestCase(unittest.TestCase):
         super().tearDown()
 
 
+# Files a harness tree carries because it is a repository, not because
+# ``init`` generates them.
+HARNESS_GUIDANCE = ("AGENTS.md", "CLAUDE.md")
+
+
+def init_harness(path: Path, name: str = "Demo") -> Path:
+    """Initialize a temporary harness the way a copied repository provides one."""
+
+    root = init_project(path, name)
+    for relative in HARNESS_GUIDANCE:
+        target = root / relative
+        if not target.exists():
+            target.write_text(
+                (REPO / relative).read_text(encoding="utf-8"), encoding="utf-8"
+            )
+    return root
+
+
+def copy_harness_tree(path: Path) -> Path:
+    """Copy this repository the way an operator starts another project.
+
+    A harness is used by copying the folder, so a test that drives the command
+    line needs the same tree an operator would have: the runtime, the scripts,
+    the guidance, and the docs, with no records yet.
+    """
+
+    path.mkdir(parents=True, exist_ok=True)
+    ignore = shutil.ignore_patterns("__pycache__", "tests")
+    shutil.copytree(REPO / ".harness" / "tooling", path / ".harness" / "tooling", ignore=ignore)
+    shutil.copytree(REPO / "scripts", path / "scripts", ignore=ignore)
+    shutil.copytree(REPO / "docs", path / "docs", ignore=ignore)
+    for name in (*HARNESS_GUIDANCE, "CODEX_START_PROMPT.md", "CLAUDE_START_PROMPT.md"):
+        shutil.copy2(REPO / name, path / name)
+    return path
+
+
 def write_record(root: Path, kind: str, record_id: str, value: dict) -> Path:
     path = record_path(root, kind, record_id)
     atomic_write_json(path, value)
@@ -46,7 +85,7 @@ def write_record(root: Path, kind: str, record_id: str, value: dict) -> Path:
 
 
 def create_ready_project(root: Path, *, approve: bool = True) -> Path:
-    init_project(root, "TESTPROJ", "Test Project")
+    init_harness(root, "Test Project")
     # Most historical fixtures intentionally exercise the legacy, plan-gated
     # compatibility mode. New-project behavior is covered separately.
     project_path = root / ".harness" / "project.json"

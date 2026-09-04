@@ -13,10 +13,9 @@ from project_harness.mutations import (
     record_evidence,
     transition_record,
 )
-from project_harness.scaffold import init_project
 from project_harness.validation import validate_project
 
-from .helpers import HarnessTestCase, create_ready_project
+from .helpers import HarnessTestCase, create_ready_project, init_harness
 
 
 def approve_fixture(root: Path) -> None:
@@ -79,7 +78,7 @@ class MutationTests(HarnessTestCase):
 
     def test_atomic_mutation_rolls_back_every_target_on_failure(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             project_path = root / ".harness" / "project.json"
             original = load_json(project_path)
             changed = {**original, "name": "Changed"}

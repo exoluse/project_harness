@@ -16,7 +16,7 @@ from .approvals import (
     effective_approval_assurance,
     required_approval_assurance,
 )
-from .constants import HARNESS_DIR
+from .constants import HARNESS_DIR, PROJECT_RECORD_ID
 from .core import (
     HarnessError,
     git_head,
@@ -125,8 +125,8 @@ def status_report(root: Path) -> dict[str, Any]:
         except (TypeError, ValueError):
             claim["lease_state"] = "INVALID"
     return {
-        "project_id": project.get("id"),
         "name": project.get("name"),
+        "root": str(root),
         "lifecycle_state": state.get("lifecycle_state"),
         "execution_mode": execution_mode(root),
         "claim_mode": claim_mode(root),
@@ -214,12 +214,11 @@ def _trace_record_index(root: Path) -> dict[str, dict[str, Any]]:
     records, _paths = load_record_index(root)
     project_path = root / HARNESS_DIR / "project.json"
     project = load_json(project_path)
-    project_id = project.get("id")
-    if not isinstance(project_id, str) or not project_id:
-        raise HarnessError("Project record has no traceable ID")
-    if project_id in records:
-        raise HarnessError(f"Duplicate project or canonical record ID {project_id}")
-    records[project_id] = project
+    if project.get("id") != PROJECT_RECORD_ID:
+        raise HarnessError(f"Project record id must be {PROJECT_RECORD_ID}")
+    if PROJECT_RECORD_ID in records:
+        raise HarnessError(f"Duplicate project or canonical record ID {PROJECT_RECORD_ID}")
+    records[PROJECT_RECORD_ID] = project
     return records
 
 
@@ -390,7 +389,7 @@ def completion_report(root: Path) -> dict[str, Any]:
         for feature_id in project.get("required_features", [])
     }
     return {
-        "project_id": project.get("id"),
+        "project": project.get("name"),
         "features": features,
         "technical_closure_preflight": project_completion_gate(
             root, require_approval=False, context=context

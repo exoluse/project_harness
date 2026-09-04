@@ -2,8 +2,8 @@
 
 The reset is defined by construction rather than by a hand-maintained list of
 things to undo: it clears everything ``init`` owns and then re-runs ``init``
-itself.  A field added to a generated project therefore cannot drift away from
-what a reset restores.
+itself.  A field added to a fresh harness therefore cannot drift away from what
+a reset restores.
 
 Files ``init`` does not create are never touched.  A project's own sources, its
 extended ``.gitignore``, and its filled-in authority template are not harness
@@ -97,20 +97,20 @@ def reset_project(
             f"No project harness to reset at {root}: {project_path} is missing"
         )
     project = load_json(project_path)
-    project_id = project.get("id")
     name = project.get("name")
-    if not isinstance(project_id, str) or not project_id:
-        raise HarnessError("Canonical project record has no usable id")
     if not isinstance(name, str) or not name:
         raise HarnessError("Canonical project record has no usable name")
+    # One harness governs one project, so the directory it lives in is the
+    # thing an operator must name to prove which tree they meant to clear.
+    token = root.name
 
     records = _record_files(root)
     regenerated = _regenerated_files(root)
     removable = records + regenerated
     runtime = _clearable_runtime(root)
     summary: dict[str, Any] = {
-        "project_id": project_id,
         "name": name,
+        "root": str(root),
         "dry_run": dry_run,
         "removed_records": [_relative(root, path) for path in records],
         "regenerated": [_relative(root, path) for path in regenerated],
@@ -120,14 +120,14 @@ def reset_project(
     }
     if dry_run:
         summary["confirm_command"] = (
-            f"python scripts/harness.py reset --confirm {project_id}"
+            f"python scripts/harness.py reset --confirm {token}"
         )
         return summary
 
-    if confirm != project_id:
+    if confirm != token:
         raise HarnessError(
             "reset rewrites this project's harness records and cannot be undone "
-            f"from Git alone; re-run it as: reset --confirm {project_id}"
+            f"from Git alone; re-run it as: reset --confirm {token}"
         )
 
     # Second-resolution timestamps collide when a reset is repeated quickly, and
@@ -150,7 +150,7 @@ def reset_project(
         snapshot / "reset.json",
         {
             "schema": "harness.reset/v1",
-            "project_id": project_id,
+            "root": str(root),
             "reset_at": utc_now(),
             "removed_records": summary["removed_records"],
             "regenerated": summary["regenerated"],
@@ -165,16 +165,14 @@ def reset_project(
         shutil.rmtree(path)
 
     # The canonical records come from the same builders ``init`` uses, so a
-    # field added to a generated project cannot drift away from what a reset
-    # restores.  ``init --force`` then repairs the rest of the distribution:
+    # field added to a fresh harness cannot drift away from what a reset
+    # restores.  ``init --force`` then repairs the rest of the structure:
     # record directories, their .gitkeep placeholders, the handoff placeholder,
-    # and any guidance, script, schema, or template file the deletions removed.
+    # and the templates the deletions removed.
     created = utc_now()
-    atomic_write_json(project_path, fresh_project_record(project_id, name, created))
-    atomic_write_json(
-        root / HARNESS_DIR / "state.json", fresh_state_record(project_id, created)
-    )
-    init_project(root, project_id, name, force=True)
+    atomic_write_json(project_path, fresh_project_record(name, created))
+    atomic_write_json(root / HARNESS_DIR / "state.json", fresh_state_record(created))
+    init_project(root, name, force=True)
 
     summary["snapshot"] = _relative(root, snapshot)
     return summary

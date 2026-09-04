@@ -14,9 +14,8 @@ from project_harness.gates import task_start_gate
 from project_harness.lifecycle_mutations import transition_project, transition_record
 from project_harness.mutation_service import authorize_claim_targets
 from project_harness.reporting import doctor_report, status_report
-from project_harness.scaffold import init_project
 
-from .helpers import HarnessTestCase, create_ready_project
+from .helpers import HarnessTestCase, create_ready_project, init_harness
 
 
 class ExecutionPolicyTests(HarnessTestCase):
@@ -31,7 +30,7 @@ class ExecutionPolicyTests(HarnessTestCase):
         atomic_write_json(project_path, project)
     def test_new_project_defaults_to_human_plan_approval(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
 
             project = load_json(root / ".harness" / "project.json")
             self.assertEqual(project["policy"]["execution_mode"], "PLAN_GATED")
@@ -63,7 +62,7 @@ class ExecutionPolicyTests(HarnessTestCase):
 
     def test_discovery_without_plan_or_task_validates_but_execution_fails_closed(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            root = init_harness(Path(temp) / "demo")
             from project_harness.validation import validate_project
 
             atomic_write_json(

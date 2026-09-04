@@ -16,7 +16,12 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterable
 
-from .constants import HARNESS_DIR, RECORD_DIRECTORIES, RECORD_EXTENSIONS
+from .constants import (
+    HARNESS_DIR,
+    PROJECT_RECORD_ID,
+    RECORD_DIRECTORIES,
+    RECORD_EXTENSIONS,
+)
 from .record_documents import (
     MarkdownRecordError,
     read_markdown_record,
@@ -296,7 +301,7 @@ def load_record_index(root: Path) -> tuple[dict[str, dict[str, Any]], dict[str, 
                 records[criterion_id] = {
                     **criterion,
                     "kind": "closure_criterion",
-                    "project_id": project.get("id"),
+                    "project_id": PROJECT_RECORD_ID,
                 }
                 paths[criterion_id] = project_path
     return records, paths

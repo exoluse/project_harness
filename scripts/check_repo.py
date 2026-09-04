@@ -77,7 +77,7 @@ def main(argv: list[str] | None = None) -> int:
         if command is not None
         else skip(
             label,
-            "no project identity yet; run `scripts/harness.py init .`"
+            "no harness records yet; run `scripts/harness.py init`"
             if label == "harness-strict"
             else "no test modules found",
         )

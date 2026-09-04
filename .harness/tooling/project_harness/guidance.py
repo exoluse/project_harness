@@ -59,15 +59,15 @@ def next_step(root: Path) -> dict[str, Any]:
     """
     root = root.resolve()
     if not (root / HARNESS_DIR / "project.json").is_file():
-        # A copied template: the runtime is here, the project identity is not.
+        # The harness is here; the records it governs have not been created yet.
         return {
-            "project_id": None,
+            "project": None,
             "execution_mode": None,
             "lifecycle_state": None,
             "current_plan": None,
-            "state": "NEEDS_PROJECT_IDENTITY",
-            "summary": "this folder carries the harness but no project yet; name it",
-            "commands": [f'{HARNESS} init . --project-id <PROJECT-ID> --name "<Project name>"'],
+            "state": "NEEDS_INIT",
+            "summary": "this repository carries the harness but no records yet",
+            "commands": [f"{HARNESS} init"],
             "details": [],
             "warnings": [],
         }
@@ -76,7 +76,7 @@ def next_step(root: Path) -> dict[str, Any]:
     project = load_json(root / HARNESS_DIR / "project.json")
 
     report: dict[str, Any] = {
-        "project_id": project.get("id"),
+        "project": project.get("name"),
         "execution_mode": execution_mode(root),
         "lifecycle_state": state.get("lifecycle_state"),
         "current_plan": state.get("current_plan"),
