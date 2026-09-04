@@ -2,9 +2,9 @@
 
 Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. One harness governs one project: the repository it lives in. A project may begin with discovery alone; before implementation, it needs a current human PLAN approval and every change has a TASK in that PLAN. A user request never substitutes for that approval.
 
-## Default operating model
+## Operating model
 
-New projects use:
+The project's policy lives in `.harness/project.json`:
 
 ```json
 {
@@ -16,7 +16,7 @@ New projects use:
 
 This means:
 
-- a newly initialized project starts in `DISCOVERY` with `current_plan: null` and no invented PLAN/TASK placeholders;
+- an initialized harness starts in `DISCOVERY` with `current_plan: null` and no invented PLAN/TASK placeholders;
 - before implementation, the project creates a `PLAN-*` and a `TASK-*` listed in it, obtains the human PLAN signature, and applies its current decision;
 - PLAN and TASK are readable `.md` documents with strict machine-validated front matter; state and audit records remain JSON;
 - every later change is represented by a TASK listed in its PLAN;
@@ -48,12 +48,13 @@ authority is bound to the repository root — so nothing in the harness addresse
 a project by name, and nothing has to be kept unique across projects.
 
 `init` creates the canonical project record, the lifecycle state, the empty
-record directories, and any root file that is missing; it never overwrites a
-file you already have and it never generates a project somewhere else. The
-policy, docs, schemas, scripts, and runtime are already in the tree you copied:
-the runtime and its schemas live in `.harness/tooling/project_harness/`, and
-`AGENTS.md`, `docs/`, and `scripts/` exist once, at the root. `init --force`
-repairs the record structure without touching canonical records.
+record directories, `HANDOFF.md`, the `.gitignore`/`.gitattributes` the harness
+owns, and the authority template. It writes each of those only when absent, and
+it never generates a project somewhere else. Everything else is already in the
+tree you copied: the runtime and its schemas live in
+`.harness/tooling/project_harness/`, and `AGENTS.md`, `docs/`, and `scripts/`
+exist once, at the root. `init --force` repairs that record structure without
+touching canonical records.
 
 ## Start over: `reset`
 
@@ -98,9 +99,13 @@ git status --short
 python scripts/harness.py next
 python scripts/harness.py new plan PLAN-0001 "Describe the change"
 python scripts/harness.py new task TASK-0001 "Describe the work" --plan PLAN-0001 --capability LOCAL_IMPLEMENTATION
-python scripts/harness.py approval prepare --type PLAN --subject PLAN-0001 ...
-# Human owner signs the prepared request outside the repository.
-python scripts/harness.py approval record --request <file> --signature <file>
+python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
+# The human project owner reviews that exact plan and decides.
+python scripts/harness.py approval confirm --type PLAN --subject .harness/plans/PLAN-0001.md `
+  --decision APPROVED --approver owner@example.com --basis "Reviewed the plan and its tasks" `
+  --confirm-fingerprint <fingerprint> --confirmation-id HCONF-plan-0001 `
+  --confirmation-channel <where the owner said it> --confirmation-reference <what they said it in> `
+  --acknowledge-procedural
 python scripts/harness.py plan apply-decision --approval APR-0001
 python scripts/harness.py transition --kind work_item --id TASK-0001 --to READY --agent codex --reason "approved plan"
 python scripts/harness.py gate task TASK-0001
@@ -114,10 +119,18 @@ git push
 
 `new task` requires `--plan` and maintains both sides of the relationship: the
 TASK's `plan_id`, the PLAN's `work_item_refs`, and the derived
-`approval_dependencies`, in one atomic mutation. `plan apply-decision` alone
-sets the approved plan and `state.current_plan` together after the human
-signature is verified. `plan sync` rebuilds derived dependencies if a record
-was edited by hand.
+`approval_dependencies`, in one atomic mutation. `plan sync` rebuilds derived
+dependencies if a record was edited by hand.
+
+Subjects are paths, not ids: an approval binds the exact file it fingerprints.
+`approval confirm` records a direct owner confirmation, which is the assurance
+this policy requires for `PLAN`; the five high-risk boundaries take the signed
+`approval prepare` / `approval record` flow instead. An agent may transcribe a
+decision the owner actually made and may never invent its provenance. Only
+`plan apply-decision` turns a recorded decision into execution authority: it
+re-verifies the approval, the plan fingerprint, and the plan preflight, then
+writes the plan's decision reference, `state.active_decision`, and the
+`APPROVED` lifecycle state. See [Human approval operations](docs/APPROVALS.md).
 
 Before push, inspect upstream divergence. Resolve conflicts without resetting or discarding either side. Force push, tag push, branch deletion, or another target requires separate explicit authorization.
 

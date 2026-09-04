@@ -2,7 +2,7 @@
 
 Routine implementation uses the PLAN approval workflow. It requires a current PLAN, a TASK listed in it, and the current human PLAN decision materialized by `plan apply-decision` before execution.
 
-Cryptographic approval is reserved for five high-risk boundaries:
+`PLAN` approval carries `PROCEDURAL` assurance by default: it records a direct confirmation from the human project owner rather than authenticating them. Cryptographic approval is reserved for five high-risk boundaries:
 
 | Approval type | Subject | Required assurance |
 |---|---|---|
@@ -12,9 +12,45 @@ Cryptographic approval is reserved for five high-risk boundaries:
 | `SECRET_ACCESS` | change | `CRYPTOGRAPHIC` |
 | `CUSTOMER_ACCEPTANCE` | feature | `CRYPTOGRAPHIC` |
 
-PLAN records are mandatory once execution is prepared, while initial discovery may have none. PLAN approval is mandatory before execution. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records. `PLAN-0001` in this repository is historical; `state.current_plan` identifies its successor.
+PLAN records are mandatory once execution is prepared, while initial discovery may have none. PLAN approval is mandatory before execution. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records.
 
-PLAN approval subjects are canonical `PLAN-*.md` records. Approval fingerprints and snapshots bind the parsed front matter and declared dependencies; the explanatory Markdown body does not grant authority. Baseline snapshots preserve the complete file for review.
+Every approval subject is named by its path, never by its id, because the decision binds the exact file that was fingerprinted. PLAN approval subjects are canonical `PLAN-*.md` records. Approval fingerprints and snapshots bind the parsed front matter and declared dependencies; the explanatory Markdown body does not grant authority. Baseline snapshots preserve the complete file for review.
+
+## Routine PLAN confirmation
+
+This is the everyday path, and it is the only approval an agent may record. The
+owner reads the exact plan, says what they decided, and the agent transcribes
+that decision against the fingerprint they saw:
+
+```powershell
+python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
+
+# The human project owner reviews that exact plan and decides.
+
+python scripts/harness.py approval confirm `
+  --type PLAN `
+  --subject .harness/plans/PLAN-0001.md `
+  --decision APPROVED `
+  --approver owner@example.com `
+  --basis "Reviewed the plan and its tasks" `
+  --confirm-fingerprint <fingerprint from above> `
+  --confirmation-id HCONF-plan-0001 `
+  --confirmation-channel <where the owner said it> `
+  --confirmation-reference <what they said it in> `
+  --acknowledge-procedural
+
+python scripts/harness.py plan apply-decision --approval APR-0001
+```
+
+The confirmation fingerprint must match the plan as it stands, the confirmation
+id must be unique and unused, and `--acknowledge-procedural` states on the
+record that this proves provenance, not identity. Editing the plan afterwards
+invalidates the decision, which is the point: the approval authorizes that
+plan, not the next one.
+
+A procedural confirmation is limited to local, safe actions. A plan that
+authorizes production, production data, destructive cleanup, or secret access
+needs `CRYPTOGRAPHIC` assurance and the signed flow below.
 
 ## Protected authority
 
