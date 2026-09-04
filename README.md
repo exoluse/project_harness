@@ -1,6 +1,6 @@
 # Project Agent Harness
 
-Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. A project may begin with discovery alone; before implementation, it needs a current human PLAN approval and every change has a TASK in that PLAN. A user request never substitutes for that approval.
+Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. One harness governs one project: the repository it lives in. A project may begin with discovery alone; before implementation, it needs a current human PLAN approval and every change has a TASK in that PLAN. A user request never substitutes for that approval.
 
 ## Default operating model
 

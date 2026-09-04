@@ -2,9 +2,11 @@
 
 This policy governs Codex, Claude Code, and every other agent in this repository. Tool adapters may add guidance but may not weaken these boundaries.
 
+The harness governs exactly one project: the repository it lives in. There is no project identity to choose or address, and no command creates a project anywhere else.
+
 ## Startup
 
-1. Read `AGENTS.md`, the tool adapter when present, `.harness/project.json`, `.harness/state.json`, and `HANDOFF.md`.
+1. Read `AGENTS.md`, the tool adapter when present, `.harness/project.json`, `.harness/state.json`, and `HANDOFF.md`. A copied harness may carry no records yet; `next` then reports `NEEDS_INIT` and `init` creates them in place.
 2. Run `python scripts/harness.py doctor`, `python scripts/harness.py next`, and `python scripts/harness.py validate --strict` when the harness is operational. `next` reports the required next step and the command that performs it; `status` remains available for the full state dump.
 3. Inspect `git status --short`. Preserve user and unknown work; never silently reset it.
 4. Classify the request as discovery/specification or execution. Discovery and specification records may be created without placeholder PLAN/TASK records; create or select both before implementation begins.
