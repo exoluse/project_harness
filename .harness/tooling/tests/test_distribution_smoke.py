@@ -172,19 +172,9 @@ class GeneratedProjectSmokeTests(unittest.TestCase):
             "--plan", "PLAN-0001",
             "--capability", "LOCAL_IMPLEMENTATION",
         )
-        self.assertEqual(_harness(root, "next")["state"], "NEEDS_PLAN_ACTIVATION")
-
-        _harness(root, "plan", "activate", "PLAN-0001")
-        self.assertEqual(_harness(root, "next")["state"], "NEEDS_TASK_READY")
-
-        _harness(
-            root,
-            "transition", "--kind", "work_item", "--id", "TASK-0001",
-            "--to", "READY", "--agent", "smoke", "--reason", "user request",
-        )
         step = _harness(root, "next")
-        self.assertEqual(step["state"], "READY", step)
-        self.assertTrue(_harness(root, "gate", "task", "TASK-0001")["passed"])
+        self.assertEqual(step["state"], "NEEDS_PLAN_APPROVAL", step)
+        self.assertTrue(any("approval prepare" in command for command in step["commands"]))
 
         validation = _harness(root, "validate")
         self.assertEqual(validation["counts"]["errors"], 0, validation)

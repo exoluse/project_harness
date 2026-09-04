@@ -12,7 +12,7 @@ high-risk action -> protected cryptographic approval
 
 `.harness/project.json` selects:
 
-- `execution_mode`: `USER_DIRECTED` or legacy `PLAN_GATED`;
+- `execution_mode`: always `PLAN_GATED`; it is not repository-configurable as an execution bypass;
 - `claim_mode`: `WHEN_CONCURRENT` or legacy `REQUIRED`;
 - `record_mode`: `ON_DEMAND` or legacy `REQUIRED`.
 
@@ -23,7 +23,7 @@ New projects use the first value in each pair. Missing fields retain legacy beha
 - Canonical records live in `.harness/` and are versioned with the repository.
 - Human-authored PLAN/TASK records use Markdown with strict YAML-style front matter; machine state and audit records use JSON.
 - `state.current_plan` may be null during initial discovery. It becomes mandatory execution context before implementation; every TASK points to that PLAN and is listed by it.
-- `state.active_plan` and `active_decision` are optional legacy/approval materialization fields; neither is needed for routine `USER_DIRECTED` execution.
+- `state.active_plan` and `active_decision` materialize the current human PLAN decision and are required before routine implementation.
 - Claims, mutexes, and mailboxes live under the Git common runtime so linked worktrees share concurrency state.
 - Protected approval configuration, allowed signers, and decision ledgers live outside the repository.
 - `HANDOFF.md` and reports are derived views, not authority.

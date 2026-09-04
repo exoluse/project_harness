@@ -25,7 +25,7 @@ from .core import (
     subject_fingerprint_for_path,
 )
 from .evaluation import EvaluationContext
-from .policy import approval_required, record_mode, user_directed
+from .policy import approval_required, record_mode
 
 
 @dataclass
@@ -699,10 +699,9 @@ def task_start_gate(
     task_criteria = set(task.get("criterion_refs", []))
     task_scope_ids = {task_id, *task_features, *task_criteria}
     plan_id = task.get("plan_id")
-    if not user_directed(root):
-        if not isinstance(plan_id, str) or not plan_id:
+    if not isinstance(plan_id, str) or not plan_id:
             blockers.append("task has no plan_id")
-        else:
+    else:
             plan = _record(root, "plan", plan_id, context)
             plan_subject = plan.get("approval_subject", {})
             if not isinstance(plan_subject, dict):
@@ -788,52 +787,6 @@ def task_start_gate(
                         warnings.append(
                             f"unresolved approval condition is outside this task: {condition_ref}"
                         )
-    else:
-        if not isinstance(plan_id, str) or not plan_id:
-            blockers.append("task has no plan_id")
-        else:
-            plan = records.get(plan_id)
-            if not plan or plan.get("kind") != "plan":
-                blockers.append(f"task reference plan {plan_id} is missing")
-            else:
-                state = load_json(root / HARNESS_DIR / "state.json")
-                if state.get("current_plan") != plan_id:
-                    blockers.append(
-                        f"task plan {plan_id} is not the current plan "
-                        f"{state.get('current_plan')}"
-                    )
-                if plan.get("status") not in {
-                    "APPROVED",
-                    "APPROVED_WITH_CONDITIONS",
-                    "ACTIVE",
-                }:
-                    blockers.append(
-                        f"task plan status {plan.get('status')} is not executable"
-                    )
-                plan_subject = plan.get("approval_subject", {})
-                if not isinstance(plan_subject, dict):
-                    blockers.append("task plan approval_subject is malformed")
-                    plan_subject = {}
-                if task_id not in plan_subject.get("work_item_refs", []):
-                    blockers.append(
-                        f"task {task_id} is not listed in current plan {plan_id}"
-                    )
-                capabilities = set(task.get("capabilities", []))
-                plan_authorized = set(plan_subject.get("authorized_actions", []))
-                plan_excluded = set(plan_subject.get("excluded_actions", []))
-                unauthorized = capabilities - plan_authorized
-                if unauthorized:
-                    blockers.append(
-                        "task requests actions outside its plan: "
-                        + ", ".join(sorted(unauthorized))
-                    )
-                excluded = capabilities.intersection(plan_excluded)
-                if excluded:
-                    blockers.append(
-                        "task requests actions excluded by its plan: "
-                        + ", ".join(sorted(excluded))
-                    )
-
     blockers.extend(_task_capability_approval_blockers(root, task, records))
 
     if task.get("status") not in {"READY", "APPROVED", "RUNNING"}:
@@ -1108,7 +1061,7 @@ def project_completion_gate(
     active_plan = state.get("active_plan")
     plan: dict[str, Any] = {}
     expected_dependencies: set[str] = set()
-    if not user_directed(root) and (not isinstance(active_plan, str) or not active_plan):
+    if not isinstance(active_plan, str) or not active_plan:
         blockers.append("project has no active plan")
     elif isinstance(active_plan, str) and active_plan:
         try:

@@ -25,7 +25,7 @@
     "policy": {
       "type": "object",
       "properties": {
-        "execution_mode": {"enum": ["USER_DIRECTED", "PLAN_GATED"]},
+        "execution_mode": {"const": "PLAN_GATED"},
         "claim_mode": {"enum": ["WHEN_CONCURRENT", "REQUIRED"]},
         "record_mode": {"enum": ["ON_DEMAND", "REQUIRED"]},
         "human_approval_required_for": {"type": "array", "items": {"type": "string"}},

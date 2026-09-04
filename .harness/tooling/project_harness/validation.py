@@ -41,7 +41,6 @@ from .policy import (
     RECORD_MODES,
     approval_required,
     record_mode,
-    user_directed,
 )
 
 
@@ -1273,8 +1272,7 @@ def validate_project(root: Path) -> list[Issue]:
                         )
             status, reason = approval_status(root, record)
             approval_is_active = (
-                not user_directed(root)
-                or approval_required(root, str(record.get("approval_type")))
+                approval_required(root, str(record.get("approval_type")))
                 or state.get("active_decision") == record_id
             )
             if status == "STALE" and approval_is_active:

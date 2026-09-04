@@ -4,7 +4,7 @@ The harness is a coordination and gate engine, not a sandbox. Mutable repository
 
 ## Authority boundary
 
-Discovery may begin without PLAN/TASK placeholders. After executable work is represented by a current PLAN and TASK, an explicit user request authorizes routine development operations, including ordinary commits, fetch, conflict resolution, and a normal push to the configured upstream. Cryptographic human approval is code-forced only for:
+Discovery may begin without PLAN/TASK placeholders. Before executable work, a current PLAN and TASK require a direct human PLAN decision that `plan apply-decision` has materialized. An explicit user request is not approval and cannot authorize routine development operations, commits, fetch, conflict resolution, or a normal push. Cryptographic human approval is code-forced for:
 
 - production deployment;
 - production data changes;
@@ -12,7 +12,7 @@ Discovery may begin without PLAN/TASK placeholders. After executable work is rep
 - secret or protected-credential access;
 - final customer acceptance.
 
-Project configuration cannot lower these categories to procedural assurance. `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability. Plans, exceptions, ordinary changes, and project-closure bookkeeping are not cryptographic execution permits.
+Project configuration cannot lower these categories to procedural assurance. `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability. PLAN confirmation, exceptions, ordinary changes, and project-closure bookkeeping are not cryptographic execution permits unless separately configured.
 
 ## Trust locations
 

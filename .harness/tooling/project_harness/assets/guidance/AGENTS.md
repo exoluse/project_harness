@@ -11,7 +11,7 @@ This policy governs Codex, Claude Code, and every other agent in this repository
 
 ## Routine execution authority
 
-A newly initialized project may remain in discovery with `state.current_plan: null` and no PLAN/TASK records. The explicit user request authorizes discovery and specification records. Before deliverable implementation begins, the project must select a current PLAN and represent the operation with a TASK listed in that PLAN. The request then authorizes execution of that TASK, including local development, file edits, tests, formatting, commits, `git fetch`, ordinary conflict resolution, and a normal push to the current branch's already-configured upstream. No PLAN approval, claim, result, event, or evidence record is required for those routine operations.
+A newly initialized project may remain in discovery with `state.current_plan: null` and no PLAN/TASK records. The explicit user request authorizes discovery and specification records. Before deliverable implementation begins, the project must have a current PLAN with a current human approval decision and a TASK listed in that PLAN. Only `plan apply-decision` may materialize that approval into the active plan. A user request may authorize discovery and planning, but it never substitutes for the human PLAN decision required before local development, file edits, tests, formatting, commits, `git fetch`, conflict resolution, or a normal push.
 
 Before a normal push, fetch the configured remote, inspect divergence, preserve dirty work, and resolve conflicts without discarding either side. Force pushes, tag pushes, branch deletion, pushing to another branch or remote, and rewriting published history require separate explicit user authorization.
 
@@ -29,13 +29,13 @@ Use a claim only when multiple agents or other writers can modify the project co
 
 ## Plans, tasks, and records
 
-`PLAN-*` and `TASK-*` are mandatory execution structure, not initialization placeholders. Do not invent bootstrap records before their content is known. Once execution is planned, `state.current_plan` identifies the current planning reference; it does not grant execution authority. Every TASK must point back to its PLAN and be listed by that PLAN. A PLAN may be validated or explicitly approved, but PLAN approval is not required in `USER_DIRECTED` mode.
+`PLAN-*` and `TASK-*` are mandatory execution structure, not initialization placeholders. Do not invent bootstrap records before their content is known. Once execution is planned, `state.current_plan` identifies the current planning reference; it does not grant execution authority. Every TASK must point back to its PLAN and be listed by that PLAN. A PLAN must be approved by the human project owner before any TASK in it is executable.
 
 PLAN and TASK records use `.md` files. Their strict YAML-style front matter is the machine-validated canonical record; the Markdown body is preserved for human explanation but does not change gates, fingerprints, or authority. Other canonical state and audit records remain JSON. Invalid front matter fails closed.
 
-Before ordinary development, ensure the current PLAN contains a TASK for the requested change and that `gate task` passes. Creating or selecting this structure is bookkeeping for scope and traceability, not a separate human approval step.
+Before ordinary development, ensure the current PLAN contains a TASK for the requested change, its human approval has been applied, and `gate task` passes.
 
-Build that structure with `new plan`, `new task --plan`, and `plan activate`. Those commands maintain the PLAN/TASK link, `state.current_plan`, and derived fields such as `approval_dependencies`, so records are not hand-edited to satisfy a gate. `plan sync` repairs derived dependencies when a record was edited directly.
+Build the PLAN/TASK structure with `new plan` and `new task --plan`. Then use `approval prepare`, human `approval record`, and `plan apply-decision`; these commands maintain the PLAN/TASK link, `state.current_plan`, active decision, and derived fields such as `approval_dependencies`, so records are not hand-edited to satisfy a gate. `plan sync` repairs derived dependencies when a record was edited directly.
 
 Results, events, and evidence are on demand:
 
@@ -58,7 +58,7 @@ Cryptographic human approval is required only for:
 
 These categories fail closed and cannot be weakened by project configuration. Agents may prepare a request but may not sign, install, infer, or self-grant the human decision. `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability.
 
-PLAN approval plus change, exception, and project-closure approval records are optional process records. Requiring PLAN/TASK before execution does not turn routine development into a human-approval workflow.
+PLAN approval is mandatory before implementation. Change, exception, and project-closure approval records remain optional except where a higher-risk policy requires them.
 
 ## Safety and verification
 

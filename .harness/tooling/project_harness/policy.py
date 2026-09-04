@@ -7,7 +7,10 @@ from .constants import HARNESS_DIR
 from .core import HarnessError, load_json
 
 
-EXECUTION_MODES = {"USER_DIRECTED", "PLAN_GATED"}
+# Implementation is always gated by a current human PLAN decision.  Keeping a
+# permissive mode here would make a repository-editable policy an authority to
+# bypass that decision.
+EXECUTION_MODES = {"PLAN_GATED"}
 CLAIM_MODES = {"WHEN_CONCURRENT", "REQUIRED"}
 RECORD_MODES = {"ON_DEMAND", "REQUIRED"}
 
@@ -26,10 +29,6 @@ def execution_mode(root: Path) -> str:
     if value not in EXECUTION_MODES:
         raise HarnessError(f"Unsupported execution mode: {value}")
     return str(value)
-
-
-def user_directed(root: Path) -> bool:
-    return execution_mode(root) == "USER_DIRECTED"
 
 
 def claim_mode(root: Path) -> str:

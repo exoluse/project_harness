@@ -18,7 +18,7 @@
 | `.harness/reviews/` | `VRD-` | Verdicts bound to one exact result/build |
 | `.harness/handoffs/` | `HOF-` | Immutable agent-to-agent exact-state transfer records |
 
-`.harness/project.json` contains execution/claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. In `USER_DIRECTED` mode, `active_plan` and `active_decision` may be null because PLAN approval is not execution authority.
+`.harness/project.json` contains the PLAN-gated execution, claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. Before implementation, `active_plan` and `active_decision` must materialize the current human PLAN approval.
 
 Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Cryptographic approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
 
@@ -41,7 +41,7 @@ SRC/ART -> REQ -> FUNC -> completion criterion -> TASK
 
 `trace <id>` walks incoming and outgoing references across canonical records. Feature completion criteria and project closure criteria are indexed as first-class synthetic trace nodes even though they are nested in their owner JSON record.
 
-When a project explicitly evaluates a plan, plan preflight checks both directions: planned requirements need realizing features, required features/criteria need implementing tasks, and tasks must stay inside the plan's declared boundaries. Routine work in `USER_DIRECTED` mode does not run this as a permission gate.
+Plan preflight checks both directions: planned requirements need realizing features, required features/criteria need implementing tasks, and tasks must stay inside the plan's declared boundaries. A current passing preflight and human PLAN decision are execution gates for routine work.
 
 High-impact work-item capabilities use `capability_approval_refs`, a capability-to-`APR-*` map included in the task fingerprint. Production deployment, production-data change, destructive cleanup, and secret access require their matching cryptographic approval types. Ordinary external Git synchronization is user-directed. A stale, unrelated, mismatched, or non-current approval reference cannot satisfy the task gate.
 
@@ -91,7 +91,7 @@ Evidence states exactly what it proves, method, environment, subject version, ex
 
 A plan's `approval_subject` includes its requirement, feature, and work-item references, workstreams, verification strategy, authorized/excluded actions, and invalidation triggers. `approval_dependencies` lists the exact canonical records snapshotted with the plan decision.
 
-An `APR-*` stores its assurance and local record sequence plus authority/decision identity, approval type, subject ID/path/fingerprint, decision, actions/conditions, baseline snapshot manifest, and attestation. A `PROCEDURAL` `PLAN` attestation records confirmation ID/channel/reference and the exact confirmed payload but does not authenticate human identity. A `CRYPTOGRAPHIC` attestation embeds the signed request and is re-evaluated against the fixed external authority and protected ledger. The latest local decision for a type/subject controls repository gates without falling back when that latest record is invalid. Procedural records must also match the Git-common latest-decision marker and global procedural authority sequence; within a cryptographic authority, the highest valid protected sequence controls.
+An `APR-*` stores its assurance and local record sequence plus authority/decision identity, approval type, subject ID/path/fingerprint, decision, actions/conditions, baseline snapshot manifest, and attestation. A `PROCEDURAL` PLAN attestation records the direct human confirmation and exact confirmed payload; it is required before any implementation but does not authenticate identity cryptographically. A `CRYPTOGRAPHIC` attestation embeds the signed request and is re-evaluated against the fixed external authority and protected ledger. The latest local decision for a type/subject controls repository gates without falling back when that latest record is invalid. Procedural records must also match the Git-common latest-decision marker and global procedural authority sequence; within a cryptographic authority, the highest valid protected sequence controls.
 
 ## Claims and shared mailboxes
 
@@ -111,4 +111,4 @@ A `VRD-*` stores reviewer alias, verdict, basis/checks, result fingerprint, and 
 
 ## Project closure contract
 
-The default closure criteria are `DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS`. When closure is asserted, each required criterion needs eligible evidence, no active `G0/G1`, no outstanding concurrent claims, and a closure-ready lifecycle state. `USER_DIRECTED` closure does not require an active approved plan, mandatory task results/reviews, or a cryptographic `PROJECT_CLOSURE` record. Final customer acceptance remains a separate cryptographic boundary when required.
+The default closure criteria are `DELIVERY`, `HANDOVER`, and `MAINTENANCE_READINESS`. When closure is asserted, each required criterion needs eligible evidence, no active `G0/G1`, no outstanding concurrent claims, and a closure-ready lifecycle state. Closure requires an active human-approved plan; a cryptographic `PROJECT_CLOSURE` record remains required only when the project policy requires it. Final customer acceptance remains a separate cryptographic boundary when required.

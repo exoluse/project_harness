@@ -8,7 +8,7 @@ from .constants import HARNESS_DIR
 from .core import load_json
 from .evaluation import EvaluationContext
 from .gates import task_start_gate
-from .policy import execution_mode, user_directed
+from .policy import execution_mode
 
 # Mirrors the startable set enforced by ``gates.task_start_gate``.
 STARTABLE_TASK_STATUSES = {"READY", "APPROVED", "RUNNING"}
@@ -153,20 +153,14 @@ def next_step(root: Path) -> dict[str, Any]:
                 ],
                 [f"candidate plans: {', '.join(candidates)}"],
             )
-        if not user_directed(root):
-            return step(
-                "NEEDS_PLAN_APPROVAL",
-                f"PLAN_GATED projects activate {target} through the approval workflow",
-                [
-                    f"{HARNESS} approval prepare --type PLAN --subject {target} ...",
-                    f"{HARNESS} approval record --request <file> --signature <file>",
-                    f"{HARNESS} plan apply-decision --approval <APR-ID>",
-                ],
-            )
         return step(
-            "NEEDS_PLAN_ACTIVATION",
-            f"no current PLAN is selected; activate {target}",
-            [f"{HARNESS} plan activate {target}"],
+            "NEEDS_PLAN_APPROVAL",
+            f"PLAN {target} needs a current human approval before it can be activated",
+            [
+                f"{HARNESS} approval prepare --type PLAN --subject {target} ...",
+                f"{HARNESS} approval record --request <file> --signature <file>",
+                f"{HARNESS} plan apply-decision --approval <APR-ID>",
+            ],
             [f"candidate plans: {', '.join(candidates)}"],
         )
 

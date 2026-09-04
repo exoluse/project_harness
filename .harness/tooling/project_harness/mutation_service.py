@@ -161,9 +161,9 @@ def authorize_claim_targets(
     normalized_targets = [normalize_claim_path(root, value) for value in targets]
     if claim_id is None:
         from .collaboration import list_claims, paths_overlap
-        from .policy import claim_mode, user_directed
+        from .policy import claim_mode
 
-        if not user_directed(root) or claim_mode(root) != "WHEN_CONCURRENT":
+        if claim_mode(root) != "WHEN_CONCURRENT":
             raise HarnessError("Canonical mutation requires an active claim")
         conflicts = [
             claim.get("id", "UNKNOWN")

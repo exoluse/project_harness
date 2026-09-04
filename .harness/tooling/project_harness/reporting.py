@@ -29,7 +29,7 @@ from .core import (
     subject_fingerprint_for_path,
 )
 from .evaluation import EvaluationContext
-from .policy import claim_mode, execution_mode, record_mode, user_directed
+from .policy import claim_mode, execution_mode, record_mode
 from .validation import issue_counts, validate_project
 
 
@@ -53,35 +53,24 @@ def doctor_report(root: Path) -> dict[str, Any]:
     issues = validate_project(root)
     code, _output = run_git(root, "rev-parse", "--is-inside-work-tree")
     authority_state, authority_detail = authority_status(root)
-    directed = False
     plan_assurance = "UNKNOWN"
     plan_assurance_detail = "Unable to determine PLAN approval assurance"
     try:
-        directed = user_directed(root)
-        if directed:
-            plan_assurance = "NOT_REQUIRED"
-            plan_assurance_detail = (
-                "Discovery may precede PLAN/TASK creation; both are required "
-                "before execution, while PLAN approval is not required in "
-                "USER_DIRECTED mode"
-            )
-        else:
-            plan_assurance = required_approval_assurance(root, "PLAN")
+        plan_assurance = required_approval_assurance(root, "PLAN")
         state = load_json(root / HARNESS_DIR / "state.json")
         active_plan = state.get("active_plan")
-        if not directed and isinstance(active_plan, str):
+        if isinstance(active_plan, str):
             plan_assurance = effective_approval_assurance(
                 root,
                 "PLAN",
                 subject=load_json(record_path(root, "plan", active_plan)),
             )
-        if not directed:
-            plan_assurance_detail = (
-                "Direct owner confirmation is available; identity is not "
-                "cryptographically authenticated"
-                if plan_assurance == "PROCEDURAL"
-                else authority_detail
-            )
+        plan_assurance_detail = (
+            "Direct owner confirmation is available; identity is not "
+            "cryptographically authenticated"
+            if plan_assurance == "PROCEDURAL"
+            else authority_detail
+        )
     except HarnessError as exc:
         # Doctor must still return the validation diagnosis for malformed state.
         plan_assurance_detail = str(exc)

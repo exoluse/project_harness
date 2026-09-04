@@ -2,20 +2,20 @@
 
 ## Default path
 
-`USER_DIRECTED` is the default execution mode. A project may start in discovery with `state.current_plan: null` and no PLAN/TASK records. When planning becomes concrete, create the PLAN; before implementation, select it as `state.current_plan` and create a TASK listed in that PLAN. The explicit user request authorizes ordinary execution of the TASK without PLAN approval.
+`PLAN_GATED` is the only execution mode. A project may start in discovery with `state.current_plan: null` and no PLAN/TASK records. When planning becomes concrete, create the PLAN and a TASK listed in it. Before implementation, a human project owner must approve the PLAN and `plan apply-decision` must materialize that current decision.
 
 ```text
-request -> discovery/specification -> identify/update PLAN -> create/select TASK -> inspect worktree
--> implement -> test -> commit -> fetch/resolve -> push
+request -> discovery/specification -> identify/update PLAN -> create/select TASK -> human approval
+-> apply decision -> inspect worktree -> implement -> test -> commit -> fetch/resolve -> push
 ```
 
 `harness.py next` reports which of those steps the project is on and the command
 that performs it. `status` describes the project; `next` says what to do about
-it. The commands it names — `new plan`, `new task --plan`, `plan activate`,
-`transition` — maintain the PLAN/TASK link and every derived field themselves, so
+it. The commands it names — `new plan`, `new task --plan`, `approval`,
+`plan apply-decision`, `transition` — maintain the PLAN/TASK link and every derived field themselves, so
 this path never requires hand-editing front matter.
 
-The PLAN/TASK link and task gate are required when execution begins. Discovery itself does not need placeholder records. A routine task does not need PLAN approval, a claim, result, event, or evidence record.
+The PLAN/TASK link, current human PLAN decision, and task gate are required when execution begins. Discovery itself does not need placeholder records.
 
 PLAN and TASK are created as `.md` files. Agents update governed fields in the YAML-style front matter and may use the body for human-readable rationale, sequencing notes, or implementation context. Only front matter participates in validation and authority.
 
@@ -49,7 +49,7 @@ OPPORTUNITY -> DISCOVERY -> CONTRACTED -> SPECIFYING -> PLANNING
 -> CUSTOMER_ACCEPTANCE -> DEPLOYING -> CLOSED -> MAINTAINING
 ```
 
-In `USER_DIRECTED` mode, `current_plan` may be null during discovery but is mandatory before `BUILDING`. `active_plan`, `active_decision`, and PLAN approval are not required for routine execution. Entering production or final customer acceptance still uses the high-risk boundary. Project closure may require evidence when the project actually claims its closure contract.
+During discovery, `current_plan` may be null. Before `BUILDING`, `active_plan` and `active_decision` must materialize a current human PLAN approval. Entering production or final customer acceptance still uses the high-risk boundary. Project closure may require evidence when the project actually claims its closure contract.
 
 ## Checks
 

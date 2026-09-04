@@ -166,10 +166,11 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
                 },
             ],
             "policy": {
-                "execution_mode": "USER_DIRECTED",
+                "execution_mode": "PLAN_GATED",
                 "claim_mode": "WHEN_CONCURRENT",
                 "record_mode": "ON_DEMAND",
                 "human_approval_required_for": [
+                    "PLAN",
                     "PRODUCTION_DEPLOYMENT",
                     "PRODUCTION_DATA_CHANGE",
                     "DESTRUCTIVE_ACTION",
@@ -179,6 +180,7 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
                 "approval_assurance": {
                     "default": "PROCEDURAL",
                     "by_type": {
+                        "PLAN": "PROCEDURAL",
                         "PRODUCTION_DEPLOYMENT": "CRYPTOGRAPHIC",
                         "PRODUCTION_DATA_CHANGE": "CRYPTOGRAPHIC",
                         "DESTRUCTIVE_ACTION": "CRYPTOGRAPHIC",

@@ -17,7 +17,6 @@ from .mutation_service import (
     authorize_claim_targets,
     validate_records,
 )
-from .policy import user_directed
 from .scaffold import new_record
 
 
@@ -262,11 +261,10 @@ def activate_plan(
 ) -> dict[str, Any]:
     """Make a plan executable and select it as the current planning reference."""
     root = root.resolve()
-    if not user_directed(root):
-        raise HarnessError(
-            "PLAN_GATED projects activate a plan through the approval workflow: "
-            "'approval prepare', 'approval record', then 'plan apply-decision'"
-        )
+    raise HarnessError(
+        "Plans become executable only through human approval: "
+        "'approval prepare', 'approval record', then 'plan apply-decision'"
+    )
     plan, plan_path = _load_plan(root, plan_id)
     status = plan.get("status")
     if status in RETIRED_PLAN_STATUSES:

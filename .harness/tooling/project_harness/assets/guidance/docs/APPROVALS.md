@@ -1,6 +1,6 @@
 # Human Approval Operations
 
-Routine implementation does not use this approval workflow. It still requires a current PLAN and a TASK listed in that PLAN; an explicit user request authorizes ordinary execution of the TASK without PLAN approval.
+Routine implementation uses the PLAN approval workflow. It requires a current PLAN, a TASK listed in it, and the current human PLAN decision materialized by `plan apply-decision` before execution.
 
 Cryptographic approval is reserved for five high-risk boundaries:
 
@@ -12,7 +12,7 @@ Cryptographic approval is reserved for five high-risk boundaries:
 | `SECRET_ACCESS` | change | `CRYPTOGRAPHIC` |
 | `CUSTOMER_ACCEPTANCE` | feature | `CRYPTOGRAPHIC` |
 
-PLAN records are mandatory once execution is prepared, while initial discovery may have none and PLAN approval is optional in `USER_DIRECTED` mode. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records. `PLAN-0001` in this repository is historical; `state.current_plan` identifies its successor.
+PLAN records are mandatory once execution is prepared, while initial discovery may have none. PLAN approval is mandatory before execution. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records. `PLAN-0001` in this repository is historical; `state.current_plan` identifies its successor.
 
 PLAN approval subjects are canonical `PLAN-*.md` records. Approval fingerprints and snapshots bind the parsed front matter and declared dependencies; the explanatory Markdown body does not grant authority. Baseline snapshots preserve the complete file for review.
 
