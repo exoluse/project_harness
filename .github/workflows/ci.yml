@@ -18,5 +18,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Full verification (compile, tests, strict validation)
-        run: python scripts/check_repo.py full
+      - name: Runtime self-tests on the bare template
+        run: python scripts/check_repo.py full --self-test
+      - name: A copied template becomes a project by command only
+        run: |
+          python scripts/harness.py init . --project-id CI --name "CI smoke"
+          python scripts/harness.py next
+          python scripts/check_repo.py full

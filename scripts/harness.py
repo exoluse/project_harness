@@ -1,15 +1,9 @@
 from pathlib import Path
 import sys
 
+# The harness runtime lives inside the project it governs.
 ROOT = Path(__file__).resolve().parents[1]
-
-# A generated project carries its pinned runtime under .harness/tooling; the
-# distribution's own checkout runs from src.  The vendored runtime wins when
-# both exist so a project always runs the tooling it was initialized with.
-for candidate in (ROOT / ".harness" / "tooling", ROOT / "src"):
-    if (candidate / "project_harness").is_dir():
-        sys.path.insert(0, str(candidate))
-        break
+sys.path.insert(0, str(ROOT / ".harness" / "tooling"))
 
 from project_harness.cli import main
 

@@ -16,10 +16,11 @@ dependencies = []
 project-harness = "project_harness.cli:main"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = {"" = ".harness/tooling"}
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = [".harness/tooling"]
+exclude = ["tests*"]
 
 [tool.setuptools.package-data]
 project_harness = ["assets/**/*"]

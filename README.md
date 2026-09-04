@@ -28,19 +28,32 @@ This means:
 
 The older `PLAN_GATED` / `REQUIRED` modes remain readable for existing repositories that intentionally need that workflow.
 
-## Install and initialize
+## Use it: copy the folder
 
-Everything a project receives — the agent policy, schemas, verification script, and runtime — ships inside the package under `project_harness/assets`, so `init` produces the same project from a source checkout, an installed package, or a generated project's own vendored runtime. The generated project is self-contained and does not depend on this source checkout:
+This folder is the harness. Copy it (or clone it, or use it as a GitHub
+template) to where the project lives, name the project, and start:
 
 ```powershell
-python -m project_harness.cli init C:\work\my-project --project-id MYPROJECT --name "My Project"
+git clone <this-repository> C:\work\my-project     # or copy the folder into an existing repo
 cd C:\work\my-project
-python scripts/harness.py doctor
-python scripts/harness.py status
-python scripts/harness.py validate --strict
+python scripts/harness.py next                      # → NEEDS_PROJECT_IDENTITY, with the command below
+python scripts/harness.py init . --project-id MYPROJECT --name "My Project"
+python scripts/harness.py next                      # → NEEDS_PLAN
 ```
 
-`init --force` repairs distributed runtime files without overwriting canonical project records. It fails closed on unsafe or incompatible targets.
+`init .` writes the project identity (`.harness/project.json`, `state.json`),
+the empty record directories, and any root file that is missing; it never
+overwrites a file you already have. The runtime lives in `.harness/tooling/`,
+so the project depends on nothing outside its own tree. Dropping the same
+files into an existing repository works the same way.
+
+Everything a project receives — the agent policy, schemas, verification
+script, and runtime — comes from `.harness/tooling/project_harness/assets/`;
+the root `AGENTS.md`, `docs/`, `schemas/`, and `scripts/` are copies of it.
+`init --force` repairs the runtime without touching canonical records.
+
+The package can also be installed (`pip install <this-folder>`) and used as
+`project-harness init <path> ...` to generate a project elsewhere.
 
 ## Routine agent workflow
 
@@ -106,9 +119,20 @@ python scripts/check_repo.py full
 python scripts/check_repo.py
 ```
 
-Both tiers compile the project and run strict harness validation. `full` also runs the test suite and reports `SKIPPED` when a project has no tests yet, so a freshly generated project passes its own verification before the first test is written. Commands stored in mutable records are never auto-executed.
+Both tiers compile the project and run strict harness validation. `full` also runs the project's own `tests/` and reports `SKIPPED` when there are none yet, so a freshly named project passes its own verification before the first test is written. Commands stored in mutable records are never auto-executed.
 
-The same `check_repo.py` serves this repository and every generated project; CI runs `check_repo.py full` on Linux and Windows.
+`--self-test` additionally runs the harness runtime's own tests under `.harness/tooling/tests/`; a project's verification is otherwise about the project, not the harness.
+
+## Developing the harness
+
+The runtime is edited in place at `.harness/tooling/project_harness/`; its tests sit beside it. This repository carries no project identity of its own, so `next` on a fresh checkout reports `NEEDS_PROJECT_IDENTITY` — that is the state a copied folder starts in.
+
+```powershell
+python scripts/check_repo.py full --self-test          # runtime tests on the bare template
+python scripts/harness.py init . --project-id DEV --name "Dev"   # then exercise it as a project
+```
+
+CI does both on Linux and Windows. A drift test fails when a root copy (`AGENTS.md`, `docs/`, `schemas/`, `scripts/`) no longer matches its asset.
 
 ## High-risk approval
 
@@ -129,6 +153,7 @@ The protected authority configuration and ledger live outside the repository. Ag
 - `.harness/plans/PLAN-*.md`: human-readable execution plans
 - `.harness/work-items/TASK-*.md`: human-readable executable work units
 - `.harness/events/`, `results/`, `evidence/`: on-demand audit records
+- `.harness/tooling/project_harness/`: the runtime and its `assets/` (policy, schemas, scripts)
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
 Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md).

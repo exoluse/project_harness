@@ -1,3 +1,0 @@
-*.json text eol=lf
-plans/*.md text eol=lf
-work-items/*.md text eol=lf
