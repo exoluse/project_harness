@@ -136,73 +136,10 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
 
     if not repairing:
         created = utc_now()
-        project = {
-            "schema": "harness.project/v1",
-            "id": project_id,
-            "kind": "project",
-            "name": name,
-            "schema_version": 1,
-            "created_at": created,
-            "required_features": [],
-            "approval_dependencies": [],
-            "closure_contract": [
-                {
-                    "id": "DELIVERY",
-                    "required": True,
-                    "required_profiles": ["DELIVERY"],
-                    "evidence_refs": [],
-                },
-                {
-                    "id": "HANDOVER",
-                    "required": True,
-                    "required_profiles": ["HANDOVER"],
-                    "evidence_refs": [],
-                },
-                {
-                    "id": "MAINTENANCE_READINESS",
-                    "required": True,
-                    "required_profiles": ["MAINTENANCE_READINESS"],
-                    "evidence_refs": [],
-                },
-            ],
-            "policy": {
-                "execution_mode": "PLAN_GATED",
-                "claim_mode": "WHEN_CONCURRENT",
-                "record_mode": "ON_DEMAND",
-                "human_approval_required_for": [
-                    "PLAN",
-                    "PRODUCTION_DEPLOYMENT",
-                    "PRODUCTION_DATA_CHANGE",
-                    "DESTRUCTIVE_ACTION",
-                    "SECRET_ACCESS",
-                    "CUSTOMER_ACCEPTANCE",
-                ],
-                "approval_assurance": {
-                    "default": "PROCEDURAL",
-                    "by_type": {
-                        "PLAN": "PROCEDURAL",
-                        "PRODUCTION_DEPLOYMENT": "CRYPTOGRAPHIC",
-                        "PRODUCTION_DATA_CHANGE": "CRYPTOGRAPHIC",
-                        "DESTRUCTIVE_ACTION": "CRYPTOGRAPHIC",
-                        "SECRET_ACCESS": "CRYPTOGRAPHIC",
-                        "CUSTOMER_ACCEPTANCE": "CRYPTOGRAPHIC",
-                    },
-                },
-                "default_claim_ttl_minutes": 120,
-            },
-        }
-        state = {
-            "schema": "harness.state/v1",
-            "project_id": project_id,
-            "lifecycle_state": "DISCOVERY",
-            "current_plan": None,
-            "active_plan": None,
-            "active_baselines": {},
-            "active_release": None,
-            "updated_at": created,
-        }
-        atomic_write_json(project_path, project)
-        atomic_write_json(harness / "state.json", state)
+        atomic_write_json(project_path, fresh_project_record(project_id, name, created))
+        atomic_write_json(
+            harness / "state.json", fresh_state_record(project_id, created)
+        )
 
     _install_guidance(root)
 
@@ -246,6 +183,81 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
         )
     _install_runtime(harness)
     return root
+
+
+def fresh_project_record(project_id: str, name: str, created: str) -> dict:
+    """The canonical project record a newly initialized harness carries."""
+
+    return {
+        "schema": "harness.project/v1",
+        "id": project_id,
+        "kind": "project",
+        "name": name,
+        "schema_version": 1,
+        "created_at": created,
+        "required_features": [],
+        "approval_dependencies": [],
+        "closure_contract": [
+            {
+                "id": "DELIVERY",
+                "required": True,
+                "required_profiles": ["DELIVERY"],
+                "evidence_refs": [],
+            },
+            {
+                "id": "HANDOVER",
+                "required": True,
+                "required_profiles": ["HANDOVER"],
+                "evidence_refs": [],
+            },
+            {
+                "id": "MAINTENANCE_READINESS",
+                "required": True,
+                "required_profiles": ["MAINTENANCE_READINESS"],
+                "evidence_refs": [],
+            },
+        ],
+        "policy": {
+            "execution_mode": "PLAN_GATED",
+            "claim_mode": "WHEN_CONCURRENT",
+            "record_mode": "ON_DEMAND",
+            "human_approval_required_for": [
+                "PLAN",
+                "PRODUCTION_DEPLOYMENT",
+                "PRODUCTION_DATA_CHANGE",
+                "DESTRUCTIVE_ACTION",
+                "SECRET_ACCESS",
+                "CUSTOMER_ACCEPTANCE",
+            ],
+            "approval_assurance": {
+                "default": "PROCEDURAL",
+                "by_type": {
+                    "PLAN": "PROCEDURAL",
+                    "PRODUCTION_DEPLOYMENT": "CRYPTOGRAPHIC",
+                    "PRODUCTION_DATA_CHANGE": "CRYPTOGRAPHIC",
+                    "DESTRUCTIVE_ACTION": "CRYPTOGRAPHIC",
+                    "SECRET_ACCESS": "CRYPTOGRAPHIC",
+                    "CUSTOMER_ACCEPTANCE": "CRYPTOGRAPHIC",
+                },
+            },
+            "default_claim_ttl_minutes": 120,
+        },
+    }
+
+
+def fresh_state_record(project_id: str, created: str) -> dict:
+    """The canonical state record a newly initialized harness carries."""
+
+    return {
+        "schema": "harness.state/v1",
+        "project_id": project_id,
+        "lifecycle_state": "DISCOVERY",
+        "current_plan": None,
+        "active_plan": None,
+        "active_baselines": {},
+        "active_release": None,
+        "updated_at": created,
+    }
 
 
 def new_record(kind: str, record_id: str, title: str) -> dict:

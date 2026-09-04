@@ -55,6 +55,38 @@ the root `AGENTS.md`, `docs/`, `schemas/`, and `scripts/` are copies of it.
 The package can also be installed (`pip install <this-folder>`) and used as
 `project-harness init <path> ...` to generate a project elsewhere.
 
+## Start over: `reset`
+
+`reset` returns a harness to the shape `init` produces, so a project that
+accumulated experimental records can start again without hand-deleting
+canonical files:
+
+```powershell
+python scripts/harness.py reset --dry-run                  # what it would clear
+python scripts/harness.py reset --confirm MYPROJECT        # do it
+```
+
+It clears every canonical record along with `events/`, `baselines/`, and
+`decisions/`, then regenerates `project.json`, `state.json`, and `HANDOFF.md`
+from the same builders `init` uses — so a reset cannot drift away from what a
+fresh project looks like. Shared runtime registries (`leases`, `mailboxes`,
+`mutations`, `id-sequences`) are cleared too, which is what makes the next
+record start at `0001` again.
+
+Files `init` does not create are never touched: your sources, your extended
+`.gitignore`, and your filled-in authority template survive. `--confirm` must
+be the exact project id, and everything the reset removes is copied to
+`.harness/runtime/reset-<timestamp>/` first — a git-ignored path, so a snapshot
+never enters project history.
+
+Two things deliberately survive a reset. The project's identity and policy
+(`id`, `name`, `closure_contract`, `policy`) stay, because a reset restarts the
+work rather than the project. And the human decision runtime
+(`human-decisions/`) stays, because its monotonic sequence and latest-decision
+markers are what make a recorded human confirmation non-replayable; a reset is
+reachable by an agent, so it must not roll back a control that bounds human
+authority.
+
 ## Routine agent workflow
 
 `next` reports the single step that moves the project forward, and every step it

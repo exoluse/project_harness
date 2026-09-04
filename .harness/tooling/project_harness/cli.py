@@ -59,6 +59,7 @@ from .reporting import (
     status_report,
     trace_report,
 )
+from .reset import reset_project
 from .scaffold import init_project, new_record
 from .validation import issue_counts, validate_project
 from .workflow import dispatch_task, review_result, submit_result
@@ -78,6 +79,14 @@ def _print(value, as_json: bool = False) -> None:
 def cmd_init(args: argparse.Namespace) -> int:
     root = init_project(Path(args.path), args.project_id, args.name, force=args.force)
     print(f"Initialized project harness at {root}")
+    return EXIT_PASS
+
+
+def cmd_reset(args: argparse.Namespace) -> int:
+    summary = reset_project(
+        _root(args), confirm=args.confirm, dry_run=args.dry_run
+    )
+    _print(summary, args.json)
     return EXIT_PASS
 
 
@@ -494,6 +503,21 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--name", required=True)
     init.add_argument("--force", action="store_true")
     init.set_defaults(func=cmd_init)
+
+    reset = sub.add_parser(
+        "reset",
+        help="restore this harness to the shape 'init' produces",
+    )
+    reset.add_argument(
+        "--confirm",
+        help="the exact project id; required because a reset clears every record",
+    )
+    reset.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="report what a reset would clear without writing",
+    )
+    reset.set_defaults(func=cmd_reset)
 
     doctor = sub.add_parser("doctor")
     doctor.set_defaults(func=cmd_doctor)

@@ -51,6 +51,14 @@ OPPORTUNITY -> DISCOVERY -> CONTRACTED -> SPECIFYING -> PLANNING
 
 During discovery, `current_plan` may be null. Before `BUILDING`, `active_plan` and `active_decision` must materialize a current human PLAN approval. Entering production or final customer acceptance still uses the high-risk boundary. Project closure may require evidence when the project actually claims its closure contract.
 
+## Starting over
+
+`reset --confirm <project-id>` returns the harness to the shape `init` produces: every canonical record, plus `events/`, `baselines/`, and `decisions/`, is cleared, and `project.json`, `state.json`, and `HANDOFF.md` are regenerated from the same builders `init` uses. Shared runtime registries are cleared so record numbering restarts at `0001`.
+
+Files `init` does not create are never touched. Project identity and policy survive, because a reset restarts the work rather than the project. The human decision runtime survives too: its monotonic sequence and latest-decision markers make a recorded human confirmation non-replayable, and a reset is agent-reachable, so it must not roll back a control that bounds human authority.
+
+`--dry-run` reports the same summary without writing and needs no confirmation. Everything a reset removes is snapshotted to `.harness/runtime/reset-<timestamp>/` first.
+
 ## Checks
 
 ```powershell
