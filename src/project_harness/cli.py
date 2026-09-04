@@ -32,6 +32,7 @@ from .constants import (
     RECORD_DIRECTORIES,
     RECORD_KIND_ALIASES,
 )
+from .authoring import DEFAULT_AGENT, activate_plan, create_work_item, sync_plan
 from .core import (
     HarnessError,
     atomic_write_json,
@@ -47,6 +48,7 @@ from .gates import (
     project_completion_gate,
     task_start_gate,
 )
+from .guidance import next_step
 from .lifecycle import apply_plan_decision
 from .mutations import record_evidence, transition_record
 from .reporting import (
@@ -111,6 +113,48 @@ def cmd_new(args: argparse.Namespace) -> int:
         "review",
     }:
         raise HarnessError(f"Unsupported generic record kind: {args.kind}")
+    if kind == "work_item":
+        if not args.plan:
+            raise HarnessError(
+                "A TASK must belong to a PLAN; pass --plan PLAN-XXXX so the harness "
+                "can link and validate both sides of the relationship"
+            )
+        created = create_work_item(
+            root,
+            task_id=args.id,
+            title=args.title,
+            plan_id=args.plan,
+            feature_refs=args.feature,
+            criterion_refs=args.criterion,
+            capabilities=args.capability,
+            claim_id=args.claim_id,
+            agent=args.agent,
+        )
+        _print(
+            {
+                "created": str(record_path(root, kind, args.id).relative_to(root)),
+                "linked_plan": created["plan_id"],
+                "added_dependencies": created["added_dependencies"],
+                "warnings": created["warnings"],
+                "record": created["record"],
+            },
+            args.json,
+        )
+        return EXIT_PASS
+    task_only = sorted(
+        name
+        for name, value in (
+            ("plan", args.plan),
+            ("feature", args.feature),
+            ("criterion", args.criterion),
+            ("capability", args.capability),
+        )
+        if value
+    )
+    if task_only:
+        raise HarnessError(
+            "--" + ", --".join(task_only) + " applies only to task records"
+        )
     _directory, prefix = RECORD_DIRECTORIES[kind]
     if not args.id.startswith(prefix):
         raise HarnessError(f"{kind} IDs must start with {prefix}")
@@ -196,6 +240,37 @@ def cmd_approval_check(args: argparse.Namespace) -> int:
     if status == "CURRENT":
         return EXIT_PASS
     return EXIT_STALE if status in {"STALE", "SUPERSEDED"} else EXIT_BLOCKED
+
+
+def cmd_next(args: argparse.Namespace) -> int:
+    _print(next_step(_root(args)), args.json)
+    return EXIT_PASS
+
+
+def cmd_plan_activate(args: argparse.Namespace) -> int:
+    _print(
+        activate_plan(
+            _root(args),
+            plan_id=args.id,
+            claim_id=args.claim_id,
+            agent=args.agent,
+        ),
+        args.json,
+    )
+    return EXIT_PASS
+
+
+def cmd_plan_sync(args: argparse.Namespace) -> int:
+    _print(
+        sync_plan(
+            _root(args),
+            plan_id=args.id,
+            claim_id=args.claim_id,
+            agent=args.agent,
+        ),
+        args.json,
+    )
+    return EXIT_PASS
 
 
 def cmd_plan_apply_decision(args: argparse.Namespace) -> int:
@@ -428,10 +503,21 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--strict", action="store_true")
     validate.set_defaults(func=cmd_validate)
 
+    next_parser = sub.add_parser(
+        "next", help="report the next step that moves this project forward"
+    )
+    next_parser.set_defaults(func=cmd_next)
+
     new = sub.add_parser("new", help="create a canonical record draft")
     new.add_argument("kind", choices=sorted(set(RECORD_DIRECTORIES) | set(RECORD_KIND_ALIASES)))
     new.add_argument("id")
     new.add_argument("title")
+    new.add_argument("--plan", help="owning PLAN; required for task records")
+    new.add_argument("--feature", action="append", default=[])
+    new.add_argument("--criterion", action="append", default=[])
+    new.add_argument("--capability", action="append", default=[])
+    new.add_argument("--claim-id")
+    new.add_argument("--agent", default=DEFAULT_AGENT)
     new.set_defaults(func=cmd_new)
 
     fingerprint = sub.add_parser("fingerprint")
@@ -483,6 +569,22 @@ def build_parser() -> argparse.ArgumentParser:
 
     plan = sub.add_parser("plan", help="manage plan lifecycle decisions")
     plan_sub = plan.add_subparsers(dest="plan_command", required=True)
+    plan_activate = plan_sub.add_parser(
+        "activate",
+        help="make a plan executable and select it as the current plan",
+    )
+    plan_activate.add_argument("id")
+    plan_activate.add_argument("--claim-id")
+    plan_activate.add_argument("--agent", default=DEFAULT_AGENT)
+    plan_activate.set_defaults(func=cmd_plan_activate)
+    plan_sync = plan_sub.add_parser(
+        "sync",
+        help="rebuild derived approval_dependencies from the plan subject",
+    )
+    plan_sync.add_argument("id")
+    plan_sync.add_argument("--claim-id")
+    plan_sync.add_argument("--agent", default=DEFAULT_AGENT)
+    plan_sync.set_defaults(func=cmd_plan_sync)
     plan_apply = plan_sub.add_parser(
         "apply-decision",
         help="materialize a current PLAN approval into plan and project state",

@@ -44,9 +44,17 @@ python scripts/harness.py validate --strict
 
 ## Routine agent workflow
 
+`next` reports the single step that moves the project forward, and every step it
+names is a command. Reaching a startable TASK from a fresh `init` never requires
+editing a record by hand:
+
 ```powershell
 git status --short
-python scripts/harness.py status
+python scripts/harness.py next
+python scripts/harness.py new plan PLAN-0001 "Describe the change"
+python scripts/harness.py new task TASK-0001 "Describe the work" --plan PLAN-0001 --capability LOCAL_IMPLEMENTATION
+python scripts/harness.py plan activate PLAN-0001
+python scripts/harness.py transition --kind work_item --id TASK-0001 --to READY --agent codex --reason "user request"
 python scripts/harness.py gate task TASK-0001
 # implement the user's request
 python scripts/check_repo.py fast
@@ -55,6 +63,13 @@ git commit -m "Describe the change"
 git fetch --prune <configured-remote>
 git push
 ```
+
+`new task` requires `--plan` and maintains both sides of the relationship: the
+TASK's `plan_id`, the PLAN's `work_item_refs`, and the derived
+`approval_dependencies`, in one atomic mutation. `plan activate` sets the plan
+status and `state.current_plan` together, and refuses in `PLAN_GATED` projects
+where activation belongs to the approval workflow. `plan sync` rebuilds derived
+dependencies if a record was edited by hand.
 
 Before push, inspect upstream divergence. Resolve conflicts without resetting or discarding either side. Force push, tag push, branch deletion, or another target requires separate explicit authorization.
 

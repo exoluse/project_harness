@@ -9,6 +9,12 @@ request -> discovery/specification -> identify/update PLAN -> create/select TASK
 -> implement -> test -> commit -> fetch/resolve -> push
 ```
 
+`harness.py next` reports which of those steps the project is on and the command
+that performs it. `status` describes the project; `next` says what to do about
+it. The commands it names — `new plan`, `new task --plan`, `plan activate`,
+`transition` — maintain the PLAN/TASK link and every derived field themselves, so
+this path never requires hand-editing front matter.
+
 The PLAN/TASK link and task gate are required when execution begins. Discovery itself does not need placeholder records. A routine task does not need PLAN approval, a claim, result, event, or evidence record.
 
 PLAN and TASK are created as `.md` files. Agents update governed fields in the YAML-style front matter and may use the body for human-readable rationale, sequencing notes, or implementation context. Only front matter participates in validation and authority.

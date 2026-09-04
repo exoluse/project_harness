@@ -1,0 +1,275 @@
+from __future__ import annotations
+
+import tempfile
+import unittest
+from pathlib import Path
+
+from project_harness.authoring import activate_plan, create_work_item, sync_plan
+from project_harness.core import HarnessError, atomic_write_json, load_json, record_path
+from project_harness.gates import task_start_gate
+from project_harness.guidance import next_step
+from project_harness.lifecycle_mutations import transition_record
+from project_harness.scaffold import init_project, new_record
+
+
+def _plan(root: Path, plan_id: str = "PLAN-0001") -> dict:
+    return load_json(record_path(root, "plan", plan_id))
+
+
+def _write_plan(root: Path, plan_id: str, title: str) -> dict:
+    record = new_record("plan", plan_id, title)
+    atomic_write_json(record_path(root, "plan", plan_id), record)
+    return record
+
+
+class AuthoringTests(unittest.TestCase):
+    """A newly initialized project is USER_DIRECTED, which these cover."""
+
+    def test_new_plan_authorizes_routine_work_and_excludes_high_risk(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            subject = _write_plan(root, "PLAN-0001", "Login")["approval_subject"]
+            self.assertEqual(
+                subject["authorized_actions"],
+                ["DOCUMENTATION", "LOCAL_IMPLEMENTATION", "LOCAL_TESTS"],
+            )
+            self.assertIn("PRODUCTION_DEPLOYMENT", subject["excluded_actions"])
+            self.assertIn("SECRET_ACCESS", subject["excluded_actions"])
+
+    def test_create_work_item_links_both_sides_of_the_plan_relationship(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            created = create_work_item(
+                root,
+                task_id="TASK-0001",
+                title="Implement login",
+                plan_id="PLAN-0001",
+                capabilities=["LOCAL_IMPLEMENTATION"],
+            )
+            task = created["record"]
+            self.assertEqual(task["plan_id"], "PLAN-0001")
+            plan = _plan(root)
+            self.assertEqual(plan["approval_subject"]["work_item_refs"], ["TASK-0001"])
+            self.assertIn(
+                ".harness/work-items/TASK-0001.md", plan["approval_dependencies"]
+            )
+            self.assertEqual(
+                created["added_dependencies"], [".harness/work-items/TASK-0001.md"]
+            )
+
+    def test_create_work_item_rejects_capabilities_the_plan_does_not_authorize(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            with self.assertRaises(HarnessError) as caught:
+                create_work_item(
+                    root,
+                    task_id="TASK-0001",
+                    title="Deploy",
+                    plan_id="PLAN-0001",
+                    capabilities=["PRODUCTION_DEPLOYMENT"],
+                )
+            self.assertIn("does not authorize", str(caught.exception))
+            self.assertFalse(record_path(root, "work_item", "TASK-0001").exists())
+
+    def test_create_work_item_requires_an_existing_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            with self.assertRaises(HarnessError) as caught:
+                create_work_item(
+                    root, task_id="TASK-0001", title="Login", plan_id="PLAN-0009"
+                )
+            self.assertIn("PLAN-0009 does not exist", str(caught.exception))
+
+    def test_activate_plan_selects_the_current_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            create_work_item(
+                root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
+            )
+            result = activate_plan(root, plan_id="PLAN-0001")
+            self.assertEqual(result["plan_status"], "ACTIVE")
+            self.assertEqual(_plan(root)["status"], "ACTIVE")
+            state = load_json(root / ".harness" / "state.json")
+            self.assertEqual(state["current_plan"], "PLAN-0001")
+
+    def test_activate_plan_records_history_only_where_the_project_tracks_it(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            for plan_id in ("PLAN-0001", "PLAN-0002"):
+                _write_plan(root, plan_id, plan_id)
+            create_work_item(
+                root, task_id="TASK-0001", title="One", plan_id="PLAN-0001"
+            )
+            create_work_item(
+                root, task_id="TASK-0002", title="Two", plan_id="PLAN-0002"
+            )
+            state_path = root / ".harness" / "state.json"
+
+            activate_plan(root, plan_id="PLAN-0001")
+            activate_plan(root, plan_id="PLAN-0002")
+            self.assertNotIn("historical_plan_refs", load_json(state_path))
+
+            state = load_json(state_path)
+            state["historical_plan_refs"] = []
+            atomic_write_json(state_path, state)
+            activate_plan(root, plan_id="PLAN-0001")
+            self.assertEqual(
+                load_json(state_path)["historical_plan_refs"], ["PLAN-0002"]
+            )
+
+    def test_activate_plan_requires_a_task(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            with self.assertRaises(HarnessError) as caught:
+                activate_plan(root, plan_id="PLAN-0001")
+            self.assertIn("lists no TASK", str(caught.exception))
+            self.assertEqual(_plan(root)["status"], "DRAFT")
+
+    def test_activate_plan_is_refused_in_plan_gated_mode(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            create_work_item(
+                root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
+            )
+            project_path = root / ".harness" / "project.json"
+            project = load_json(project_path)
+            project["policy"]["execution_mode"] = "PLAN_GATED"
+            atomic_write_json(project_path, project)
+            with self.assertRaises(HarnessError) as caught:
+                activate_plan(root, plan_id="PLAN-0001")
+            self.assertIn("apply-decision", str(caught.exception))
+
+    def test_sync_plan_restores_hand_removed_dependencies(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            create_work_item(
+                root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
+            )
+            plan_path = record_path(root, "plan", "PLAN-0001")
+            plan = load_json(plan_path)
+            plan["approval_dependencies"] = []
+            atomic_write_json(plan_path, plan)
+
+            result = sync_plan(root, plan_id="PLAN-0001")
+            self.assertTrue(result["changed"])
+            self.assertEqual(
+                load_json(plan_path)["approval_dependencies"],
+                [".harness/work-items/TASK-0001.md"],
+            )
+            self.assertFalse(sync_plan(root, plan_id="PLAN-0001")["changed"])
+
+
+class GuidanceTests(unittest.TestCase):
+    def test_fresh_project_reaches_a_startable_task_without_editing_records(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+
+            self.assertEqual(next_step(root)["state"], "NEEDS_PLAN")
+            _write_plan(root, "PLAN-0001", "Login")
+
+            step = next_step(root)
+            self.assertEqual(step["state"], "NEEDS_TASK")
+            self.assertIn("--plan PLAN-0001", step["commands"][0])
+            create_work_item(
+                root,
+                task_id="TASK-0001",
+                title="Implement login",
+                plan_id="PLAN-0001",
+                capabilities=["LOCAL_IMPLEMENTATION"],
+            )
+
+            step = next_step(root)
+            self.assertEqual(step["state"], "NEEDS_PLAN_ACTIVATION")
+            activate_plan(root, plan_id="PLAN-0001")
+
+            step = next_step(root)
+            self.assertEqual(step["state"], "NEEDS_TASK_READY")
+            transition_record(
+                root,
+                claim_id=None,
+                agent="tester",
+                kind="work_item",
+                record_id="TASK-0001",
+                target_status="READY",
+                reason="user asked for login",
+            )
+
+            step = next_step(root)
+            self.assertEqual(step["state"], "READY")
+            self.assertIn("TASK-0001", step["summary"])
+            self.assertTrue(task_start_gate(root, "TASK-0001").passed)
+
+    def test_next_points_at_the_repair_command_for_derived_dependencies(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            create_work_item(
+                root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
+            )
+            plan_path = record_path(root, "plan", "PLAN-0001")
+            plan = load_json(plan_path)
+            plan["approval_dependencies"] = []
+            atomic_write_json(plan_path, plan)
+
+            step = next_step(root)
+            self.assertEqual(step["state"], "PROJECT_INVALID")
+            self.assertEqual(
+                step["commands"], ["python scripts/harness.py plan sync PLAN-0001"]
+            )
+
+    def test_next_reports_the_approval_workflow_for_plan_gated_projects(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            create_work_item(
+                root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
+            )
+            project_path = root / ".harness" / "project.json"
+            project = load_json(project_path)
+            project["policy"]["execution_mode"] = "PLAN_GATED"
+            atomic_write_json(project_path, project)
+
+            step = next_step(root)
+            self.assertEqual(step["state"], "NEEDS_PLAN_APPROVAL")
+            self.assertTrue(
+                any("apply-decision" in command for command in step["commands"])
+            )
+
+    def test_next_asks_for_a_new_task_when_every_task_is_complete(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            create_work_item(
+                root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
+            )
+            activate_plan(root, plan_id="PLAN-0001")
+            task_path = record_path(root, "work_item", "TASK-0001")
+            task = load_json(task_path)
+            task["status"] = "DONE"
+            atomic_write_json(task_path, task)
+
+            step = next_step(root)
+            self.assertEqual(step["state"], "NEEDS_TASK")
+            self.assertIn("TASK-0002", step["commands"][0])
+
+    def test_next_surfaces_warnings_that_strict_validation_would_fail_on(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            _write_plan(root, "PLAN-0001", "Login")
+            create_work_item(
+                root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
+            )
+            step = next_step(root)
+            self.assertTrue(
+                any("ORPHAN_TASK" in warning for warning in step["warnings"])
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

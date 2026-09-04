@@ -882,7 +882,8 @@ def validate_project(root: Path) -> list[Issue]:
                         _issue(
                             "ERROR",
                             "UNBOUND_PLAN_DEPENDENCY",
-                            "plan approval is not fingerprint-bound to: "
+                            "approval_dependencies is missing subject paths (run "
+                            f"'plan sync {record.get('id')}'): "
                             + ", ".join(sorted(missing_dependencies)),
                             path,
                         )

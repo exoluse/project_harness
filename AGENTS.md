@@ -5,7 +5,7 @@ This policy governs Codex, Claude Code, and every other agent in this repository
 ## Startup
 
 1. Read `AGENTS.md`, the tool adapter when present, `.harness/project.json`, `.harness/state.json`, and `HANDOFF.md`.
-2. Run `python scripts/harness.py doctor`, `python scripts/harness.py status`, and `python scripts/harness.py validate --strict` when the harness is operational.
+2. Run `python scripts/harness.py doctor`, `python scripts/harness.py next`, and `python scripts/harness.py validate --strict` when the harness is operational. `next` reports the required next step and the command that performs it; `status` remains available for the full state dump.
 3. Inspect `git status --short`. Preserve user and unknown work; never silently reset it.
 4. Classify the request as discovery/specification or execution. Discovery and specification records may be created without placeholder PLAN/TASK records; create or select both before implementation begins.
 
@@ -34,6 +34,8 @@ Use a claim only when multiple agents or other writers can modify the project co
 PLAN and TASK records use `.md` files. Their strict YAML-style front matter is the machine-validated canonical record; the Markdown body is preserved for human explanation but does not change gates, fingerprints, or authority. Other canonical state and audit records remain JSON. Invalid front matter fails closed.
 
 Before ordinary development, ensure the current PLAN contains a TASK for the requested change and that `gate task` passes. Creating or selecting this structure is bookkeeping for scope and traceability, not a separate human approval step.
+
+Build that structure with `new plan`, `new task --plan`, and `plan activate`. Those commands maintain the PLAN/TASK link, `state.current_plan`, and derived fields such as `approval_dependencies`, so records are not hand-edited to satisfy a gate. `plan sync` repairs derived dependencies when a record was edited directly.
 
 Results, events, and evidence are on demand:
 

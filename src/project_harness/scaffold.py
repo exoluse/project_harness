@@ -3,7 +3,12 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from .constants import HARNESS_DIR, RECORD_DIRECTORIES
+from .constants import (
+    CAPABILITY_APPROVAL_TYPES,
+    HARNESS_DIR,
+    PROCEDURAL_PLAN_ACTIONS,
+    RECORD_DIRECTORIES,
+)
 from .core import HarnessError, atomic_write_json, atomic_write_text, load_json, utc_now
 
 
@@ -16,13 +21,13 @@ RUNTIME_DIRECTORIES = [
 ]
 
 
-GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. A newly initialized project may remain in discovery without a PLAN or TASK, and discovery/specification records may be created directly from the user's request. Before deliverable implementation, create or select a current PLAN and a TASK listed in it. PLAN and TASK use Markdown with canonical machine-validated YAML-style front matter; their bodies are explanatory only. An explicit user request authorizes ordinary execution of that TASK without PLAN approval. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
+GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. Run `python scripts/harness.py next` for the required next step and the command that performs it. A newly initialized project may remain in discovery without a PLAN or TASK, and discovery/specification records may be created directly from the user's request. Before deliverable implementation, create or select a current PLAN and a TASK listed in it using `new plan`, `new task --plan`, and `plan activate`; those commands maintain the PLAN/TASK link and derived fields, so records are not hand-edited to satisfy a gate. PLAN and TASK use Markdown with canonical machine-validated YAML-style front matter; their bodies are explanatory only. An explicit user request authorizes ordinary execution of that TASK without PLAN approval. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
 
-GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. Discovery may precede PLAN/TASK creation; both become mandatory before implementation. PLAN and TASK use Markdown with machine-validated YAML-style front matter. PLAN approval is not required. Claims and handoffs are for concurrent writers; audit records are created only when needed.\n"""
+GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. Run `python scripts/harness.py next` to find the required next step. Discovery may precede PLAN/TASK creation; both become mandatory before implementation, and `new plan`, `new task --plan`, and `plan activate` create them. PLAN and TASK use Markdown with machine-validated YAML-style front matter. PLAN approval is not required. Claims and handoffs are for concurrent writers; audit records are created only when needed.\n"""
 
-GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md`, inspect current state and Git status, and determine whether the request is discovery/specification or execution. Discovery/specification records may precede PLAN/TASK; before deliverable implementation, create or select the current PLAN and its TASK. Perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
+GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md`, run `python scripts/harness.py next`, inspect Git status, and determine whether the request is discovery/specification or execution. Discovery/specification records may precede PLAN/TASK; before deliverable implementation, create or select the current PLAN and its TASK with `new plan`, `new task --plan`, and `plan activate`. Perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
 
-GENERATED_CLAUDE_PROMPT = """# Claude Code Start Prompt\n\nRead `AGENTS.md` and `CLAUDE.md`, inspect current state and Git status, and determine whether the request is discovery/specification or execution. Discovery/specification records may precede PLAN/TASK; before deliverable implementation, create or select the current PLAN and its TASK. Perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
+GENERATED_CLAUDE_PROMPT = """# Claude Code Start Prompt\n\nRead `AGENTS.md` and `CLAUDE.md`, run `python scripts/harness.py next`, inspect Git status, and determine whether the request is discovery/specification or execution. Discovery/specification records may precede PLAN/TASK; before deliverable implementation, create or select the current PLAN and its TASK with `new plan`, `new task --plan`, and `plan activate`. Perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
 
 GENERATED_HANDOFF = """# Current Handoff\n\nNo accepted handoff has been recorded yet. Canonical records live in `.harness/handoffs/`.\n"""
 
@@ -349,8 +354,11 @@ def new_record(kind: str, record_id: str, title: str) -> dict:
                 "work_item_refs": [],
                 "workstreams": [],
                 "verification_strategy": {},
-                "authorized_actions": [],
-                "excluded_actions": [],
+                # Routine local work is authorized by default so a new plan can
+                # carry a task immediately; every capability that needs a human
+                # decision stays excluded until an author widens the subject.
+                "authorized_actions": sorted(PROCEDURAL_PLAN_ACTIONS),
+                "excluded_actions": sorted(CAPABILITY_APPROVAL_TYPES),
                 "invalidation_triggers": [],
             },
         }
