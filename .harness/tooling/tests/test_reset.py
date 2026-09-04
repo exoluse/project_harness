@@ -1,15 +1,29 @@
 from __future__ import annotations
 
-import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from project_harness.core import HarnessError, load_json
+from project_harness.guidance import next_step
 from project_harness.reset import PRESERVED_RUNTIME, reset_project
+from project_harness.scaffold import init_project
 from project_harness.validation import issue_counts, validate_project
 
-from .helpers import init_harness
+from . import REPO
+from .helpers import HARNESS_GUIDANCE, init_harness
+
+
+# Files ``init`` generates that a reset leaves behind.  It writes each of them
+# only when absent, so an operator may have extended or filled one in, and
+# removing them would take a hand-written file with the project.
+SURVIVING_INIT_FILES = {
+    ".gitignore",
+    ".harness/.gitattributes",
+    ".harness/.gitignore",
+    ".harness/templates/allowed_signers.example",
+    ".harness/templates/authority-config.example.json",
+}
 
 
 def tree(root: Path, *, skip_runtime: bool = True) -> dict[str, bytes]:
@@ -29,6 +43,16 @@ def tree(root: Path, *, skip_runtime: bool = True) -> dict[str, bytes]:
 class ResetTests(unittest.TestCase):
     def _project(self, temp: Path, name: str = "used") -> Path:
         return init_harness(temp / name)
+
+    def _copied_harness(self, path: Path) -> Path:
+        """A folder carrying the harness, before any command makes it a project."""
+
+        path.mkdir(parents=True, exist_ok=True)
+        for name in HARNESS_GUIDANCE:
+            (path / name).write_text(
+                (REPO / name).read_text(encoding="utf-8"), encoding="utf-8"
+            )
+        return path
 
     def _populate(self, root: Path) -> list[Path]:
         """Write records across every shape a reset has to clear."""
@@ -53,34 +77,64 @@ class ResetTests(unittest.TestCase):
         created.append(record_path(root, "work_item", "TASK-0001"))
         return created
 
-    def test_reset_reproduces_a_freshly_initialized_project(self):
+    def test_reset_returns_the_tree_to_its_pre_init_state(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = self._project(Path(temp))
+            root = self._copied_harness(Path(temp) / "used")
+            before = tree(root)
+            init_harness(root)
             self._populate(root)
-            reference = init_harness(Path(temp) / "reference")
 
             reset_project(root, confirm="used")
 
-            after, expected = tree(root), tree(reference)
-            self.assertEqual(sorted(after), sorted(expected))
-            # Two projects created at different times in different directories
-            # can only agree on the fields that are not a timestamp or a path.
-            volatile = {
-                ".harness/project.json": {"created_at"},
-                ".harness/state.json": {"updated_at"},
-                ".harness/templates/authority-config.example.json": {"repository_root"},
-            }
-            for relative, content in expected.items():
-                if relative not in volatile:
-                    self.assertEqual(after[relative], content, relative)
-                    continue
-                actual, reference_value = json.loads(after[relative]), json.loads(content)
-                differing = {
-                    field
-                    for field in set(actual) | set(reference_value)
-                    if actual.get(field) != reference_value.get(field)
-                }
-                self.assertLessEqual(differing, volatile[relative], relative)
+            after = tree(root)
+            # A reset undoes `init`, so the only files it may leave behind are
+            # the generated ones it deliberately does not reclaim.
+            self.assertEqual(set(after) - set(before), SURVIVING_INIT_FILES)
+            for relative, content in before.items():
+                self.assertEqual(after[relative], content, relative)
+
+    def test_reset_leaves_a_harness_that_needs_init(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self._project(Path(temp))
+            self._populate(root)
+
+            summary = reset_project(root, confirm="used")
+
+            for relative in (
+                ".harness/project.json",
+                ".harness/state.json",
+                "HANDOFF.md",
+            ):
+                self.assertFalse((root / relative).exists(), relative)
+            self.assertIn(".harness/plans", summary["removed_directories"])
+            for relative in summary["removed_directories"]:
+                self.assertFalse((root / relative).exists(), relative)
+            self.assertEqual(next_step(root)["state"], "NEEDS_INIT")
+
+    def test_reset_lets_init_name_the_next_project(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self._project(Path(temp))
+            self._populate(root)
+
+            reset_project(root, confirm="used")
+
+            # The authority template outlives the reset, and it is a `.json`
+            # under `.harness/`: initializing again has to see it for what it
+            # is rather than mistake it for an orphaned record.
+            template = root / ".harness" / "templates" / "authority-config.example.json"
+            self.assertTrue(template.is_file())
+
+            init_project(root, "Renamed")
+
+            project = load_json(root / ".harness" / "project.json")
+            state = load_json(root / ".harness" / "state.json")
+            self.assertEqual(project["name"], "Renamed")
+            self.assertEqual(state["lifecycle_state"], "DISCOVERY")
+            self.assertIsNone(state["current_plan"])
+            self.assertIsNone(state["active_plan"])
+            counts = issue_counts(validate_project(root))
+            self.assertEqual(counts["errors"], 0)
+            self.assertEqual(counts["warnings"], 0)
 
     def test_reset_leaves_files_init_does_not_create(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -120,7 +174,9 @@ class ResetTests(unittest.TestCase):
             self.assertTrue(summary["dry_run"])
             self.assertIsNone(summary["snapshot"])
             self.assertIn(".harness/plans/PLAN-0001.md", summary["removed_records"])
-            self.assertIn(".harness/state.json", summary["regenerated"])
+            self.assertIn(".harness/state.json", summary["removed_identity"])
+            self.assertIn("HANDOFF.md", summary["removed_identity"])
+            self.assertIn(".harness/plans", summary["removed_directories"])
             self.assertIn("reset --confirm used", summary["confirm_command"])
 
     def test_snapshot_round_trips_every_removed_record(self):
@@ -132,11 +188,14 @@ class ResetTests(unittest.TestCase):
             summary = reset_project(root, confirm="used")
 
             snapshot = root / summary["snapshot"]
-            for relative in summary["removed_records"] + summary["regenerated"]:
+            removed = summary["removed_records"] + summary["removed_identity"]
+            for relative in removed:
                 self.assertEqual((snapshot / "tree" / relative).read_bytes(), before[relative])
             manifest = load_json(snapshot / "reset.json")
             self.assertEqual(manifest["root"], str(root))
+            self.assertEqual(manifest["name"], "Demo")
             self.assertEqual(manifest["removed_records"], summary["removed_records"])
+            self.assertEqual(manifest["removed_identity"], summary["removed_identity"])
 
     def test_reset_preserves_the_human_decision_runtime(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -155,21 +214,6 @@ class ResetTests(unittest.TestCase):
                 self.assertEqual(
                     (runtime / name / "marker.txt").read_text(encoding="utf-8"), "kept"
                 )
-
-    def test_reset_leaves_a_valid_project(self):
-        with tempfile.TemporaryDirectory() as temp:
-            root = self._project(Path(temp))
-            self._populate(root)
-
-            reset_project(root, confirm="used")
-
-            state = load_json(root / ".harness" / "state.json")
-            self.assertEqual(state["lifecycle_state"], "DISCOVERY")
-            self.assertIsNone(state["current_plan"])
-            self.assertIsNone(state["active_plan"])
-            counts = issue_counts(validate_project(root))
-            self.assertEqual(counts["errors"], 0)
-            self.assertEqual(counts["warnings"], 0)
 
     def test_reset_refuses_a_directory_without_a_project(self):
         with tempfile.TemporaryDirectory() as temp:

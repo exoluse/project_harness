@@ -1,14 +1,23 @@
-"""Return a harness to the exact shape ``init`` produces.
+"""Return a repository to the state it had before ``init``.
+
+``init`` is what turns a copied harness into a project: it writes the canonical
+project record, the lifecycle state, the record directories, and the handoff
+placeholder.  A reset removes exactly that, so what is left is the harness a
+copied folder carries before it governs anything.  ``next`` reports
+``NEEDS_INIT`` afterwards, and ``init`` starts the next project — under a new
+name when ``--name`` says so, since nothing survives to insist on the old one.
 
 The reset is defined by construction rather than by a hand-maintained list of
-things to undo: it clears everything ``init`` owns and then re-runs ``init``
-itself.  A field added to a fresh harness therefore cannot drift away from what
-a reset restores.
+things to undo: it removes what ``init`` owns, so a field added to a fresh
+harness cannot drift away from what a reset clears.
 
-Files ``init`` does not create are never touched.  A project's own sources, its
-extended ``.gitignore``, and its filled-in authority template are not harness
-bookkeeping, and deleting them to make a tree look freshly generated would
-destroy the project instead of resetting it.
+Files ``init`` does not create are never touched.  A project's own sources and
+its extended ``.gitignore`` are not harness bookkeeping, and deleting them to
+make a tree look freshly copied would destroy the project instead of resetting
+it.  Two things ``init`` does create also outlive a reset, each for its own
+reason: the generated bookkeeping files, because ``init`` writes them only when
+absent and an operator may have extended or filled them in, and the human
+decision ledger, whose reason is recorded with ``PRESERVED_RUNTIME`` below.
 """
 
 from __future__ import annotations
@@ -18,16 +27,18 @@ from pathlib import Path
 from typing import Any
 
 from .collaboration import runtime_root
-from .constants import HARNESS_DIR, RECORD_DIRECTORIES
+from .constants import HARNESS_DIR
 from .core import HarnessError, atomic_write_json, load_json, utc_now
-from .scaffold import fresh_project_record, fresh_state_record, init_project
+from .scaffold import project_directories
 
 
-# Directories whose whole contents are project history rather than structure.
-HISTORY_DIRECTORIES = ("events", "baselines", "decisions")
-
-# Canonical files that ``init`` regenerates once they are absent.
-REGENERATED_FILES = (f"{HARNESS_DIR}/project.json", f"{HARNESS_DIR}/state.json", "HANDOFF.md")
+# The canonical files that make a repository a project rather than a copy of
+# the harness.  Removing them is what returns the tree to ``NEEDS_INIT``.
+IDENTITY_FILES = (
+    f"{HARNESS_DIR}/project.json",
+    f"{HARNESS_DIR}/state.json",
+    "HANDOFF.md",
+)
 
 # Shared runtime registries describing in-flight coordination and record
 # numbering.  They are rebuilt on demand, so clearing them is what makes the
@@ -47,26 +58,25 @@ def _snapshot_root(root: Path) -> Path:
     return root / HARNESS_DIR / "runtime"
 
 
+def _project_directories(root: Path) -> list[Path]:
+    return [path for path in project_directories(root / HARNESS_DIR) if path.is_dir()]
+
+
 def _record_files(root: Path) -> list[Path]:
     """Canonical records and project history, in stable order."""
 
-    harness = root / HARNESS_DIR
     paths: list[Path] = []
-    for directory, _prefix in sorted(RECORD_DIRECTORIES.values()):
-        for path in sorted((harness / directory).glob("*")):
+    for directory in _project_directories(root):
+        for path in sorted(directory.rglob("*")):
             if path.is_file() and path.name != ".gitkeep":
-                paths.append(path)
-    for directory in HISTORY_DIRECTORIES:
-        for path in sorted((harness / directory).rglob("*")):
-            if path.is_file():
                 paths.append(path)
     return paths
 
 
-def _regenerated_files(root: Path) -> list[Path]:
-    """Canonical files that are rewritten rather than left behind."""
+def _identity_files(root: Path) -> list[Path]:
+    """The canonical files that identify the project, in stable order."""
 
-    return [path for relative in REGENERATED_FILES if (path := root / relative).is_file()]
+    return [path for relative in IDENTITY_FILES if (path := root / relative).is_file()]
 
 
 def _clearable_runtime(root: Path) -> list[Path]:
@@ -88,7 +98,7 @@ def reset_project(
     confirm: str | None = None,
     dry_run: bool = False,
 ) -> dict[str, Any]:
-    """Clear the harness ledger and regenerate it exactly as ``init`` would."""
+    """Remove the project this harness governs and leave the harness itself."""
 
     root = root.resolve()
     project_path = root / HARNESS_DIR / "project.json"
@@ -105,15 +115,17 @@ def reset_project(
     token = root.name
 
     records = _record_files(root)
-    regenerated = _regenerated_files(root)
-    removable = records + regenerated
+    identity = _identity_files(root)
+    removable = records + identity
+    directories = _project_directories(root)
     runtime = _clearable_runtime(root)
     summary: dict[str, Any] = {
         "name": name,
         "root": str(root),
         "dry_run": dry_run,
         "removed_records": [_relative(root, path) for path in records],
-        "regenerated": [_relative(root, path) for path in regenerated],
+        "removed_identity": [_relative(root, path) for path in identity],
+        "removed_directories": [_relative(root, path) for path in directories],
         "cleared_runtime": [path.name for path in runtime],
         "preserved_runtime": list(PRESERVED_RUNTIME),
         "snapshot": None,
@@ -126,8 +138,8 @@ def reset_project(
 
     if confirm != token:
         raise HarnessError(
-            "reset rewrites this project's harness records and cannot be undone "
-            f"from Git alone; re-run it as: reset --confirm {token}"
+            "reset removes this project's harness records and identity, and cannot "
+            f"be undone from Git alone; re-run it as: reset --confirm {token}"
         )
 
     # Second-resolution timestamps collide when a reset is repeated quickly, and
@@ -152,8 +164,10 @@ def reset_project(
             "schema": "harness.reset/v1",
             "root": str(root),
             "reset_at": utc_now(),
+            "name": name,
             "removed_records": summary["removed_records"],
-            "regenerated": summary["regenerated"],
+            "removed_identity": summary["removed_identity"],
+            "removed_directories": summary["removed_directories"],
             "cleared_runtime": summary["cleared_runtime"],
             "preserved_runtime": summary["preserved_runtime"],
         },
@@ -161,18 +175,13 @@ def reset_project(
 
     for path in removable:
         path.unlink()
+    # The directories go too, placeholders and all: ``init`` creates them, so a
+    # reset that left them behind would stop short of the state it restores.
+    for path in directories:
+        shutil.rmtree(path)
     for path in runtime:
         shutil.rmtree(path)
 
-    # The canonical records come from the same builders ``init`` uses, so a
-    # field added to a fresh harness cannot drift away from what a reset
-    # restores.  ``init --force`` then repairs the rest of the structure:
-    # record directories, their .gitkeep placeholders, the handoff placeholder,
-    # and the templates the deletions removed.
-    created = utc_now()
-    atomic_write_json(project_path, fresh_project_record(name, created))
-    atomic_write_json(root / HARNESS_DIR / "state.json", fresh_state_record(created))
-    init_project(root, name, force=True)
-
     summary["snapshot"] = _relative(root, snapshot)
+    summary["next_command"] = "python scripts/harness.py init"
     return summary

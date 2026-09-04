@@ -5,6 +5,7 @@ from pathlib import Path
 from .constants import (
     CAPABILITY_APPROVAL_TYPES,
     HARNESS_DIR,
+    HISTORY_DIRECTORIES,
     PROCEDURAL_PLAN_ACTIONS,
     PROJECT_RECORD_ID,
     RECORD_DIRECTORIES,
@@ -13,9 +14,7 @@ from .core import HarnessError, atomic_write_json, atomic_write_text, load_json,
 
 
 RUNTIME_DIRECTORIES = [
-    "events",
-    "baselines",
-    "decisions",
+    *HISTORY_DIRECTORIES,
     "templates",
     "runtime",
 ]
@@ -43,6 +42,36 @@ GENERATED_FILES = {
 }
 
 
+def project_directories(harness: Path) -> list[Path]:
+    """The record and history directories ``init`` creates, in stable order.
+
+    They hold the project rather than the harness: what it specified, planned,
+    decided, and observed.  ``init`` creates them empty; a reset removes them.
+    """
+
+    names = {value[0] for value in RECORD_DIRECTORIES.values()}
+    names.update(HISTORY_DIRECTORIES)
+    return [harness / name for name in sorted(names)]
+
+
+def _carries_records(harness: Path) -> bool:
+    """Whether records are present without the project record that governs them.
+
+    Only the record and history directories count.  A filled-in authority
+    template and the snapshots a reset leaves under ``runtime/`` are not
+    records, and both outlive a reset on purpose, so a wider scan would make an
+    already-reset tree impossible to initialize again.
+    """
+
+    for directory in project_directories(harness):
+        if not directory.is_dir():
+            continue
+        for candidate in directory.rglob("*"):
+            if candidate.is_file() and candidate.name != ".gitkeep":
+                return True
+    return False
+
+
 def init_project(path: Path, name: str | None = None, *, force: bool = False) -> Path:
     """Initialize the harness records of the repository at ``path``.
 
@@ -68,11 +97,7 @@ def init_project(path: Path, name: str | None = None, *, force: bool = False) ->
                 "init --force is repair-only: --name must match the existing "
                 "canonical project record, or be omitted"
             )
-    elif harness.exists() and any(
-        candidate.is_file()
-        for candidate in harness.rglob("*.json")
-        if "tooling" not in candidate.relative_to(harness).parts
-    ):
+    elif harness.exists() and _carries_records(harness):
         raise HarnessError(
             "Cannot initialize over harness records without a canonical "
             "project.json; recover or remove the ambiguous records explicitly"

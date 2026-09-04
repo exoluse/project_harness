@@ -24,6 +24,10 @@ RECORD_DIRECTORIES = {
     "recovery": ("recoveries", "RCV-"),
 }
 
+# Project history rather than record structure: their whole contents belong to
+# the project, so ``init`` creates them empty and ``reset`` removes them.
+HISTORY_DIRECTORIES = ("events", "baselines", "decisions")
+
 RECORD_EXTENSIONS = {
     kind: ".md" if kind in {"plan", "work_item"} else ".json"
     for kind in RECORD_DIRECTORIES

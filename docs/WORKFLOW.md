@@ -56,9 +56,11 @@ During discovery, `current_plan` may be null. Before `BUILDING`, `active_plan` a
 
 ## Starting over
 
-`reset --confirm <directory name>` returns the harness to the shape `init` produces: every canonical record, plus `events/`, `baselines/`, and `decisions/`, is cleared, and `project.json`, `state.json`, and `HANDOFF.md` are regenerated from the same builders `init` uses. Shared runtime registries are cleared so record numbering restarts at `0001`.
+`reset --confirm <directory name>` undoes `init`, returning the tree to the state a copied harness has before it governs a project: every canonical record, the `events/`, `baselines/`, and `decisions/` history, the record directories, and the `project.json`, `state.json`, and `HANDOFF.md` that identify the project are all removed. `next` then reports `NEEDS_INIT`. Shared runtime registries are cleared so record numbering restarts at `0001`.
 
-Files `init` does not create are never touched. The project name and policy survive, because a reset restarts the work rather than the project. The human decision runtime survives too: its monotonic sequence and latest-decision markers make a recorded human confirmation non-replayable, and a reset is agent-reachable, so it must not roll back a control that bounds human authority.
+Nothing survives to carry the old identity forward, so `init` afterwards starts a genuine new project and `--name` chooses its name. That is currently the only way to change a project's name, and it costs every record — a blunt instrument for a rename.
+
+Files `init` does not create are never touched, and the bookkeeping files it generates only when absent (`.gitignore`, `.harness/.gitattributes`, `.harness/.gitignore`, `templates/`) survive, because an operator may have extended or filled one in. The human decision runtime survives too: its monotonic sequence and latest-decision markers make a recorded human confirmation non-replayable, and a reset is agent-reachable, so it must not roll back a control that bounds human authority.
 
 `--dry-run` reports the same summary without writing and needs no confirmation. Everything a reset removes is snapshotted to `.harness/runtime/reset-<timestamp>/` first.
 

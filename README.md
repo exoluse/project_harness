@@ -58,35 +58,41 @@ touching canonical records.
 
 ## Start over: `reset`
 
-`reset` returns a harness to the shape `init` produces, so a project that
-accumulated experimental records can start again without hand-deleting
-canonical files:
+`reset` undoes `init`. `init` is what turns a copied harness into a project, so
+a reset removes exactly that and leaves the harness a copied folder carries
+before it governs anything:
 
 ```powershell
-python scripts/harness.py reset --dry-run                  # what it would clear
+python scripts/harness.py reset --dry-run                  # what it would remove
 python scripts/harness.py reset --confirm my-project       # the directory name
+python scripts/harness.py next                             # -> NEEDS_INIT
+python scripts/harness.py init --name "The next project"   # a new name, if you want one
 ```
 
-It clears every canonical record along with `events/`, `baselines/`, and
-`decisions/`, then regenerates `project.json`, `state.json`, and `HANDOFF.md`
-from the same builders `init` uses — so a reset cannot drift away from what a
-fresh project looks like. Shared runtime registries (`leases`, `mailboxes`,
-`mutations`, `id-sequences`) are cleared too, which is what makes the next
-record start at `0001` again.
+It removes every canonical record, the `events/`, `baselines/`, and `decisions/`
+history, the record directories themselves, and the three files that identify
+the project: `project.json`, `state.json`, and `HANDOFF.md`. Shared runtime
+registries (`leases`, `mailboxes`, `mutations`, `id-sequences`) go too, which is
+what makes the next record start at `0001` again.
 
-Files `init` does not create are never touched: your sources, your extended
-`.gitignore`, and your filled-in authority template survive. `--confirm` must
-be the harness directory name, and everything the reset removes is copied to
-`.harness/runtime/reset-<timestamp>/` first — a git-ignored path, so a snapshot
-never enters project history.
+Because nothing survives to insist on the old identity, `init` afterwards is a
+genuine fresh start: `--name` picks the next name, and the policy and completion
+contract are the defaults again rather than the previous project's. This is the
+only way to change a project's name today — which makes it a blunt instrument
+for a rename, since it costs every record.
 
-Two things deliberately survive a reset. The project's name and policy
-(`name`, `closure_contract`, `policy`) stay, because a reset restarts the work
-rather than the project. And the human decision runtime
-(`human-decisions/`) stays, because its monotonic sequence and latest-decision
-markers are what make a recorded human confirmation non-replayable; a reset is
-reachable by an agent, so it must not roll back a control that bounds human
-authority.
+Files `init` does not create are never touched: your sources and your extended
+`.gitignore` survive. The bookkeeping files `init` generates survive too
+(`.gitignore`, `.harness/.gitattributes`, `.harness/.gitignore`, and the
+`templates/`), because `init` writes each only when absent and an operator may
+have extended or filled one in. `--confirm` must be the harness directory name,
+and everything the reset removes is copied to `.harness/runtime/reset-<timestamp>/`
+first — a git-ignored path, so a snapshot never enters project history.
+
+One thing deliberately survives: the human decision runtime
+(`human-decisions/`), because its monotonic sequence and latest-decision markers
+are what make a recorded human confirmation non-replayable. A reset is reachable
+by an agent, so it must not roll back a control that bounds human authority.
 
 ## Routine agent workflow
 

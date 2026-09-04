@@ -508,16 +508,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     reset = sub.add_parser(
         "reset",
-        help="restore this harness to the shape 'init' produces",
+        help="remove this project and leave the harness as 'init' found it",
     )
     reset.add_argument(
         "--confirm",
-        help="the harness directory name; required because a reset clears every record",
+        help=(
+            "the harness directory name; required because a reset removes every "
+            "record and the project record itself"
+        ),
     )
     reset.add_argument(
         "--dry-run",
         action="store_true",
-        help="report what a reset would clear without writing",
+        help="report what a reset would remove without writing",
     )
     reset.set_defaults(func=cmd_reset)
 
