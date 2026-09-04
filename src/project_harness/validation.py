@@ -732,7 +732,10 @@ def validate_project(root: Path) -> list[Issue]:
                 if reference not in records:
                     issues.append(_issue("ERROR", "DANGLING_REFERENCE", f"missing requirement {reference}", path))
             if record.get("required", True) and not record.get("completion_criteria"):
-                issues.append(_issue("ERROR", "MISSING_COMPLETION_CONTRACT", f"required feature {record_id} has no completion criteria", path))
+                # A CANDIDATE feature has not been specified yet, so an empty
+                # contract is expected there; every later status must carry one.
+                severity = "WARNING" if record.get("status") == "CANDIDATE" else "ERROR"
+                issues.append(_issue(severity, "MISSING_COMPLETION_CONTRACT", f"required feature {record_id} has no completion criteria", path))
             for criterion in record.get("completion_criteria", []):
                 if criterion.get("required", True) and not criterion.get("verification_plan"):
                     issues.append(_issue("ERROR", "MISSING_VERIFICATION_PLAN", f"criterion {criterion.get('id')} has no verification plan", path))

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-harness.local/schemas/work-item.schema.json",
+  "type": "object",
+  "required": ["schema", "id", "kind", "status", "plan_id", "feature_refs", "criterion_refs", "write_scope", "logical_locks", "verification", "risk", "capabilities", "forbidden_actions"],
+  "properties": {
+    "schema": {"const": "harness.work_item/v1"},
+    "id": {"type": "string", "pattern": "^TASK-[0-9]{4,}$"},
+    "kind": {"const": "work_item"},
+    "status": {"enum": ["DRAFT", "READY", "APPROVED", "RUNNING", "SUBMITTED", "BLOCKED", "FAILED", "ABORTED", "STALE", "REVIEWED", "INTEGRATED", "DONE", "CLOSED"]},
+    "plan_id": {"type": "string", "pattern": "^PLAN-"},
+    "feature_refs": {"type": "array", "items": {"type": "string", "pattern": "^FUNC-"}},
+    "criterion_refs": {"type": "array", "items": {"type": "string"}},
+    "write_scope": {"type": "array", "items": {"type": "string"}},
+    "preexisting_dirty_paths": {"type": "array", "items": {"type": "string"}},
+    "logical_locks": {"type": "array", "items": {"type": "string"}},
+    "verification": {"type": "array", "items": {"type": "string"}},
+    "capabilities": {"type": "array", "items": {"type": "string"}},
+    "capability_approval_refs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {"type": "string", "pattern": "^APR-[0-9]{4,}$"}
+      }
+    },
+    "forbidden_actions": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

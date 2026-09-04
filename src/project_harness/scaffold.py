@@ -21,62 +21,29 @@ RUNTIME_DIRECTORIES = [
 ]
 
 
-GENERATED_AGENTS = """# Shared Agent Policy\n\nRead `.harness/project.json`, `.harness/state.json`, `HANDOFF.md`, and inspect Git status. Run `python scripts/harness.py next` for the required next step and the command that performs it. A newly initialized project may remain in discovery without a PLAN or TASK, and discovery/specification records may be created directly from the user's request. Before deliverable implementation, create or select a current PLAN and a TASK listed in it using `new plan`, `new task --plan`, and `plan activate`; those commands maintain the PLAN/TASK link and derived fields, so records are not hand-edited to satisfy a gate. PLAN and TASK use Markdown with canonical machine-validated YAML-style front matter; their bodies are explanatory only. An explicit user request authorizes ordinary execution of that TASK without PLAN approval. Use claims only for concurrent writers, and create results/events/evidence only when coordination, audit, release, or completion proof needs them. Cryptographic human approval is reserved for production, destructive operations, secret access, production data changes, and final customer acceptance. Preserve pre-existing work and report verification limits exactly.\n"""
+ASSETS = Path(__file__).resolve().parent / "assets"
 
-GENERATED_CLAUDE = """# Claude Code Adapter\n\n`AGENTS.md` is canonical. Follow its user-directed execution model. Run `python scripts/harness.py next` to find the required next step. Discovery may precede PLAN/TASK creation; both become mandatory before implementation, and `new plan`, `new task --plan`, and `plan activate` create them. PLAN and TASK use Markdown with machine-validated YAML-style front matter. PLAN approval is not required. Claims and handoffs are for concurrent writers; audit records are created only when needed.\n"""
-
-GENERATED_CODEX_PROMPT = """# Codex Start Prompt\n\nRead `AGENTS.md`, run `python scripts/harness.py next`, inspect Git status, and determine whether the request is discovery/specification or execution. Discovery/specification records may precede PLAN/TASK; before deliverable implementation, create or select the current PLAN and its TASK with `new plan`, `new task --plan`, and `plan activate`. Perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
-
-GENERATED_CLAUDE_PROMPT = """# Claude Code Start Prompt\n\nRead `AGENTS.md` and `CLAUDE.md`, run `python scripts/harness.py next`, inspect Git status, and determine whether the request is discovery/specification or execution. Discovery/specification records may precede PLAN/TASK; before deliverable implementation, create or select the current PLAN and its TASK with `new plan`, `new task --plan`, and `plan activate`. Perform the explicit user request without requiring PLAN approval. Use claims only for concurrent editing and audit records only when needed. Never infer high-risk human approval.\n"""
+# Every file the distribution hands to a project lives under ``assets`` and is
+# packaged with the runtime, so a generated project receives the same policy,
+# schemas, and scripts whether ``init`` ran from a source checkout, a vendored
+# runtime, or an installed package.  Guidance and scripts are written only when
+# absent; a project may extend its own copies.
+GUIDANCE_FILES = (
+    "AGENTS.md",
+    "CLAUDE.md",
+    "CODEX_START_PROMPT.md",
+    "CLAUDE_START_PROMPT.md",
+)
+SCRIPT_FILES = ("harness.py", "check_repo.py")
 
 GENERATED_HANDOFF = """# Current Handoff\n\nNo accepted handoff has been recorded yet. Canonical records live in `.harness/handoffs/`.\n"""
 
-GENERATED_WRAPPER = """from pathlib import Path\nimport sys\n\nROOT = Path(__file__).resolve().parents[1]\nsys.path.insert(0, str(ROOT / \".harness\" / \"tooling\"))\n\nfrom project_harness.cli import main\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n"""
 
-GENERATED_CHECK_REPO = """from __future__ import annotations
-
-import argparse
-import subprocess
-import sys
-from pathlib import Path
-
-
-ROOT = Path(__file__).resolve().parents[1]
-
-
-def run(label: str, command: list[str]) -> bool:
-    print(f"[{label}] {' '.join(command)}")
-    result = subprocess.run(command, cwd=ROOT, check=False)
-    print(f"[{label}] exit={result.returncode}")
-    return result.returncode == 0
-
-
-def checks_for(tier: str) -> list[tuple[str, list[str]]]:
-    checks = [("compile", [sys.executable, "-m", "compileall", "-q", ".harness/tooling", "scripts", "tests"])]
-    if tier == "full":
-        checks.append(("tests-full", [sys.executable, "-m", "unittest", "discover", "-s", ".", "-p", "test_*.py", "-v"]))
-    checks.append(("harness-strict", [sys.executable, "scripts/harness.py", "validate", "--strict"]))
-    return checks
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run fixed project verification")
-    parser.add_argument(
-        "tier",
-        nargs="?",
-        choices=("fast", "full"),
-        default="full",
-        help="full is the default when the tier is omitted",
-    )
-    args = parser.parse_args(argv)
-    print(f"[check-repo] tier={args.tier}")
-    outcomes = [run(label, command) for label, command in checks_for(args.tier)]
-    return 0 if all(outcomes) else 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-"""
+def asset_text(relative: str) -> str:
+    path = ASSETS / relative
+    if not path.is_file():
+        raise HarnessError(f"Harness distribution asset is missing: {relative}")
+    return path.read_text(encoding="utf-8")
 
 
 def _install_runtime(harness: Path) -> None:
@@ -85,56 +52,33 @@ def _install_runtime(harness: Path) -> None:
     target_package.mkdir(parents=True, exist_ok=True)
     for source in sorted(source_package.glob("*.py")):
         atomic_write_text(target_package / source.name, source.read_text(encoding="utf-8"))
-
-    # Keep the generated project self-contained.  In this repository the
-    # canonical schemas live at the repository root; in an already-vendored
-    # runtime they live beside the vendored package.  Copy them both to the
-    # operator-visible schema directory and back into the vendored runtime so
-    # a generated project can itself initialize another project.
-    schema_candidates = [
-        source_package.parents[1] / "schemas",
-        source_package.parent / "schemas",
-    ]
-    schema_source = next(
-        (candidate for candidate in schema_candidates if candidate.is_dir()),
-        None,
-    )
-    if schema_source is None:
+    if not (ASSETS / "schemas").is_dir():
         raise HarnessError("Harness schema assets are missing from the distribution")
-    for source in sorted(schema_source.glob("*.json")):
-        content = source.read_text(encoding="utf-8")
-        atomic_write_text(harness.parent / "schemas" / source.name, content)
-        atomic_write_text(harness / "tooling" / "schemas" / source.name, content)
+    for source in sorted(ASSETS.rglob("*")):
+        if not source.is_file() or "__pycache__" in source.parts:
+            continue
+        relative = source.relative_to(source_package)
+        atomic_write_text(target_package / relative, source.read_text(encoding="utf-8"))
+    # Operator-visible copy; the vendored runtime carries the canonical set.
+    for source in sorted((ASSETS / "schemas").glob("*.json")):
+        atomic_write_text(
+            harness.parent / "schemas" / source.name, source.read_text(encoding="utf-8")
+        )
 
 
 def _install_guidance(root: Path) -> None:
-    """Copy the complete generic policy/docs when the distribution has them."""
-    source_package = Path(__file__).resolve().parent
-    distribution_root = next(
-        (
-            candidate
-            for candidate in source_package.parents
-            if (candidate / "AGENTS.md").is_file()
-            and (candidate / "docs").is_dir()
-        ),
-        None,
-    )
-    if distribution_root is None:
-        return
-    for relative in (
-        "AGENTS.md",
-        "CLAUDE.md",
-        "CODEX_START_PROMPT.md",
-        "CLAUDE_START_PROMPT.md",
-    ):
-        source = distribution_root / relative
+    for relative in GUIDANCE_FILES:
         target = root / relative
-        if source.is_file() and not target.exists():
-            atomic_write_text(target, source.read_text(encoding="utf-8"))
-    for source in sorted((distribution_root / "docs").glob("*.md")):
+        if not target.exists():
+            atomic_write_text(target, asset_text(f"guidance/{relative}"))
+    for source in sorted((ASSETS / "guidance" / "docs").glob("*.md")):
         target = root / "docs" / source.name
         if not target.exists():
             atomic_write_text(target, source.read_text(encoding="utf-8"))
+    for relative in SCRIPT_FILES:
+        target = root / "scripts" / relative
+        if not target.exists():
+            atomic_write_text(target, asset_text(f"scripts/{relative}"))
 
 
 def init_project(path: Path, project_id: str, name: str, *, force: bool = False) -> Path:
@@ -256,13 +200,7 @@ def init_project(path: Path, project_id: str, name: str, *, force: bool = False)
 
     root_files = {
         ".gitignore": "__pycache__/\n*.py[cod]\n.venv/\n.harness/runtime/\n",
-        "AGENTS.md": GENERATED_AGENTS,
-        "CLAUDE.md": GENERATED_CLAUDE,
-        "CODEX_START_PROMPT.md": GENERATED_CODEX_PROMPT,
-        "CLAUDE_START_PROMPT.md": GENERATED_CLAUDE_PROMPT,
         "HANDOFF.md": GENERATED_HANDOFF,
-        "scripts/harness.py": GENERATED_WRAPPER,
-        "scripts/check_repo.py": GENERATED_CHECK_REPO,
         ".harness/.gitattributes": (
             "*.json text eol=lf\n"
             "plans/*.md text eol=lf\n"

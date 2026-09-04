@@ -7,11 +7,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-FAST_TEST_MODULES = [
-    "tests.test_fingerprints",
-    "tests.test_reporting",
-    "tests.test_mutations",
-]
+
+# The same script serves this distribution's source checkout and every
+# generated project, so it compiles whichever layout is present.
+COMPILE_CANDIDATES = ("src", ".harness/tooling", "scripts", "tests")
 
 
 def run(label: str, command: list[str]) -> bool:
@@ -21,34 +20,28 @@ def run(label: str, command: list[str]) -> bool:
     return result.returncode == 0
 
 
-def checks_for(tier: str) -> list[tuple[str, list[str]]]:
-    checks: list[tuple[str, list[str]]] = [
-        ("compile", [sys.executable, "-m", "compileall", "-q", "src", "scripts", "tests"]),
+def skip(label: str, reason: str) -> bool:
+    print(f"\n[{label}] SKIPPED: {reason}")
+    return True
+
+
+def _test_command() -> list[str] | None:
+    tests = ROOT / "tests"
+    if not tests.is_dir() or not any(tests.rglob("test_*.py")):
+        return None
+    discover = ["-s", "tests", "-p", "test_*.py", "-v"]
+    if (tests / "__init__.py").is_file():
+        discover = ["-s", "tests", "-t", ".", "-p", "test_*.py", "-v"]
+    return [sys.executable, "-m", "unittest", "discover", *discover]
+
+
+def checks_for(tier: str) -> list[tuple[str, list[str] | None]]:
+    compile_targets = [name for name in COMPILE_CANDIDATES if (ROOT / name).exists()]
+    checks: list[tuple[str, list[str] | None]] = [
+        ("compile", [sys.executable, "-m", "compileall", "-q", *compile_targets]),
     ]
-    if tier == "fast":
-        checks.append(
-            (
-                "tests-fast",
-                [sys.executable, "-m", "unittest", *FAST_TEST_MODULES, "-v"],
-            )
-        )
-    else:
-        checks.append(
-            (
-                "tests-full",
-                [
-                    sys.executable,
-                    "-m",
-                    "unittest",
-                    "discover",
-                    "-s",
-                    ".",
-                    "-p",
-                    "test_*.py",
-                    "-v",
-                ],
-            )
-        )
+    if tier == "full":
+        checks.append(("tests-full", _test_command()))
     checks.append(
         ("harness-strict", [sys.executable, "scripts/harness.py", "validate", "--strict"])
     )
@@ -63,13 +56,18 @@ def main(argv: list[str] | None = None) -> int:
         choices=("fast", "full"),
         default="full",
         help=(
-            "fast runs contract-focused tests; full runs the entire suite "
-            "(default, equivalent to omitting the tier)"
+            "fast compiles and runs strict harness validation; full also runs "
+            "the test suite (default, equivalent to omitting the tier)"
         ),
     )
     args = parser.parse_args(argv)
     print(f"[check-repo] tier={args.tier}")
-    outcomes = [run(label, command) for label, command in checks_for(args.tier)]
+    outcomes = [
+        run(label, command)
+        if command is not None
+        else skip(label, "no test modules under tests/")
+        for label, command in checks_for(args.tier)
+    ]
     return 0 if all(outcomes) else 1
 
 

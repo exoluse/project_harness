@@ -30,7 +30,7 @@ The older `PLAN_GATED` / `REQUIRED` modes remain readable for existing repositor
 
 ## Install and initialize
 
-The generated project is self-contained and does not depend on this source checkout:
+Everything a project receives — the agent policy, schemas, verification script, and runtime — ships inside the package under `project_harness/assets`, so `init` produces the same project from a source checkout, an installed package, or a generated project's own vendored runtime. The generated project is self-contained and does not depend on this source checkout:
 
 ```powershell
 python -m project_harness.cli init C:\work\my-project --project-id MYPROJECT --name "My Project"
@@ -106,7 +106,9 @@ python scripts/check_repo.py full
 python scripts/check_repo.py
 ```
 
-Both tiers compile and run strict harness validation. `fast` runs focused contract tests; `full` runs all tests. Commands stored in mutable records are never auto-executed.
+Both tiers compile the project and run strict harness validation. `full` also runs the test suite and reports `SKIPPED` when a project has no tests yet, so a freshly generated project passes its own verification before the first test is written. Commands stored in mutable records are never auto-executed.
+
+The same `check_repo.py` serves this repository and every generated project; CI runs `check_repo.py full` on Linux and Windows.
 
 ## High-risk approval
 
@@ -129,4 +131,4 @@ The protected authority configuration and ledger live outside the repository. Ag
 - `.harness/events/`, `results/`, `evidence/`: on-demand audit records
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
-Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Record model](docs/RECORD_MODEL.md).
+Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md).

@@ -1,0 +1,22 @@
+{
+  "schema": "harness.event/v1",
+  "id": "EVT-0086",
+  "kind": "event",
+  "event_type": "WORK_ITEM_CREATED",
+  "occurred_at": "2026-09-04T03:38:42Z",
+  "payload": {
+    "task_id": "TASK-0011",
+    "plan_id": "PLAN-0006",
+    "capabilities": [
+      "LOCAL_IMPLEMENTATION",
+      "LOCAL_TESTS",
+      "DOCUMENTATION",
+      "HARNESS_CONTROL_CHANGE"
+    ],
+    "added_dependencies": [
+      ".harness/requirements/REQ-0007.json",
+      ".harness/features/FUNC-0006.json",
+      ".harness/work-items/TASK-0011.md"
+    ]
+  }
+}

@@ -10,6 +10,7 @@ from project_harness.gates import task_start_gate
 from project_harness.guidance import next_step
 from project_harness.lifecycle_mutations import transition_record
 from project_harness.scaffold import init_project, new_record
+from project_harness.validation import validate_project
 
 
 def _plan(root: Path, plan_id: str = "PLAN-0001") -> dict:
@@ -35,6 +36,21 @@ class AuthoringTests(unittest.TestCase):
             )
             self.assertIn("PRODUCTION_DEPLOYMENT", subject["excluded_actions"])
             self.assertIn("SECRET_ACCESS", subject["excluded_actions"])
+
+    def test_new_feature_is_a_warning_until_it_is_specified(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = init_project(Path(temp) / "demo", "DEMO", "Demo")
+            feature = new_record("feature", "FUNC-0001", "Login")
+            path = record_path(root, "feature", "FUNC-0001")
+            atomic_write_json(path, feature)
+            codes = {(i.severity, i.code) for i in validate_project(root)}
+            self.assertIn(("WARNING", "MISSING_COMPLETION_CONTRACT"), codes)
+            self.assertNotIn(("ERROR", "MISSING_COMPLETION_CONTRACT"), codes)
+
+            feature["status"] = "SPECIFIED"
+            atomic_write_json(path, feature)
+            codes = {(i.severity, i.code) for i in validate_project(root)}
+            self.assertIn(("ERROR", "MISSING_COMPLETION_CONTRACT"), codes)
 
     def test_create_work_item_links_both_sides_of_the_plan_relationship(self):
         with tempfile.TemporaryDirectory() as temp:

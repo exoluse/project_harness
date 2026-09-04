@@ -225,7 +225,9 @@ class ScaffoldValidationTests(HarnessTestCase):
             )
             root_schemas = sorted((root / "schemas").glob("*.json"))
             vendored_schemas = sorted(
-                (root / ".harness" / "tooling" / "schemas").glob("*.json")
+                (
+                    root / ".harness" / "tooling" / "project_harness" / "assets" / "schemas"
+                ).glob("*.json")
             )
             self.assertGreaterEqual(len(root_schemas), 8)
             self.assertEqual(

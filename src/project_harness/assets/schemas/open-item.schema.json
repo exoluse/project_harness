@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-harness.local/schemas/open-item.schema.json",
+  "type": "object",
+  "required": ["schema", "id", "kind", "category", "gate_level", "status", "affects", "blocks"],
+  "properties": {
+    "schema": {"const": "harness.open_item/v1"},
+    "id": {"type": "string", "pattern": "^OI-[0-9]{4,}$"},
+    "kind": {"const": "open_item"},
+    "gate_level": {"enum": ["G0", "G1", "G2", "G3"]},
+    "status": {"enum": ["OPEN", "ANALYZING", "WAITING_DECISION", "WAITING_EXTERNAL", "DECISION_READY", "BLOCKED", "RESOLVED", "DEFERRED", "CANCELLED", "REOPENED"]},
+    "affects": {"type": "array", "items": {"type": "string"}},
+    "blocks": {"type": "array", "items": {"type": "string"}},
+    "resolution": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["summary", "decided_by", "decision_authority", "resolved_at", "propagated_to", "evidence_refs", "baseline_refs"],
+          "properties": {
+            "summary": {"type": "string", "minLength": 1},
+            "decided_by": {"type": "string", "minLength": 1},
+            "decision_authority": {"type": "string", "minLength": 1},
+            "resolved_at": {"type": "string", "format": "date-time"},
+            "propagated_to": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+            "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^EVD-"}},
+            "baseline_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+          }
+        }
+      ]
+    }
+  },
+  "additionalProperties": true
+}

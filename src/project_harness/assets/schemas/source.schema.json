@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-harness.local/schemas/source.schema.json",
+  "type": "object",
+  "required": ["schema", "id", "kind", "authority", "artifact_role", "interpretation_status", "origin", "summary"],
+  "properties": {
+    "schema": {"const": "harness.source/v1"},
+    "id": {"type": "string", "pattern": "^SRC-[0-9]{4,}$"},
+    "kind": {"const": "source"},
+    "authority": {"enum": ["RAW_INPUT", "REFERENCE", "REVIEW_CANDIDATE", "APPROVED_BASELINE", "CONTRACT_AUTHORITY"]},
+    "artifact_role": {"enum": ["REFERENCE", "VISUAL_BASELINE", "INTERACTION_PROTOTYPE", "STARTER_CODE", "PRODUCTION_SOURCE", "LEGACY_SOURCE"]},
+    "interpretation_status": {"enum": ["EXPLICIT", "INFERRED", "UNKNOWN", "CONFLICTING", "CONFIRMED"]}
+  },
+  "additionalProperties": true
+}
