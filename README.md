@@ -132,7 +132,7 @@ python scripts/check_repo.py full --self-test          # runtime tests on the ba
 python scripts/harness.py init . --project-id DEV --name "Dev"   # then exercise it as a project
 ```
 
-CI does both on Linux and Windows. A drift test fails when a root copy (`AGENTS.md`, `docs/`, `schemas/`, `scripts/`) no longer matches its asset.
+A drift test fails when a root copy (`AGENTS.md`, `docs/`, `schemas/`, `scripts/`) no longer matches its asset.
 
 ## High-risk approval
 
