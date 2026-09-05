@@ -125,6 +125,34 @@ That is the designed behaviour. Re-approval is: author the change, `plan sync`,
 `"lifecycle_state": "DECISION_READY"` in `.harness/state.json` before applying,
 then transition the project back to `BUILDING` if work was under way.
 
+### Switching to the next plan
+
+With single-level plans one PLAN is active at a time, so moving from sprint 1
+to sprint 2 is a switch, not an addition. Verified on 2026-09-06:
+
+1. Finish the current plan first: every TASK in it `DONE` or otherwise
+   terminal, its evidence recorded. A plan left half-done keeps its tasks and
+   its decision in the tree; they become non-executable the moment the plan
+   stops being active, and any later edit to that plan leaves a permanent
+   `STALE_APPROVAL` warning that `validate --strict` reports.
+2. Create and author the next PLAN and its TASKs, `plan sync`, `validate
+   --strict`, `fingerprint`; the owner decides; `approval confirm`.
+3. **Interim.** Set `current_plan` and `active_plan` to the new plan and
+   `"lifecycle_state": "DECISION_READY"` in `.harness/state.json`.
+   `apply-decision` refuses an approval whose subject is not the active plan,
+   and no command changes the active plan ([Runtime gaps](RUNTIME_GAPS.md)
+   items 1 and 3).
+4. `plan apply-decision --approval <new APR>`. The project is `APPROVED`; the
+   new plan's tasks pass `gate task` once `READY`, and the previous plan's
+   tasks fail with "not the active plan".
+5. The previous plan keeps the status it had; no command retires a plan
+   ([Runtime gaps](RUNTIME_GAPS.md) item 7). Record its completion in its
+   Markdown body and in the evidence of its features until that command
+   exists.
+
+Under the plan hierarchy, sprints are leaves under one root and several are
+active at once, so this switch disappears.
+
 ## When the harness becomes strict
 
 The harness adds a gate only where the consequence needs one:
@@ -203,8 +231,13 @@ owner is reachable, not the authority behind it.
 The sequence, with the smallest records that keep the trace:
 
 1. Register the incident: a `SRC-*` for the report as it arrived, and an
-   `OI-*` at `G1` (or `G0` when the whole project must stop) naming what is
-   broken and what it blocks.
+   `OI-*` at `G1` whose `blocks` and `affects` name the work that must wait
+   for the fix (the release task, the acceptance, dependent tasks) and never
+   the feature or criterion the fix itself repairs, because a `G1` item closes
+   the gate of every task whose features or criteria it names. `G0` closes
+   every task gate and the plan preflight, so it would stop the hotfix too;
+   use it only to freeze all work, and resolve or downgrade it before the fix
+   is approved.
 2. Add one TASK for the fix to the active PLAN with `new task --plan
    --feature --criterion --capability LOCAL_IMPLEMENTATION`, author its
    `write_scope` and `verification`, and `plan sync`. The preflight requires

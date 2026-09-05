@@ -14,7 +14,9 @@ has back-end work, screens, infrastructure, and cross-cutting features such as
 payment, each moving at its own pace with its own people. Today that forces a
 choice between one large PLAN that must be re-approved on every change, and a
 sequence of PLANs of which only one can be executable at a time. Neither fits
-concurrent workstreams.
+concurrent workstreams, and until this lands the constitution's principle that
+only affected work stops holds at plan granularity only: a change to an
+approved plan stops every task in that plan until the owner re-confirms.
 
 ## Shape
 

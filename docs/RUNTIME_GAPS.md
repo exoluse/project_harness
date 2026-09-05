@@ -144,6 +144,28 @@ no `--authorized-action`. The examples in `README.md`, `docs/APPROVALS.md`, and
 authorize every capability of every TASK in the plan; a routine plan passes
 `LOCAL_IMPLEMENTATION`, `LOCAL_TESTS`, and `DOCUMENTATION`.
 
+## 7. No command changes a plan's status
+
+**What happens.** `transition --kind` accepts `project`, `requirement`,
+`feature`, and `work_item`, not `plan`. A plan's status is written only by
+`plan apply-decision`. A finished or abandoned plan therefore stays `APPROVED`
+or `ACTIVE` forever, `next` keeps counting it as a candidate when no plan is
+current, and switching to the next plan leaves the previous one in the tree in
+its last status.
+
+**Where.** `lifecycle_mutations.SIMPLE_TRANSITIONS` and the `transition`
+argument parser in `cli.py`.
+
+**Interim.** Finish a plan's tasks before switching away from it, note its
+completion in the plan's Markdown body, and let the switch make its tasks
+non-executable; see "Switching to the next plan" in `docs/WORKFLOW.md`.
+
+**Decided fix.** `transition --kind plan --to CLOSED|SUPERSEDED` with the
+normal claim and reason handling, refusing `CLOSED` while a task in the plan is
+not terminal. `plan apply-decision` on a different plan than the active one
+marks the previous active plan `SUPERSEDED` when all its tasks are terminal and
+refuses otherwise, so the switch in `docs/WORKFLOW.md` becomes one command.
+
 ## Why the self-tests did not catch this
 
 The runtime's tests pass (126 on 2026-09-06). Their fixtures write
@@ -154,7 +176,8 @@ passing task gate is never exercised.
 **Decided fix.** One end-to-end test drives the CLI from `init` through
 `new plan`, `new task`, `approval confirm`, `plan apply-decision`, `transition`,
 and `gate task`, then adds a task, re-confirms, re-applies, and checks both
-gates. It is the acceptance test for gaps 1 to 5.
+gates, then finishes the plan and switches to a second one. It is the
+acceptance test for gaps 1 to 5 and 7.
 
 ## Order of work
 

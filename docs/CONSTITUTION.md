@@ -12,3 +12,4 @@
 10. **Names are not identities.** Agent and reviewer IDs provide procedural provenance; hostile separation and protected execution belong to an external orchestrator or CI boundary.
 11. **Derived views are disposable.** Human reports and `HANDOFF.md` may be regenerated; canonical records, shared runtime state, Git history, and protected authority records keep their distinct roles.
 12. **Responsible uncertainty beats fabricated certainty.** When a completion claim cannot be proven at the required verification profile, the correct state is unresolved.
+13. **Two inputs carry a project.** What the customer supplied and what the developer says to the agent are the only inputs a project needs from intake to closure; the agent derives every record, gate, and report from them. The owner's decision is one of those prompts. The only step outside them is the signature on a high-risk request, and that is by design.

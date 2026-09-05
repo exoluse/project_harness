@@ -23,7 +23,7 @@ This means:
 - every later change is represented by a TASK listed in its PLAN;
 - ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed only after the current human PLAN decision has been applied;
 - PLAN approval is an execution permission bound to the exact plan fingerprint and declared TASKs;
-- every routine step is performed by the agent from the user's request; the human contributes decisions and signatures, not file edits ([Workflow](docs/WORKFLOW.md) maps prompts to agent actions);
+- a project runs on two inputs, the customer's requirements and the developer's prompts; every routine step is performed by the agent from those, the human contributes decisions and signatures, not file edits, and only the signature on a high-risk request happens outside a prompt ([Workflow](docs/WORKFLOW.md) maps prompts to agent actions);
 - a claim is needed only when multiple writers are active;
 - results, events, and evidence are created automatically by commands that need them or explicitly when audit, review, release, acceptance, or completion proof requires them;
 - Approval for production deployment, production data changes, destructive operations, secret access, and final customer acceptance is cryptographically verified; routine PLAN approval records a direct human confirmation.
@@ -209,9 +209,9 @@ sit beside it. A fresh checkout has no records yet, so `next` reports
 
 Policy text is maintained directly: when the user asks for a policy change,
 `AGENTS.md`, the adapters, the start prompts, this README, and `docs/` are
-edited in place with no PLAN/TASK or approval. Only that guidance Markdown is
-covered; the runtime, `scripts/`, schemas, and records stay behind the PLAN
-gate. See the routine execution authority section of `AGENTS.md`.
+edited in place, and committed or pushed when the user asks, with no PLAN/TASK
+or approval. Only that guidance Markdown is covered; the runtime, `scripts/`,
+schemas, and records stay behind the PLAN gate. See the routine execution authority section of `AGENTS.md`.
 
 ```powershell
 python scripts/check_repo.py full --self-test   # runtime tests on a bare copy
