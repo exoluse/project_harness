@@ -3,14 +3,16 @@
 Status: **verified on 2026-09-06, fixes decided, not yet implemented.** The
 routine path in `docs/WORKFLOW.md` was run end to end on a fresh copy of the
 harness with the CLI alone. It cannot be completed that way. The gaps below are
-what stopped it, where each one lives, the interim step the project owner takes
-until the fix lands, and the fix that is decided. The policy in `AGENTS.md`
+what stopped it, where each one lives, the interim step taken until the fix
+lands, and the fix that is decided. The policy in `AGENTS.md`
 does not change; the runtime is to be brought up to it.
 
-Every interim step is performed by the human project owner, not by an agent.
-None of them grants execution authority: `plan apply-decision` still verifies
-the approval, the plan fingerprint, and the preflight before anything becomes
-executable.
+The interim steps are performed by the agent when the user's request calls
+for the step they precede, so the whole path stays drivable from prompts. None
+of them grants execution authority: they set a pointer or a descriptive
+lifecycle value, and `plan apply-decision` still verifies the approval, the
+plan fingerprint, and the preflight before anything becomes executable. The
+agent names each interim edit in its report so the audit trail is not silent.
 
 ## 1. Nothing sets the active plan
 
@@ -24,7 +26,7 @@ approval flow. No command writes `state.active_plan`; only `init` writes it, as
 its first line; the code beneath it never runs.
 
 **Interim.** After the owner's confirmation is recorded and before
-`plan apply-decision`, the owner sets both pointers in `.harness/state.json`:
+`plan apply-decision`, set both pointers in `.harness/state.json`:
 
 ```json
 "current_plan": "PLAN-0001",
@@ -77,11 +79,11 @@ replace the active one only when the previous decision's status is
 `SUPERSEDED`. After the plan was edited, `approval_status` reports the previous
 decision as `STALE` first, so the replacement path never fires.
 
-**Interim.** After the owner re-confirms and before `plan apply-decision`, the
-owner sets `"lifecycle_state": "DECISION_READY"` in `.harness/state.json`.
-`apply-decision` then applies the new decision and moves the project to
-`APPROVED`; the owner transitions it back to `BUILDING` if work was under way.
-Verified: after this, tasks in the re-approved plan pass `gate task`.
+**Interim.** After the owner re-confirms and before `plan apply-decision`, set
+`"lifecycle_state": "DECISION_READY"` in `.harness/state.json`. `apply-decision`
+then applies the new decision and moves the project to `APPROVED`; transition
+it back to `BUILDING` if work was under way. Verified: after this, tasks in the
+re-approved plan pass `gate task`.
 
 **Decided fix.** The replacement check accepts a previous decision that is
 `STALE` or `SUPERSEDED` when a newer current decision exists for the same

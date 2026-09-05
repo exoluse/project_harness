@@ -23,6 +23,7 @@ This means:
 - every later change is represented by a TASK listed in its PLAN;
 - ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed only after the current human PLAN decision has been applied;
 - PLAN approval is an execution permission bound to the exact plan fingerprint and declared TASKs;
+- every routine step is performed by the agent from the user's request; the human contributes decisions and signatures, not file edits ([Workflow](docs/WORKFLOW.md) maps prompts to agent actions);
 - a claim is needed only when multiple writers are active;
 - results, events, and evidence are created automatically by commands that need them or explicitly when audit, review, release, acceptance, or completion proof requires them;
 - Approval for production deployment, production data changes, destructive operations, secret access, and final customer acceptance is cryptographically verified; routine PLAN approval records a direct human confirmation.
@@ -99,7 +100,7 @@ by an agent, so it must not roll back a control that bounds human authority.
 
 `next` reports the single step that moves the project forward, and every step it
 names is a command. The commands maintain every derived field; the content of
-the plan is authored. Today two steps are interim owner actions on
+the plan is authored. Today two steps are interim edits to
 `.harness/state.json`, recorded in [Runtime gaps](docs/RUNTIME_GAPS.md), and the
 exact sequence with what each record must contain is in
 [Workflow](docs/WORKFLOW.md):
@@ -123,7 +124,7 @@ python scripts/harness.py approval confirm --type PLAN --subject .harness/plans/
   --confirmation-channel <where the owner said it> --confirmation-reference <what they said it in> `
   --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION `
   --acknowledge-procedural
-# interim, owner: set current_plan and active_plan to PLAN-0001 in .harness/state.json
+# interim: set current_plan and active_plan to PLAN-0001 in .harness/state.json
 python scripts/harness.py transition --kind project --id PROJECT --to SPECIFYING --agent codex --reason "plan drafted"          # interim
 python scripts/harness.py transition --kind project --id PROJECT --to PLANNING --agent codex --reason "plan drafted"            # interim
 python scripts/harness.py transition --kind project --id PROJECT --to DECISION_READY --agent codex --reason "decision recorded" # interim
@@ -153,7 +154,8 @@ re-verifies the approval, the plan fingerprint, and the plan preflight, then
 writes the plan's decision reference, `state.active_decision`, and the
 `APPROVED` lifecycle state. It requires `state.active_plan` to name the plan
 and the lifecycle to be `DECISION_READY`; until [Runtime gaps](docs/RUNTIME_GAPS.md)
-items 1 to 3 are fixed the owner meets those two preconditions by hand. See [Human approval operations](docs/APPROVALS.md).
+items 1 to 3 are fixed the agent meets those two preconditions with the
+interim steps recorded there. See [Human approval operations](docs/APPROVALS.md).
 
 Before push, inspect upstream divergence. Resolve conflicts without resetting or discarding either side. Force push, tag push, branch deletion, or another target requires separate explicit authorization.
 

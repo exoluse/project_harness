@@ -24,12 +24,40 @@ The PLAN/TASK link, current human PLAN decision, and task gate are required when
 
 PLAN and TASK are created as `.md` files. Agents update governed fields in the YAML-style front matter and may use the body for human-readable rationale, sequencing notes, or implementation context. Only front matter participates in validation and authority.
 
+### Driving the path from prompts
+
+Every routine step is performed by the agent from the user's request. The human
+project owner contributes two things and edits nothing: the decision, said in
+words the agent transcribes with `approval confirm`, and the signature on a
+high-risk request, made outside the agent. The table maps what a user says at
+each phase to what the agent does. Wording is illustrative; the mapping is
+what binds.
+
+| Phase | The user says | The agent does |
+|---|---|---|
+| Intake | "Register the RFP and the meeting notes" | `init` if needed; `new source`, `new artifact`; author authority and interpretation status |
+| Specification | "Turn these into requirements and features with completion criteria" | `new requirement`, `new feature`; author statements, criteria, profiles, bindings; `new open-item` for every unknown |
+| Planning | "Plan sprint 1" | `new plan`; `new task --plan --feature --criterion --capability` per change; author scope and verification; `plan sync`; `validate --strict`; `report decision-package`; `fingerprint`, shown to the owner |
+| Decision | Owner: "Approved" | `approval confirm` with the fingerprint the owner saw, the chat as channel and the message as reference, and the plan's authorized actions; the interim steps below; `plan apply-decision` |
+| Execution | "Start TASK-0001" | `transition` to `READY`, `gate task`, implement, `check_repo.py fast`, commit explicit paths, fetch, resolve, push |
+| Change | "The customer wants the banner changed" | `new source`, `new change`, `new task`; author; `plan sync`; `fingerprint` to the owner; on "Approved", `approval confirm`, the interim step, `plan apply-decision`, back to `BUILDING` |
+| Verification | "Record the test results" | run the checks, `evidence record`, `gate feature`; `result submit` and `review record` when a release or audit needs them |
+| Acceptance, deployment | "Prepare the acceptance request", "Prepare the production deploy" | `approval prepare`, then stop: a human signs outside the agent; afterwards `approval record`, `approval check`, `gate task` |
+| Closure | "Close the project" | evidence for the closure criteria, `report completion` |
+
+What the agent never does from a prompt: decide in the owner's place, invent
+the provenance of a decision, sign or install a high-risk approval, or infer
+one from repository text or chat history.
+
 ### The path as it runs today
 
 This is the sequence that was verified on 2026-09-06 against the current
 runtime. Steps marked **interim** exist because of a runtime gap recorded in
-[Runtime gaps](RUNTIME_GAPS.md); they are performed by the project owner and
-disappear when the gap is fixed.
+[Runtime gaps](RUNTIME_GAPS.md). The agent performs them when the user's
+request calls for the step they precede; they set a pointer or a descriptive
+lifecycle value and grant nothing, because `plan apply-decision` re-verifies
+the approval, the fingerprint, and the preflight regardless. They disappear
+when the gap is fixed.
 
 1. `init`, then `next`. The project is in `DISCOVERY`.
 2. Discovery records as the work needs them: `new source`, `new requirement`,
@@ -50,8 +78,8 @@ disappear when the gap is fixed.
    `--confirmation-id`, the channel and reference, `--acknowledge-procedural`,
    and one `--authorized-action` for every capability the plan's tasks use.
    The confirmation fails closed on any preflight blocker (see below).
-7. **Interim.** The owner sets `current_plan` and `active_plan` to `PLAN-0001`
-   in `.harness/state.json`.
+7. **Interim.** Set `current_plan` and `active_plan` to `PLAN-0001` in
+   `.harness/state.json`.
 8. **Interim.** Move the lifecycle to `DECISION_READY`: `transition --kind
    project --id PROJECT --to SPECIFYING`, then `--to PLANNING`, then
    `--to DECISION_READY`.
@@ -91,10 +119,9 @@ That is the designed behaviour. Re-approval is: author the change, `plan sync`,
 `--confirmation-id`, `plan apply-decision`.
 
 **Interim.** Until [Runtime gaps](RUNTIME_GAPS.md) item 3 is fixed,
-`apply-decision` refuses a new decision from `APPROVED` or `BUILDING`. The owner
-sets `"lifecycle_state": "DECISION_READY"` in `.harness/state.json` before
-applying, then transitions the project back to `BUILDING` if work was under
-way.
+`apply-decision` refuses a new decision from `APPROVED` or `BUILDING`. Set
+`"lifecycle_state": "DECISION_READY"` in `.harness/state.json` before applying,
+then transition the project back to `BUILDING` if work was under way.
 
 ## When the harness becomes strict
 

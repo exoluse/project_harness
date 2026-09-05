@@ -117,7 +117,7 @@ python scripts/harness.py approval confirm `
   --confirmation-channel "sprint planning call" --confirmation-reference "2026-08-20 minutes" `
   --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION `
   --acknowledge-procedural
-# interim (see RUNTIME_GAPS.md): the owner sets current_plan and active_plan in state.json,
+# interim (see RUNTIME_GAPS.md): set current_plan and active_plan in state.json,
 # and the project is moved SPECIFYING -> PLANNING -> DECISION_READY with `transition --kind project`
 python scripts/harness.py plan apply-decision --approval APR-0001
 ```
@@ -150,7 +150,7 @@ Lifecycle: `BUILDING`
   registered as a `SRC-*` and classified through a `CR-*`. In-scope work
   becomes a new TASK in the PLAN. Because the PLAN changed, the owner approves
   it again against the new fingerprint. Until [RUNTIME_GAPS.md](RUNTIME_GAPS.md)
-  item 3 is fixed, the owner also sets the lifecycle back to `DECISION_READY`
+  item 3 is fixed, the agent also sets the lifecycle back to `DECISION_READY`
   in `state.json` before `plan apply-decision`.
 - When work moves from one agent to another mid-task, the sender creates a
   handoff naming the changed files, what was verified and what was not, and the

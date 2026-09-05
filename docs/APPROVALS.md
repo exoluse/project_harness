@@ -53,7 +53,7 @@ proves provenance, not identity. The confirmation runs the plan preflight and
 fails closed on any blocker; [Workflow](WORKFLOW.md) lists what it checks.
 `plan apply-decision` additionally needs `state.active_plan` to name the plan
 and the lifecycle to be `DECISION_READY`; see [Runtime gaps](RUNTIME_GAPS.md)
-for the interim owner steps that satisfy those today. Editing the plan afterwards
+for the interim steps that satisfy those today. Editing the plan afterwards
 invalidates the decision, which is the point: the approval authorizes that
 plan, not the next one.
 
