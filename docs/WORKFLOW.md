@@ -18,7 +18,7 @@ and every derived field themselves, so this path never requires hand-editing
 front matter. Approval subjects are paths: the decision binds the exact file it
 fingerprints. See [Human approval operations](APPROVALS.md).
 
-The PLAN/TASK link, current human PLAN decision, and task gate are required when execution begins. Discovery itself does not need placeholder records.
+The PLAN/TASK link, current human PLAN decision, and task gate are required when execution begins. Discovery itself does not need placeholder records. [Example: a customer web project](EXAMPLE_WEB_PROJECT.md) walks this path end to end for one engagement.
 
 PLAN and TASK are created as `.md` files. Agents update governed fields in the YAML-style front matter and may use the body for human-readable rationale, sequencing notes, or implementation context. Only front matter participates in validation and authority.
 

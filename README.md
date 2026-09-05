@@ -221,4 +221,4 @@ The protected authority configuration and ledger live outside the repository. Ag
 - `.harness/tooling/project_harness/`: the runtime and the record `schemas/` it validates against
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
-Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md).
+Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see [Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md).
