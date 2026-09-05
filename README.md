@@ -98,21 +98,35 @@ by an agent, so it must not roll back a control that bounds human authority.
 ## Routine agent workflow
 
 `next` reports the single step that moves the project forward, and every step it
-names is a command. Reaching a startable TASK from a fresh `init` never requires
-editing a record by hand:
+names is a command. The commands maintain every derived field; the content of
+the plan is authored. Today two steps are interim owner actions on
+`.harness/state.json`, recorded in [Runtime gaps](docs/RUNTIME_GAPS.md), and the
+exact sequence with what each record must contain is in
+[Workflow](docs/WORKFLOW.md):
 
 ```powershell
 git status --short
 python scripts/harness.py next
+python scripts/harness.py new requirement REQ-0001 "State the need"     # then author its statement
+python scripts/harness.py new feature FUNC-0001 "Name the capability"   # then author requirement_refs and a completion criterion
 python scripts/harness.py new plan PLAN-0001 "Describe the change"
-python scripts/harness.py new task TASK-0001 "Describe the work" --plan PLAN-0001 --capability LOCAL_IMPLEMENTATION
+python scripts/harness.py new task TASK-0001 "Describe the work" --plan PLAN-0001 `
+  --feature FUNC-0001 --criterion AC-FUNC-0001-001 --capability LOCAL_IMPLEMENTATION
+# author: plan requirement_refs, feature_refs, verification_strategy; task write_scope, verification
+python scripts/harness.py plan sync PLAN-0001
+python scripts/harness.py validate --strict
 python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
 # The human project owner reviews that exact plan and decides.
 python scripts/harness.py approval confirm --type PLAN --subject .harness/plans/PLAN-0001.md `
   --decision APPROVED --approver owner@example.com --basis "Reviewed the plan and its tasks" `
   --confirm-fingerprint <fingerprint> --confirmation-id HCONF-plan-0001 `
   --confirmation-channel <where the owner said it> --confirmation-reference <what they said it in> `
+  --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION `
   --acknowledge-procedural
+# interim, owner: set current_plan and active_plan to PLAN-0001 in .harness/state.json
+python scripts/harness.py transition --kind project --id PROJECT --to SPECIFYING --agent codex --reason "plan drafted"          # interim
+python scripts/harness.py transition --kind project --id PROJECT --to PLANNING --agent codex --reason "plan drafted"            # interim
+python scripts/harness.py transition --kind project --id PROJECT --to DECISION_READY --agent codex --reason "decision recorded" # interim
 python scripts/harness.py plan apply-decision --approval APR-0001
 python scripts/harness.py transition --kind work_item --id TASK-0001 --to READY --agent codex --reason "approved plan"
 python scripts/harness.py gate task TASK-0001
@@ -127,7 +141,7 @@ git push
 `new task` requires `--plan` and maintains both sides of the relationship: the
 TASK's `plan_id`, the PLAN's `work_item_refs`, and the derived
 `approval_dependencies`, in one atomic mutation. `plan sync` rebuilds derived
-dependencies if a record was edited by hand.
+dependencies after content was authored into a record.
 
 Subjects are paths, not ids: an approval binds the exact file it fingerprints.
 `approval confirm` records a direct owner confirmation, which is the assurance
@@ -137,7 +151,9 @@ decision the owner actually made and may never invent its provenance. Only
 `plan apply-decision` turns a recorded decision into execution authority: it
 re-verifies the approval, the plan fingerprint, and the plan preflight, then
 writes the plan's decision reference, `state.active_decision`, and the
-`APPROVED` lifecycle state. See [Human approval operations](docs/APPROVALS.md).
+`APPROVED` lifecycle state. It requires `state.active_plan` to name the plan
+and the lifecycle to be `DECISION_READY`; until [Runtime gaps](docs/RUNTIME_GAPS.md)
+items 1 to 3 are fixed the owner meets those two preconditions by hand. See [Human approval operations](docs/APPROVALS.md).
 
 Before push, inspect upstream divergence. Resolve conflicts without resetting or discarding either side. Force push, tag push, branch deletion, or another target requires separate explicit authorization.
 
@@ -221,4 +237,4 @@ The protected authority configuration and ledger live outside the repository. Ag
 - `.harness/tooling/project_harness/`: the runtime and the record `schemas/` it validates against
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
-Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see [Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md). The decided but not yet implemented plan tree is in [Plan hierarchy](docs/PLAN_HIERARCHY.md), and the decided record format in [Record format](docs/RECORD_FORMAT.md).
+Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see [Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md). The decided but not yet implemented plan tree is in [Plan hierarchy](docs/PLAN_HIERARCHY.md), and the decided record format in [Record format](docs/RECORD_FORMAT.md). [Runtime gaps](docs/RUNTIME_GAPS.md) lists where the current runtime falls short of this policy and the fixes decided for it.

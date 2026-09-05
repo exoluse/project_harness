@@ -37,14 +37,23 @@ python scripts/harness.py approval confirm `
   --confirmation-id HCONF-plan-0001 `
   --confirmation-channel <where the owner said it> `
   --confirmation-reference <what they said it in> `
+  --authorized-action LOCAL_IMPLEMENTATION `
+  --authorized-action LOCAL_TESTS `
+  --authorized-action DOCUMENTATION `
   --acknowledge-procedural
 
 python scripts/harness.py plan apply-decision --approval APR-0001
 ```
 
 The confirmation fingerprint must match the plan as it stands, the confirmation
-id must be unique and unused, and `--acknowledge-procedural` states on the
-record that this proves provenance, not identity. Editing the plan afterwards
+id must be unique and unused, an `APPROVED` decision must name at least one
+`--authorized-action` and together they must cover every capability of every
+TASK in the plan, and `--acknowledge-procedural` states on the record that this
+proves provenance, not identity. The confirmation runs the plan preflight and
+fails closed on any blocker; [Workflow](WORKFLOW.md) lists what it checks.
+`plan apply-decision` additionally needs `state.active_plan` to name the plan
+and the lifecycle to be `DECISION_READY`; see [Runtime gaps](RUNTIME_GAPS.md)
+for the interim owner steps that satisfy those today. Editing the plan afterwards
 invalidates the decision, which is the point: the approval authorizes that
 plan, not the next one.
 

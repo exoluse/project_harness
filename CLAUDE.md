@@ -2,4 +2,4 @@
 
 `AGENTS.md` is canonical and is not loaded automatically: read it first, in full, and follow its Startup section before acting on any request. Its human-approved PLAN execution model, claim rules, record rules, and high-risk approval boundary apply to this session as written.
 
-Run `python scripts/harness.py next` for the required next step and the command that performs it.
+Run `python scripts/harness.py next` for the required next step and the command that performs it. At `NEEDS_PLAN_APPROVAL` its command list is wrong (it names the signed flow); follow the sequence in `docs/WORKFLOW.md` there, as `docs/RUNTIME_GAPS.md` item 4 explains.

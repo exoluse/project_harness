@@ -14,13 +14,87 @@ that performs it. `status` describes the project; `next` says what to do about
 it. The commands it names — `new plan`, `new task --plan`, `approval confirm`
 for the routine owner decision or `approval prepare`/`approval record` for a
 signed one, `plan apply-decision`, `transition` — maintain the PLAN/TASK link
-and every derived field themselves, so this path never requires hand-editing
-front matter. Approval subjects are paths: the decision binds the exact file it
+and the derived fields (`approval_dependencies`, `work_item_refs`, `plan_id`)
+themselves. The content of a plan is authored: statements, criteria, scope, and
+verification are written into the record, by hand where the CLI has no option
+for them yet. Approval subjects are paths: the decision binds the exact file it
 fingerprints. See [Human approval operations](APPROVALS.md).
 
 The PLAN/TASK link, current human PLAN decision, and task gate are required when execution begins. Discovery itself does not need placeholder records. [Example: a customer web project](EXAMPLE_WEB_PROJECT.md) walks this path end to end for one engagement. [Plan hierarchy](PLAN_HIERARCHY.md) records the decided, not yet implemented, tree of category-prefixed child plans under a root PLAN.
 
 PLAN and TASK are created as `.md` files. Agents update governed fields in the YAML-style front matter and may use the body for human-readable rationale, sequencing notes, or implementation context. Only front matter participates in validation and authority.
+
+### The path as it runs today
+
+This is the sequence that was verified on 2026-09-06 against the current
+runtime. Steps marked **interim** exist because of a runtime gap recorded in
+[Runtime gaps](RUNTIME_GAPS.md); they are performed by the project owner and
+disappear when the gap is fixed.
+
+1. `init`, then `next`. The project is in `DISCOVERY`.
+2. Discovery records as the work needs them: `new source`, `new requirement`,
+   `new feature`, `new open-item`. Author their content: a requirement's
+   `statement` and `source_refs`; a feature's `requirement_refs` and at least
+   one completion criterion with `id`, `statement`, `verification_plan`,
+   `required_profiles`, and `required_bindings`.
+3. `new plan PLAN-0001 "<title>"`, then `new task TASK-0001 "<title>" --plan
+   PLAN-0001 --feature FUNC-0001 --criterion AC-FUNC-0001-001 --capability
+   LOCAL_IMPLEMENTATION`.
+4. Author the rest of the scope. In the plan's front matter set
+   `requirement_refs`, `feature_refs`, and a non-empty `verification_strategy`.
+   In the task's front matter set `write_scope` and `verification`. Then
+   `plan sync PLAN-0001` so `approval_dependencies` covers every reference.
+5. `validate --strict`, then `fingerprint .harness/plans/PLAN-0001.md`.
+6. The owner reads that exact plan and decides. Record it with
+   `approval confirm`, passing `--confirm-fingerprint`, a unique
+   `--confirmation-id`, the channel and reference, `--acknowledge-procedural`,
+   and one `--authorized-action` for every capability the plan's tasks use.
+   The confirmation fails closed on any preflight blocker (see below).
+7. **Interim.** The owner sets `current_plan` and `active_plan` to `PLAN-0001`
+   in `.harness/state.json`.
+8. **Interim.** Move the lifecycle to `DECISION_READY`: `transition --kind
+   project --id PROJECT --to SPECIFYING`, then `--to PLANNING`, then
+   `--to DECISION_READY`.
+9. `plan apply-decision --approval APR-0001`. The project is `APPROVED`.
+10. `transition --kind work_item --id TASK-0001 --to READY`, then
+    `gate task TASK-0001`. `next` reports `READY`.
+11. Implement, `check_repo.py fast`, commit explicit paths, fetch, resolve, push.
+
+### What the preflight checks
+
+`approval confirm` and `plan apply-decision` both run the plan preflight. It
+fails closed unless all of the following hold:
+
+- `requirement_refs` and `feature_refs` each name at least one record, and
+  `work_item_refs` at least one TASK; every reference exists and is of the
+  right kind.
+- every planned requirement is realized by a planned feature, and no planned
+  feature traces to a requirement outside the plan;
+- every required feature has at least one completion criterion, and every
+  required criterion has a `verification_plan`;
+- every planned feature has an implementing task, and every required criterion
+  is listed in some task's `criterion_refs`;
+- every task points back to the plan, lists at least one planned feature and
+  one of its criteria, and has non-empty `verification`;
+- every task capability is in the plan's `authorized_actions` and not in its
+  `excluded_actions`;
+- `verification_strategy` is non-empty;
+- `approval_dependencies` covers every referenced record (`plan sync`);
+- no `G0` open item is active.
+
+### Changing an approved plan
+
+Adding, removing, or re-scoping a TASK changes the plan's fingerprint and makes
+the current decision `STALE`; every task in the plan stops passing its gate.
+That is the designed behaviour. Re-approval is: author the change, `plan sync`,
+`fingerprint`, owner decides, `approval confirm` with a new
+`--confirmation-id`, `plan apply-decision`.
+
+**Interim.** Until [Runtime gaps](RUNTIME_GAPS.md) item 3 is fixed,
+`apply-decision` refuses a new decision from `APPROVED` or `BUILDING`. The owner
+sets `"lifecycle_state": "DECISION_READY"` in `.harness/state.json` before
+applying, then transitions the project back to `BUILDING` if work was under
+way.
 
 ## When the harness becomes strict
 

@@ -69,7 +69,9 @@ Lifecycle: `SPECIFYING`
 python scripts/harness.py new requirement REQ-0001 "Members authenticate with email and password"
 python scripts/harness.py new requirement REQ-0002 "Card payment through the gateway"
 python scripts/harness.py new feature FUNC-0001 "Login and session"
+python scripts/harness.py new feature FUNC-0002 "Home page"
 python scripts/harness.py new feature FUNC-0003 "Checkout"
+# author each feature's requirement_refs and at least one completion criterion (AC-FUNC-0001-001, ...)
 python scripts/harness.py new open-item OI-0001 "Product page design not yet approved by customer"
 ```
 
@@ -96,8 +98,13 @@ Lifecycle: `PLANNING -> DECISION_READY -> APPROVED`
 
 ```powershell
 python scripts/harness.py new plan PLAN-0001 "Sprint 1: authentication and home page"
-python scripts/harness.py new task TASK-0001 "Login form and session API" --plan PLAN-0001 --capability LOCAL_IMPLEMENTATION
-python scripts/harness.py new task TASK-0002 "Home page layout" --plan PLAN-0001 --capability LOCAL_IMPLEMENTATION
+python scripts/harness.py new task TASK-0001 "Login form and session API" --plan PLAN-0001 `
+  --feature FUNC-0001 --criterion AC-FUNC-0001-001 --capability LOCAL_IMPLEMENTATION
+python scripts/harness.py new task TASK-0002 "Home page layout" --plan PLAN-0001 `
+  --feature FUNC-0002 --criterion AC-FUNC-0002-001 --capability LOCAL_IMPLEMENTATION
+# author the plan's requirement_refs, feature_refs, and verification_strategy,
+# and each task's write_scope (api/auth, web/src/pages/home) and verification
+python scripts/harness.py plan sync PLAN-0001
 python scripts/harness.py report decision-package PLAN-0001
 python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
 
@@ -108,7 +115,10 @@ python scripts/harness.py approval confirm `
   --approver lead@agency.example --basis "Sprint 1 scope and tasks reviewed" `
   --confirm-fingerprint <fingerprint> --confirmation-id HCONF-plan-0001 `
   --confirmation-channel "sprint planning call" --confirmation-reference "2026-08-20 minutes" `
+  --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION `
   --acknowledge-procedural
+# interim (see RUNTIME_GAPS.md): the owner sets current_plan and active_plan in state.json,
+# and the project is moved SPECIFYING -> PLANNING -> DECISION_READY with `transition --kind project`
 python scripts/harness.py plan apply-decision --approval APR-0001
 ```
 
@@ -139,7 +149,9 @@ Lifecycle: `BUILDING`
 - When the customer asks mid-sprint to change the hero banner, the request is
   registered as a `SRC-*` and classified through a `CR-*`. In-scope work
   becomes a new TASK in the PLAN. Because the PLAN changed, the owner approves
-  it again against the new fingerprint.
+  it again against the new fingerprint. Until [RUNTIME_GAPS.md](RUNTIME_GAPS.md)
+  item 3 is fixed, the owner also sets the lifecycle back to `DECISION_READY`
+  in `state.json` before `plan apply-decision`.
 - When work moves from one agent to another mid-task, the sender creates a
   handoff naming the changed files, what was verified and what was not, and the
   next action. The receiver acquires its own claim with that handoff.
