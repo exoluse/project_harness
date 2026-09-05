@@ -115,6 +115,12 @@ python scripts/harness.py plan apply-decision --approval APR-0001
 Editing `PLAN-0001.md` after this invalidates the decision, which is the point:
 the approval covers that plan, not the next one.
 
+With the plan hierarchy in [PLAN_HIERARCHY.md](PLAN_HIERARCHY.md) implemented,
+this project would instead hold one root `PLAN-0001` for the whole engagement
+and child plans such as `API-001` for the back end, `SCR-001` for screens, and
+`PAY-001` for payment, each approved on its own and several executable at
+once. Until then the sprint PLANs above are the shape to use.
+
 ## 4. Implementation
 
 Lifecycle: `BUILDING`

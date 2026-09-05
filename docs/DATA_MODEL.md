@@ -8,7 +8,7 @@
 | `.harness/artifacts/` | `ART-` | Registered file/bundle path, media type, digest, and execution trust |
 | `.harness/requirements/` | `REQ-` | Versioned functional, non-functional, operational, and security requirements |
 | `.harness/features/` | `FUNC-` | Implementable capabilities and criterion-level completion contracts |
-| `.harness/plans/` | `PLAN-*.md` | Execution planning reference, workstreams, dependencies, capabilities, exclusions, and verification strategy |
+| `.harness/plans/` | `PLAN-*.md` | Execution planning reference, workstreams, dependencies, capabilities, exclusions, and verification strategy. Child plans with category ids such as `API-001.md` are specified in [Plan hierarchy](PLAN_HIERARCHY.md) and arrive with `harness.plan/v2` |
 | `.harness/work-items/` | `TASK-*.md` | Executable work units required before implementation, with dependencies, criterion scope, write scope, locks, checks, and capability-specific approval refs |
 | `.harness/open-items/` | `OI-` | Questions, decisions, assumptions, risks, dependencies, conflicts, and blockers |
 | `.harness/evidence/` | `EVD-` | Verification observations, profiles, subject fingerprints, bindings, and limitations |

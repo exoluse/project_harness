@@ -39,6 +39,8 @@ PLAN and TASK records use `.md` files. Their strict YAML-style front matter is t
 
 Before ordinary development, ensure the current PLAN contains a TASK for the requested change, its human approval has been applied, and `gate task` passes.
 
+Plans are single-level today. The decided hierarchy, in which a root `PLAN-*` carries category-prefixed child plans such as `API-001` and `SCR-001`, each approved separately, with several leaves executable at once and the category set seeded per project by an `init` profile, is specified in `docs/PLAN_HIERARCHY.md`. Its rules bind once the runtime implements `harness.plan/v2`; until then do not create child plans or rely on `active_plans`.
+
 Build the PLAN/TASK structure with `new plan` and `new task --plan`. Then record the owner's decision with `approval confirm` against the plan's current fingerprint and materialize it with `plan apply-decision`; `approval prepare` and `approval record` are the signed flow reserved for the five high-risk boundaries, not for a routine PLAN. These commands maintain the PLAN/TASK link, `state.current_plan`, active decision, and derived fields such as `approval_dependencies`, so records are not hand-edited to satisfy a gate. `plan sync` repairs derived dependencies when a record was edited directly.
 
 Results, events, and evidence are on demand:
