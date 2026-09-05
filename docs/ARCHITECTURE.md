@@ -23,7 +23,7 @@ New projects use the first value in each pair. Missing fields retain legacy beha
 - A harness governs one project: the repository it lives in. `project.json` carries a fixed `PROJECT` marker and a human `name`, so no record, command, or approval addresses the project by an identity string.
 - Canonical records live in `.harness/` in the working tree. The harness reads, validates, fingerprints, and gates them there; whether a project commits them to Git is the project's own choice, and no gate depends on a record's Git history.
 - The runtime and the record schemas it validates against live in `.harness/tooling/project_harness/`; the project tree holds no second copy.
-- Human-authored PLAN/TASK records use Markdown with strict YAML-style front matter; machine state and audit records use JSON.
+- Human-authored PLAN/TASK records use Markdown with strict YAML-style front matter; machine state and audit records use JSON. `docs/RECORD_FORMAT.md` specifies the decided move of every record to Markdown.
 - `state.current_plan` may be null during initial discovery. It becomes mandatory execution context before implementation; every TASK points to that PLAN and is listed by it.
 - `state.active_plan` and `active_decision` materialize the current human PLAN decision and are required before routine implementation.
 - Claims, mutexes, and mailboxes live under the Git common runtime so linked worktrees share concurrency state.

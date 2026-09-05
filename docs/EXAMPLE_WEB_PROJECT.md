@@ -287,7 +287,9 @@ python scripts/harness.py report completion
 | The customer's final sign-off | `CUSTOMER_ACCEPTANCE` | feature |
 
 Each approval permits only the named action on the exact subject. Project
-configuration cannot lower any of these to a procedural confirmation.
+configuration cannot lower any of these to a procedural confirmation. The
+subject paths above end in `.json` because that is the current format; after
+[RECORD_FORMAT.md](RECORD_FORMAT.md) is implemented they end in `.md`.
 
 ## Traps this project will meet
 

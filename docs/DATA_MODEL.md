@@ -26,7 +26,7 @@ Events and approval baseline snapshots live in `.harness/events/` and `.harness/
 
 PLAN and TASK use `.md` files because people create and review them directly. A strict YAML-style front matter block contains the complete schema-validated record. The Markdown body that follows is reserved for readable explanations and is preserved by lifecycle mutations. Gates and fingerprints consume only the front matter, so body prose cannot silently grant capabilities or alter execution authority.
 
-The front matter grammar is dependency-free and intentionally narrow: two-space indentation, string keys, and JSON-compatible quoted scalars, arrays, and objects. Duplicate keys, tabs, invalid indentation, mixed list/object blocks, missing delimiters, and malformed values are errors. Legacy PLAN/TASK JSON can still be read so existing projects do not fail abruptly; newly created records and this repository use Markdown.
+The front matter grammar is dependency-free and intentionally narrow: two-space indentation, string keys, and JSON-compatible quoted scalars, arrays, and objects. Duplicate keys, tabs, invalid indentation, mixed list/object blocks, missing delimiters, and malformed values are errors. Legacy PLAN/TASK JSON can still be read so existing projects do not fail abruptly; newly created records and this repository use Markdown. [Record format](RECORD_FORMAT.md) records the decision, not yet implemented, to extend this format to every canonical record and to the project and state files.
 
 ## Full trace
 

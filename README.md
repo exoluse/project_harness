@@ -18,7 +18,7 @@ This means:
 
 - an initialized harness starts in `DISCOVERY` with `current_plan: null` and no invented PLAN/TASK placeholders;
 - before implementation, the project creates a `PLAN-*` and a `TASK-*` listed in it, obtains the human PLAN confirmation, and applies its current decision;
-- PLAN and TASK are readable `.md` documents with strict machine-validated front matter; state and audit records remain JSON;
+- PLAN and TASK are readable `.md` documents with strict machine-validated front matter; state and audit records remain JSON until the decided move to Markdown in [Record format](docs/RECORD_FORMAT.md) is implemented;
 - records live in the working tree under `.harness/` and are read from there; committing them to Git is the project's choice, not a harness requirement;
 - every later change is represented by a TASK listed in its PLAN;
 - ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed only after the current human PLAN decision has been applied;
@@ -221,4 +221,4 @@ The protected authority configuration and ledger live outside the repository. Ag
 - `.harness/tooling/project_harness/`: the runtime and the record `schemas/` it validates against
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
-Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see [Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md). The decided but not yet implemented plan tree is in [Plan hierarchy](docs/PLAN_HIERARCHY.md).
+Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see [Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md). The decided but not yet implemented plan tree is in [Plan hierarchy](docs/PLAN_HIERARCHY.md), and the decided record format in [Record format](docs/RECORD_FORMAT.md).
