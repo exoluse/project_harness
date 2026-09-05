@@ -91,6 +91,11 @@ have extended or filled one in. `--confirm` must be the harness directory name,
 and everything the reset removes is copied to `.harness/runtime/reset-<timestamp>/`
 first — a git-ignored path, so a snapshot never enters project history.
 
+An agent runs `reset` only when the user's request names it in so many words,
+after a `--dry-run` whose summary the user has seen, and never as a way out of
+a validation error, a stale decision, or a blocked gate; see
+[Workflow](docs/WORKFLOW.md).
+
 One thing deliberately survives: the human decision runtime
 (`human-decisions/`), because its monotonic sequence and latest-decision markers
 are what make a recorded human confirmation non-replayable. A reset is reachable

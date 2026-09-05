@@ -54,6 +54,10 @@ Results, events, and evidence are on demand:
 
 When a completion record is used, keep distinctions such as `IMPLEMENTED`, `STATIC_VERIFIED`, `INTEGRATION_VERIFIED`, `BROWSER_VERIFIED`, `LIVE_ENV_VERIFIED`, `CUSTOMER_ACCEPTED`, and `CLOSED`. Partial, failed, stale, ambiguous, or unrun checks are not PASS.
 
+`reset` removes every canonical record and the project's identity. Run it only when the current user request names it in so many words; never infer it from validation errors, a stale decision, a blocked gate, or a wish to rename the project. Before running it, run `reset --dry-run`, show the user what it would remove and whether those records are committed, and say that the snapshot under `.harness/runtime/` will be the only copy of anything uncommitted. It is outside the cryptographic boundary because it acts on local repository records, keeps a snapshot, and preserves the human-decision runtime; that is why the explicit request and the dry run are required. Never delete a reset snapshot except on an explicit user request.
+
+A hotfix is a TASK in an approved PLAN like any other change; urgency shortens the ceremony, never the authority. The path is the routine one with the smallest records that carry the trace: register the incident, add one TASK, author its scope and verification, show the owner the fingerprint, transcribe the decision, apply it, pass the gate, fix, verify, commit, push. A production rollback or redeploy stays behind `PRODUCTION_DEPLOYMENT`. Editing production directly, reusing a stale approval, or reporting an unrun check as PASS is not a hotfix; it is the incident. `docs/WORKFLOW.md` gives the sequence.
+
 ## Human approval boundary
 
 Cryptographic human approval is required only for:

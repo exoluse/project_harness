@@ -95,6 +95,9 @@ strict front matter like today. Ids do not encode depth; the tree is defined by
 12. **Closing.** A leaf closes when its TASKs are done. A branch closes only
     when every child is `CLOSED` or `SUPERSEDED`. The project closure contract
     is evaluated against the root.
+13. **Hotfix leaves.** An incident fix goes into its own leaf, for example
+    `FIX-001` under the root, so its approval and re-approval never stale the
+    sprint leaves. The sequence is in `docs/WORKFLOW.md`.
 
 ## Categories
 

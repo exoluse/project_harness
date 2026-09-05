@@ -167,6 +167,78 @@ Files `init` does not create are never touched, and the bookkeeping files it gen
 
 `--dry-run` reports the same summary without writing and needs no confirmation. Everything a reset removes is snapshotted to `.harness/runtime/reset-<timestamp>/` first.
 
+### When an agent may run it
+
+`reset` is a destructive operation on the project's own records, so the rule is
+stricter than for any other routine command, and it is a rule of instruction
+rather than of cryptographic approval: the command acts on local repository
+records, keeps a snapshot, and preserves the human-decision runtime, so the
+five signed boundaries do not apply to it.
+
+1. The current user request must name the reset in so many words: "reset the
+   harness", "start the project over", `reset --confirm`. Nothing else counts.
+   Validation errors, a stale plan decision, a blocked gate, a broken record,
+   or a wish to rename the project are reasons to repair or to ask, never to
+   reset.
+2. Run `reset --dry-run` first and show the user its summary: the records and
+   identity files it would remove, and whether `git status --short` shows
+   those records as committed. Uncommitted records survive only in the
+   snapshot, and the snapshot is git-ignored, so it exists on this machine
+   only. Say so.
+3. Run `reset --confirm <directory name>` only after that report, in the same
+   request. Report the snapshot path and that `next` now says `NEEDS_INIT`.
+4. Never delete a `.harness/runtime/reset-*` snapshot except on an explicit
+   user request.
+
+A no-Git project has no committed copy at all; the dry-run report must say
+that the snapshot will be the only copy.
+
+## Hotfixes and incidents
+
+An incident does not open a second path. A hotfix is a TASK in an approved
+PLAN, approved by the owner, gated like any other change; what urgency shortens
+is the ceremony around that decision, which is already minutes long when the
+owner is reachable, not the authority behind it.
+
+The sequence, with the smallest records that keep the trace:
+
+1. Register the incident: a `SRC-*` for the report as it arrived, and an
+   `OI-*` at `G1` (or `G0` when the whole project must stop) naming what is
+   broken and what it blocks.
+2. Add one TASK for the fix to the active PLAN with `new task --plan
+   --feature --criterion --capability LOCAL_IMPLEMENTATION`, author its
+   `write_scope` and `verification`, and `plan sync`. The preflight requires
+   every TASK to name a planned feature and one of its criteria, so attach the
+   fix to the feature it repairs; when no feature covers the broken behaviour,
+   add one whose single criterion states the behaviour the fix restores. Do not
+   satisfy the trace with an unrelated feature.
+3. `fingerprint` the plan and show it to the owner with a one-line summary of
+   the change. The owner's "approved" in chat is the decision; transcribe it
+   with `approval confirm`, the chat as channel and the message as reference,
+   then apply it (with the interim steps in [Runtime gaps](RUNTIME_GAPS.md)
+   while they are needed).
+4. `transition` the TASK to `READY`, `gate task`, fix, `check_repo.py fast`,
+   commit explicit paths, fetch, resolve, push.
+5. Record what was verified as evidence against the criterion the fix
+   restores, then resolve the incident's open item with that evidence
+   reference and its propagation targets. If the fix changes an
+   approved requirement or feature, open a `CR-*` for the follow-up; the hotfix
+   TASK does not silently rewrite the baseline.
+6. Reaching production is a separate step. A redeploy, a rollback to the
+   previous release, a data repair, or a credential rotation each takes its
+   own cryptographic approval; the incident does not merge them.
+
+Because a single-level plan has one active PLAN, adding the hotfix TASK makes
+the sprint's decision stale and closes every task gate in it until the owner
+re-confirms. That is the designed effect of changing an approved plan, and it
+is brief when the owner is present. With the plan hierarchy in
+[Plan hierarchy](PLAN_HIERARCHY.md), a hotfix goes into its own leaf, such as
+`FIX-001` under the root, so the sprint leaves are untouched.
+
+What is never a hotfix: editing production or its data directly, applying a
+stale or unrelated approval, skipping the task gate, or reporting a check that
+did not run as PASS. Each of those is the incident, not the response to it.
+
 ## Checks
 
 ```powershell

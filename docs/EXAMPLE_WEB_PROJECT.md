@@ -307,7 +307,8 @@ subject paths above end in `.json` because that is the current format; after
 
 - **A customer request is not execution authority.** "Just fix this now" is
   registered and classified, then becomes a TASK in a PLAN that the owner
-  confirms. A hotfix is a small PLAN on the same path, not an exception to it.
+  confirms. A hotfix is one TASK on the same path, not an exception to it;
+  [WORKFLOW.md](WORKFLOW.md) gives the incident sequence.
 - **A blocked design blocks only its screen.** The `G1` on the product page
   stops the product-page tasks. The payment API keeps going.
 - **Staging green is not production verified.** After the release the
