@@ -43,7 +43,7 @@ strict front matter like today. Ids do not encode depth; the tree is defined by
    has no children. A root with TASKs and no children is a valid single-level
    plan and is what every existing project has. Mixing fails validation.
 2. **Identifiers.** Root plans are `PLAN-NNNN`. Child plans are
-   `<CATEGORY>-NNN`, where `CATEGORY` is two to five capital letters declared in
+   `<CATEGORY>-NNN`, where `CATEGORY` is two to eight capital letters declared in
    `project.json` under `plan_categories`, and numbering runs per category from
    `001`. TASK ids stay `TASK-NNNN` and remain global.
 3. **Reserved prefixes.** A category may not be one of the record prefixes the
@@ -98,7 +98,12 @@ strict front matter like today. Ids do not encode depth; the tree is defined by
 
 ## Categories
 
-`project.json` declares the categories a project uses. Declaring a category is
+`project.json` declares the categories a project uses. The set is the project's
+own. A storefront might use `API`, `SCR`, `PAY`, and `INF`; a fintech site might
+add `KYC` and `LEDGER`; an internal tool might use only `APP` and `OPS`; a
+project that plans by team might use `BACKEND` and `FRONTEND`. The harness
+recognises no category name. It checks only that a category is declared, is not
+a reserved prefix, and is used consistently. Declaring a category is
 configuration, not authority: it grants nothing and approves nothing.
 
 ```json
@@ -120,8 +125,9 @@ fails validation.
 The categories a project needs follow from what kind of project it is, so the
 harness does not fix them. It ships **profiles**: named seeds for
 `plan_categories` that `init` copies into `project.json`. A profile is a
-starting point, not a rule. After `init` the project edits its categories
-freely, and nothing later reads the profile again.
+starting point, not a rule. After `init` the project renames, removes, or adds
+categories freely, may end up with a set that matches no shipped profile, and
+nothing later reads the profile again.
 
 ```powershell
 python scripts/harness.py init --name "Acme storefront" --profile web
@@ -177,7 +183,7 @@ active leaf; `status` shows `active_plans` in full.
 
 | Area | Change |
 |---|---|
-| `plan.schema.json` | `harness.plan/v2`: id pattern `^(PLAN-[0-9]{4,}|[A-Z]{2,5}-[0-9]{3,})$`, `approval_subject.parent_plan_id`, derived `child_plan_refs` |
+| `plan.schema.json` | `harness.plan/v2`: id pattern `^(PLAN-[0-9]{4,}|[A-Z]{2,8}-[0-9]{3,})$`, `approval_subject.parent_plan_id`, derived `child_plan_refs` |
 | `state.schema.json` | `harness.state/v2`: `active_plans` object mapping plan id to `APR-*` |
 | `project.schema.json` | optional `plan_categories` |
 | `scaffold.py` | `init --profile <name>` seeds `plan_categories` from `.harness/templates/profiles/<name>.json`; ships `web`, `mobile`, `data`, `library` |
