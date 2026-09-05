@@ -17,8 +17,9 @@ The project's policy lives in `.harness/project.json`:
 This means:
 
 - an initialized harness starts in `DISCOVERY` with `current_plan: null` and no invented PLAN/TASK placeholders;
-- before implementation, the project creates a `PLAN-*` and a `TASK-*` listed in it, obtains the human PLAN signature, and applies its current decision;
+- before implementation, the project creates a `PLAN-*` and a `TASK-*` listed in it, obtains the human PLAN confirmation, and applies its current decision;
 - PLAN and TASK are readable `.md` documents with strict machine-validated front matter; state and audit records remain JSON;
+- records live in the working tree under `.harness/` and are read from there; committing them to Git is the project's choice, not a harness requirement;
 - every later change is represented by a TASK listed in its PLAN;
 - ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed only after the current human PLAN decision has been applied;
 - PLAN approval is an execution permission bound to the exact plan fingerprint and declared TASKs;
@@ -182,6 +183,12 @@ Both tiers compile the project and run strict harness validation. `full` also ru
 The runtime is edited in place at `.harness/tooling/project_harness/`; its tests
 sit beside it. A fresh checkout has no records yet, so `next` reports
 `NEEDS_INIT` — the state a copied folder starts in.
+
+Policy text is maintained directly: when the user asks for a policy change,
+`AGENTS.md`, the adapters, the start prompts, this README, and `docs/` are
+edited in place with no PLAN/TASK or approval. Only that guidance Markdown is
+covered; the runtime, `scripts/`, schemas, and records stay behind the PLAN
+gate. See the routine execution authority section of `AGENTS.md`.
 
 ```powershell
 python scripts/check_repo.py full --self-test   # runtime tests on a bare copy

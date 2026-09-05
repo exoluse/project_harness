@@ -3,7 +3,7 @@
 The harness separates three concerns that should not be confused:
 
 ```text
-discovery -> current PLAN -> TASK -> user-directed routine execution
+discovery -> current PLAN -> TASK -> human PLAN approval -> routine execution
 concurrent writers -> claims / worktrees / handoffs
 high-risk action -> protected cryptographic approval
 ```
@@ -21,7 +21,7 @@ New projects use the first value in each pair. Missing fields retain legacy beha
 ## Stores
 
 - A harness governs one project: the repository it lives in. `project.json` carries a fixed `PROJECT` marker and a human `name`, so no record, command, or approval addresses the project by an identity string.
-- Canonical records live in `.harness/` and are versioned with the repository.
+- Canonical records live in `.harness/` in the working tree. The harness reads, validates, fingerprints, and gates them there; whether a project commits them to Git is the project's own choice, and no gate depends on a record's Git history.
 - The runtime and the record schemas it validates against live in `.harness/tooling/project_harness/`; the project tree holds no second copy.
 - Human-authored PLAN/TASK records use Markdown with strict YAML-style front matter; machine state and audit records use JSON.
 - `state.current_plan` may be null during initial discovery. It becomes mandatory execution context before implementation; every TASK points to that PLAN and is listed by it.

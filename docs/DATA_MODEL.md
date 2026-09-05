@@ -43,7 +43,7 @@ SRC/ART -> REQ -> FUNC -> completion criterion -> TASK
 
 Plan preflight checks both directions: planned requirements need realizing features, required features/criteria need implementing tasks, and tasks must stay inside the plan's declared boundaries. A current passing preflight and human PLAN decision are execution gates for routine work.
 
-High-impact work-item capabilities use `capability_approval_refs`, a capability-to-`APR-*` map included in the task fingerprint. Production deployment, production-data change, destructive cleanup, and secret access require their matching cryptographic approval types. Ordinary external Git synchronization is user-directed. A stale, unrelated, mismatched, or non-current approval reference cannot satisfy the task gate.
+High-impact work-item capabilities use `capability_approval_refs`, a capability-to-`APR-*` map included in the task fingerprint. Production deployment, production-data change, destructive cleanup, and secret access require their matching cryptographic approval types. Ordinary external Git synchronization needs no capability approval of its own: fetch and a normal push to the configured upstream run under the applied PLAN decision like any other routine action, while force pushes, tag pushes, branch deletion, and other targets require separate explicit user authorization. A stale, unrelated, mismatched, or non-current approval reference cannot satisfy the task gate.
 
 `report decision-package PLAN-*` projects this connected model into one human decision package. `report completion` projects required feature gates plus technical and authorized closure without changing canonical state.
 
@@ -97,7 +97,7 @@ An `APR-*` stores its assurance and local record sequence plus authority/decisio
 
 Claims are live leases, not canonical project records. In Git projects they reside under `<git-common-dir>/project-harness-runtime/leases/`, alongside shared inbox/outbox, acknowledgment, handoff-acceptance, and `human-decisions/` state. The human-decision runtime contains the decision mutex, procedural sequence counter, and subject-keyed latest markers used by every linked worktree. In no-Git projects runtime falls back to `.harness/runtime/` and is single-writer.
 
-Runtime markers are deliberately not committed or copied by Git. A committed procedural `APR-*` without its matching marker is non-current in a new clone until the owner repeats the exact confirmation in that clone's primary worktree. This portability limit is fail-closed and does not turn the runtime marker into an authentication root.
+Runtime markers never enter the repository and are not copied by Git. Canonical records themselves need not be committed either: the harness gates on what is present in the working tree. A procedural `APR-*` that reaches another checkout, whether committed or copied, has no matching marker there and is non-current until the owner repeats the exact confirmation in that checkout's primary worktree. This portability limit is fail-closed and does not turn the runtime marker into an authentication root.
 
 Dispatch IDs use `DSP-*`; claims use `CLM-*`. A handoff or result retains the claim ID and task/plan fingerprints so later readers can reconstruct the attempt boundary.
 
