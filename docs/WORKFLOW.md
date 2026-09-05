@@ -10,12 +10,14 @@ request -> discovery/specification -> identify/update PLAN -> create/select TASK
 ```
 
 `harness.py next` reports which of those steps the project is on and the command
-that performs it. `status` describes the project; `next` says what to do about
-it. The commands it names — `new plan`, `new task --plan`, `approval confirm`
-for the routine owner decision or `approval prepare`/`approval record` for a
-signed one, `plan apply-decision`, `transition` — maintain the PLAN/TASK link
-and the derived fields (`approval_dependencies`, `work_item_refs`, `plan_id`)
-themselves. The content of a plan is authored: statements, criteria, scope, and
+that performs it, except at the approval step, where it names the signed flow
+instead of `approval confirm` until [Runtime gaps](RUNTIME_GAPS.md) item 4 is
+fixed; follow the sequence below there. `status` describes the project; `next`
+says what to do about it. The commands on this path — `new plan`,
+`new task --plan`, `approval confirm` for the routine owner decision or
+`approval prepare`/`approval record` for a signed one, `plan apply-decision`,
+`transition` — maintain the PLAN/TASK link and the derived fields
+(`approval_dependencies`, `work_item_refs`, `plan_id`) themselves. The content of a plan is authored: statements, criteria, scope, and
 verification are written into the record, by hand where the CLI has no option
 for them yet. Approval subjects are paths: the decision binds the exact file it
 fingerprints. See [Human approval operations](APPROVALS.md).

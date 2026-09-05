@@ -4,7 +4,7 @@ The harness is a coordination and gate engine, not a sandbox. Mutable repository
 
 ## Authority boundary
 
-Discovery may begin without PLAN/TASK placeholders. Before executable work, a current PLAN and TASK require a direct human PLAN decision that `plan apply-decision` has materialized. An explicit user request is not approval and cannot authorize routine development operations, commits, fetch, conflict resolution, or a normal push. Cryptographic human approval is code-forced for:
+Discovery may begin without PLAN/TASK placeholders. Before executable work, a current PLAN and TASK require a direct human PLAN decision that `plan apply-decision` has materialized. An explicit user request is not approval and cannot authorize routine development operations, commits, fetch, conflict resolution, or a normal push. The one exception is the harness's own policy text: `AGENTS.md` lets an explicit user request edit, commit, and push the guidance Markdown directly, because that changes what agents are told, not what the runtime enforces. Cryptographic human approval is code-forced for:
 
 - production deployment;
 - production data changes;

@@ -18,9 +18,11 @@ Every approval subject is named by its path, never by its id, because the decisi
 
 ## Routine PLAN confirmation
 
-This is the everyday path, and it is the only approval an agent may record. The
-owner reads the exact plan, says what they decided, and the agent transcribes
-that decision against the fingerprint they saw:
+This is the everyday path, and it is the only human decision an agent may
+transcribe on the owner's behalf; the signed flow below is imported with
+`approval record` but never made by the agent. The owner reads the exact plan,
+says what they decided, and the agent transcribes that decision against the
+fingerprint they saw:
 
 ```powershell
 python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
