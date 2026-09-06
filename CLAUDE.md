@@ -1,5 +1,11 @@
 # Claude Code Adapter
 
-`AGENTS.md` is canonical and is not loaded automatically: read it first, in full, and follow its Startup section before acting on any request. Its human-approved PLAN execution model, claim rules, record rules, and high-risk approval boundary apply to this session as written.
+`AGENTS.md` is canonical and is not loaded automatically. Read its current
+repository copy once per session, then run `python scripts/harness.py next` and
+use its state to load only the referenced records or policy section. Re-read an
+unchanged file only when evidence shows that it changed during the session.
 
-Run `python scripts/harness.py next` for the required next step and the command that performs it. At `NEEDS_PLAN_APPROVAL` its command list is wrong (it names the signed flow); follow the sequence in `docs/WORKFLOW.md` there, as `docs/RUNTIME_GAPS.md` item 4 explains.
+At `NEEDS_PLAN_APPROVAL`, the current `next` output is wrong: read only **The
+path as it runs today** in `docs/WORKFLOW.md` and item 4 of
+`docs/RUNTIME_GAPS.md`. PLAN approval, task gates, dirty-work preservation, and
+the five cryptographic boundaries remain mandatory.

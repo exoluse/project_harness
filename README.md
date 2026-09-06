@@ -30,6 +30,19 @@ This means:
 
 `USER_DIRECTED` is not supported: a repository policy cannot disable the human approval gate.
 
+### Token-efficient agent startup
+
+An agent reads the current `AGENTS.md` once per session and runs
+`python scripts/harness.py next` before loading project records or long-form
+documentation. The reported state selects the required PLAN/TASK, handoff, and
+policy section. `doctor`, `validate --strict`, `status`, schemas, and the full
+README are conditional diagnostics, not a fixed context bundle on every turn.
+
+This changes context routing, not authority. PLAN approval, task gates,
+dirty-work preservation, blockers, verification boundaries, and the five
+cryptographic approvals remain mandatory. See [Context and token
+efficiency](docs/CONTEXT_EFFICIENCY.md) for the routing table and measurements.
+
 ## Use it: copy the folder
 
 This folder is the harness, and the harness governs one project: the repository
@@ -109,6 +122,10 @@ the plan is authored. Today two steps are interim edits to
 `.harness/state.json`, recorded in [Runtime gaps](docs/RUNTIME_GAPS.md), and the
 exact sequence with what each record must contain is in
 [Workflow](docs/WORKFLOW.md):
+
+The block below is an operator reference, not startup context. Agents load only
+the portion selected by `next`. At `NEEDS_PLAN_APPROVAL`, use the approval
+section because the current runtime still reports the wrong signed flow.
 
 ```powershell
 git status --short
@@ -244,4 +261,11 @@ The protected authority configuration and ledger live outside the repository. Ag
 - `.harness/tooling/project_harness/`: the runtime and the record `schemas/` it validates against
 - `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
 
-Additional details: [Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), [Data model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see [Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md). The decided but not yet implemented plan tree is in [Plan hierarchy](docs/PLAN_HIERARCHY.md), and the decided record format in [Record format](docs/RECORD_FORMAT.md). [Runtime gaps](docs/RUNTIME_GAPS.md) lists where the current runtime falls short of this policy and the fixes decided for it.
+Additional details: [Context and token efficiency](docs/CONTEXT_EFFICIENCY.md),
+[Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), and [Data
+model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see
+[Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md). The decided but
+not yet implemented plan tree is in [Plan hierarchy](docs/PLAN_HIERARCHY.md),
+and the decided record format in [Record format](docs/RECORD_FORMAT.md).
+[Runtime gaps](docs/RUNTIME_GAPS.md) lists where the current runtime falls short
+of this policy and the fixes decided for it.

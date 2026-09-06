@@ -22,6 +22,24 @@ verification are written into the record, by hand where the CLI has no option
 for them yet. Approval subjects are paths: the decision binds the exact file it
 fingerprints. See [Human approval operations](APPROVALS.md).
 
+### Context loading rule
+
+On a new agent session, read `AGENTS.md` once and run `next`. Load this document
+only when the reported state needs a sequence it does not yet express. The
+reported command remains bounded by the user's request; `NEEDS_INIT` does not
+authorize initialization during a read-only/status request. At
+`NEEDS_PLAN_APPROVAL`, the required portion is **The path as it runs today**;
+read `RUNTIME_GAPS.md` item 4 for the reason, not the entire gaps document, and
+never record approval before the owner actually decides.
+
+Run `doctor` after initialization, when environment or authority readiness may
+have changed, and before a high-risk operation. Run `validate --strict` before
+a PLAN decision package or execution, after record mutations, and before a
+release, handoff, result, or push. An unchanged read-only turn does not repeat
+those diagnostics. `status` is for a full investigation when `next` is
+insufficient. The routing and measurement contract is in
+[Context and token efficiency](CONTEXT_EFFICIENCY.md).
+
 The PLAN/TASK link, current human PLAN decision, and task gate are required when execution begins. Discovery itself does not need placeholder records. [Example: a customer web project](EXAMPLE_WEB_PROJECT.md) walks this path end to end for one engagement. [Plan hierarchy](PLAN_HIERARCHY.md) records the decided, not yet implemented, tree of category-prefixed child plans under a root PLAN.
 
 PLAN and TASK are created as `.md` files. Agents update governed fields in the YAML-style front matter and may use the body for human-readable rationale, sequencing notes, or implementation context. Only front matter participates in validation and authority.
@@ -273,6 +291,9 @@ stale or unrelated approval, skipping the task gate, or reporting a check that
 did not run as PASS. Each of those is the incident, not the response to it.
 
 ## Checks
+
+These checks are selected by the boundary above; they are not an unconditional
+startup bundle.
 
 ```powershell
 python scripts/harness.py doctor

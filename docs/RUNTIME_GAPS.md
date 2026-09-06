@@ -7,6 +7,13 @@ what stopped it, where each one lives, the interim step taken until the fix
 lands, and the fix that is decided. The policy in `AGENTS.md`
 does not change; the runtime is to be brought up to it.
 
+This is a routed troubleshooting document, not routine startup context. Read
+item 4 at `NEEDS_PLAN_APPROVAL`; read another item only when its named failure
+occurs. The implementation priority is items 1 through 5 and 7 as one runtime
+change plus the end-to-end CLI test described below. Until that approved runtime
+work lands, context routing reduces repeated reading but does not remove the
+interim commands.
+
 The interim steps are performed by the agent when the user's request calls
 for the step they precede, so the whole path stays drivable from prompts. None
 of them grants execution authority: they set a pointer or a descriptive

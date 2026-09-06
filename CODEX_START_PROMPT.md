@@ -1,3 +1,5 @@
 # Codex Start Prompt
 
-Carry out the Startup section of `AGENTS.md`, then run `python scripts/harness.py next` and perform the step it reports.
+Use the current `AGENTS.md` once per session, then run
+`python scripts/harness.py next`. Load only the records and policy section that
+its state requires; preserve every authority and safety gate.
