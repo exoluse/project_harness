@@ -3,3 +3,5 @@
 Follow `CLAUDE.md`: read the current `AGENTS.md` once, run
 `python scripts/harness.py next`, and load only the context required by the
 reported state.
+Keep policy-only follow-ups within the direct-edit exception: no initialization,
+PLAN/TASK or PLAN approval request is needed for the authorized policy text.

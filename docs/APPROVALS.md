@@ -33,6 +33,12 @@ Every approval subject is named by its path, never by its id, because the decisi
 
 ## One decision for a concrete change
 
+This decision boundary applies when execution is requested. A planning-only
+request authorizes preparation and planning checks, then ends with the plan
+and findings; it does not require an owner decision to call plan authoring
+complete. Execution readiness still requires the current decision, application
+and TASK gate. Do not introduce a separate "planning complete" approval.
+
 Before asking whether to proceed, the agent assesses feasibility and impact,
 prepares the necessary scope and verification, runs preflight and strict
 validation, and includes the final fingerprint in the reviewable proposal.
@@ -50,11 +56,24 @@ task refinement and described verification stay inside the decision; the
 current runtime fingerprint exception must be named when it blocks this policy.
 Do not reuse a confirmation for a different fingerprint or invent provenance.
 
+One actual decision may be described in several process records; those labels
+do not justify several owner questions. Only the scope actually presented and
+decided is covered. The current validator requires a separate CHANGE-type
+decision when a CHANGE record advances to APPROVED or later, so it cannot yet
+use a PLAN decision reference for that state. Report this as a recording
+incompatibility, not a new business approval requirement. Do not manufacture
+another decision or falsely mark the CHANGE state as applied.
+
 Keep historical approval for the original subject separate from current
 authorization to execute the revision. A runtime `STALE` result means the record
 does not authorize the current evaluated subject; it is not a retroactive
 revocation of the old version's approval or verified observations. A new version
 requires applicable verification and any high-risk approval of that version.
+
+Historical snapshots still need integrity checks. Their normal replacement
+does not require renewed approval of the old version. If strict validation
+rejects a preserved historical decision, report the current validator's
+limitation; do not delete the decision or ask the owner to approve history again.
 
 ## Routine PLAN confirmation
 

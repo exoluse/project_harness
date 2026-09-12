@@ -10,9 +10,11 @@ loaded only when that path requires them.
 | Condition | Required context and checks |
 |---|---|
 | New agent session | Current `AGENTS.md` once, tool adapter, then `next` |
+| Policy-only maintenance | Edit the authorized policy text directly; no init, project records, execution PLAN or fingerprint approval request. Follow-up requests retain that scope unless the user explicitly expands it. |
 | `NEEDS_INIT` | For read-only/status work, report it without initialization. If the requested work needs governed project records: `git status --short`, `init`, `next`, then `doctor` |
 | Discovery/specification | The supplied sources and only the records being authored |
-| Planning | Current requirement/feature, PLAN/TASK, preflight blockers, then `validate --strict` |
+| Planning | Current requirement/feature, PLAN/TASK, preflight blockers, then `validate --strict`; a planning-only request ends with the plan and findings, without an execution approval request |
+| Execution readiness | Current prepared scope and fingerprint, actual owner decision, decision application and TASK gate; distinct from planning completion |
 | Stage readiness or iteration planning | Only the relevant stage contract in `DEVELOPMENT_METHOD.md` and that scope's inputs, deliverables, criteria and open items |
 | Requirement, PLAN or deliverable revision | `DEVELOPMENT_METHOD.md` change classification/cycle, the prior basis and affected references; `WORKFLOW.md` **Changing an approved plan** when approval becomes stale |
 | `NEEDS_PLAN_APPROVAL` | `WORKFLOW.md` section **The path as it runs today** and `RUNTIME_GAPS.md` item 4; prepare one decision package, and transcribe only an actual owner decision |
@@ -29,6 +31,26 @@ changed, the current decision references a new version, or a failed command
 requires its detail.
 
 ## Measurement
+
+Before measuring, remove avoidable duplication in the agent workflow:
+
+- A decision package's fingerprint need not be fetched again just for display
+  when its subject and dependencies are unchanged. Check strict-validation
+  warnings separately if the package does not include them.
+- Reuse an unchanged check for coincident policy checkpoints only when its
+  scope and freshness satisfy both. Keep the mandatory checks built into
+  decision recording, application, mutation and task gates.
+- Keep governed meaning in canonical fields and rationale in prose. Reference
+  the same criterion or decision instead of maintaining independent copies.
+- Do not turn optional CHANGE approvals, results, reviews, handoffs or
+  concurrent claims into routine single-agent requirements.
+- Assess evidence applicability before rerunning checks. Report runtime
+  currentness limits separately from an actual need to reverify the product.
+- Report completion of the requested scope. A `next` suggestion to add a TASK
+  after all tasks finish is not a new request.
+
+These rules do not claim that the CLI shares validation results across commands
+or that runtime duplication has been removed.
 
 When an agent or wrapper exposes usage metadata, measure without storing prompt
 content or secrets:

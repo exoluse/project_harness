@@ -3,10 +3,19 @@
 The harness separates three concerns that should not be confused:
 
 ```text
-discovery -> current PLAN -> TASK -> human PLAN approval -> routine execution
+discovery / requirements / design -> authored PLAN and TASKs -> planning complete
+current owner decision -> apply decision -> TASK gate -> execution ready -> implementation
 concurrent writers -> claims / worktrees / handoffs
 high-risk action -> protected cryptographic approval
 ```
+
+Planning-only work ends after authoring and required planning checks, without
+requesting execution approval. Execution readiness is a separate boundary;
+it does not add a second decision for the same concrete change. These are
+policy milestones, not new runtime states. The full project sequence through
+verification, acceptance, delivery and closure is in the
+[HTML guide](HARNESS_POLICY_REPORT.html); [Development method](DEVELOPMENT_METHOD.md#planning-complete-and-execution-ready)
+defines the criteria.
 
 ## Policy modes
 

@@ -21,6 +21,9 @@ add but not weaken it. The harness governs only its own repository.
    never silently reset it.
 6. Classify the request as discovery/specification, policy maintenance, or
    execution. Discovery needs no placeholder PLAN/TASK; execution does.
+   Preserve an explicit policy-only scope across follow-up requests such as
+   "apply these changes". Discussing runtime gaps does not expand that scope
+   into runtime implementation or project initialization.
 
 At `NEEDS_PLAN_APPROVAL`, current `next` wrongly names the signed flow. Read
 only **The path as it runs today** in `docs/WORKFLOW.md` and item 4 of
@@ -43,6 +46,16 @@ findings; readiness does not authorize the next stage. If the user requests
 the full workflow, continue across ready stages within current authority and
 pause only for essential input, the required decisions or actual blockers.
 Sequential waterfall delivery is supported; sprints are not mandatory.
+
+Separate planning completion from execution readiness. Planning is complete
+when its requested scope, tasks, order, dependencies and verification are
+authored and the required planning checks pass. Report open items and limits;
+failed required checks mean the plan still needs work. A planning-only request
+ends there without asking for execution approval. Execution readiness requires
+the current owner decision, its application and a passing TASK gate; it is a
+boundary before implementation, not a condition for finishing plan authoring.
+Under a full-workflow request, proceed to that decision boundary without asking
+for a separate approval of the planning milestone.
 
 Requirements, designs, PLAN/TASK scope, and deliverables may change at any
 stage, including after verification or delivery. Preserve the prior baseline,
@@ -80,12 +93,23 @@ Task splitting, sequencing and recordkeeping within the agreed change do not
 by themselves need another decision. Existing high-risk approval boundaries
 still apply; an unanswered question or a bare change request is not approval.
 
+Use one decision source for the concrete change and its PLAN; record labels do
+not create additional human decisions. Do not request renewed consent solely
+to repair duplicate records, normal historical supersession, metadata-only
+edits, unordered-list presentation, or an obsolete derived reference. Check
+the actual effect first. Runtime incompatibilities remain blockers where
+enforced; report them rather than treating another approval as a universal fix.
+
 Preserve the approved prior version, its decisions and verification history.
 A proposed or implemented revision does not retroactively make all prior work
 unapproved. Assess evidence applicability for the changed version and its
 dependencies; retain unaffected evidence when still valid. Record newly found
 defects honestly without rewriting past observations. Current runtime PLAN
 staleness is an execution/currentness limit, not erasure of historical approval.
+Check historical integrity separately from current execution authority. A
+sibling task change alone is not a policy reason to rerun unaffected checks,
+recreate results, or repeat a review. Record the applicability assessment;
+never turn stale or unverified evidence into a new PASS by copying it.
 
 ## Authority
 
@@ -115,6 +139,9 @@ request authorizes `AGENTS.md`, adapters, start prompts, `README.md`, and
 `.harness/tooling/`, schemas, runtime, or canonical records. Guidance changes
 do not change enforcement. For a policy-only request, do not initialize the
 project or create PLAN/TASK or other project records to perform the policy edit.
+Apply the authorized policy edit directly without a PLAN-fingerprint approval
+request. A separately requested runtime implementation follows the execution
+path; a proposed implementation plan does not expand the user's policy scope.
 When such a checkout has no project records, record validation is inapplicable:
 use `check_repo.py`'s explicit skip and check the policy diff and links instead.
 

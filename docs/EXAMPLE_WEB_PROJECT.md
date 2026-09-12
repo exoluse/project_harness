@@ -77,9 +77,13 @@ python scripts/harness.py new open-item OI-0001 "Product page design not yet app
 
 Still no PLAN. Specification does not need one.
 
-## 3. Planning and the owner's approval
+## 3. Planning completion and execution readiness
 
-Lifecycle: `PLANNING -> DECISION_READY -> APPROVED`
+### 3.1 Planning complete
+
+Author the plan and pass the required planning checks. This milestone does not
+require the owner to approve execution. The complete project order is shown in
+the [HTML guide](HARNESS_POLICY_REPORT.html).
 
 - Create one PLAN per milestone or sprint: "Sprint 1: authentication and home
   page", "Sprint 2: catalogue and cart", "Sprint 3: checkout and admin". Each
@@ -92,9 +96,6 @@ Lifecycle: `PLANNING -> DECISION_READY -> APPROVED`
   TASK leaves the plan's declared boundary.
 - `report decision-package` projects the plan, its tasks, requirements, and
   open items into one document for the owner to read.
-- The project owner reviews that exact plan and decides. The agent transcribes
-  the decision against the fingerprint the owner saw, recording where and in
-  what the owner said it, then applies it.
 
 ```powershell
 python scripts/harness.py new plan PLAN-0001 "Sprint 1: authentication and home page"
@@ -105,11 +106,24 @@ python scripts/harness.py new task TASK-0002 "Home page layout" --plan PLAN-0001
 # author the plan's requirement_refs, feature_refs, and verification_strategy,
 # and each task's write_scope (api/auth, web/src/pages/home) and verification
 python scripts/harness.py plan sync PLAN-0001
+python scripts/harness.py validate --strict
 python scripts/harness.py report decision-package PLAN-0001
-python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
+```
 
-# The project owner reads that exact plan and decides.
+For a planning-only request, report the plan, check results and open items and
+stop here. Failed required checks mean the plan needs revision. The decision
+package already includes the fingerprint; use it only while its inputs remain
+unchanged.
 
+### 3.2 Execution ready
+
+When execution is requested, the owner decides once on that concrete scope.
+The agent records the actual response against the reviewed fingerprint and
+applies it. No separate approval of "planning complete" is required. Current
+lifecycle application uses `DECISION_READY -> APPROVED` with the interim steps
+below; these two milestones introduce no new runtime states.
+
+```powershell
 python scripts/harness.py approval confirm `
   --type PLAN --subject .harness/plans/PLAN-0001.md --decision APPROVED `
   --approver lead@agency.example --basis "Sprint 1 scope and tasks reviewed" `
@@ -120,10 +134,15 @@ python scripts/harness.py approval confirm `
 # interim (see RUNTIME_GAPS.md): set current_plan and active_plan in state.json,
 # and the project is moved SPECIFYING -> PLANNING -> DECISION_READY with `transition --kind project`
 python scripts/harness.py plan apply-decision --approval APR-0001
+python scripts/harness.py transition --kind work_item --id TASK-0001 --to READY --agent codex --reason "approved scope ready to execute"
+python scripts/harness.py gate task TASK-0001
 ```
 
-Editing `PLAN-0001.md` after this invalidates the decision, which is the point:
-the approval covers that plan, not the next one.
+The selected task is execution-ready only when its gate passes. A changed
+governed PLAN/TASK fingerprint can invalidate current execution authority;
+explanatory body edits alone do not. Ordinary task refinement is not a new
+business decision, although the current runtime can force another fingerprint
+confirmation. Preserve the original approval as history and report that limit.
 
 With the plan hierarchy in [PLAN_HIERARCHY.md](PLAN_HIERARCHY.md) implemented,
 this project would instead hold one root `PLAN-0001` for the whole engagement
@@ -146,12 +165,13 @@ Lifecycle: `BUILDING`
   push to the development branch is routine work under the applied PLAN
   decision; a force push or a push to another branch needs separate explicit
   authorization.
-- When the customer asks mid-sprint to change the hero banner, the request is
-  registered as a `SRC-*` and classified through a `CR-*`. In-scope work
-  becomes a new TASK in the PLAN. Because the PLAN changed, the owner approves
-  it again against the new fingerprint. Until [RUNTIME_GAPS.md](RUNTIME_GAPS.md)
-  item 3 is fixed, the agent also sets the lifecycle back to `DECISION_READY`
-  in `state.json` before `plan apply-decision`.
+- When the customer asks to change the hero banner, distinguish an in-contract
+  correction from changed requirements. For a material change, assess feasibility
+  and impact, prepare its trace and plan, then obtain one proceed decision and
+  record that same response as the PLAN decision. Task refinement alone needs
+  no new business decision. Current fingerprint and reapplication limits remain
+  documented in [Runtime gaps](RUNTIME_GAPS.md); do not bypass them or treat
+  historical approvals as revoked.
 - When work moves from one agent to another mid-task, the sender creates a
   handoff naming the changed files, what was verified and what was not, and the
   next action. The receiver acquires its own claim with that handoff.

@@ -4,6 +4,9 @@
 repository copy once per session, then run `python scripts/harness.py next` and
 use its state to load only the referenced records or policy section. Re-read an
 unchanged file only when evidence shows that it changed during the session.
+Classify scope before following execution guidance. Policy-only requests use
+the direct-edit exception, including follow-ups; do not initialize project
+records or prepare a PLAN approval merely to edit the policy.
 
 At `NEEDS_PLAN_APPROVAL`, the current `next` output is wrong: read only **The
 path as it runs today** in `docs/WORKFLOW.md` and item 4 of

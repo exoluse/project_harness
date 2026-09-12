@@ -210,6 +210,25 @@ should track material changes to the reviewed scope, impact, conditions or
 authority. No new schema, command or
 approval mechanism is implemented or authorized by this policy update.
 
+## Additional duplication mismatches
+
+The following were identified by static code review on 2026-09-12. They are
+implementation limitations, not new process approvals or claims of reproduced
+end-to-end failures. This policy edit does not implement their correction.
+
+| Current implementation | Policy consequence and required distinction |
+|---|---|
+| `validation.validate_project` treats a required approval type as active even for historical records; STALE/SUPERSEDED warnings fail strict validation | Preserve historical integrity and check current authority separately. Asking again or deleting history is not the policy remedy. |
+| An APPROVED-or-later CHANGE must reference a current CHANGE-type decision | The same concrete owner decision should cover its PLAN and change trace. Report the current recording mismatch; do not invent a second decision or falsely advance the record. |
+| `authoring.synced_plan_dependencies` adds missing dependencies but retains old ones | Distinguish current derived references from explicitly retained dependencies; preserve ambiguous legacy extras rather than removing authority bindings blindly. |
+| Fingerprints include version metadata and preserve list order | Presentation-only changes should not create business decisions. Current hashes still bind those fields; do not reinterpret existing approval hashes. |
+| Results, claims and handoffs compare the whole PLAN fingerprint | A sibling-only change is not itself a reason to repeat unaffected verification or review. Current gates may still block reuse; do not relabel stale records as PASS. |
+| Decision packages already return a fingerprint; commands may repeat validation and loading | Avoid redundant unchanged display queries, while retaining freshness and authority checks. No runtime caching is implemented here. |
+| `next` asks for a new TASK when all listed tasks are complete | The agent reports the requested scope complete or waits for input; the suggestion does not authorize new work. |
+
+Load the relevant row only when diagnosing that named mismatch or reviewing
+this policy. Runtime changes need their own explicit implementation scope.
+
 ## Why the self-tests did not catch the original CLI gaps
 
 The runtime's tests pass (126 on 2026-09-06). Their fixtures write

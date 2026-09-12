@@ -4,6 +4,25 @@ Project Agent Harness is a repository-native planning, coordination, and evidenc
 
 ## Operating model
 
+The project follows this sequence from start to finish:
+
+```text
+Start -> Requirements -> Design -> Planning complete -> Execution ready
+      -> Implementation -> Verification -> Customer acceptance -> Delivery -> Handover and closure
+```
+
+| Milestone | Meaning |
+|---|---|
+| Planning complete | Scope, tasks, order, dependencies and verification are authored; required planning checks pass and open items are reported. A planning-only request ends here without asking for execution approval. |
+| Execution ready | The current owner decision is applied and the selected TASK passes its gate. Implementation begins only within the requested scope. |
+
+Failed planning checks mean a draft needing revision. A full-workflow request
+continues to the necessary execution decision without adding a separate
+"planning complete" approval. These milestones do not introduce runtime states.
+See the [start-to-finish HTML guide](docs/HARNESS_POLICY_REPORT.html) for the
+sequence, or [Development method](docs/DEVELOPMENT_METHOD.md#planning-complete-and-execution-ready)
+for the completion criteria.
+
 The development policy combines **detailed waterfall stages with agile
 revision throughout the project**. Each stage has explicit inputs, deliverables,
 dependencies and exit criteria. Requirements, plans and deliverables may change
@@ -148,6 +167,9 @@ exact sequence with what each record must contain is in
 The block below is an operator reference, not startup context. Agents load only
 the portion selected by `next`. At `NEEDS_PLAN_APPROVAL`, use the approval
 section because the current runtime still reports the wrong signed flow.
+A planning-only request stops after plan authoring and the required planning
+checks below. Approval recording, application and the TASK gate prepare
+execution; they are not prerequisites for reporting planning complete.
 
 ```powershell
 git status --short
@@ -160,6 +182,8 @@ python scripts/harness.py new task TASK-0001 "Describe the work" --plan PLAN-000
 # author: plan requirement_refs, feature_refs, verification_strategy; task write_scope, verification
 python scripts/harness.py plan sync PLAN-0001
 python scripts/harness.py validate --strict
+# Planning-only request: report the plan and check results, then stop here.
+# Continue below only when execution is requested.
 python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
 # The human project owner reviews that exact plan and decides.
 python scripts/harness.py approval confirm --type PLAN --subject .harness/plans/PLAN-0001.md `
@@ -249,7 +273,9 @@ sit beside it. A fresh checkout has no records yet, so `next` reports
 Policy text is maintained directly: when the user asks for a policy change,
 `AGENTS.md`, the adapters, the start prompts, this README, and `docs/` are
 edited in place, and committed or pushed when the user asks, with no PLAN/TASK
-or approval. Only that guidance Markdown is covered; the runtime, `scripts/`,
+or approval. Do not initialize project records for policy-only maintenance;
+follow-up requests retain that scope unless the user explicitly expands it.
+Only the authorized policy text and its explanatory documentation are covered; the runtime, `scripts/`,
 schemas, and records stay behind the PLAN gate. See the routine execution authority section of `AGENTS.md`.
 
 ```powershell

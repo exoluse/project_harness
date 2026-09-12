@@ -48,6 +48,26 @@ Sequential waterfall execution is a complete supported path. Use iterations
 when useful or requested; this policy does not mandate sprints or repeated
 delivery cycles when the agreed work can proceed stage by stage.
 
+### Planning complete and execution ready
+
+These are distinct milestones, not new runtime statuses or approval types.
+
+| Milestone | Required basis | Agent action |
+|---|---|---|
+| Planning complete | Requested scope, PLAN/TASK breakdown, ordering, dependencies, write scope, verification, risks and uncertainties are authored; required planning preflight and strict validation pass | Report the plan, check results and open items. For a planning-only request, stop without requesting execution approval, applying a decision or requiring a TASK gate to pass. |
+| Execution ready | The current scope has an actual owner decision on its fingerprint; the decision is applied; the selected TASK and its prerequisites pass the execution gate | Begin implementation only within the user's requested scope. Planning completion alone grants no execution authority. |
+
+If required planning checks fail, report a draft or a plan needing revision and
+the exact blockers; do not label the checks as passed. Unresolved assumptions
+and implementation prerequisites must remain visible even when the planning
+deliverable itself is complete.
+
+For a full-workflow request, finish planning and present the necessary execution
+decision package once, or apply the already valid decision when appropriate.
+Do not add a separate owner sign-off for "planning complete". A later request
+to execute a previously prepared plan first checks its currentness and any
+changed inputs before the same execution decision boundary.
+
 ## Stage contract
 
 For the current release or increment, identify its stage, scope, input versions,
@@ -69,7 +89,7 @@ implementation starts only after its upstream scope is ready and authorized.
 | Discovery and feasibility | Owner intent and available source documents | Problem, users, business outcome, scope boundaries, constraints, feasibility, stakeholders, assumptions and unanswered questions; preserved source references | Intended outcome and exclusions are understandable; feasibility risks and missing decisions have owners and an explicit impact |
 | Requirements | Discovery scope and attributable input | Functional behavior, non-functional requirements such as performance/security/accessibility, data and operational needs, priorities, observable acceptance criteria, source trace, conflicts and dependencies | Requirements in the proposed increment are testable and internally consistent; blocking ambiguities are resolved; deferred scope is explicit |
 | Design | Current requirements and constraints for the increment | Architecture and component responsibilities, interfaces, data model, user flows where applicable, error behavior, security boundaries, technical choices and tradeoffs, integration and verification approach | Design covers the scoped requirements; interfaces and risky assumptions are sufficiently resolved for dependent work; decisions and residual risks are traceable |
-| Planning and baseline | Ready requirements, design decisions and completion criteria | PLAN/TASK breakdown, feature/criterion links, sequencing, dependencies, write scope, authorized/excluded actions, verification strategy, milestones, estimates or explicit uncertainty, delivery risks | Preflight and strict validation pass; the owner decides on the exact PLAN fingerprint; the decision is applied; a TASK passes its gate before execution |
+| Planning and proposed baseline | Ready requirements, design decisions and completion criteria | PLAN/TASK breakdown, feature/criterion links, sequencing, dependencies, write scope, authorized/excluded actions, verification strategy, milestones, estimates or explicit uncertainty, delivery risks | Requested planning content is authored; required preflight and strict validation pass; check results and open items are reported. Owner approval, decision application and TASK gate passage belong to execution readiness, not planning completion. |
 | Implementation | Current applied PLAN decision, ready TASK and upstream basis | Code, configuration and other planned deliverables; checks during development; updated implementation notes and trace; visible deviations and defects | Scoped behavior is implemented and ready for its required verification; failures and remaining work are explicit; implementation is not presented as verified acceptance |
 | Verification and integration | Identifiable build/deliverable versions and current criteria | Relevant static, unit, integration, browser and live-environment checks; expected/actual outcomes, evidence bound to the checked version, defect resolution and regression results | Required profiles and criteria have current eligible evidence; release-blocking defects are resolved; unrun, partial, stale or inconclusive checks remain explicit |
 | Customer acceptance | Verified candidate and current acceptance scope | Review or demonstration, customer feedback, disposition of deviations, exact candidate/criteria references, required human acceptance decision | Required final customer acceptance has current cryptographic approval for its subject; a demonstration or technical PASS alone does not satisfy it |
@@ -246,6 +266,24 @@ of the prior version and does not by itself require changing a running release.
 
 ### Current runtime compatibility
 
+The following policy distinguishes meaningful decisions from bookkeeping. It
+does not change the current fingerprint algorithm, validators or record schema.
+
+| Situation | Policy treatment |
+|---|---|
+| Add, split or feasibly reorder tasks within agreed outcomes, criteria, write scope, capabilities, risk and delivery commitments | Refine the plan and preserve trace; no new business decision. Do not remove real blockers or verification obligations. |
+| The same concrete change appears in a PLAN and a CHANGE record | Attribute both to the same actual owner decision; the extra record is not a reason for a second question. Current schema limitations still apply. |
+| An earlier valid approval is replaced by a later decision | Preserve and check the historical snapshot; judge current execution against the applicable current decision. Normal supersession is not a request to approve history again. |
+| Version labels, explanatory text or the order of a semantically unordered list change | Compare governed meaning; presentation alone is not a material change. A meaningful execution sequence or changed requirement remains subject to impact assessment. |
+| A derived reference no longer belongs to the current scope | Identify it as obsolete bookkeeping. Preserve explicitly required dependencies; never remove an ambiguous dependency merely to obtain a passing gate. |
+| A sibling task changes while another result's subjects remain unchanged | Assess the other result's actual files, criteria, bindings, dependencies and verification freshness. Reuse only when still applicable; do not automatically recreate results or repeat checks. |
+| A decision package already contains the current scope, blockers and fingerprint | Reuse that information while its inputs remain unchanged. Recording and applying the decision do not add owner decision points. |
+
+These are not exceptions for material changes: new behavior, weaker completion
+or verification criteria, wider paths or capabilities, changed conditions or
+significant delivery/risk effects require feasibility and impact assessment.
+Use the scope actually agreed with the owner, not bounds invented afterwards.
+
 The runtime does not yet separate agreed outcomes and constraints from the
 TASK breakdown in the PLAN fingerprint. As a result, even ordinary task
 addition or a change to recorded dependencies can require a new confirmation
@@ -265,6 +303,14 @@ it explicitly as a temporary compatibility requirement, show the exact revised
 subject, and explain that it is not revocation of the old version or a new
 business requirement. Such a repeat is a runtime gap to remove, not the normal
 change policy. Runtime implementation remains a separately authorized task.
+
+Distinguish that fingerprint requirement from other runtime failures. A warning
+about historical approval, a CHANGE record requiring a separate decision type,
+or an unrelated result becoming stale is not automatically repaired by asking
+the owner again. Name the failing condition, preserve the actual decision and
+history, and report the limitation. Do not fabricate a second decision, delete
+history, falsely advance a record, or rewrite evidence to satisfy the validator.
+See [additional duplication mismatches](RUNTIME_GAPS.md#additional-duplication-mismatches).
 
 ## Baselines and review boundaries
 

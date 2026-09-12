@@ -1,5 +1,11 @@
 # Workflow
 
+The start-to-finish sequence is: **start -> requirements -> design -> planning
+complete -> execution ready -> implementation -> verification -> customer
+acceptance -> delivery -> handover and closure**. The
+[HTML guide](HARNESS_POLICY_REPORT.html) shows only this progression; the
+sections below describe the operating procedures and current CLI limitations.
+
 ## Waterfall stages and agile changes
 
 Follow [Development method](DEVELOPMENT_METHOD.md) for stage inputs,
@@ -73,6 +79,20 @@ PLAN and TASK are created as `.md` files. Agents update governed fields in the Y
 
 ### Driving the path from prompts
 
+A planning-only request ends with the authored plan and its required preflight
+results. Do not continue to owner approval, decision application or TASK
+readiness solely to mark planning complete. If planning checks fail, report
+the draft and blockers. For an execution or full-workflow request, continue
+from the completed plan to the one required execution decision and TASK gate.
+See [planning complete and execution ready](DEVELOPMENT_METHOD.md#planning-complete-and-execution-ready).
+
+Classify the user's requested edit before selecting an execution sequence.
+Policy-only maintenance uses the direct-edit exception in `AGENTS.md`, even
+when this checkout has no project records or `next` asks for a PLAN decision.
+Do not initialize records or ask for a PLAN fingerprint to edit policy text.
+Discussed runtime improvements remain recommendations until the user separately
+requests runtime implementation.
+
 Every routine step is performed by the agent from the user's request. The human
 project owner contributes two things and edits nothing: the decision, said in
 words the agent transcribes with `approval confirm`, and the signature on a
@@ -136,6 +156,12 @@ when the gap is fixed.
 11. Implement, `check_repo.py fast`, commit explicit paths, fetch, resolve, push.
 
 ### What the preflight checks
+
+Present one current decision package, including scope, blockers and fingerprint.
+When that package already provides the unchanged fingerprint, another
+`fingerprint` call solely to display it is unnecessary. Strict warnings still
+need checking; decision recording and application retain their built-in checks.
+Consult the duplication rules in [Context efficiency](CONTEXT_EFFICIENCY.md).
 
 `approval confirm` and `plan apply-decision` both run the plan preflight. It
 fails closed unless all of the following hold:
