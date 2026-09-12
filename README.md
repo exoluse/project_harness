@@ -1,319 +1,72 @@
 # Project Agent Harness
 
-Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. One harness governs one project: the repository it lives in. A project may begin with discovery alone; before implementation, it needs a current human PLAN approval and every change has a TASK in that PLAN. A bare change request is not approval. The owner's explicit proceed response to a prepared feasibility/impact proposal is the change decision and is recorded through the PLAN flow.
+**프롬프트와 고객 문서로 프로젝트를 진행하기 위한 하네스입니다.**
+사용자는 원하는 결과와 진행 범위를 설명하고, 에이전트는 요구사항 정리·계획·구현·검증과 필요한 기록 관리를 수행합니다.
+하네스 하나는 자신이 들어 있는 프로젝트 저장소 하나를 관리합니다.
 
-## Operating model
+## 시작하기
 
-The project follows this sequence from start to finish:
+1. 이 저장소를 프로젝트 폴더로 복제하거나 복사합니다. 숨김 폴더인 `.harness/`도 포함합니다.
+2. Python과 Git을 실행할 수 있는 환경에서 코딩 에이전트로 프로젝트 폴더를 엽니다.
+3. 고객 문서를 추가하고, 자료 위치와 이번에 진행할 범위를 알려줍니다.
+
+예를 들어 문서 경로를 실제 위치로 바꿔 다음과 같이 요청합니다.
 
 ```text
-Start -> Requirements -> Design -> Planning complete -> Execution ready
-      -> Implementation -> Verification -> Customer acceptance -> Delivery -> Handover and closure
+이 저장소의 AGENTS.md를 따라 프로젝트를 시작해줘.
+고객 요구사항은 [요구사항 문서 경로]에 있어.
+먼저 요구사항과 확인할 질문만 정리해줘.
 ```
 
-| Milestone | Meaning |
+에이전트별 시작 문구는 [Codex](CODEX_START_PROMPT.md)와 [Claude Code](CLAUDE_START_PROMPT.md)를 참고하세요.
+필요한 초기화·계획·기록 처리는 에이전트가 수행합니다. 사용자가 내부 기록 형식이나 명령어를 직접 다룰 필요는 없습니다.
+
+## 이렇게 요청하세요
+
+| 하고 싶은 일 | 프롬프트 예시 |
 |---|---|
-| Planning complete | Scope, tasks, order, dependencies and verification are authored; required planning checks pass and open items are reported. A planning-only request ends here without asking for execution approval. |
-| Execution ready | The current owner decision is applied and the selected TASK passes its gate. Implementation begins only within the requested scope. |
+| 요구사항 정리 | “첨부 문서를 읽고 요구사항과 완료 기준을 정리해줘.” |
+| 설계 | “이 요구사항에 맞는 화면과 데이터 구조를 설계해줘.” |
+| 계획 작성 | “구현할 작업과 순서, 검증 방법까지 계획만 작성해줘.” |
+| 구현·검증 | “이 범위의 구현과 검증까지 진행해줘. 필요한 실행 결정안을 준비해줘.” |
+| 진행 중 변경 | “품절 표시 기능을 추가하고 싶어. 가능 여부와 영향을 검토해줘.” |
+| 상태 확인 | “끝난 일, 남은 일, 막힌 이유를 알려줘.” |
 
-Failed planning checks mean a draft needing revision. A full-workflow request
-continues to the necessary execution decision without adding a separate
-"planning complete" approval. These milestones do not introduce runtime states.
-See the [start-to-finish HTML guide](docs/HARNESS_POLICY_REPORT.html) for the
-sequence, or [Development method](docs/DEVELOPMENT_METHOD.md#planning-complete-and-execution-ready)
-for the completion criteria.
+특정 단계까지만 요청하면 그 결과를 보고하고 멈춥니다.
+전체 진행을 요청하면 허용된 범위에서 준비된 단계를 이어가며, 필요한 정보나 결정이 있을 때 확인합니다.
 
-The development policy combines **detailed waterfall stages with agile
-revision throughout the project**. Each stage has explicit inputs, deliverables,
-dependencies and exit criteria. Requirements, plans and deliverables may change
-at any stage through impact analysis, versioned baselines, renewed authority
-where needed, and re-verification. The user supplies prompts/documents and
-decisions; the agent maintains the trace and advances the authorized work.
-Plans organize the tasks needed to meet requirements. Their detail and order
-can evolve through planning or user priority, respecting technical dependencies.
-Refining work within agreed outcomes and constraints is distinct from changing
-those commitments; the current runtime still binds task structure to approvals.
-See [Development method](docs/DEVELOPMENT_METHOD.md) for stage contracts and
-change rules. This policy does not implement new runtime transitions.
-
-For a proposed revision, the agent checks feasibility and impact, prepares the
-scope and verification, and asks once whether to proceed. The user's decision
-covers that described change; the agent records it, implements and verifies.
-Ask again only for material new scope, impact, conditions or authority. Preserve
-the prior version's approval and verification history and check the changed
-parts and their affected dependencies. Current runtime fingerprint limitations
-and the high-risk boundaries remain explicit exceptions, not repeated normal
-approval stages.
-
-The project's policy lives in `.harness/project.json`:
-
-```json
-{
-  "execution_mode": "PLAN_GATED",
-  "claim_mode": "WHEN_CONCURRENT",
-  "record_mode": "ON_DEMAND"
-}
-```
-
-This means:
-
-- an initialized harness starts in `DISCOVERY` with `current_plan: null` and no invented PLAN/TASK placeholders;
-- before implementation, the project creates a `PLAN-*` and a `TASK-*` listed in it, obtains the human PLAN confirmation, and applies its current decision;
-- PLAN and TASK are readable `.md` documents with strict machine-validated front matter; state and audit records remain JSON until the decided move to Markdown in [Record format](docs/RECORD_FORMAT.md) is implemented;
-- records live in the working tree under `.harness/` and are read from there; committing them to Git is the project's choice, not a harness requirement;
-- every later change is represented by a TASK listed in its PLAN;
-- ordinary development, tests, commits, fetch, conflict resolution, and a normal push to the configured upstream are allowed only after the current human PLAN decision has been applied;
-- PLAN approval is an execution permission bound to the exact plan fingerprint and declared TASKs;
-- a project runs on two inputs, the customer's requirements and the developer's prompts; every routine step is performed by the agent from those, the human contributes decisions and signatures, not file edits, and only the signature on a high-risk request happens outside a prompt ([Workflow](docs/WORKFLOW.md) maps prompts to agent actions);
-- a claim is needed only when multiple writers are active;
-- results, events, and evidence are created automatically by commands that need them or explicitly when audit, review, release, acceptance, or completion proof requires them;
-- Approval for production deployment, production data changes, destructive operations, secret access, and final customer acceptance is cryptographically verified; routine PLAN approval records a direct human confirmation.
-
-`USER_DIRECTED` is not supported: a repository policy cannot disable the human approval gate.
-
-### Token-efficient agent startup
-
-An agent reads the current `AGENTS.md` once per session and runs
-`python scripts/harness.py next` before loading project records or long-form
-documentation. The reported state selects the required PLAN/TASK, handoff, and
-policy section. `doctor`, `validate --strict`, `status`, schemas, and the full
-README are conditional diagnostics, not a fixed context bundle on every turn.
-
-This changes context routing, not authority. PLAN approval, task gates,
-dirty-work preservation, blockers, verification boundaries, and the five
-cryptographic approvals remain mandatory. See [Context and token
-efficiency](docs/CONTEXT_EFFICIENCY.md) for the routing table and measurements.
-
-## Use it: copy the folder
-
-This folder is the harness, and the harness governs one project: the repository
-it sits in. Copy it (or clone it, or use it as a GitHub template) to where the
-project lives and start:
-
-```powershell
-git clone <this-repository> C:\work\my-project     # or copy the folder into an existing repo
-cd C:\work\my-project
-python scripts/harness.py next                      # -> NEEDS_INIT, with the command below
-python scripts/harness.py init                      # --name is optional; the directory names it
-python scripts/harness.py next                      # -> NEEDS_PLAN
-```
-
-There is no project id. `project.json` carries a fixed `PROJECT` marker and a
-human `name`, `state.json` records lifecycle only, and the external approval
-authority is bound to the repository root — so nothing in the harness addresses
-a project by name, and nothing has to be kept unique across projects.
-
-`init` creates the canonical project record, the lifecycle state, the empty
-record directories, `HANDOFF.md`, the `.gitignore`/`.gitattributes` the harness
-owns, and the authority template. It writes each of those only when absent, and
-it never generates a project somewhere else. Everything else is already in the
-tree you copied: the runtime and its schemas live in
-`.harness/tooling/project_harness/`, and `AGENTS.md`, `docs/`, and `scripts/`
-exist once, at the root. `init --force` repairs that record structure without
-touching canonical records.
-
-## Start over: `reset`
-
-`reset` undoes `init`. `init` is what turns a copied harness into a project, so
-a reset removes exactly that and leaves the harness a copied folder carries
-before it governs anything:
-
-```powershell
-python scripts/harness.py reset --dry-run                  # what it would remove
-python scripts/harness.py reset --confirm my-project       # the directory name
-python scripts/harness.py next                             # -> NEEDS_INIT
-python scripts/harness.py init --name "The next project"   # a new name, if you want one
-```
-
-It removes every canonical record, the `events/`, `baselines/`, and `decisions/`
-history, the record directories themselves, and the three files that identify
-the project: `project.json`, `state.json`, and `HANDOFF.md`. Shared runtime
-registries (`leases`, `mailboxes`, `mutations`, `id-sequences`) go too, which is
-what makes the next record start at `0001` again.
-
-Because nothing survives to insist on the old identity, `init` afterwards is a
-genuine fresh start: `--name` picks the next name, and the policy and completion
-contract are the defaults again rather than the previous project's. This is the
-only way to change a project's name today — which makes it a blunt instrument
-for a rename, since it costs every record.
-
-Files `init` does not create are never touched: your sources and your extended
-`.gitignore` survive. The bookkeeping files `init` generates survive too
-(`.gitignore`, `.harness/.gitattributes`, `.harness/.gitignore`, and the
-`templates/`), because `init` writes each only when absent and an operator may
-have extended or filled one in. `--confirm` must be the harness directory name,
-and everything the reset removes is copied to `.harness/runtime/reset-<timestamp>/`
-first — a git-ignored path, so a snapshot never enters project history.
-
-An agent runs `reset` only when the user's request names it in so many words,
-after a `--dry-run` whose summary the user has seen, and never as a way out of
-a validation error, a stale decision, or a blocked gate; see
-[Workflow](docs/WORKFLOW.md).
-
-One thing deliberately survives: the human decision runtime
-(`human-decisions/`), because its monotonic sequence and latest-decision markers
-are what make a recorded human confirmation non-replayable. A reset is reachable
-by an agent, so it must not roll back a control that bounds human authority.
-
-## Routine agent workflow
-
-`next` reports the single step that moves the project forward, and every step it
-names is a command. The commands maintain every derived field; the content of
-the plan is authored. Today two steps are interim edits to
-`.harness/state.json`, recorded in [Runtime gaps](docs/RUNTIME_GAPS.md), and the
-exact sequence with what each record must contain is in
-[Workflow](docs/WORKFLOW.md):
-
-The block below is an operator reference, not startup context. Agents load only
-the portion selected by `next`. At `NEEDS_PLAN_APPROVAL`, use the approval
-section because the current runtime still reports the wrong signed flow.
-A planning-only request stops after plan authoring and the required planning
-checks below. Approval recording, application and the TASK gate prepare
-execution; they are not prerequisites for reporting planning complete.
-
-```powershell
-git status --short
-python scripts/harness.py next
-python scripts/harness.py new requirement REQ-0001 "State the need"     # then author its statement
-python scripts/harness.py new feature FUNC-0001 "Name the capability"   # then author requirement_refs and a completion criterion
-python scripts/harness.py new plan PLAN-0001 "Describe the change"
-python scripts/harness.py new task TASK-0001 "Describe the work" --plan PLAN-0001 `
-  --feature FUNC-0001 --criterion AC-FUNC-0001-001 --capability LOCAL_IMPLEMENTATION
-# author: plan requirement_refs, feature_refs, verification_strategy; task write_scope, verification
-python scripts/harness.py plan sync PLAN-0001
-python scripts/harness.py validate --strict
-# Planning-only request: report the plan and check results, then stop here.
-# Continue below only when execution is requested.
-python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
-# The human project owner reviews that exact plan and decides.
-python scripts/harness.py approval confirm --type PLAN --subject .harness/plans/PLAN-0001.md `
-  --decision APPROVED --approver owner@example.com --basis "Reviewed the plan and its tasks" `
-  --confirm-fingerprint <fingerprint> --confirmation-id HCONF-plan-0001 `
-  --confirmation-channel <where the owner said it> --confirmation-reference <what they said it in> `
-  --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION `
-  --acknowledge-procedural
-# interim: set current_plan and active_plan to PLAN-0001 in .harness/state.json
-python scripts/harness.py transition --kind project --id PROJECT --to SPECIFYING --agent codex --reason "plan drafted"          # interim
-python scripts/harness.py transition --kind project --id PROJECT --to PLANNING --agent codex --reason "plan drafted"            # interim
-python scripts/harness.py transition --kind project --id PROJECT --to DECISION_READY --agent codex --reason "decision recorded" # interim
-python scripts/harness.py plan apply-decision --approval APR-0001
-python scripts/harness.py transition --kind work_item --id TASK-0001 --to READY --agent codex --reason "approved plan"
-python scripts/harness.py gate task TASK-0001
-# implement the user's request
-python scripts/check_repo.py fast
-git add -- <explicit paths>
-git commit -m "Describe the change"
-git fetch --prune <configured-remote>
-git push
-```
-
-`new task` requires `--plan` and maintains both sides of the relationship: the
-TASK's `plan_id`, the PLAN's `work_item_refs`, and the derived
-`approval_dependencies`, in one atomic mutation. `plan sync` rebuilds derived
-dependencies after content was authored into a record.
-
-Subjects are paths, not ids: an approval binds the exact file it fingerprints.
-`approval confirm` records a direct owner confirmation, which is the assurance
-this policy requires for `PLAN`; the five high-risk boundaries take the signed
-`approval prepare` / `approval record` flow instead. An agent may transcribe a
-decision the owner actually made and may never invent its provenance. Only
-`plan apply-decision` turns a recorded decision into execution authority: it
-re-verifies the approval, the plan fingerprint, and the plan preflight, then
-writes the plan's decision reference, `state.active_decision`, and the
-`APPROVED` lifecycle state. It requires `state.active_plan` to name the plan
-and the lifecycle to be `DECISION_READY`; until [Runtime gaps](docs/RUNTIME_GAPS.md)
-items 1 to 3 are fixed the agent meets those two preconditions with the
-interim steps recorded there. See [Human approval operations](docs/APPROVALS.md).
-
-Before push, inspect upstream divergence. Resolve conflicts without resetting or discarding either side. Force push, tag push, branch deletion, or another target requires separate explicit authorization.
-
-## Concurrent writers
-
-Claims are optional coordination leases, not execution permits. Use them only when agents or other writers overlap in time:
-
-```powershell
-python scripts/harness.py claim acquire --agent codex --task TASK-0001 --paths src tests
-python scripts/harness.py mailbox list --box inbox --agent codex
-```
-
-Prefer separate Git worktrees and non-overlapping paths. Use a handoff when ownership of dirty in-progress work changes. See [Collaboration](docs/COLLABORATION.md).
-
-## Plans and trace records
-
-The trace model remains available:
+## 프로젝트 진행
 
 ```text
-source -> requirement -> feature -> criterion -> work item
-                                      -> evidence/result -> review
+시작 → 요구사항 → 설계 → 계획 작성 → 실행 준비
+     → 구현 → 검증 → 고객 인수 → 배포·전달 → 인계·종료
 ```
 
-PLAN and TASK form the mandatory execution structure but are not generated as empty initialization placeholders. Discovery and specification may happen before they exist. Once implementation is ready, `state.current_plan` and `active_decision` must identify the current human-approved PLAN, every TASK points to a PLAN, and every PLAN lists its TASKs. Evidence is required when a command asserts a governed verification, customer acceptance, production outcome, or project closure—not just because a developer edits a file.
+| 구분 | 완료 기준 |
+|---|---|
+| **계획 작성 완료** | 작업·순서·의존성·검증 계획을 작성하고 필수 사전 점검을 통과합니다. 계획만 요청했다면 실행 승인을 묻지 않고 종료합니다. |
+| **실행 준비 완료** | 현재 계획에 대한 사용자 결정이 반영되고, 시작할 작업의 필수 실행 조건이 충족됩니다. |
 
-PLAN and TASK files use strict YAML-style front matter followed by a normal Markdown body. The front matter is canonical for validation, fingerprints, and gates. The body is preserved across harness mutations for human notes, but it is non-authoritative. The parser uses a deliberately small dependency-free subset: two-space indentation, quoted JSON scalars, arrays, and objects. Malformed front matter fails closed. Legacy PLAN/TASK JSON remains readable for compatibility, while newly created records use Markdown.
+필수 계획 점검이 실패하면 초안·보완 필요로 보고합니다.
+단계별 수행 내용과 산출물은 [HTML 진행 안내](docs/HARNESS_POLICY_REPORT.html)를 브라우저에서 열어 확인할 수 있습니다.
 
-## Verification tiers
+## 알아둘 기준
 
-```powershell
-python scripts/check_repo.py fast
-python scripts/check_repo.py full
-# bare invocation is full
-python scripts/check_repo.py
-```
+- **단계는 명확하게, 변경은 유연하게.** 단계별 산출물과 완료 기준을 갖추되, 진행 중에도 요구사항·계획·결과물을 수정할 수 있습니다.
+- **변경은 충분히 설명한 뒤 한 번 결정합니다.** 가능성·영향·수행 범위를 검토하고 진행 여부를 확인합니다. 같은 결정에 대해 계획·작업별 승인을 반복하지 않습니다. 중요한 새 영향이 생기면 다시 확인합니다.
+- **기존 이력은 보존합니다.** 새 버전이 생겼다고 이전 승인을 취소하지 않습니다. 바뀐 부분과 영향받는 부분을 검증하고, 기존 결과는 여전히 유효할 때 재사용합니다.
+- **구현·검증·인수·종료를 구분합니다.** 실제 확인하지 않은 결과를 완료나 통과로 표시하지 않습니다. 운영 배포·운영 데이터 변경·파괴적 작업·보호된 자격 증명 접근·최종 고객 인수에는 별도의 인간 서명 승인이 필요합니다.
+- **정책만 수정할 때는 정책만 다룹니다.** 프로젝트 초기화나 실행 계획 승인 없이 요청한 정책 문서를 수정합니다.
 
-Both tiers compile the project and run strict harness validation. `full` also runs the project's own `tests/` and reports `SKIPPED` when there are none yet, so a freshly initialized project passes its own verification before the first test is written. Commands stored in mutable records are never auto-executed.
+현재 구현에는 일부 승인·기록 처리 제약이 남아 있어 추가 확인이나 작업 중단이 발생할 수 있습니다.
+에이전트는 실제 제약을 설명하고, 이를 새 요구사항이나 이전 승인 취소로 취급하지 않습니다. [현재 구현 제약](docs/RUNTIME_GAPS.md)
 
-`--self-test` additionally runs the harness runtime's own tests under `.harness/tooling/tests/`; a project's verification is otherwise about the project, not the harness.
+## 더 보기
 
-## Developing the harness
-
-The runtime is edited in place at `.harness/tooling/project_harness/`; its tests
-sit beside it. A fresh checkout has no records yet, so `next` reports
-`NEEDS_INIT` — the state a copied folder starts in.
-
-Policy text is maintained directly: when the user asks for a policy change,
-`AGENTS.md`, the adapters, the start prompts, this README, and `docs/` are
-edited in place, and committed or pushed when the user asks, with no PLAN/TASK
-or approval. Do not initialize project records for policy-only maintenance;
-follow-up requests retain that scope unless the user explicitly expands it.
-Only the authorized policy text and its explanatory documentation are covered; the runtime, `scripts/`,
-schemas, and records stay behind the PLAN gate. See the routine execution authority section of `AGENTS.md`.
-
-```powershell
-python scripts/check_repo.py full --self-test   # runtime tests on a bare copy
-python scripts/harness.py init                  # then exercise it as a project
-```
-
-Each file exists once: the schemas ship with the runtime, and `AGENTS.md`,
-`docs/`, and `scripts/` live only at the root, so there is nothing to keep in
-sync and no packaging step that turns the harness into a project generator.
-
-## High-risk approval
-
-These boundaries are always cryptographic and fail closed:
-
-- `PRODUCTION_DEPLOYMENT`
-- `PRODUCTION_DATA_CHANGE`
-- `DESTRUCTIVE_ACTION`
-- `SECRET_ACCESS`
-- `CUSTOMER_ACCEPTANCE`
-
-The protected authority configuration and ledger live outside the repository. Agents may prepare a request but cannot sign, install, infer, or self-grant approval. See [Human approval operations](docs/APPROVALS.md) and [Security](docs/SECURITY.md).
-
-## Key paths
-
-- `.harness/project.json`: the project's human name, policy, and completion contract
-- `.harness/state.json`: current lifecycle, nullable discovery-time `current_plan`, and the active human PLAN decision before implementation
-- `.harness/plans/PLAN-*.md`: human-readable execution plans
-- `.harness/work-items/TASK-*.md`: human-readable executable work units
-- `.harness/events/`, `results/`, `evidence/`: on-demand audit records
-- `.harness/tooling/project_harness/`: the runtime and the record `schemas/` it validates against
-- `<git-common-dir>/project-harness-runtime/`: shared transient claims and mailboxes
-
-Additional details: [Context and token efficiency](docs/CONTEXT_EFFICIENCY.md),
-[Workflow](docs/WORKFLOW.md), [Architecture](docs/ARCHITECTURE.md), and [Data
-model](docs/DATA_MODEL.md). For the whole path applied to one engagement, see
-[Example: a customer web project](docs/EXAMPLE_WEB_PROJECT.md). The decided but
-not yet implemented plan tree is in [Plan hierarchy](docs/PLAN_HIERARCHY.md),
-and the decided record format in [Record format](docs/RECORD_FORMAT.md).
-[Runtime gaps](docs/RUNTIME_GAPS.md) lists where the current runtime falls short
-of this policy and the fixes decided for it.
+| 문서 | 내용 |
+|---|---|
+| [공통 에이전트 정책](AGENTS.md) | 에이전트가 따라야 할 기준 |
+| [개발 방법과 단계별 기준](docs/DEVELOPMENT_METHOD.md) | 단계 완료, 변경 판단, 계획 작성과 실행 준비 |
+| [명령어·처리 절차](docs/WORKFLOW.md) | 필요한 경우 참고하는 상세 운영 방법 |
+| [승인 안내](docs/APPROVALS.md) | 일반 진행 결정과 별도 승인 절차 |
+| [협업 안내](docs/COLLABORATION.md) | 여러 개발자·에이전트가 함께 작업하는 방법 |
