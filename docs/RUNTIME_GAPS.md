@@ -182,22 +182,32 @@ them. Adding or splitting a task, or changing its order within those boundaries,
 does not itself call for a new business decision. The current runtime includes
 TASK membership and bound task fields in approval currentness, so such a
 refinement can still make the PLAN stale and stop all its tasks.
+The policy also requires one informed proceed decision on a prepared change
+proposal, preserving prior-version approval history. Runtime non-currentness
+of an edited PLAN must not be reported as retroactive withdrawal of that history.
 
 **Where.** `core.subject_fingerprint` includes the PLAN approval subject and
 TASK dependency/scope fields; PLAN dependency snapshots and current-approval
 checks bind that structure to the owner's recorded decision.
 
-**Interim.** Classify and explain the change accurately. Keep the task trace
-complete and obey the existing fingerprint gate. If it requires confirmation,
-present the refined plan and its fingerprint once and record only the owner's
-actual decision. Do not disguise refinement as a new requirement, hide a task,
-or fabricate fresh provenance for an old decision.
+**Interim.** Prepare feasibility, impact, required records, preflight and the
+exact fingerprint before the one proceed question. Record that response as
+the PLAN decision and apply it, with no second normal approval step. Keep the
+trace complete and obey the existing fingerprint gate. If later routine
+refinement forces another confirmation, explicitly identify this runtime
+limitation and the exact revised subject; do not pretend the user changed a
+requirement or revoked prior approval. Never hide tasks or fabricate fresh
+provenance for an old decision.
 
 **Policy direction; runtime design pending.** Separate routine task refinement
 from changes to agreed outcomes, acceptance criteria, authorized capabilities,
 and material constraints. A future implementation must allow refinement only
 within those boundaries while preserving scope validation, dependency checks,
-evidence freshness and all high-risk approvals. No new schema, command or
+evidence freshness and all high-risk approvals. It must preserve historical
+decisions for prior versions and materialize the one informed change decision
+without introducing a second business/PLAN/TASK approval cycle. Reconfirmation
+should track material changes to the reviewed scope, impact, conditions or
+authority. No new schema, command or
 approval mechanism is implemented or authorized by this policy update.
 
 ## Why the self-tests did not catch the original CLI gaps

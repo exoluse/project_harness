@@ -17,16 +17,44 @@ PLAN records are mandatory once execution is prepared, while initial discovery m
 The [development method](DEVELOPMENT_METHOD.md) defines stage readiness reviews
 and agile change cycles. A readiness review is not a new approval type and does
 not demand a separate owner decision at every waterfall stage. Consolidate
-routine scope and its requirement/design basis in the PLAN decision. Task
-refinement and sequence adjustments within agreed requirements and constraints
+routine scope and its requirement/design basis in the single change decision.
+The owner's proceed response to the prepared feasibility/impact proposal is
+recorded as the PLAN decision; it does not need a second PLAN or TASK approval.
+Task refinement and sequence adjustments within agreed requirements and constraints
 need no separate business decision. The current runtime nevertheless requires
 a fresh PLAN confirmation for changed bound task structure; [the compatibility
 rule](DEVELOPMENT_METHOD.md#current-runtime-compatibility) applies until that
-implementation gap is addressed. An in-contract correction needs TASK authority and
+implementation gap is addressed. Report any forced repeated confirmation as
+that runtime limitation. An in-contract correction needs TASK authority and
 applicable re-verification. Final acceptance of an earlier subject does not
 approve a changed one. Additional contractual approvals remain applicable.
 
 Every approval subject is named by its path, never by its id, because the decision binds the exact file that was fingerprinted. PLAN approval subjects are canonical `PLAN-*.md` records. Approval fingerprints and snapshots bind the parsed front matter and declared dependencies; the explanatory Markdown body does not grant authority. Baseline snapshots preserve the complete file for review.
+
+## One decision for a concrete change
+
+Before asking whether to proceed, the agent assesses feasibility and impact,
+prepares the necessary scope and verification, runs preflight and strict
+validation, and includes the final fingerprint in the reviewable proposal.
+An explicit owner response such as "Proceed with that change" is the decision
+when it clearly refers to that proposal. Preserve the actual words, channel
+and reference and use `approval confirm` and `plan apply-decision` to record
+and apply it. These commands materialize the same decision; they are not another
+permission request. A bare request, unanswered question or added document is
+not approval, and procedural recording does not authenticate identity.
+
+Do not first ask for business approval and only afterwards prepare a different
+PLAN for another approval. Ask again only for material new scope, impact,
+assumptions, conditions or authority beyond what the owner reviewed. Ordinary
+task refinement and described verification stay inside the decision; the
+current runtime fingerprint exception must be named when it blocks this policy.
+Do not reuse a confirmation for a different fingerprint or invent provenance.
+
+Keep historical approval for the original subject separate from current
+authorization to execute the revision. A runtime `STALE` result means the record
+does not authorize the current evaluated subject; it is not a retroactive
+revocation of the old version's approval or verified observations. A new version
+requires applicable verification and any high-risk approval of that version.
 
 ## Routine PLAN confirmation
 
@@ -67,9 +95,10 @@ proves provenance, not identity. The confirmation runs the plan preflight and
 fails closed on any blocker; [Workflow](WORKFLOW.md) lists what it checks.
 `plan apply-decision` additionally needs `state.active_plan` to name the plan
 and the lifecycle to be `DECISION_READY`; see [Runtime gaps](RUNTIME_GAPS.md)
-for the interim steps that satisfy those today. Editing the plan afterwards
-invalidates the decision, which is the point: the approval authorizes that
-plan, not the next one.
+for the interim steps that satisfy those today. Editing bound fields afterwards
+can make the decision non-current for the edited PLAN. The original decision
+and snapshots remain history for their original subject; this does not make
+all previously delivered work unapproved.
 
 A procedural confirmation is limited to local, safe actions. A plan that
 authorizes production, production data, destructive cleanup, or secret access

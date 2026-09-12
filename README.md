@@ -1,6 +1,6 @@
 # Project Agent Harness
 
-Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. One harness governs one project: the repository it lives in. A project may begin with discovery alone; before implementation, it needs a current human PLAN approval and every change has a TASK in that PLAN. A user request never substitutes for that approval.
+Project Agent Harness is a repository-native planning, coordination, and evidence layer for work performed by people and coding agents. One harness governs one project: the repository it lives in. A project may begin with discovery alone; before implementation, it needs a current human PLAN approval and every change has a TASK in that PLAN. A bare change request is not approval. The owner's explicit proceed response to a prepared feasibility/impact proposal is the change decision and is recorded through the PLAN flow.
 
 ## Operating model
 
@@ -16,6 +16,15 @@ Refining work within agreed outcomes and constraints is distinct from changing
 those commitments; the current runtime still binds task structure to approvals.
 See [Development method](docs/DEVELOPMENT_METHOD.md) for stage contracts and
 change rules. This policy does not implement new runtime transitions.
+
+For a proposed revision, the agent checks feasibility and impact, prepares the
+scope and verification, and asks once whether to proceed. The user's decision
+covers that described change; the agent records it, implements and verifies.
+Ask again only for material new scope, impact, conditions or authority. Preserve
+the prior version's approval and verification history and check the changed
+parts and their affected dependencies. Current runtime fingerprint limitations
+and the high-risk boundaries remain explicit exceptions, not repeated normal
+approval stages.
 
 The project's policy lives in `.harness/project.json`:
 

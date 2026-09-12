@@ -4,7 +4,7 @@ The harness is a coordination and gate engine, not a sandbox. Mutable repository
 
 ## Authority boundary
 
-Discovery may begin without PLAN/TASK placeholders. Before executable work, a current PLAN and TASK require a direct human PLAN decision that `plan apply-decision` has materialized. An explicit user request is not approval and cannot authorize routine development operations, commits, fetch, conflict resolution, or a normal push. The one exception is the harness's own policy text: `AGENTS.md` lets an explicit user request edit, commit, and push the guidance Markdown directly, because that changes what agents are told, not what the runtime enforces. Cryptographic human approval is code-forced for:
+Discovery may begin without PLAN/TASK placeholders. Before executable work, a current PLAN and TASK require a direct human decision that `plan apply-decision` has materialized. A bare request does not approve an unreviewed change. An explicit owner proceed response to the prepared feasibility/impact proposal is the change decision; record that same response through the PLAN flow without asking for a second approval of the unchanged proposal. Current fingerprints and gates remain required for routine development operations, commits, fetch, conflict resolution, and normal push. The policy-text exception in `AGENTS.md` permits direct guidance edits, plus commit/push when requested. Cryptographic human approval is code-forced for:
 
 - production deployment;
 - production data changes;
@@ -13,6 +13,13 @@ Discovery may begin without PLAN/TASK placeholders. Before executable work, a cu
 - final customer acceptance.
 
 Project configuration cannot lower these categories to procedural assurance. `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability. PLAN confirmation, exceptions, ordinary changes, and project-closure bookkeeping are not cryptographic execution permits unless separately configured.
+
+Historical approval and current execution authority are distinct. A revised
+PLAN becoming non-current does not revoke approval of the original version.
+Preserve its decision and evidence, assess changed and affected parts for the
+revision, and surface new defects without claiming unsupported current PASS.
+The single routine decision does not replace a required high-risk signature or
+authorize material effects that were not presented to the owner.
 
 ## Trust locations
 

@@ -20,11 +20,33 @@ The user is not expected to write record front matter, operate the CLI, or edit
 state files. Added documents are input to interpret, not automatic approval.
 
 Ask for essential missing information when it cannot be resolved from the
-available material. Prepare a concrete decision package before requesting a
-PLAN decision; after an actual decision, record and apply it and continue through
-the task gates. Batch related decisions where practical. Do not stop at every
-stage or iteration to obtain permission already provided by the current PLAN.
+available material. For a proposed change, assess feasibility and impact and
+prepare the concrete implementation/verification scope before asking once
+whether to proceed. The owner's explicit proceed response to that proposal is
+the change approval. Record and apply that same response through the PLAN flow;
+do not then ask for separate PLAN or TASK approval of the same proposal. Prepare
+the exact fingerprint before asking so the current runtime can bind the response
+to the reviewed scope. Batch related decisions where practical and continue
+within the decision without asking again at every stage or iteration.
 High-risk signatures remain outside the agent and the prompt-only routine path.
+
+## Stage-by-stage or continuous execution
+
+The user can request one stage, several stages, or the full workflow. For
+"requirements only", "design this", "prepare the work plan" or "verify only",
+perform the requested stage and its necessary checks, report outputs and open
+items, and stop. Do not begin downstream implementation or fix product defects
+discovered during verification unless that work is also authorized. Completing
+a stage establishes readiness, not permission to expand the user's request.
+
+For a request to continue through the full workflow, advance across ready stages
+under current authority. Ask only for essential missing information, required
+decisions or material new impact; do not add a permission question at every
+stage. An explicit stopping point remains in force until the user extends it.
+
+Sequential waterfall execution is a complete supported path. Use iterations
+when useful or requested; this policy does not mandate sprints or repeated
+delivery cycles when the agreed work can proceed stage by stage.
 
 ## Stage contract
 
@@ -136,7 +158,7 @@ or approvals; the size of the edit is not the deciding factor.
 | Task addition, split or sequence refinement within agreed requirements and constraints | Update the breakdown and feasible order; trace tasks to the existing criteria and retain the reason | No new business decision solely for refinement; the current runtime may still invalidate its PLAN fingerprint and require confirmation before execution |
 | Explanatory correction with no normative effect | Correct prose and retain appropriate trace; confirm that behavior, scope and criteria did not change | Existing authority applies only if fingerprints and gates remain current; a product-document edit still needs its authorized TASK |
 | Defect or deliverable revision within the approved contract | Use the covering TASK or plan the required rework; preserve the old attempt and identify changed outputs | Continue only if TASK scope and current approval cover the work; changed artifacts require fresh relevant verification even when the PLAN fingerprint is unchanged |
-| Requirement, design-contract, scope, priority commitment, dependency, criterion or verification-contract change | Record before/after, reason and impact; update affected requirements, design and PLAN/TASK references; retain the prior baseline | A changed approved subject or bound dependency needs a fresh owner PLAN decision and application; reassess dependent evidence and any acceptance/release approvals |
+| Requirement, design-contract, scope, priority commitment, dependency, criterion or verification-contract change | Assess feasibility and impact; prepare affected requirements, design and PLAN/TASK scope; retain the prior baseline | Record and apply the single owner proceed decision on the prepared change as its PLAN approval; reassess dependent evidence and any acceptance/release approvals |
 | Change after verification, acceptance or delivery | Identify the original release and the new target version; follow the same impact and planning process | Old evidence/acceptance proves only its original subject; obtain new applicable verification, acceptance and production approvals before claiming them for the revision |
 
 A request to change agreed requirements, acceptance criteria, scope or material
@@ -151,44 +173,67 @@ applicable contract or higher-risk policy requires them.
 
 ## Change cycle and propagation
 
-1. **Capture.** Preserve the prompt/document and identify its source, requested
-   outcome, reason, priority and affected baseline. Label inferred meaning and
-   resolve material ambiguity before treating it as a requirement.
-2. **Assess.** Record before/after behavior and impact on requirements, design,
-   interfaces/data, PLAN/TASK scope, schedule/effort, dependencies, risks,
-   verification, acceptance, deployment, operations and already delivered work.
-   Name affected record IDs, paths and versions; state what was assessed as
-   unaffected and why. Unknown impact remains an open item, not a safe assumption.
-3. **Disposition.** Propose inclusion now, deferral to a later increment,
-   alternatives or rejection with consequences. Obtain owner input where the
-   business choice is unresolved. Do not silently trade required scope or
-   acceptance quality for a schedule target. A business preference is not yet
-   executable approval of an unreviewed PLAN.
-4. **Revise the basis.** Preserve the prior approved content in its existing
-   snapshots/history and version the replacement. Propagate the decision through
-   requirements, design, feature criteria, PLAN/TASK scope and verification.
-   Use `plan sync` for derived relationships. Governed meaning belongs in the
-   canonical fields, not only in explanatory prose. Do not overwrite old
-   approvals, evidence, result attempts or acceptance to make them appear current.
-5. **Restore authority.** Distinguish a changed agreement from ordinary task
-   refinement. The former requires the owner's decision; the latter does not
-   introduce a separate business approval. Under the current runtime, when the
-   approved subject or bound dependencies change,
-   preflight and validate again, present one consolidated package including the
-   delta, impact, risks, open items, conditions and new fingerprint, then record
-   and apply the owner's actual decision. Pass the TASK gate before resuming
-   implementation. Follow the current [Workflow](WORKFLOW.md#changing-an-approved-plan)
-   for runtime interim steps; this policy does not remove them.
-6. **Rework and verify.** Revise the authorized deliverables, rerun checks for
-   changed behavior and affected integrations, and record current evidence.
-   Retain unchanged evidence only when its subject, criteria, bindings, profile
-   and freshness still satisfy the gate. Use a new result/review attempt when
-   that audit workflow applies. Revisit applicable acceptance and deployment
-   decisions before claiming the changed version is accepted or live.
-7. **Reconcile.** Resolve open items only after their named propagation targets
-   and evidence are complete. Report the changed baseline, actual verification
-   level, remaining work and next eligible step. Continue the project without
-   resetting completed history or reconstructing unrelated records.
+The routine sequence is **assess feasibility -> assess impact -> ask once ->
+record the decision -> implement and verify**. Preparing the records is the
+agent's responsibility, not another decision the user must make.
+
+1. **Capture and assess feasibility.** Preserve the prompt/document and identify
+   the requested before/after behavior, reason, priority and baseline version.
+   Assess technical feasibility, constraints, alternatives and uncertainty.
+   Distinguish a supported conclusion from a hypothesis. If feasibility needs
+   an executable experiment, plan that investigation within applicable authority;
+   do not present uncertain full implementation as already proven possible.
+2. **Assess impact and prepare the proposal.** Identify effects on requirements,
+   design, features, data/interfaces, TASKs, dependencies, effort/schedule,
+   risks, verification, acceptance and delivery. Name affected versions and
+   paths, the basis for treating other parts as unaffected, and material
+   assumptions or open questions. Prepare the PLAN/TASK changes, verification
+   and applicable recovery approach before the decision request. Preserve the
+   old baseline and distinguish the proposal from approved work. Use canonical
+   fields for governed meaning, `plan sync` for derived links, and preflight,
+   strict validation and the fingerprint required by the current runtime.
+3. **Ask once and record the actual decision.** Present feasibility, proposed
+   scope, impact, uncertainties, conditions, verification and the prepared
+   fingerprint together, then ask whether to proceed. The owner's explicit
+   response approving that proposal is the change approval and the routine
+   PLAN decision. Record its actual source and apply it; do not ask again under
+   another label such as PLAN approval, TASK approval or permission to test.
+   Do not record an unanswered request as approved. A declined or deferred
+   change is not implemented; the prior approved version and its history remain.
+4. **Implement and verify.** Pass the actual TASK gate and perform the described
+   work. Update trace and deliverables without silently expanding scope.
+   Verify changed behavior and affected integrations; retain unaffected evidence
+   only when its subject, criteria, bindings, profile and freshness remain valid.
+   Record new observations and result/review attempts where that workflow applies.
+   If material new impact appears, use the reconfirmation rule below before
+   proceeding with the affected work. Follow applicable high-risk approvals.
+5. **Reconcile and continue.** Report the revised version, verified outcomes,
+   remaining limits and next eligible work. Resolve open items only after their
+   propagation and evidence are complete. Do not reset project history or
+   relabel the entire prior delivery as unapproved because a revision exists.
+
+### When to ask again
+
+Ask again when new information materially changes the outcome, acceptance
+criteria, affected components/data, dependencies, cost/schedule commitments,
+important feasibility assumptions, risk, required authority or conditions
+presented to the owner. State the new delta, alternatives and consequence and
+pause affected work. Continue unrelated work only under current authority.
+Use the bounds stated in the proposal; disclose uncertainty rather than inventing
+an unagreed universal cost or schedule threshold.
+
+Do not ask again merely because the agent splits a task, adjusts a feasible
+sequence, records the decision, fixes an in-scope implementation defect, or
+runs already described verification. A newly proposed change not covered by the
+owner's decision goes through the cycle once. Current fingerprint limitations
+are handled below and must not be disguised as a new business requirement.
+
+For example, after the owner approves email registration with its described
+validation and storage impact, separating duplicate-email tests into another
+task does not call for a new change decision. Discovering that implementation
+would migrate existing customer data or materially delay delivery requires
+explaining that new impact before continuing. Production-data approval remains
+a separate high-risk boundary.
 
 Stop affected work and its dependents while their prerequisites are invalid.
 Unrelated work may continue only under valid current authority. In the current
@@ -196,6 +241,8 @@ single-level implementation, changing an approved PLAN or its bound scope can
 make the decision stale for every TASK in that PLAN. Do not claim task-local
 approval isolation or bypass that stop on the basis of a small impact estimate.
 Use `blocked_by` and the existing G0/G1 scopes according to their real semantics.
+This current execution stop does not erase the approval or verification history
+of the prior version and does not by itself require changing a running release.
 
 ### Current runtime compatibility
 
@@ -206,11 +253,18 @@ and temporarily stop the PLAN. This is an implementation mismatch with the
 refinement policy, documented in [Runtime gaps](RUNTIME_GAPS.md#8-plan-approval-also-binds-routine-task-refinement).
 No new approval-free runtime path is provided by this document.
 
-Until separately authorized runtime work addresses it, keep canonical task
-relationships accurate, follow the actual gate, and report this reason when
-another confirmation is required. Do not omit tasks, hide changed normative
-fields in prose, invent a decision, or reuse an old confirmation for a new
-fingerprint to avoid the mismatch.
+Prepare the final reviewed subject and its fingerprint before asking about
+the change, so the single proceed response can be recorded and applied directly.
+Applying that response is bookkeeping and creates no second decision point.
+
+If later routine refinement nevertheless changes a bound fingerprint, keep
+the trace accurate and report the exact gate limitation. Do not bypass it, omit
+tasks, hide normative fields in prose, or invent confirmation of an unseen
+fingerprint. If the current runtime forces another human confirmation, identify
+it explicitly as a temporary compatibility requirement, show the exact revised
+subject, and explain that it is not revocation of the old version or a new
+business requirement. Such a repeat is a runtime gap to remove, not the normal
+change policy. Runtime implementation remains a separately authorized task.
 
 ## Baselines and review boundaries
 
@@ -218,6 +272,14 @@ A baseline identifies the content/version relied on by dependent work, together
 with source trace, criteria, relevant decisions and evidence. It is not a
 promise that the content will never change. Retain the previous basis and the
 reason for replacement so the original release can still be explained.
+
+Keep three questions distinct: what was approved for the prior version, whether
+the owner approved this concrete change, and what has been verified for the
+revised version. A proposed change, an unfinished revision or a stale current
+PLAN does not retroactively undo a valid historical decision. Conversely, a
+prior approval is not evidence that the revision works. If new evidence reveals
+a defect in the old version, record that finding and its actual impact; preserve
+the original observation without continuing an unsupported current PASS claim.
 
 Review stage readiness against the table and the project's explicit criteria.
 Use the existing owner PLAN decision to approve routine executable scope in one

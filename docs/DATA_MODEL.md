@@ -98,6 +98,13 @@ schema fields. Changed artifact bindings may invalidate evidence even when the
 PLAN decision remains current. Neither an old PASS nor acceptance of an older
 subject establishes completion of the revision.
 
+Preserve the prior approved version and its associated decisions, snapshots,
+results and evidence. A proposed change or a non-current PLAN fingerprint does
+not retroactively change that history to unapproved. Keep the original-version
+decision, the decision on the proposed change, and verification of the revised
+version distinguishable in existing records and version references. This is a
+reporting and trace rule, not a new schema or automatic revocation mechanism.
+
 A plan's `approval_subject` includes its requirement, feature, and work-item references, workstreams, verification strategy, authorized/excluded actions, and invalidation triggers. `approval_dependencies` lists the exact canonical records snapshotted with the plan decision.
 
 Policy treats PLAN as the evolving task breakdown and order for agreed

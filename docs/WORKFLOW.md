@@ -22,6 +22,11 @@ the routine operations below. Stage readiness reviews do not add a separate
 owner approval unless the project's contract requires one. Current runtime
 gaps and the interim steps below remain applicable.
 
+The [requested stage boundary](DEVELOPMENT_METHOD.md#stage-by-stage-or-continuous-execution)
+controls how far to proceed. Finish and report the specified stage without
+starting the next one automatically; a full-workflow request permits continuing
+across ready stages within the existing authority and decision boundaries.
+
 ## Default path
 
 `PLAN_GATED` is the only execution mode. A project may start in discovery with `state.current_plan: null` and no PLAN/TASK records. When planning becomes concrete, create the PLAN and a TASK listed in it. Before implementation, a human project owner must approve the PLAN and `plan apply-decision` must materialize that current decision.
@@ -82,7 +87,7 @@ what binds.
 | Planning | "Plan sprint 1" | `new plan`; `new task --plan --feature --criterion --capability` per change; author scope and verification; `plan sync`; `validate --strict`; `report decision-package`; `fingerprint`, shown to the owner |
 | Decision | Owner: "Approved" | `approval confirm` with the fingerprint the owner saw, the chat as channel and the message as reference, and the plan's authorized actions; the interim steps below; `plan apply-decision` |
 | Execution | "Start TASK-0001" | `transition` to `READY`, `gate task`, implement, `check_repo.py fast`, commit explicit paths, fetch, resolve, push |
-| Change | "The customer wants the banner changed" | `new source`, `new change`, `new task`; author; `plan sync`; `fingerprint` to the owner; on "Approved", `approval confirm`, the interim step, `plan apply-decision`, back to `BUILDING` |
+| Change | "The customer wants the banner changed" | Assess feasibility and impact; author the necessary source/change and PLAN/TASK scope; `plan sync`, preflight, `validate --strict`, `fingerprint`; ask once whether to proceed; record that response with `approval confirm`, apply it and continue through the TASK gate |
 | Verification | "Record the test results" | run the checks, `evidence record`, `gate feature`; `result submit` and `review record` when a release or audit needs them |
 | Acceptance, deployment | "Prepare the acceptance request", "Prepare the production deploy" | `approval prepare`, then stop: a human signs outside the agent; afterwards `approval record`, `approval check`, `gate task` |
 | Closure | "Close the project" | evidence for the closure criteria, `report completion` |
@@ -154,6 +159,15 @@ fails closed unless all of the following hold:
 
 ### Changing an approved plan
 
+Assess feasibility and impact and prepare the necessary revised PLAN/TASK and
+verification before asking the owner whether to proceed. Present one concrete
+proposal with scope, impact, uncertainties, conditions and the current
+fingerprint. The explicit proceed response is the approval of that change and
+is recorded as the PLAN decision. Do not ask for another PLAN or TASK approval
+after that response. Ask again for material new impact or changed scope, not
+merely for recording, task refinement, ordering or described verification.
+See [when to ask again](DEVELOPMENT_METHOD.md#when-to-ask-again).
+
 Apply the [change classification and propagation
 rules](DEVELOPMENT_METHOD.md#change-classification) to requirements, design,
 plans and deliverables at any stage. Preserve the prior baseline and trace the
@@ -170,8 +184,15 @@ requirements. That broader binding is a [runtime
 gap](RUNTIME_GAPS.md#8-plan-approval-also-binds-routine-task-refinement), not a
 reason to classify every added task as a new business requirement. Until the
 runtime is aligned with the policy, re-approval is: author the change, `plan sync`,
-`fingerprint`, owner decides, `approval confirm` with a new
+preflight, `validate --strict`, `fingerprint`, owner decides once on the prepared
+feasibility/impact proposal, `approval confirm` with a new
 `--confirmation-id`, `plan apply-decision`.
+
+Here re-approval means authorization for the revised subject, using that same
+proceed decision. It does not erase the original version's approval or make
+completed work unapproved. A repeated fingerprint confirmation after routine
+refinement must be reported as the runtime compatibility limitation, not as a
+second normal change-approval stage. Do not bypass the gate or invent consent.
 
 **Interim.** Until [Runtime gaps](RUNTIME_GAPS.md) item 3 is fixed,
 `apply-decision` refuses a new decision from `APPROVED` or `BUILDING`. Set

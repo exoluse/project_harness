@@ -78,8 +78,13 @@ An efficiency change is invalid if any answer below becomes no:
   PLAN decision, a listed TASK, applied decision, and passing task gate?
 - Are dirty user/unknown paths and active claims still preserved?
 - Are task refinement and ordering distinguished from changed agreements,
-  while every change that invalidates the current runtime fingerprint still
-  requires preflight and a new actual owner confirmation?
+  with feasibility and impact presented before one owner proceed decision that
+  is recorded as the PLAN approval, rather than a second decision afterwards?
+- Are materially changed scope/impact/conditions distinguished from routine
+  refinement, and any extra current-runtime fingerprint requirement named
+  explicitly without bypassing its gate or inventing consent?
+- Is prior-version approval and verification history preserved separately from
+  the change decision and current verification of the revision?
 - Are production deployment/data, destructive action, credential access, and
   final acceptance still cryptographically human-approved?
 - Are partial, failed, stale, ambiguous, and unrun verification kept from PASS?
