@@ -130,8 +130,9 @@ order remains:
 2. Make `next` authoritative at approval and decision-application states.
 3. Add complete CLI authoring options so normal preflight does not require
    manual schema-driven edits.
-4. Implement `harness.plan/v2` leaf approvals so one task change does not stale
-   unrelated executable work.
+4. Implement explicit decision coverage across `harness.plan/v2` plans so plan
+   count does not multiply owner decisions and unrelated work keeps applicable
+   authority. Preserve existing fingerprint semantics until supported.
 5. Add privacy-preserving usage metadata when an adapter provides real token
    counts; otherwise label character-based estimates as estimates.
 

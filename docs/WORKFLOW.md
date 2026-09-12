@@ -104,13 +104,17 @@ what binds.
 |---|---|---|
 | Intake | "Register the RFP and the meeting notes" | `init` if needed; `new source`, `new artifact`; author authority and interpretation status |
 | Specification | "Turn these into requirements and features with completion criteria" | `new requirement`, `new feature`; author statements, criteria, profiles, bindings; `new open-item` for every unknown |
-| Planning | "Plan sprint 1" | `new plan`; `new task --plan --feature --criterion --capability` per change; author scope and verification; `plan sync`; `validate --strict`; `report decision-package`; `fingerprint`, shown to the owner |
-| Decision | Owner: "Approved" | `approval confirm` with the fingerprint the owner saw, the chat as channel and the message as reference, and the plan's authorized actions; the interim steps below; `plan apply-decision` |
+| Planning | "Plan the agreed scope" | `new plan`; `new task --plan --feature --criterion --capability` per change; author scope and verification; `plan sync`; `validate --strict`; `report decision-package`; retain its fingerprint for the unchanged proposal |
+| Decision | Owner: "Proceed with this scope" | Record that actual prompt response with `approval confirm`, using the prepared proposal's fingerprint, the chat as channel, the message as reference and the plan's authorized actions; the interim steps below; `plan apply-decision` |
 | Execution | "Start TASK-0001" | `transition` to `READY`, `gate task`, implement, `check_repo.py fast`, commit explicit paths, fetch, resolve, push |
 | Change | "The customer wants the banner changed" | Assess feasibility and impact; author the necessary source/change and PLAN/TASK scope; `plan sync`, preflight, `validate --strict`, `fingerprint`; ask once whether to proceed; record that response with `approval confirm`, apply it and continue through the TASK gate |
 | Verification | "Record the test results" | run the checks, `evidence record`, `gate feature`; `result submit` and `review record` when a release or audit needs them |
 | Acceptance, deployment | "Prepare the acceptance request", "Prepare the production deploy" | `approval prepare`, then stop: a human signs outside the agent; afterwards `approval record`, `approval check`, `gate task` |
 | Closure | "Close the project" | evidence for the closure criteria, `report completion` |
+
+The owner reviews the proposal and replies in ordinary language; they need not
+type a fingerprint or run these commands. Runtime checks do not make the
+decision. See [approval roles](APPROVALS.md#who-decides-and-who-checks).
 
 What the agent never does from a prompt: decide in the owner's place, invent
 the provenance of a decision, sign or install a high-risk approval, or infer
@@ -140,7 +144,7 @@ when the gap is fixed.
    In the task's front matter set `write_scope` and `verification`. Then
    `plan sync PLAN-0001` so `approval_dependencies` covers every reference.
 5. `validate --strict`, then `fingerprint .harness/plans/PLAN-0001.md`.
-6. The owner reads that exact plan and decides. Record it with
+6. The owner reviews that concrete proposal and decides by prompt. The agent records it with
    `approval confirm`, passing `--confirm-fingerprint`, a unique
    `--confirmation-id`, the channel and reference, `--acknowledge-procedural`,
    and one `--authorized-action` for every capability the plan's tasks use.

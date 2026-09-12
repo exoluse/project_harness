@@ -87,6 +87,16 @@ proceed decision on the presented scope is its approval, including the described
 implementation and verification; record and apply that same decision. Do not
 ask for another PLAN or TASK approval of the same unchanged proposal.
 
+The unit of an owner decision is the reviewed execution scope, not the number
+of PLANs or TASKs. One decision may cover several plans and their work within
+the presented outcomes, acceptance criteria, capabilities, risk and delivery
+constraints. Creating, splitting or switching a plan within that scope is not
+itself another decision point. Do not infer coverage for unreviewed work.
+The current runtime still binds decisions to individual PLAN fingerprints;
+report that compatibility limit and keep its gates until explicit coverage is
+implemented. This policy does not allow replaying a decision onto another
+unreviewed fingerprint.
+
 Ask again only when material scope, impact, assumptions, conditions or authority
 change beyond what was presented. Explain the new delta and pause affected work.
 Task splitting, sequencing and recordkeeping within the agreed change do not
@@ -121,7 +131,8 @@ implementation, product tests, local deliverable edits, formatting, commits,
 `git fetch`/conflict resolution, or normal push:
 
 - the current PLAN must list the TASK and the TASK must point back;
-- the owner must approve the PLAN's current fingerprint;
+- the owner must approve the concrete scope by prompt, with that decision
+  recorded against the current PLAN fingerprint;
 - `plan apply-decision` must materialize that decision; and
 - `gate task <TASK>` must pass.
 
@@ -132,6 +143,16 @@ a prompt. Prepare scope, feasibility, impact, risks, open items, conditions,
 verification and the current fingerprint before that one decision request.
 The agent transcribes the actual response; it never decides for the owner or
 invents provenance. Current runtime recording and gates still apply.
+
+For routine approval, the owner decides in ordinary prompt language, such as
+"Proceed with this scope". No special phrase, typed fingerprint or user-run
+approval command is required. The agent binds the response to the prepared,
+unchanged proposal and its fingerprint, preserving the actual message source.
+An ambiguous response requires clarification only of the unresolved decision.
+The runtime records and checks the decision and execution prerequisites; it
+never approves on the owner's behalf. A passing gate creates no consent, and
+a failed gate does not revoke the historical decision. The five high-risk
+human-signature requirements below remain separate from routine prompt approval.
 
 Policy-text maintenance is the sole direct-edit exception. An explicit policy
 request authorizes `AGENTS.md`, adapters, start prompts, `README.md`, and

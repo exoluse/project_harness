@@ -124,9 +124,9 @@
       </section></li>
       <li class="step milestone decision" id="step-05"><span class="number" aria-hidden="true">05</span><section class="card" aria-labelledby="title-05">
         <div class="card-head"><h2 id="title-05">실행 준비</h2><span class="label">실행 준비 완료</span></div>
-        <p class="description">준비한 범위·가능성·영향·검증 계획을 설명하고 실제 수행 여부를 결정합니다.</p>
-        <dl><div><dt>수행</dt><dd>필요한 사용자 결정을 한 번 받고, 그 결정을 반영해 작업의 권한과 선행 조건을 확인합니다.</dd></div><div><dt>산출물</dt><dd>실제 진행 결정, 반영된 계획, 시작할 수 있는 작업.</dd></div><div><dt>완료 기준</dt><dd>현재 계획의 실행이 허용되고, 시작할 작업의 필수 실행 조건이 충족됩니다.</dd></div></dl>
-        <p class="note">같은 범위에 대한 유효한 결정이 이미 있다면 다시 묻지 않습니다. 결정 대기·보류·거절 상태에서는 해당 구현을 시작하지 않습니다.</p>
+        <p class="description">준비한 범위·가능성·영향·검증 계획을 설명하면 사용자가 프롬프트로 실제 수행 여부를 결정합니다.</p>
+        <dl><div><dt>수행</dt><dd>사용자가 “이 범위로 진행해”라고 승인하면 에이전트가 그 결정을 기록·반영하고, 런타임이 기록과 작업의 선행 조건을 검사합니다.</dd></div><div><dt>산출물</dt><dd>사용자의 진행 결정, 반영된 계획, 실행 조건 확인 결과.</dd></div><div><dt>완료 기준</dt><dd>사용자가 승인한 범위에 속하고, 시작할 작업의 필수 실행 조건이 충족됩니다.</dd></div></dl>
+        <p class="note">같은 범위의 유효한 결정은 여러 계획·작업에 걸쳐 유지하며 반복해서 묻지 않습니다. 런타임의 검사 통과가 사용자 승인을 대신하지 않습니다. 결정 대기·보류·거절 상태에서는 해당 구현을 시작하지 않습니다.</p>
       </section></li>
       <li class="step" id="step-06"><span class="number" aria-hidden="true">06</span><section class="card" aria-labelledby="title-06">
         <div class="card-head"><h2 id="title-06">구현</h2><span class="label">IMPLEMENTATION</span></div>

@@ -1,6 +1,21 @@
 # Human Approval Operations
 
-Routine implementation uses the PLAN approval workflow. It requires a current PLAN, a TASK listed in it, and the current human PLAN decision materialized by `plan apply-decision` before execution.
+Routine execution approval is the owner's explicit prompt response to a concrete reviewed proposal. The agent records that decision; the runtime checks its applicability and execution prerequisites. The current implementation requires a PLAN, a TASK listed in it, and that human decision materialized by `plan apply-decision` before execution.
+
+## Who decides and who checks
+
+The owner can say "Proceed with this scope" or an equivalent clear response.
+No magic phrase, fingerprint copied into chat, or user-run CLI command is
+required. The agent prepares the proposal and fingerprint before asking,
+preserves the actual response and its source, and records it against that
+unchanged proposal. Clarify an ambiguous response; never treat silence or
+an unreviewed scope as consent.
+
+The runtime does not grant approval. `approval confirm` records a human
+decision, `plan apply-decision` applies it, and gates check whether execution
+conditions are satisfied. PASS alone is not user consent; failure blocks the
+affected execution without cancelling the prior decision as history. The
+high-risk signature requirements below are separate from routine prompt approval.
 
 `PLAN` approval carries `PROCEDURAL` assurance by default: it records a direct confirmation from the human project owner rather than authenticating them. Cryptographic approval is reserved for five high-risk boundaries:
 
@@ -33,6 +48,15 @@ Every approval subject is named by its path, never by its id, because the decisi
 
 ## One decision for a concrete change
 
+The owner decides on the presented execution scope, not on a quota of PLAN
+files. The same decision should cover all plans and tasks that implement that
+scope within its agreed bounds. Splitting, adding or switching plans alone
+does not justify another owner question. A material change outside the decided
+scope requires its own feasibility/impact proposal and one new decision.
+Today's recording path still binds one exact PLAN fingerprint; it does not
+yet provide shared coverage across plans. Do not copy an approval to another
+subject or invent provenance to simulate that future capability.
+
 This decision boundary applies when execution is requested. A planning-only
 request authorizes preparation and planning checks, then ends with the plan
 and findings; it does not require an owner decision to call plan authoring
@@ -41,7 +65,7 @@ and TASK gate. Do not introduce a separate "planning complete" approval.
 
 Before asking whether to proceed, the agent assesses feasibility and impact,
 prepares the necessary scope and verification, runs preflight and strict
-validation, and includes the final fingerprint in the reviewable proposal.
+validation, and binds the reviewable proposal to the final fingerprint.
 An explicit owner response such as "Proceed with that change" is the decision
 when it clearly refers to that proposal. Preserve the actual words, channel
 and reference and use `approval confirm` and `plan apply-decision` to record
@@ -79,14 +103,15 @@ limitation; do not delete the decision or ask the owner to approve history again
 
 This is the everyday path, and it is the only human decision an agent may
 transcribe on the owner's behalf; the signed flow below is imported with
-`approval record` but never made by the agent. The owner reads the exact plan,
-says what they decided, and the agent transcribes that decision against the
-fingerprint they saw:
+`approval record` but never made by the agent. The owner reviews the concrete
+proposal and replies by prompt. The agent transcribes that decision against
+the fingerprint prepared for the unchanged proposal. The commands below are
+agent bookkeeping, not instructions the owner must run:
 
 ```powershell
 python scripts/harness.py fingerprint .harness/plans/PLAN-0001.md
 
-# The human project owner reviews that exact plan and decides.
+# The owner reviews the proposal and replies, for example: "Proceed with this scope".
 
 python scripts/harness.py approval confirm `
   --type PLAN `

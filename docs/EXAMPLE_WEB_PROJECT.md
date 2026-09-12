@@ -12,7 +12,7 @@ Four roles appear:
 | Role | Who | What they decide |
 |---|---|---|
 | Customer | the client organisation | supplies input, performs UAT, gives final acceptance |
-| Project owner | the human lead or PM on the delivering side | approves every PLAN |
+| Project owner | the human lead or PM on the delivering side | decides on the reviewed execution scope and material changes |
 | Agents and developers | Codex, Claude Code, people | discovery, planning, implementation, verification |
 | Operator or CI | a separately controlled account or pipeline | holds production credentials and performs deployments |
 
@@ -117,9 +117,11 @@ unchanged.
 
 ### 3.2 Execution ready
 
-When execution is requested, the owner decides once on that concrete scope.
-The agent records the actual response against the reviewed fingerprint and
-applies it. No separate approval of "planning complete" is required. Current
+When execution is requested, the owner decides once on that concrete scope
+by prompt, for example: "Proceed with this scope". The agent records the actual
+message against the fingerprint prepared for the unchanged proposal and
+applies it. The runtime checks execution conditions; it does not decide for
+the owner. No separate approval of "planning complete" is required. Current
 lifecycle application uses `DECISION_READY -> APPROVED` with the interim steps
 below; these two milestones introduce no new runtime states.
 
@@ -128,7 +130,7 @@ python scripts/harness.py approval confirm `
   --type PLAN --subject .harness/plans/PLAN-0001.md --decision APPROVED `
   --approver lead@agency.example --basis "Sprint 1 scope and tasks reviewed" `
   --confirm-fingerprint <fingerprint> --confirmation-id HCONF-plan-0001 `
-  --confirmation-channel "sprint planning call" --confirmation-reference "2026-08-20 minutes" `
+  --confirmation-channel "chat" --confirmation-reference <actual owner approval message reference> `
   --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION `
   --acknowledge-procedural
 # interim (see RUNTIME_GAPS.md): set current_plan and active_plan in state.json,
@@ -147,8 +149,11 @@ confirmation. Preserve the original approval as history and report that limit.
 With the plan hierarchy in [PLAN_HIERARCHY.md](PLAN_HIERARCHY.md) implemented,
 this project would instead hold one root `PLAN-0001` for the whole engagement
 and child plans such as `API-001` for the back end, `SCR-001` for screens, and
-`PAY-001` for payment, each approved on its own and several executable at
-once. Until then the sprint PLANs above are the shape to use.
+`PAY-001` for payment. Several plans could execute under the same decision
+when their work stays within its reviewed scope and their gates pass; no
+separate owner approval is needed merely because another plan exists. Until
+implemented, use single-level plans with the current fingerprint constraints.
+The sprints here are examples, not mandatory delivery cycles.
 
 ## 4. Implementation
 

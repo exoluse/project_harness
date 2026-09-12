@@ -1,6 +1,8 @@
 # Plan Hierarchy
 
-Status: **decided on 2026-09-06, not yet implemented.** The runtime today knows
+Status: **original design decided on 2026-09-06; decision-coverage policy revised
+on 2026-09-12; not yet implemented.** The revision replaces per-node owner
+approval with one decision for a reviewed execution scope. The runtime today knows
 one level of PLAN and one `state.active_plan`. This document is the policy
 decision and the specification the runtime change will implement, under
 `harness.plan/v2` and `harness.state/v2`. Until that change lands, projects use
@@ -26,13 +28,13 @@ carries a category prefix the project declares, so the tree reads as the
 project is organised:
 
 ```text
-PLAN-0001  Acme storefront                 root   boundary approval
-├─ API-001  Back-end API                    branch boundary approval
-│  ├─ API-002  API sprint 1                 leaf   execution approval, active
+PLAN-0001  Acme storefront                 root   reviewed execution scope
+├─ API-001  Back-end API                    branch within the same decision
+│  ├─ API-002  API sprint 1                 leaf   covered and ready, active
 │  └─ API-003  API sprint 2                 leaf   draft
-├─ SCR-001  Screens                         branch boundary approval
-│  └─ SCR-002  Web sprint 1                 leaf   execution approval, active
-└─ PAY-001  Payment integration             leaf   execution approval, active
+├─ SCR-001  Screens                         branch within the same decision
+│  └─ SCR-002  Web sprint 1                 leaf   covered and ready, active
+└─ PAY-001  Payment integration             leaf   covered and ready, active
 ```
 
 Every node is a `plan` record in `.harness/plans/`, written as Markdown with
@@ -53,10 +55,11 @@ strict front matter like today. Ids do not encode depth; the tree is defined by
    `FUNC`, `HCONF`, `HOF`, `OI`, `PLAN`, `RCV`, `REQ`, `RES`, `SRC`, `TASK`,
    `VRD`. In particular `FUNC` names features, so a feature-oriented child plan
    takes another category such as `PAY` or `FEAT`.
-4. **One parent, inside the subject.** A child plan carries
-   `approval_subject.parent_plan_id`. It is part of what the owner approves and
-   therefore part of the child's fingerprint: moving a plan under a different
-   parent is a new decision.
+4. **One parent, checked containment.** A child plan carries
+   `approval_subject.parent_plan_id`. Reparenting requires a fresh containment
+   and dependency check, not automatically a new human decision. Reuse coverage
+   only when the decided scope and applicable constraints still cover the work.
+   A move outside that coverage requires impact assessment and a new decision.
 5. **Children are derived.** A parent's `child_plan_refs` lives outside
    `approval_subject` and is rebuilt by `plan sync`. Adding, removing, or
    renumbering a child does not change the parent's fingerprint and does not
@@ -70,24 +73,27 @@ strict front matter like today. Ids do not encode depth; the tree is defined by
    - when the category declares a `write_boundary`, every TASK under plans of
      that category has a `write_scope` inside it.
    Preflight reports a violation; the task gate fails closed on it.
-7. **Approval per node.** Every plan in the tree is approved separately with
-   the routine `approval confirm` flow and materialized with
-   `plan apply-decision`. A branch approval is a **boundary approval**: it fixes
-   scope and the authorized and excluded actions for everything beneath it. A
-   leaf approval is an **execution approval**: it fixes the TASK list and
-   verification strategy, as a PLAN approval does today.
-8. **Independent invalidation.** Editing a node invalidates that node's
-   approval only. Every descendant is non-executable until the node is
-   re-approved; siblings and ancestors are unaffected. A parent is not listed in
-   its children's `approval_dependencies`, so re-approving a parent never
-   requires re-approving its children.
+7. **One decision, explicit coverage.** The owner decides once on the concrete
+   scope and its outcomes, acceptance and verification obligations, write
+   boundaries, capabilities, exclusions, conditions, risk and delivery limits.
+   Branches and leaves implementing that scope reference the same decision;
+   they do not each require another owner approval. Newly detailed plans may
+   use that coverage only when containment is demonstrable. Abstract or missing
+   bounds do not authorize unspecified work. High-risk decisions remain separate.
+8. **Affected-scope currentness.** Plan splitting, ordering and metadata changes
+   do not themselves invalidate the owner's decision. Check their actual effect
+   on the reviewed scope and dependencies. Material changes outside coverage
+   stop affected work until one new decision covers the concrete change;
+   unaffected work may continue only with applicable authority and passing gates.
+   Preserve prior decisions and never relabel old evidence as a new PASS.
 9. **Several active leaves.** `state.active_plans` maps each executable leaf to
-   the `APR-*` that made it so. Any number of leaves may be active at once,
+   the applicable `APR-*`; several leaves may reference the same decision.
+   Any number of leaves may be active at once,
    under one active root. `state.current_plan` and `state.active_plan` keep
    naming the root and `state.active_decision` its decision.
 10. **Task gate.** A TASK is executable when its plan is a leaf in
-    `active_plans` with a current decision, every ancestor up to the root has a
-    current PLAN approval whose id matches that plan's `decision_ref`, the
+    `active_plans` with applicable decision coverage, the scope and constraints
+    of every ancestor up to the root are satisfied, the
     TASK's capabilities are inside every ancestor's authorized actions and
     outside every ancestor's excluded actions, and the existing checks (plan
     membership, lifecycle state, `blocked_by`, `G0/G1`, claims) pass.
@@ -98,8 +104,10 @@ strict front matter like today. Ids do not encode depth; the tree is defined by
     when every child is `CLOSED` or `SUPERSEDED`. The project closure contract
     is evaluated against the root.
 13. **Hotfix leaves.** An incident fix goes into its own leaf, for example
-    `FIX-001` under the root, so its approval and re-approval never stale the
-    sprint leaves. The sequence is in `docs/WORKFLOW.md`.
+    `FIX-001` under the root. Assess whether the actual repair is covered by an
+    existing decision; a new leaf alone is not a new decision. New scope, risk
+    or high-risk actions keep their required decision boundaries. The current
+    executable hotfix procedure remains in `docs/WORKFLOW.md` until implemented.
 
 ## Categories
 
@@ -172,12 +180,15 @@ python scripts/harness.py new task TASK-0001 "Session API" --plan API-002 --capa
 
 python scripts/harness.py plan sync PLAN-0001              # rebuild child_plan_refs down the tree
 python scripts/harness.py report decision-package PLAN-0001 # the tree, one package
-python scripts/harness.py fingerprint .harness/plans/API-002.md
-
-# owner confirms the root, then each branch and leaf they want executable
-python scripts/harness.py approval confirm --type PLAN --subject .harness/plans/API-002.md ...
-python scripts/harness.py plan apply-decision --approval APR-0003   # adds API-002 to active_plans
 ```
+
+The future decision package must bind the reviewed execution scope and its
+coverage limits. The owner decides on that package once; application associates
+covered ready plans with that decision without further owner questions. The
+coverage representation and versioned fingerprint contract must be implemented
+and tested before this is executable. Existing `approval confirm` cannot be
+replayed onto different PLAN subjects to emulate it, and existing approvals
+must not be silently reinterpreted or widened.
 
 `new task --plan` refuses a plan that has children. `new plan --parent` refuses
 a parent that has TASKs, an undeclared category, a reserved prefix, and a
@@ -188,16 +199,16 @@ active leaf; `status` shows `active_plans` in full.
 
 | Area | Change |
 |---|---|
-| `plan.schema.json` | `harness.plan/v2`: id pattern `^(PLAN-[0-9]{4,}|[A-Z]{2,8}-[0-9]{3,})$`, `approval_subject.parent_plan_id`, derived `child_plan_refs` |
+| `plan.schema.json` and approval contract | `harness.plan/v2`: category ids, parent and derived child references; explicit versioned decision coverage and limits, without one human decision per node |
 | `state.schema.json` | `harness.state/v2`: `active_plans` object mapping plan id to `APR-*` |
 | `project.schema.json` | optional `plan_categories` |
 | `scaffold.py` | `init --profile <name>` seeds `plan_categories` from `.harness/templates/profiles/<name>.json`; ships `web`, `mobile`, `data`, `library` |
 | `authoring.py` | `new plan --parent`, category and reserved-prefix checks, per-category numbering |
 | `validation.py` | branch/leaf exclusivity, parent existence, containment, category declared |
-| `gates.py` | ancestor chain check, `active_plans` membership, capability containment, write boundary |
+| `gates.py` | decision-coverage and ancestor containment checks, `active_plans` membership, capability/write boundaries, preserved verification obligations |
 | `lifecycle_mutations.py` | `apply-decision` updates `active_plans` for leaves and `active_plan` for the root; `plan sync` rebuilds children |
 | `guidance.py`, `reporting.py` | tree-aware `next`, `status`, `decision-package` |
-| tests | hierarchy, several active leaves, parent invalidation blocks descendants only, containment violations, reserved prefixes, profile seeding and `init` without a profile |
+| tests | one decision covers several plans; in-scope splitting/reparenting needs no new decision; out-of-scope changes fail closed; affected dependencies, legacy approval compatibility, categories and profile seeding |
 
 Existing `harness.plan/v1` records remain readable as single-level roots.
 
@@ -205,7 +216,8 @@ Existing `harness.plan/v1` records remain readable as single-level roots.
 
 - PLAN approval stays procedural; the five cryptographic boundaries stay
   cryptographic.
-- A user request still never substitutes for the owner's PLAN decision.
+- A bare request is not a decision on an unreviewed execution scope. The actual
+  owner response to the concrete proposal is recorded; provenance is never invented.
 - Every TASK still points to exactly one plan and is listed by it.
 - The Markdown body of a plan is still non-authoritative; only front matter is
   fingerprinted.

@@ -4,7 +4,7 @@ The harness separates three concerns that should not be confused:
 
 ```text
 discovery / requirements / design -> authored PLAN and TASKs -> planning complete
-current owner decision -> apply decision -> TASK gate -> execution ready -> implementation
+owner prompt decision -> agent records/applies decision -> runtime TASK gate -> execution ready -> implementation
 concurrent writers -> claims / worktrees / handoffs
 high-risk action -> protected cryptographic approval
 ```
@@ -16,6 +16,12 @@ policy milestones, not new runtime states. The full project sequence through
 verification, acceptance, delivery and closure is in the
 [HTML guide](HARNESS_POLICY_REPORT.html); [Development method](DEVELOPMENT_METHOD.md#planning-complete-and-execution-ready)
 defines the criteria.
+
+The owner approves the reviewed scope through a prompt. The agent maintains
+the decision's source and binds it to the prepared proposal; the runtime checks
+the record and execution prerequisites. A gate is not an approval authority:
+PASS creates no consent, and failure does not erase a prior decision. See
+[approval roles](APPROVALS.md#who-decides-and-who-checks).
 
 ## Policy modes
 

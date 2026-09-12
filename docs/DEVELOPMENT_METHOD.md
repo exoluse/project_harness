@@ -28,6 +28,10 @@ do not then ask for separate PLAN or TASK approval of the same proposal. Prepare
 the exact fingerprint before asking so the current runtime can bind the response
 to the reviewed scope. Batch related decisions where practical and continue
 within the decision without asking again at every stage or iteration.
+The owner approves by an ordinary prompt response to that proposal; the agent
+handles fingerprint binding and recording. No user-run approval command or
+typed fingerprint is required. Runtime checks establish execution readiness,
+not a decision on the owner's behalf. See [approval roles](APPROVALS.md#who-decides-and-who-checks).
 High-risk signatures remain outside the agent and the prompt-only routine path.
 
 ## Stage-by-stage or continuous execution
@@ -55,7 +59,7 @@ These are distinct milestones, not new runtime statuses or approval types.
 | Milestone | Required basis | Agent action |
 |---|---|---|
 | Planning complete | Requested scope, PLAN/TASK breakdown, ordering, dependencies, write scope, verification, risks and uncertainties are authored; required planning preflight and strict validation pass | Report the plan, check results and open items. For a planning-only request, stop without requesting execution approval, applying a decision or requiring a TASK gate to pass. |
-| Execution ready | The current scope has an actual owner decision on its fingerprint; the decision is applied; the selected TASK and its prerequisites pass the execution gate | Begin implementation only within the user's requested scope. Planning completion alone grants no execution authority. |
+| Execution ready | The current scope has an actual owner prompt decision recorded against the prepared fingerprint; the decision is applied; the selected TASK and its prerequisites pass the execution gate | Begin implementation only within the user's requested scope. Planning completion alone grants no execution authority. |
 
 If required planning checks fail, report a draft or a plan needing revision and
 the exact blockers; do not label the checks as passed. Unresolved assumptions
@@ -124,6 +128,16 @@ refine the latter within the agreed requirements, acceptance criteria, scope,
 cost/schedule commitments, capabilities and risk boundaries. No separate
 business approval is needed solely for that refinement. A change to those
 commitments needs impact analysis and the appropriate owner decision.
+
+Plan count does not determine decision count. One reviewed execution scope may
+be organised into several plans without asking for one owner decision per plan.
+Task or plan creation, splitting, sequencing and switching within the decided
+scope are agent operations. Coverage must remain demonstrable against the
+presented outcomes, acceptance and verification obligations, capabilities,
+conditions, risks and delivery commitments. A new plan is neither a new
+business requirement by itself nor permission for work outside those bounds.
+Current per-PLAN fingerprint gates remain an implementation limitation, not
+the intended human decision cadence.
 
 Determine order from technical dependencies, risk and efficiency during
 planning, or from the user's stated priorities; either may change during work.
@@ -213,8 +227,8 @@ agent's responsibility, not another decision the user must make.
    fields for governed meaning, `plan sync` for derived links, and preflight,
    strict validation and the fingerprint required by the current runtime.
 3. **Ask once and record the actual decision.** Present feasibility, proposed
-   scope, impact, uncertainties, conditions, verification and the prepared
-   fingerprint together, then ask whether to proceed. The owner's explicit
+   scope, impact, uncertainties, conditions and verification as one proposal
+   bound to the prepared fingerprint, then ask whether to proceed. The owner's explicit
    response approving that proposal is the change approval and the routine
    PLAN decision. Record its actual source and apply it; do not ask again under
    another label such as PLAN approval, TASK approval or permission to test.
@@ -297,8 +311,8 @@ Applying that response is bookkeeping and creates no second decision point.
 
 If later routine refinement nevertheless changes a bound fingerprint, keep
 the trace accurate and report the exact gate limitation. Do not bypass it, omit
-tasks, hide normative fields in prose, or invent confirmation of an unseen
-fingerprint. If the current runtime forces another human confirmation, identify
+tasks, hide normative fields in prose, or invent confirmation of an unreviewed
+proposal. If the current runtime forces another human confirmation, identify
 it explicitly as a temporary compatibility requirement, show the exact revised
 subject, and explain that it is not revocation of the old version or a new
 business requirement. Such a repeat is a runtime gap to remove, not the normal
