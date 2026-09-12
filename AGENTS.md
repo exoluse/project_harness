@@ -28,6 +28,37 @@ only **The path as it runs today** in `docs/WORKFLOW.md` and item 4 of
 actually decides may the agent transcribe it with `approval confirm`. Read
 another gap only when its named failure occurs.
 
+## Development method
+
+Use a detailed waterfall lifecycle with agile revision throughout the project.
+Identify the current stage, its inputs, deliverables, dependencies, and exit
+criteria; establish a versioned basis before dependent implementation. The
+stages cover discovery, requirements, design, planning, implementation,
+verification, acceptance, deployment, closure, and maintenance. Stage readiness
+is a documented check, not an additional human approval at every stage.
+
+Requirements, designs, PLAN/TASK scope, and deliverables may change at any
+stage, including after verification or delivery. Preserve the prior baseline,
+trace the request and affected work, and distinguish task refinement from a
+change to agreed requirements, acceptance criteria, or constraints. A PLAN
+organizes the tasks needed to meet requirements; the agent may add detail,
+split tasks, and adjust their order within those commitments. Order may follow
+planning analysis or user priority, subject to actual technical dependencies.
+Explain conflicts and resolve material tradeoffs with the user. Routine
+refinement needs no separate business decision; changed commitments do.
+The current fingerprint-based runtime still requires a fresh PLAN decision
+when its bound task structure changes; this policy does not bypass that gate.
+Implement under current authority and re-verify changed outputs. Never carry
+old acceptance or verification forward to a changed version without checking
+its applicability.
+Continue unrelated work only while its own authority and gates remain current;
+today a changed PLAN can stop every TASK in that PLAN.
+
+The user supplies prompts/documents and actual decisions; the agent maintains
+the trace and drives the authorized steps. Read only the relevant stage or
+change section of `docs/DEVELOPMENT_METHOD.md` when planning, reviewing stage
+readiness, or processing a change. This method adds no runtime states or commands.
+
 ## Authority
 
 The user's request authorizes intake, discovery, specification, planning, and
@@ -52,7 +83,10 @@ Policy-text maintenance is the sole direct-edit exception. An explicit policy
 request authorizes `AGENTS.md`, adapters, start prompts, `README.md`, and
 `docs/`, plus commit/push when requested. It does not authorize `scripts/`,
 `.harness/tooling/`, schemas, runtime, or canonical records. Guidance changes
-do not change enforcement.
+do not change enforcement. For a policy-only request, do not initialize the
+project or create PLAN/TASK or other project records to perform the policy edit.
+When such a checkout has no project records, record validation is inapplicable:
+use `check_repo.py`'s explicit skip and check the policy diff and links instead.
 
 Before normal push, fetch the configured remote and preserve both sides. A
 force/tag push, branch deletion, different target, or published-history rewrite
@@ -72,8 +106,10 @@ scope, and verification; then `plan sync`. Never hand-edit derived
 activates one. Signed `approval prepare/record` is only for the five high-risk
 boundaries.
 
-Changing PLAN/TASK scope makes the decision stale: preflight again and obtain
-one new owner decision; never reuse approval. Plans stay single-level until
+The current runtime makes a changed bound PLAN/TASK structure stale even when
+it only refines unchanged requirements. Until the runtime is aligned with the
+policy, preflight again and obtain one new owner decision when the gate requires
+it; never reuse approval against a different fingerprint. Plans stay single-level until
 `harness.plan/v2` implements `docs/PLAN_HIERARCHY.md`; do not create child
 plans or rely on `active_plans`. Change, exception, and closure approvals are
 optional unless higher risk requires them.

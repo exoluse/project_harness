@@ -14,6 +14,18 @@ Routine implementation uses the PLAN approval workflow. It requires a current PL
 
 PLAN records are mandatory once execution is prepared, while initial discovery may have none. PLAN approval is mandatory before execution. `CHANGE`, `EXCEPTION`, and `PROJECT_CLOSURE` approvals remain optional process records.
 
+The [development method](DEVELOPMENT_METHOD.md) defines stage readiness reviews
+and agile change cycles. A readiness review is not a new approval type and does
+not demand a separate owner decision at every waterfall stage. Consolidate
+routine scope and its requirement/design basis in the PLAN decision. Task
+refinement and sequence adjustments within agreed requirements and constraints
+need no separate business decision. The current runtime nevertheless requires
+a fresh PLAN confirmation for changed bound task structure; [the compatibility
+rule](DEVELOPMENT_METHOD.md#current-runtime-compatibility) applies until that
+implementation gap is addressed. An in-contract correction needs TASK authority and
+applicable re-verification. Final acceptance of an earlier subject does not
+approve a changed one. Additional contractual approvals remain applicable.
+
 Every approval subject is named by its path, never by its id, because the decision binds the exact file that was fingerprinted. PLAN approval subjects are canonical `PLAN-*.md` records. Approval fingerprints and snapshots bind the parsed front matter and declared dependencies; the explanatory Markdown body does not grant authority. Baseline snapshots preserve the complete file for review.
 
 ## Routine PLAN confirmation

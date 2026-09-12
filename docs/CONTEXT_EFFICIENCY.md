@@ -13,6 +13,8 @@ loaded only when that path requires them.
 | `NEEDS_INIT` | For read-only/status work, report it without initialization. If the requested work needs governed project records: `git status --short`, `init`, `next`, then `doctor` |
 | Discovery/specification | The supplied sources and only the records being authored |
 | Planning | Current requirement/feature, PLAN/TASK, preflight blockers, then `validate --strict` |
+| Stage readiness or iteration planning | Only the relevant stage contract in `DEVELOPMENT_METHOD.md` and that scope's inputs, deliverables, criteria and open items |
+| Requirement, PLAN or deliverable revision | `DEVELOPMENT_METHOD.md` change classification/cycle, the prior basis and affected references; `WORKFLOW.md` **Changing an approved plan** when approval becomes stale |
 | `NEEDS_PLAN_APPROVAL` | `WORKFLOW.md` section **The path as it runs today** and `RUNTIME_GAPS.md` item 4; prepare one decision package, and transcribe only an actual owner decision |
 | Execution/resume | Current PLAN/TASK, accepted handoff if any, `git status --short`, `validate --strict`, and `gate task` |
 | Concurrent writers | Current claims and `COLLABORATION.md`; skip claims for one writer |
@@ -75,7 +77,9 @@ An efficiency change is invalid if any answer below becomes no:
 - Does deliverable implementation still require the current fingerprint-bound
   PLAN decision, a listed TASK, applied decision, and passing task gate?
 - Are dirty user/unknown paths and active claims still preserved?
-- Does any PLAN/TASK scope change still force preflight and owner re-approval?
+- Are task refinement and ordering distinguished from changed agreements,
+  while every change that invalidates the current runtime fingerprint still
+  requires preflight and a new actual owner confirmation?
 - Are production deployment/data, destructive action, credential access, and
   final acceptance still cryptographically human-approved?
 - Are partial, failed, stale, ambiguous, and unrun verification kept from PASS?
@@ -83,6 +87,8 @@ An efficiency change is invalid if any answer below becomes no:
   snapshot, and preserved human-decision runtime?
 - Are policy documents still unable to grant runtime authority or weaken
   code-enforced gates?
+- Do stage contracts remain explicit and revisable, with changed requirements,
+  plans and deliverables propagated to current authority and verification?
 
 Use this checklist when changing `AGENTS.md`, adapters, prompts, or routing
 documents. Token reduction is accepted only after the checklist remains green.

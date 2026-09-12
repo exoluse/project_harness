@@ -4,6 +4,19 @@ Project Agent Harness is a repository-native planning, coordination, and evidenc
 
 ## Operating model
 
+The development policy combines **detailed waterfall stages with agile
+revision throughout the project**. Each stage has explicit inputs, deliverables,
+dependencies and exit criteria. Requirements, plans and deliverables may change
+at any stage through impact analysis, versioned baselines, renewed authority
+where needed, and re-verification. The user supplies prompts/documents and
+decisions; the agent maintains the trace and advances the authorized work.
+Plans organize the tasks needed to meet requirements. Their detail and order
+can evolve through planning or user priority, respecting technical dependencies.
+Refining work within agreed outcomes and constraints is distinct from changing
+those commitments; the current runtime still binds task structure to approvals.
+See [Development method](docs/DEVELOPMENT_METHOD.md) for stage contracts and
+change rules. This policy does not implement new runtime transitions.
+
 The project's policy lives in `.harness/project.json`:
 
 ```json

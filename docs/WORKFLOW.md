@@ -1,5 +1,27 @@
 # Workflow
 
+## Waterfall stages and agile changes
+
+Follow [Development method](DEVELOPMENT_METHOD.md) for stage inputs,
+deliverables, exit criteria, iteration and change propagation. The project has
+a detailed waterfall structure; requirements, plans and deliverables remain
+revisable throughout it. A revision returns the affected scope to the earliest
+stage it changes, updates downstream work, and restores the required approval
+and verification before that work proceeds. This is a process rule, not a new
+runtime lifecycle transition.
+
+Plans organize the tasks that satisfy requirements. The agent can refine task
+detail and execution order from dependency analysis or user priority within the
+agreed outcomes and constraints. Such refinement does not itself change the
+requirements or require another business decision. See [execution
+order](DEVELOPMENT_METHOD.md#requirements-tasks-and-execution-order); current
+runtime fingerprint limitations still apply.
+
+The user supplies prompts/documents and actual decisions; the agent performs
+the routine operations below. Stage readiness reviews do not add a separate
+owner approval unless the project's contract requires one. Current runtime
+gaps and the interim steps below remain applicable.
+
 ## Default path
 
 `PLAN_GATED` is the only execution mode. A project may start in discovery with `state.current_plan: null` and no PLAN/TASK records. When planning becomes concrete, create the PLAN and a TASK listed in it. Before implementation, a human project owner must approve the PLAN and `plan apply-decision` must materialize that current decision.
@@ -132,9 +154,22 @@ fails closed unless all of the following hold:
 
 ### Changing an approved plan
 
-Adding, removing, or re-scoping a TASK changes the plan's fingerprint and makes
-the current decision `STALE`; every task in the plan stops passing its gate.
-That is the designed behaviour. Re-approval is: author the change, `plan sync`,
+Apply the [change classification and propagation
+rules](DEVELOPMENT_METHOD.md#change-classification) to requirements, design,
+plans and deliverables at any stage. Preserve the prior baseline and trace the
+before/after request through every affected criterion, TASK, output and check.
+A revised artifact may invalidate evidence even when PLAN scope is unchanged;
+renew the applicable verification and acceptance rather than carrying forward
+an old PASS. An in-contract correction can use its existing authorized TASK;
+changed approved scope requires the decision sequence below.
+
+The current runtime makes the decision `STALE` when TASK membership or bound
+scope changes; every task in that PLAN stops passing its gate. This also affects
+ordinary task refinement, which policy distinguishes from changing the agreed
+requirements. That broader binding is a [runtime
+gap](RUNTIME_GAPS.md#8-plan-approval-also-binds-routine-task-refinement), not a
+reason to classify every added task as a new business requirement. Until the
+runtime is aligned with the policy, re-approval is: author the change, `plan sync`,
 `fingerprint`, owner decides, `approval confirm` with a new
 `--confirmation-id`, `plan apply-decision`.
 
@@ -193,7 +228,11 @@ PLAN and TASK are present once execution is prepared, providing sequencing, scop
 
 ## Lifecycle
 
-The lifecycle remains descriptive:
+The lifecycle remains descriptive. The [stage
+contract](DEVELOPMENT_METHOD.md#stage-contract) defines the detailed inputs,
+deliverables and readiness checks. Stages may be revisited through a change
+cycle; the sequence below does not freeze upstream requirements or imply that
+the runtime supports arbitrary backward transitions:
 
 ```text
 OPPORTUNITY -> DISCOVERY -> CONTRACTED -> SPECIFYING -> PLANNING

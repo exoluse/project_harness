@@ -1,6 +1,7 @@
 # Runtime Gaps on the Routine Path
 
-Status: **verified on 2026-09-06, fixes decided, not yet implemented.** The
+Status: **items 1-7 verified on 2026-09-06, fixes decided, not yet implemented;
+item 8 records the later task-refinement policy mismatch.** The
 routine path in `docs/WORKFLOW.md` was run end to end on a fresh copy of the
 harness with the CLI alone. It cannot be completed that way. The gaps below are
 what stopped it, where each one lives, the interim step taken until the fix
@@ -173,7 +174,33 @@ not terminal. `plan apply-decision` on a different plan than the active one
 marks the previous active plan `SUPERSEDED` when all its tasks are terminal and
 refuses otherwise, so the switch in `docs/WORKFLOW.md` becomes one command.
 
-## Why the self-tests did not catch this
+## 8. PLAN approval also binds routine task refinement
+
+**What happens.** The development policy distinguishes agreed requirements,
+acceptance criteria and constraints from the task breakdown used to satisfy
+them. Adding or splitting a task, or changing its order within those boundaries,
+does not itself call for a new business decision. The current runtime includes
+TASK membership and bound task fields in approval currentness, so such a
+refinement can still make the PLAN stale and stop all its tasks.
+
+**Where.** `core.subject_fingerprint` includes the PLAN approval subject and
+TASK dependency/scope fields; PLAN dependency snapshots and current-approval
+checks bind that structure to the owner's recorded decision.
+
+**Interim.** Classify and explain the change accurately. Keep the task trace
+complete and obey the existing fingerprint gate. If it requires confirmation,
+present the refined plan and its fingerprint once and record only the owner's
+actual decision. Do not disguise refinement as a new requirement, hide a task,
+or fabricate fresh provenance for an old decision.
+
+**Policy direction; runtime design pending.** Separate routine task refinement
+from changes to agreed outcomes, acceptance criteria, authorized capabilities,
+and material constraints. A future implementation must allow refinement only
+within those boundaries while preserving scope validation, dependency checks,
+evidence freshness and all high-risk approvals. No new schema, command or
+approval mechanism is implemented or authorized by this policy update.
+
+## Why the self-tests did not catch the original CLI gaps
 
 The runtime's tests pass (126 on 2026-09-06). Their fixtures write
 `state.json` directly with `active_plan` and `lifecycle_state` already set and
@@ -191,3 +218,5 @@ acceptance test for gaps 1 to 5 and 7.
 The fixes are one runtime change. They come before the plan hierarchy
 (`docs/PLAN_HIERARCHY.md`) and the record format change
 (`docs/RECORD_FORMAT.md`), because both build on the path these gaps break.
+Item 8 needs a separately scoped runtime design; it is not silently included
+in the previously decided fixes for items 1-5 and 7.

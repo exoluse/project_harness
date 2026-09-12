@@ -89,7 +89,22 @@ Evidence states exactly what it proves, method, environment, subject version, ex
 
 ## Plans, approvals, and baselines
 
+Baselines are versioned reference points for the waterfall stages, and may be
+revised through the [agile change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation).
+Preserve the prior basis, identify before/after scope and propagate changes to
+dependent requirements, design, criteria, PLAN/TASK and deliverables. Stage
+descriptions use existing records and explanatory prose; they introduce no new
+schema fields. Changed artifact bindings may invalidate evidence even when the
+PLAN decision remains current. Neither an old PASS nor acceptance of an older
+subject establishes completion of the revision.
+
 A plan's `approval_subject` includes its requirement, feature, and work-item references, workstreams, verification strategy, authorized/excluded actions, and invalidation triggers. `approval_dependencies` lists the exact canonical records snapshotted with the plan decision.
+
+Policy treats PLAN as the evolving task breakdown and order for agreed
+requirements. Current fingerprints also bind TASK membership and dependency
+details, so routine refinement can invalidate approval despite leaving the
+agreement unchanged. This data-model limitation remains in force; see
+[runtime compatibility](DEVELOPMENT_METHOD.md#current-runtime-compatibility).
 
 An `APR-*` stores its assurance and local record sequence plus authority/decision identity, approval type, subject ID/path/fingerprint, decision, actions/conditions, baseline snapshot manifest, and attestation. A `PROCEDURAL` PLAN attestation records the direct human confirmation and exact confirmed payload; it is required before any implementation but does not authenticate identity cryptographically. A `CRYPTOGRAPHIC` attestation embeds the signed request and is re-evaluated against the fixed external authority and protected ledger. The latest local decision for a type/subject controls repository gates without falling back when that latest record is invalid. Procedural records must also match the Git-common latest-decision marker and global procedural authority sequence; within a cryptographic authority, the highest valid protected sequence controls.
 
