@@ -25,11 +25,11 @@ add but not weaken it. The harness governs only its own repository.
    "apply these changes". Discussing runtime gaps does not expand that scope
    into runtime implementation or project initialization.
 
-At `NEEDS_PLAN_APPROVAL`, current `next` wrongly names the signed flow. Read
-only **The path as it runs today** in `docs/WORKFLOW.md` and item 4 of
-`docs/RUNTIME_GAPS.md`, then prepare one decision package. Only after the owner
-actually decides may the agent transcribe it with `approval confirm`. Read
-another gap only when its named failure occurs.
+At `NEEDS_PLAN_DETAIL`, complete the reported planning checks. At
+`NEEDS_PLAN_APPROVAL`, present the prepared scope only when execution is
+requested and transcribe the owner's actual prompt decision. At
+`NEEDS_DECISION_APPLIED`, apply that recorded decision without asking again.
+`SCOPE_COMPLETE` calls for a completion report, not an invented new TASK.
 
 ## Development method
 
@@ -70,7 +70,7 @@ Implement under current authority and re-verify changed outputs. Never carry
 old acceptance or verification forward to a changed version without checking
 its applicability.
 Continue unrelated work only while its own authority and gates remain current;
-today a changed PLAN can stop every TASK in that PLAN.
+legacy exact-fingerprint PLANs can still stop every TASK when their bound structure changes.
 
 The user supplies prompts/documents and actual decisions; the agent maintains
 the trace and drives the authorized steps. Read only the relevant stage or
@@ -92,10 +92,12 @@ of PLANs or TASKs. One decision may cover several plans and their work within
 the presented outcomes, acceptance criteria, capabilities, risk and delivery
 constraints. Creating, splitting or switching a plan within that scope is not
 itself another decision point. Do not infer coverage for unreviewed work.
-The current runtime still binds decisions to individual PLAN fingerprints;
-report that compatibility limit and keep its gates until explicit coverage is
-implemented. This policy does not allow replaying a decision onto another
-unreviewed fingerprint.
+Prepare explicit `harness.execution-scope/v1` bounds with `plan prepare-scope`
+before the owner decides. Covered single-level plans can share the decision
+using `new plan --scope-from` and `plan apply-decision --plan`. Gates check
+outcomes, paths, capabilities, risk and verification against the recorded
+scope. Legacy approvals retain their exact fingerprint semantics; they never
+silently become shared scope approvals.
 
 Ask again only when material scope, impact, assumptions, conditions or authority
 change beyond what was presented. Explain the new delta and pause affected work.
@@ -179,21 +181,22 @@ fails closed.
 
 Use `new plan` and `new task --plan`; author statements, criteria, references,
 scope, and verification; then `plan sync`. Never hand-edit derived
-`approval_dependencies`, `work_item_refs`, or `plan_id`. Use fingerprint-bound
-`approval confirm` for routine PLAN decisions. Only `plan apply-decision`
-activates one. Signed `approval prepare/record` is only for the five high-risk
+`approval_dependencies`, `work_item_refs`, or `plan_id`. Use `plan prepare-scope` to bind the reviewed execution scope, then
+`approval confirm` to record the actual prompt decision. Only
+`plan apply-decision` makes its covered PLAN executable. Signed `approval prepare/record` is only for the five high-risk
 boundaries.
 
-The current runtime makes a changed bound PLAN/TASK structure stale even when
-it only refines unchanged requirements. Prepare the exact fingerprint before
-the change decision so the same response can satisfy the gate. If subsequent
-routine refinement triggers another fingerprint requirement, explain this as a
-runtime mismatch, not a new business decision or revoked prior approval. Do not
-bypass the gate or invent confirmation of an unseen fingerprint; follow
-`docs/DEVELOPMENT_METHOD.md` **Current runtime compatibility**. Plans stay single-level until
-`harness.plan/v2` implements `docs/PLAN_HIERARCHY.md`; do not create child
-plans or rely on `active_plans`. Change, exception, and closure approvals are
-optional unless higher risk requires them.
+For scoped decisions, task splitting and unordered path/capability presentation
+within the recorded bounds need no new owner decision. Material changes require
+one reviewed delta and its applicable decision; apply it without resetting
+project progress. Preserve old decisions as verified history. Legacy approvals
+remain exact-bound; conversion to a scope contract must be explicit before a
+new owner decision and must not rewrite prior approval hashes.
+Plans remain single-level; do not create child plans or invent `active_plans`.
+Several single-level plans may execute under the same recorded scope, with
+separate decision application and TASK gates but no repeated owner question.
+Change, exception and closure records are optional unless higher risk requires
+them. A CHANGE covered by the reviewed scope may reference the same PLAN decision.
 
 Keep needed source-to-requirement trace without making absent optional records
 block work. Create evidence for governed verification, completion, acceptance,

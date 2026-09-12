@@ -7,6 +7,7 @@
     "schema": {"const": "harness.work_item/v1"},
     "id": {"type": "string", "pattern": "^TASK-[0-9]{4,}$"},
     "kind": {"const": "work_item"},
+    "fingerprint_schema": {"const": "harness.task-scope/v1"},
     "status": {"enum": ["DRAFT", "READY", "APPROVED", "RUNNING", "SUBMITTED", "BLOCKED", "FAILED", "ABORTED", "STALE", "REVIEWED", "INTEGRATED", "DONE", "CLOSED"]},
     "plan_id": {"type": "string", "pattern": "^PLAN-"},
     "feature_refs": {"type": "array", "items": {"type": "string", "pattern": "^FUNC-"}},

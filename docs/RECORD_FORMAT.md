@@ -46,16 +46,21 @@ explanation that the front matter cannot carry.
    evidence, approvals, results, reviews, events, recoveries, and state write
    the front matter and a one-line note that the canonical fields are above.
    A person may add prose afterwards; mutations preserve it.
-4. **Fingerprints and hashes are unchanged.** Subject fingerprints, procedural
-   payload digests, and provenance digests are computed over parsed,
-   canonicalized data, not over file bytes. A record's fingerprint is the same
-   whether it is stored as `.md` or `.json`.
-5. **Subject paths change extension.** Approval subjects are canonical paths.
+4. **Preserve meaning and existing bindings.** Rendering the same parsed record
+   as Markdown must preserve its governed values. Approval payloads also bind
+   paths, and PLAN fingerprints include dependency paths, so a format migration
+   must not assume every existing digest remains current. Preserve the original
+   decision payloads, signatures, snapshots and hashes; implement and test a
+   versioned compatibility contract before changing their path resolution.
+5. **A format change is not a new owner decision.** Approval subjects are canonical paths.
    After migration a feature is `.harness/features/FUNC-0003.md` and a change is
    `.harness/changes/CR-0004.md`; the project file is `.harness/project.md`. An
-   existing approval whose `subject_path` still ends in `.json` is non-current
-   in the migrated tree and fails closed until the owner re-confirms it against
-   the `.md` subject. That is the intended behaviour, not a defect.
+   extension change alone must not require the owner to approve the same scope
+   again. Migration must verify the old-to-new subject and dependency mapping
+   without widening authority or rewriting signed decisions. If compatibility
+   cannot be established, report a migration blocker and leave the affected
+   records in their supported format. Current runtime gates remain in force;
+   this future policy does not authorize redirecting approval paths today.
 6. **Legacy JSON stays readable.** The loader already reads a `.json` record
    when the `.md` is absent. A tree with mixed formats validates; a record
    present in both formats is an error. New records are always `.md`.
@@ -68,11 +73,14 @@ explanation that the front matter cannot carry.
 
 ## Migration
 
-`records migrate` converts a tree in place: each `.json` record is parsed,
-validated against its schema, rendered as `.md` with an empty body, written
-atomically, and the `.json` removed only after the `.md` is readable. Baselines
-are not touched. Approvals whose subject path changed are listed in the output
-so the owner knows what to re-confirm. `--dry-run` reports without writing.
+The future `records migrate` command first validates the proposed conversion
+and approval/dependency compatibility for the affected records. It reports the
+path mapping, preserved decisions and any blockers in `--dry-run`. Only a
+compatible conversion is applied atomically: records are rendered as Markdown
+with an empty body, and source JSON is removed only after record readability
+and approval applicability are verified. Failure leaves the original records
+usable. Baselines and signed payloads are not rewritten. A format-only migration
+does not generate a list of new owner approvals.
 
 A copied harness that has never run `init` has nothing to migrate; `init` on
 `harness.project/v2` creates `project.md` and `state.md` directly.
@@ -84,13 +92,13 @@ A copied harness that has never run `init` has nothing to migrate; `init` on
 | `constants.py` | `RECORD_EXTENSIONS` maps every kind to `.md`; project and state file names become `project.md`, `state.md` |
 | `core.py` | `load_json` and the record writer already branch on extension; project/state readers switch to the record path helper |
 | `scaffold.py` | `init` writes `project.md`, `state.md`, and the widened `.gitattributes`; `reset` removes the `.md` identity files |
-| `approvals.py` | canonical subject path uses the record extension; baseline copy unchanged; request files remain JSON |
+| `approvals.py` | versioned compatibility for migrated subject/dependency paths; preserve existing decision payloads and baselines; request files remain JSON |
 | `record_documents.py` | empty-body rendering for machine-written kinds |
 | `mutation_service.py`, `evidence_mutations.py`, `lifecycle_mutations.py` | write through the Markdown renderer for every kind |
 | `guidance.py`, `reporting.py`, `doctor` | name `project.md` and `state.md` |
-| new `records migrate` command | in-place conversion with dry run and re-confirmation list |
+| new `records migrate` command | atomic conversion with dry run, verified path mapping, preserved decisions and explicit blockers |
 | schemas | `harness.project/v2`, `harness.state/v2` constants; record schemas unchanged |
-| tests | every kind round-trips through `.md`; mixed-format tree; duplicate-format error; migration; subject path re-confirmation |
+| tests | every kind round-trips through `.md`; mixed-format tree; duplicate-format error; format-only migration preserves approval; changed scope is not silently authorized; failed migration preserves original records |
 
 ## What does not change
 

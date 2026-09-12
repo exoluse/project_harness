@@ -40,7 +40,8 @@ New projects use the first value in each pair. Missing fields retain legacy beha
 - The runtime and the record schemas it validates against live in `.harness/tooling/project_harness/`; the project tree holds no second copy.
 - Human-authored PLAN/TASK records use Markdown with strict YAML-style front matter; machine state and audit records use JSON. `docs/RECORD_FORMAT.md` specifies the decided move of every record to Markdown.
 - `state.current_plan` may be null during initial discovery. It becomes mandatory execution context before implementation; every TASK points to that PLAN and is listed by it.
-- `state.active_plan` and `active_decision` materialize the current human PLAN decision and are required before routine implementation. Today no command sets `active_plan`; `docs/RUNTIME_GAPS.md` item 1 records the interim step and the decided fix.
+- `plan apply-decision` atomically materializes the owner decision, plan status, project focus and event. Explicit execution-scope coverage allows several single-level plans to retain applied authority; `active_plan` is the current focus. Legacy plans retain their exact-bound active-plan checks.
+- `decision_scope.py` defines the versioned reviewed contract and checks task containment. The owner decides through a prompt; this module validates scope, paths, capabilities, risk and verification without deciding for the owner. Historical approval integrity is validated separately from current applicability.
 - Claims, mutexes, and mailboxes live under the Git common runtime so linked worktrees share concurrency state.
 - Protected approval configuration, allowed signers, and decision ledgers live outside the repository.
 - `HANDOFF.md` and reports are derived views, not authority.

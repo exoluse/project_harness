@@ -355,6 +355,13 @@ def plan_preflight_gate(
     subject = plan.get("approval_subject", {})
     blockers: list[str] = []
     warnings: list[str] = []
+    from .decision_scope import coverage_blockers, plan_scope
+    try:
+        declared_scope = plan_scope(plan)
+        if declared_scope:
+            blockers.extend(coverage_blockers(root, plan, declared_scope))
+    except (HarnessError, KeyError, TypeError) as exc:
+        blockers.append(f"invalid execution scope: {exc}")
     validation_errors = _validation_blockers(
         root, relevant_ids={plan_id}, context=context
     )
@@ -711,7 +718,8 @@ def task_start_gate(
             if task_id not in plan_subject.get("work_item_refs", []):
                 blockers.append(f"task {task_id} is outside the approved plan subject")
             state = load_json(root / HARNESS_DIR / "state.json")
-            if state.get("active_plan") != plan_id:
+            scoped = "decision_scope" in plan_subject
+            if not scoped and state.get("active_plan") != plan_id:
                 blockers.append(
                     f"task plan {plan_id} is not the active plan {state.get('active_plan')}"
                 )
@@ -733,7 +741,7 @@ def task_start_gate(
                     f"plan status {plan.get('status')} is not executable"
                 )
             approval, reason = find_current_approval(
-                root, subject_id=plan_id, approval_type="PLAN"
+                root, subject_id=plan_id, approval_type="PLAN", task_id=task_id
             )
             if approval is None:
                 blockers.append(reason)
@@ -742,7 +750,7 @@ def task_start_gate(
                     blockers.append(
                         "plan has not materialized the latest approval decision"
                     )
-                if state.get("active_decision") != approval.get("id"):
+                if not scoped and state.get("active_decision") != approval.get("id"):
                     blockers.append(
                         "project state has not materialized the latest approval decision"
                     )

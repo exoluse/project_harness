@@ -344,6 +344,7 @@ def decision_package(root: Path, plan_id: str) -> dict[str, Any]:
     return {
         "plan_id": plan_id,
         "plan_version": plan.get("version"),
+        "execution_scope": subject.get("decision_scope"),
         "plan_fingerprint": subject_fingerprint_for_path(
             record_path(root, "plan", plan_id)
         ),

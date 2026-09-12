@@ -7,14 +7,13 @@ from .approvals import approval_status, decision_mutex, find_current_approval
 from .constants import APPROVED_DECISIONS, HARNESS_DIR
 from .core import (
     HarnessError,
-    atomic_write_json,
     load_json,
-    record_event,
     record_path,
     subject_fingerprint_for_path,
     utc_now,
 )
 from .gates import plan_preflight_gate
+from .mutation_service import AtomicMutationService
 
 
 PROGRESSED_PLAN_STATUSES = {
@@ -44,6 +43,11 @@ RESUMABLE_LIFECYCLE_STATES = {
     "ON_HOLD",
 }
 
+PRE_DECISION_LIFECYCLE_STATES = {
+    "DISCOVERY", "CONTRACTED", "SPECIFYING", "PLANNING", "DECISION_READY",
+}
+TERMINAL_TASK_STATUSES = {"INTEGRATED", "DONE", "CLOSED", "ABORTED"}
+
 
 def _plan_status_materializes_decision(status: Any, decision: str) -> bool:
     return status == decision or status in PROGRESSED_PLAN_STATUSES
@@ -70,12 +74,12 @@ def _replaces_superseded_active_decision(
         previous.get("approval_type") == "PLAN"
         and previous.get("subject_id") == plan_id
         and previous.get("decision") in APPROVED_DECISIONS
-        and previous_status == "SUPERSEDED"
+        and previous_status in {"STALE", "SUPERSEDED"}
     )
 
 
 def _application_events(
-    root: Path, approval_id: str
+    root: Path, approval_id: str, plan_id: str | None = None
 ) -> list[tuple[Path, dict[str, Any]]]:
     matches: list[tuple[Path, dict[str, Any]]] = []
     for path in sorted((root / HARNESS_DIR / "events").glob("EVT-*.json")):
@@ -85,6 +89,7 @@ def _application_events(
             value.get("event_type") == "PLAN_DECISION_APPLIED"
             and isinstance(payload, dict)
             and payload.get("approval_id") == approval_id
+            and (plan_id is None or payload.get("plan_id") == plan_id)
         ):
             matches.append((path, value))
     return matches
@@ -119,7 +124,7 @@ def _validate_application_event(
         )
 
 
-def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
+def apply_plan_decision(root: Path, *, approval_id: str, plan_id: str | None = None) -> dict[str, Any]:
     """Materialize the latest current PLAN decision into PLAN and STATE once."""
 
     with decision_mutex(root, operation="applying a plan decision"):
@@ -135,13 +140,28 @@ def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
 
         state_path = root / HARNESS_DIR / "state.json"
         state = load_json(state_path)
-        plan_id = state.get("active_plan")
+        plan_id = plan_id or approval.get("subject_id")
         if not isinstance(plan_id, str) or not plan_id:
-            raise HarnessError("Project state has no active plan")
-        if approval.get("subject_id") != plan_id:
-            raise HarnessError(
-                f"Approval targets {approval.get('subject_id')}, not active plan {plan_id}"
+            raise HarnessError("PLAN decision has no subject")
+        previous_plan_id = state.get("active_plan")
+        retired_plan = None
+        from .decision_scope import plan_scope, scope_fingerprint, snapshot_subject
+        approved_scope = plan_scope(snapshot_subject(root, approval))
+        if previous_plan_id and previous_plan_id != plan_id:
+            previous_path = record_path(root, "plan", previous_plan_id)
+            previous_plan = load_json(previous_path)
+            shared_scope = approved_scope is not None and plan_scope(previous_plan) is not None and (
+                scope_fingerprint(plan_scope(previous_plan)) == scope_fingerprint(approved_scope)
             )
+            task_ids = previous_plan.get("approval_subject", {}).get("work_item_refs", [])
+            unfinished = [task_id for task_id in task_ids if load_json(
+                record_path(root, "work_item", task_id)
+            ).get("status") not in TERMINAL_TASK_STATUSES]
+            if unfinished and not shared_scope and previous_plan.get("status") not in {"CLOSED", "SUPERSEDED", "STALE"}:
+                raise HarnessError(f"Different live plan {previous_plan_id} has unfinished tasks")
+            if not shared_scope and previous_plan.get("status") not in {"CLOSED", "SUPERSEDED"}:
+                previous_plan["status"] = "SUPERSEDED"
+                retired_plan = (previous_path, previous_plan)
 
         status, reason = approval_status(root, approval)
         if status != "CURRENT":
@@ -171,7 +191,7 @@ def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
                 "PLAN preflight is not ready: " + "; ".join(preflight.blockers)
             )
 
-        events = _application_events(root, approval_id)
+        events = _application_events(root, approval_id, plan_id)
         if len(events) > 1:
             raise HarnessError(
                 f"Approval {approval_id} has duplicate PLAN_DECISION_APPLIED events"
@@ -196,14 +216,14 @@ def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
         if (
             not events
             and not same_decision
-            and lifecycle_state != "DECISION_READY"
+            and lifecycle_state not in PRE_DECISION_LIFECYCLE_STATES
             and not (
-                replaces_previous
+                (replaces_previous or previous_plan_id != plan_id)
                 and lifecycle_state in RESUMABLE_LIFECYCLE_STATES
             )
         ):
             raise HarnessError(
-                "A new PLAN decision can be applied only from DECISION_READY; "
+                "A new PLAN decision cannot be applied from this lifecycle state; "
                 f"current lifecycle state is {lifecycle_state}"
             )
 
@@ -241,6 +261,7 @@ def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
             if (
                 plan.get("decision_ref") == approval_id
                 and state.get("active_decision") == approval_id
+                and state.get("active_plan") == plan_id
                 and plan.get("decision_applied_at") == applied_at
                 and _plan_status_materializes_decision(
                     plan.get("status"), str(approval.get("decision"))
@@ -262,7 +283,9 @@ def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
         target_plan_status = str(approval.get("decision"))
         before_plan_status = plan.get("status")
         before_lifecycle_state = state.get("lifecycle_state")
-        preserve_progress = bool(events) or same_decision or replaces_previous
+        preserve_progress = bool(events) or same_decision or replaces_previous or (
+            previous_plan_id != plan_id and lifecycle_state in RESUMABLE_LIFECYCLE_STATES
+        )
         applied_plan_status = (
             str(before_plan_status)
             if preserve_progress
@@ -282,21 +305,25 @@ def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
         plan["decision_applied_at"] = applied_at
         state["lifecycle_state"] = applied_lifecycle_state
         state["active_decision"] = approval_id
+        state["current_plan"] = plan_id
+        state["active_plan"] = plan_id
         state["updated_at"] = applied_at
 
         plan_changed = load_json(plan_path) != plan
         state_changed = load_json(state_path) != state
-        if plan_changed:
-            atomic_write_json(plan_path, plan)
-        if state_changed:
-            atomic_write_json(state_path, state)
-
         event_path = events[0][0] if events else None
+        writes = {}
+        if plan_changed:
+            writes[plan_path.relative_to(root).as_posix()] = plan
+        if state_changed:
+            writes[state_path.relative_to(root).as_posix()] = state
+        if retired_plan:
+            writes[retired_plan[0].relative_to(root).as_posix()] = retired_plan[1]
         if event_path is None:
-            event_path = record_event(
-                root,
-                "PLAN_DECISION_APPLIED",
-                {
+            transaction = AtomicMutationService(root).apply(
+                writes=writes,
+                event_type="PLAN_DECISION_APPLIED",
+                event_payload={
                     "approval_id": approval_id,
                     "decision_id": approval.get("decision_id"),
                     "plan_id": plan_id,
@@ -308,7 +335,14 @@ def apply_plan_decision(root: Path, *, approval_id: str) -> dict[str, Any]:
                     "subject_fingerprint": approval.get("subject_fingerprint"),
                     "assurance": approval.get("assurance", "CRYPTOGRAPHIC"),
                     "applied_at": applied_at,
+                    "previous_plan_id": previous_plan_id,
                 },
+            )
+            event_path = root / HARNESS_DIR / "events" / f"{transaction['event_id']}.json"
+        elif writes:
+            AtomicMutationService(root).apply(
+                writes=writes, event_type="PLAN_DECISION_REPAIRED",
+                event_payload={"plan_id": plan_id, "approval_id": approval_id},
             )
 
         return {

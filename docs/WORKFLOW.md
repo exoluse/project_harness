@@ -4,7 +4,7 @@ The start-to-finish sequence is: **start -> requirements -> design -> planning
 complete -> execution ready -> implementation -> verification -> customer
 acceptance -> delivery -> handover and closure**. The
 [HTML guide](HARNESS_POLICY_REPORT.html) shows only this progression; the
-sections below describe the operating procedures and current CLI limitations.
+sections below describe the operating procedures and compatibility rules.
 
 ## Waterfall stages and agile changes
 
@@ -20,13 +20,13 @@ Plans organize the tasks that satisfy requirements. The agent can refine task
 detail and execution order from dependency analysis or user priority within the
 agreed outcomes and constraints. Such refinement does not itself change the
 requirements or require another business decision. See [execution
-order](DEVELOPMENT_METHOD.md#requirements-tasks-and-execution-order); current
-runtime fingerprint limitations still apply.
+order](DEVELOPMENT_METHOD.md#requirements-tasks-and-execution-order). Explicit
+execution-scope coverage supports refinement; legacy hashes remain unchanged.
 
 The user supplies prompts/documents and actual decisions; the agent performs
 the routine operations below. Stage readiness reviews do not add a separate
-owner approval unless the project's contract requires one. Current runtime
-gaps and the interim steps below remain applicable.
+owner approval unless the project's contract requires one. The runtime records
+that decision and checks scope coverage; it never approves on the owner's behalf.
 
 The [requested stage boundary](DEVELOPMENT_METHOD.md#stage-by-stage-or-continuous-execution)
 controls how far to proceed. Finish and report the specified stage without
@@ -35,35 +35,28 @@ across ready stages within the existing authority and decision boundaries.
 
 ## Default path
 
-`PLAN_GATED` is the only execution mode. A project may start in discovery with `state.current_plan: null` and no PLAN/TASK records. When planning becomes concrete, create the PLAN and a TASK listed in it. Before implementation, a human project owner must approve the PLAN and `plan apply-decision` must materialize that current decision.
+`PLAN_GATED` remains the execution mode. Discovery starts without PLAN/TASK
+placeholders. For requested execution, author the work, prepare explicit scope,
+record the owner's prompt decision, apply it, and pass the selected TASK gate.
 
 ```text
-request -> discovery/specification -> identify/update PLAN -> create/select TASK -> human approval
--> apply decision -> inspect worktree -> implement -> test -> commit -> fetch/resolve -> push
+request -> discovery/specification -> authored PLAN/TASK -> planning checks complete
+        -> owner prompt decision -> apply decision -> TASK gate -> execution ready
 ```
 
-`harness.py next` reports which of those steps the project is on and the command
-that performs it, except at the approval step, where it names the signed flow
-instead of `approval confirm` until [Runtime gaps](RUNTIME_GAPS.md) item 4 is
-fixed; follow the sequence below there. `status` describes the project; `next`
-says what to do about it. The commands on this path — `new plan`,
-`new task --plan`, `approval confirm` for the routine owner decision or
-`approval prepare`/`approval record` for a signed one, `plan apply-decision`,
-`transition` — maintain the PLAN/TASK link and the derived fields
-(`approval_dependencies`, `work_item_refs`, `plan_id`) themselves. The content of a plan is authored: statements, criteria, scope, and
-verification are written into the record, by hand where the CLI has no option
-for them yet. Approval subjects are paths: the decision binds the exact file it
-fingerprints. See [Human approval operations](APPROVALS.md).
+Use `next` to distinguish missing planning detail, a needed owner decision,
+a recorded decision awaiting application, task readiness and scope completion.
+The agent maintains derived links with `new task --plan` and `plan sync`.
+Scope authoring and all other commands are performed by the agent from the
+user's prompt; they never decide on the user's behalf.
 
 ### Context loading rule
 
 On a new agent session, read `AGENTS.md` once and run `next`. Load this document
-only when the reported state needs a sequence it does not yet express. The
+only when the reported state needs additional sequence detail. The
 reported command remains bounded by the user's request; `NEEDS_INIT` does not
-authorize initialization during a read-only/status request. At
-`NEEDS_PLAN_APPROVAL`, the required portion is **The path as it runs today**;
-read `RUNTIME_GAPS.md` item 4 for the reason, not the entire gaps document, and
-never record approval before the owner actually decides.
+authorize initialization during a read-only/status request. Follow the reported state; load **The path as it runs today** only when
+sequence detail is needed. Never record approval before the owner actually decides.
 
 Run `doctor` after initialization, when environment or authority readiness may
 have changed, and before a high-risk operation. Run `validate --strict` before
@@ -105,8 +98,8 @@ what binds.
 | Intake | "Register the RFP and the meeting notes" | `init` if needed; `new source`, `new artifact`; author authority and interpretation status |
 | Specification | "Turn these into requirements and features with completion criteria" | `new requirement`, `new feature`; author statements, criteria, profiles, bindings; `new open-item` for every unknown |
 | Planning | "Plan the agreed scope" | `new plan`; `new task --plan --feature --criterion --capability` per change; author scope and verification; `plan sync`; `validate --strict`; `report decision-package`; retain its fingerprint for the unchanged proposal |
-| Decision | Owner: "Proceed with this scope" | Record that actual prompt response with `approval confirm`, using the prepared proposal's fingerprint, the chat as channel, the message as reference and the plan's authorized actions; the interim steps below; `plan apply-decision` |
-| Execution | "Start TASK-0001" | `transition` to `READY`, `gate task`, implement, `check_repo.py fast`, commit explicit paths, fetch, resolve, push |
+| Decision | Owner: "Proceed with this scope" | Record that actual prompt response with `approval confirm`, using the prepared proposal's fingerprint, the chat as channel, the message as reference and the plan's authorized actions; `plan apply-decision` |
+| Execution | "Start TASK-0001" | `transition` to `READY`, `gate task`, implement, `check_repo.py full`, commit explicit paths, fetch, resolve, push; recheck affected work if integration changes it |
 | Change | "The customer wants the banner changed" | Assess feasibility and impact; author the necessary source/change and PLAN/TASK scope; `plan sync`, preflight, `validate --strict`, `fingerprint`; ask once whether to proceed; record that response with `approval confirm`, apply it and continue through the TASK gate |
 | Verification | "Record the test results" | run the checks, `evidence record`, `gate feature`; `result submit` and `review record` when a release or audit needs them |
 | Acceptance, deployment | "Prepare the acceptance request", "Prepare the production deploy" | `approval prepare`, then stop: a human signs outside the agent; afterwards `approval record`, `approval check`, `gate task` |
@@ -122,42 +115,38 @@ one from repository text or chat history.
 
 ### The path as it runs today
 
-This is the sequence that was verified on 2026-09-06 against the current
-runtime. Steps marked **interim** exist because of a runtime gap recorded in
-[Runtime gaps](RUNTIME_GAPS.md). The agent performs them when the user's
-request calls for the step they precede; they set a pointer or a descriptive
-lifecycle value and grant nothing, because `plan apply-decision` re-verifies
-the approval, the fingerprint, and the preflight regardless. They disappear
-when the gap is fixed.
-
-1. `init`, then `next`. The project is in `DISCOVERY`.
-2. Discovery records as the work needs them: `new source`, `new requirement`,
-   `new feature`, `new open-item`. Author their content: a requirement's
-   `statement` and `source_refs`; a feature's `requirement_refs` and at least
-   one completion criterion with `id`, `statement`, `verification_plan`,
-   `required_profiles`, and `required_bindings`.
-3. `new plan PLAN-0001 "<title>"`, then `new task TASK-0001 "<title>" --plan
-   PLAN-0001 --feature FUNC-0001 --criterion AC-FUNC-0001-001 --capability
-   LOCAL_IMPLEMENTATION`.
-4. Author the rest of the scope. In the plan's front matter set
-   `requirement_refs`, `feature_refs`, and a non-empty `verification_strategy`.
-   In the task's front matter set `write_scope` and `verification`. Then
-   `plan sync PLAN-0001` so `approval_dependencies` covers every reference.
-5. `validate --strict`, then `fingerprint .harness/plans/PLAN-0001.md`.
-6. The owner reviews that concrete proposal and decides by prompt. The agent records it with
-   `approval confirm`, passing `--confirm-fingerprint`, a unique
-   `--confirmation-id`, the channel and reference, `--acknowledge-procedural`,
-   and one `--authorized-action` for every capability the plan's tasks use.
-   The confirmation fails closed on any preflight blocker (see below).
-7. **Interim.** Set `current_plan` and `active_plan` to `PLAN-0001` in
-   `.harness/state.json`.
-8. **Interim.** Move the lifecycle to `DECISION_READY`: `transition --kind
-   project --id PROJECT --to SPECIFYING`, then `--to PLANNING`, then
-   `--to DECISION_READY`.
-9. `plan apply-decision --approval APR-0001`. The project is `APPROVED`.
-10. `transition --kind work_item --id TASK-0001 --to READY`, then
-    `gate task TASK-0001`. `next` reports `READY`.
-11. Implement, `check_repo.py fast`, commit explicit paths, fetch, resolve, push.
+1. `init`, then `doctor` and `next` when starting a project. Policy-only edits
+   and read-only reviews do not initialize a project.
+2. Register necessary sources and author requirements/features. CLI options
+   include `new requirement --statement --source --acceptance-criterion`, and
+   `new feature --requirement --criterion "<id>|<statement>"
+   --verification-command --profile --binding`.
+3. `new plan --requirement --feature --verification-command`, then
+   `new task --plan --feature --criterion --capability --write-scope
+   --verification --risk`. Reference actual ids and author reviewable content.
+   List options are repeatable. PLAN and TASK remain Markdown records.
+4. `plan sync PLAN-0001`, then
+   `plan prepare-scope PLAN-0001 --write-boundary <path> --max-risk <risk>`.
+   Include a reviewed change record using `--change CR-0001` when needed.
+   Scope preparation does not record or apply approval.
+5. `validate --strict`, then `report decision-package PLAN-0001`. A planning-only
+   request ends with this plan, checks and open items. Failed checks mean the
+   plan needs revision; do not request approval to compensate for missing detail.
+6. When execution is requested, the owner decides on the prepared scope by
+   prompt. Record that actual message with `approval confirm`, passing its
+   fingerprint, approver, basis, unique confirmation id, channel/reference,
+   authorized actions and procedural acknowledgement. See [Approvals](APPROVALS.md).
+7. `plan apply-decision --approval APR-0001`. The command selects the plan and
+   prepares lifecycle state atomically; no manual state edits are needed.
+8. `transition --kind work_item --id TASK-0001 --to READY --agent <agent>
+   --reason "prepared"`, then `gate task TASK-0001`.
+9. Implement within scope, verify and record required evidence. Before release,
+   handoff, result or push, run `check_repo.py full`. Commit explicit paths,
+   fetch, preserve both sides and recheck affected work if integration changes it.
+10. Once its tasks are terminal, retire the plan with
+    `transition --kind plan --id PLAN-0001 --to CLOSED --agent <agent>
+    --reason "scope complete"`. Report the requested result; task/plan closure
+    does not imply customer acceptance or project closure.
 
 ### What the preflight checks
 
@@ -189,73 +178,42 @@ fails closed unless all of the following hold:
 
 ### Changing an approved plan
 
-Assess feasibility and impact and prepare the necessary revised PLAN/TASK and
-verification before asking the owner whether to proceed. Present one concrete
-proposal with scope, impact, uncertainties, conditions and the current
-fingerprint. The explicit proceed response is the approval of that change and
-is recorded as the PLAN decision. Do not ask for another PLAN or TASK approval
-after that response. Ask again for material new impact or changed scope, not
-merely for recording, task refinement, ordering or described verification.
-See [when to ask again](DEVELOPMENT_METHOD.md#when-to-ask-again).
+Assess feasibility and impact. Within a prepared execution scope, add or split
+tasks and adjust feasible order using the same recorded owner decision. Keep
+paths, capabilities, risk and verification inside the bounds; `plan sync`
+maintains known derived references. Do not prepare a new scope merely to add
+another task to an already covered outcome.
 
-Apply the [change classification and propagation
-rules](DEVELOPMENT_METHOD.md#change-classification) to requirements, design,
-plans and deliverables at any stage. Preserve the prior baseline and trace the
-before/after request through every affected criterion, TASK, output and check.
-A revised artifact may invalidate evidence even when PLAN scope is unchanged;
-renew the applicable verification and acceptance rather than carrying forward
-an old PASS. An in-contract correction can use its existing authorized TASK;
-changed approved scope requires the decision sequence below.
+For material new scope or impact, author the delta, prepare its scope, run strict
+validation/preflight and obtain one prompt decision. Record/apply it; execution
+resumes without resetting development progress. `--change` lets the reviewed
+CHANGE share that decision. Unreviewed changes cannot borrow a PLAN decision.
 
-The current runtime makes the decision `STALE` when TASK membership or bound
-scope changes; every task in that PLAN stops passing its gate. This also affects
-ordinary task refinement, which policy distinguishes from changing the agreed
-requirements. That broader binding is a [runtime
-gap](RUNTIME_GAPS.md#8-plan-approval-also-binds-routine-task-refinement), not a
-reason to classify every added task as a new business requirement. Until the
-runtime is aligned with the policy, re-approval is: author the change, `plan sync`,
-preflight, `validate --strict`, `fingerprint`, owner decides once on the prepared
-feasibility/impact proposal, `approval confirm` with a new
-`--confirmation-id`, `plan apply-decision`.
+Preserve old approvals and evidence. Strict validation checks historical
+integrity; TASK gates check current applicability. Changed outputs require
+relevant re-verification. Neither a record update nor a newer decision relabels
+old work as unapproved or unverified.
 
-Here re-approval means authorization for the revised subject, using that same
-proceed decision. It does not erase the original version's approval or make
-completed work unapproved. A repeated fingerprint confirmation after routine
-refinement must be reported as the runtime compatibility limitation, not as a
-second normal change-approval stage. Do not bypass the gate or invent consent.
-
-**Interim.** Until [Runtime gaps](RUNTIME_GAPS.md) item 3 is fixed,
-`apply-decision` refuses a new decision from `APPROVED` or `BUILDING`. Set
-`"lifecycle_state": "DECISION_READY"` in `.harness/state.json` before applying,
-then transition the project back to `BUILDING` if work was under way.
+Legacy plans without an execution-scope contract keep exact fingerprint binding.
+Their conversion requires an explicitly prepared scope and an actual decision;
+never silently widen or rewrite an old approval.
 
 ### Switching to the next plan
 
-With single-level plans one PLAN is active at a time, so moving from sprint 1
-to sprint 2 is a switch, not an addition. Verified on 2026-09-06:
+For work inside an existing scope, create a single-level plan with
+`new plan PLAN-0002 "<title>" --scope-from PLAN-0001`, author its tasks, run the
+planning checks, and use `plan apply-decision --approval APR-0001 --plan PLAN-0002`.
+It records application to that plan without another owner decision. Each covered
+plan's tasks remain governed by that plan's current decision and gates.
 
-1. Finish the current plan first: every TASK in it `DONE` or otherwise
-   terminal, its evidence recorded. A plan left half-done keeps its tasks and
-   its decision in the tree; they become non-executable the moment the plan
-   stops being active, and any later edit to that plan leaves a permanent
-   `STALE_APPROVAL` warning that `validate --strict` reports.
-2. Create and author the next PLAN and its TASKs, `plan sync`, `validate
-   --strict`, `fingerprint`; the owner decides; `approval confirm`.
-3. **Interim.** Set `current_plan` and `active_plan` to the new plan and
-   `"lifecycle_state": "DECISION_READY"` in `.harness/state.json`.
-   `apply-decision` refuses an approval whose subject is not the active plan,
-   and no command changes the active plan ([Runtime gaps](RUNTIME_GAPS.md)
-   items 1 and 3).
-4. `plan apply-decision --approval <new APR>`. The project is `APPROVED`; the
-   new plan's tasks pass `gate task` once `READY`, and the previous plan's
-   tasks fail with "not the active plan".
-5. The previous plan keeps the status it had; no command retires a plan
-   ([Runtime gaps](RUNTIME_GAPS.md) item 7). Record its completion in its
-   Markdown body and in the evidence of its features until that command
-   exists.
+For a different scope, finish or explicitly supersede the old live plan before
+applying the new decision. The command refuses to discard unfinished unrelated
+work; a completed prior active plan is retired as part of the switch. Explicit
+`transition --kind plan --to CLOSED|SUPERSEDED` is also available. CLOSED refuses
+unfinished tasks; SUPERSEDED records an intentional abandonment, not completion.
 
-Under the plan hierarchy, sprints are leaves under one root and several are
-active at once, so this switch disappears.
+Plans stay single-level. The category tree in [Plan hierarchy](PLAN_HIERARCHY.md)
+is a separate future design, not a prerequisite for sharing one decision.
 
 ## When the harness becomes strict
 
@@ -353,13 +311,18 @@ The sequence, with the smallest records that keep the trace:
    fix to the feature it repairs; when no feature covers the broken behaviour,
    add one whose single criterion states the behaviour the fix restores. Do not
    satisfy the trace with an unrelated feature.
-3. `fingerprint` the plan and show it to the owner with a one-line summary of
-   the change. The owner's "approved" in chat is the decision; transcribe it
-   with `approval confirm`, the chat as channel and the message as reference,
-   then apply it (with the interim steps in [Runtime gaps](RUNTIME_GAPS.md)
-   while they are needed).
-4. `transition` the TASK to `READY`, `gate task`, fix, `check_repo.py fast`,
-   commit explicit paths, fetch, resolve, push.
+3. Assess whether the repair is covered by the existing owner decision. For
+   material scope or impact outside that decision, prepare feasibility, impact,
+   verification and the plan fingerprint before asking once whether to proceed.
+   The owner's prompt response is the decision; transcribe it with
+   `approval confirm`, using the chat and actual message reference, then apply
+   it. No new question is needed for covered work when its current gates pass.
+   Legacy exact-bound approvals may still become stale after task refinement;
+   use an explicitly reviewed scope contract for flexible execution, preserving
+   the old history. Never invent another owner decision.
+4. `transition` the TASK to `READY`, `gate task`, fix, `check_repo.py full`,
+   commit explicit paths, fetch, resolve, push. Recheck affected work if
+   integration changes what was verified.
 5. Record what was verified as evidence against the criterion the fix
    restores, then resolve the incident's open item with that evidence
    reference and its propagation targets. If the fix changes an
@@ -369,12 +332,11 @@ The sequence, with the smallest records that keep the trace:
    previous release, a data repair, or a credential rotation each takes its
    own cryptographic approval; the incident does not merge them.
 
-Because a single-level plan has one active PLAN, adding the hotfix TASK makes
-the sprint's decision stale and closes every task gate in it until the owner
-re-confirms. That is the designed effect of changing an approved plan, and it
-is brief when the owner is present. With the plan hierarchy in
-[Plan hierarchy](PLAN_HIERARCHY.md), a hotfix goes into its own leaf, such as
-`FIX-001` under the root, so the sprint leaves are untouched.
+A hotfix inside a recorded execution scope uses the same decision when its
+requirements, paths, actions, risk and verification remain covered. Adding a
+TASK or plan alone does not require another question. Legacy exact-bound PLANs
+retain their original staleness behavior. Scope contracts do not remove actual
+dependencies, incident blockers or high-risk approvals.
 
 What is never a hotfix: editing production or its data directly, applying a
 stale or unrelated approval, skipping the task gate, or reporting a check that

@@ -99,7 +99,7 @@ class CopiedFolderTests(unittest.TestCase):
             self.assertIn("[harness-strict] exit=0", result.stdout)
         self.assertIn("[tests-full] SKIPPED", result.stdout)
 
-    def test_project_reaches_a_startable_task_by_command_only(self):
+    def test_cli_drafts_report_missing_scope_before_requesting_approval(self):
         _run(["scripts/harness.py", "init"], cwd=self.root)
         root = self.root
         self.assertEqual(_harness(root, "next")["state"], "NEEDS_PLAN")
@@ -114,8 +114,8 @@ class CopiedFolderTests(unittest.TestCase):
             "--capability", "LOCAL_IMPLEMENTATION",
         )
         step = _harness(root, "next")
-        self.assertEqual(step["state"], "NEEDS_PLAN_APPROVAL", step)
-        self.assertTrue(any("approval prepare" in command for command in step["commands"]))
+        self.assertEqual(step["state"], "NEEDS_PLAN_DETAIL", step)
+        self.assertTrue(any("report decision-package" in command for command in step["commands"]))
 
         validation = _harness(root, "validate")
         self.assertEqual(validation["counts"]["errors"], 0, validation)

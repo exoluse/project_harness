@@ -18,7 +18,7 @@
 | `.harness/reviews/` | `VRD-` | Verdicts bound to one exact result/build |
 | `.harness/handoffs/` | `HOF-` | Immutable agent-to-agent exact-state transfer records |
 
-`.harness/project.json` identifies the project only by a human `name` and a fixed `id` of `PROJECT`; it contains the PLAN-gated execution, claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. Before implementation, `active_plan` and `active_decision` must materialize the current human PLAN approval.
+`.harness/project.json` identifies the project only by a human `name` and a fixed `id` of `PROJECT`; it contains the PLAN-gated execution, claim/record modes, high-risk approval policy, required features, approval dependencies, and the project closure contract. `.harness/state.json` contains the lifecycle and a `current_plan` that is null during initial discovery and required before implementation. Decision application sets these focus pointers and the selected plan's decision reference. Explicitly covered plans may remain executable together after application; legacy plans require matching active-plan pointers.
 
 Events and approval baseline snapshots live in `.harness/events/` and `.harness/baselines/`. Cryptographic approval request drafts live in `.harness/decisions/`; they are not approvals until signed, installed in the protected external ledger, and imported as `APR-*`.
 
@@ -107,13 +107,21 @@ reporting and trace rule, not a new schema or automatic revocation mechanism.
 
 A plan's `approval_subject` includes its requirement, feature, and work-item references, workstreams, verification strategy, authorized/excluded actions, and invalidation triggers. `approval_dependencies` lists the exact canonical records snapshotted with the plan decision.
 
-Policy treats PLAN as the evolving task breakdown and order for agreed
-requirements. Current fingerprints also bind TASK membership and dependency
-details, so routine refinement can invalidate approval despite leaving the
-agreement unchanged. This data-model limitation remains in force; see
-[runtime compatibility](DEVELOPMENT_METHOD.md#current-runtime-compatibility).
+An optional `approval_subject.decision_scope` uses `harness.execution-scope/v1`
+to bind reviewed requirement/feature definitions, change impact, explicit
+dependencies, write boundaries, actions, risk, criterion-specific verification and constraints.
+Its `scope_id` names the originating PLAN. Covered plans share that exact contract
+and its decision; task lists remain execution structure. The original snapshot
+authenticates coverage, so changing a live declaration cannot widen authority.
 
-An `APR-*` stores its assurance and local record sequence plus authority/decision identity, approval type, subject ID/path/fingerprint, decision, actions/conditions, baseline snapshot manifest, and attestation. A `PROCEDURAL` PLAN attestation records the direct human confirmation and exact confirmed payload; it is required before any implementation but does not authenticate identity cryptographically. A `CRYPTOGRAPHIC` attestation embeds the signed request and is re-evaluated against the fixed external authority and protected ledger. The latest local decision for a type/subject controls repository gates without falling back when that latest record is invalid. Procedural records must also match the Git-common latest-decision marker and global procedural authority sequence; within a cryptographic authority, the highest valid protected sequence controls.
+Prepared tasks use `fingerprint_schema: harness.task-scope/v1`, excluding version
+bookkeeping and normalizing known unordered fields while retaining governed task
+content. Older records without these optional fields keep exact legacy hashes.
+`derived_approval_dependencies` tracks references maintained by sync so obsolete
+derived entries can be removed without discarding ambiguous explicit dependencies.
+See [runtime compatibility](DEVELOPMENT_METHOD.md#current-runtime-compatibility).
+
+An `APR-*` stores its assurance and local record sequence plus authority/decision identity, approval type, subject ID/path/fingerprint, decision, actions/conditions, baseline snapshot manifest, and attestation. A `PROCEDURAL` PLAN attestation records the direct human confirmation and exact confirmed payload; it is required before any implementation but does not authenticate identity cryptographically. A `CRYPTOGRAPHIC` attestation embeds the signed request and is re-evaluated against the fixed external authority and protected ledger. Strict validation checks preserved baseline fingerprints and original attestations as history, without requiring superseded decisions to remain executable. The latest local decision for a type/subject (the origin for shared scope) controls repository gates without falling back when that latest record is invalid. Procedural records must also match the Git-common latest-decision marker and global procedural authority sequence; within a cryptographic authority, the highest valid protected sequence controls.
 
 ## Claims and shared mailboxes
 

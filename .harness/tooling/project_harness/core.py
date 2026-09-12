@@ -624,6 +624,9 @@ def allocate_record_id(root: Path, directory: Path, prefix: str, width: int = 4)
 
 def subject_fingerprint(record: dict[str, Any]) -> str:
     kind = record.get("kind")
+    if kind == "plan" and "decision_scope" in record.get("approval_subject", {}):
+        from .decision_scope import plan_scope, scope_fingerprint
+        return scope_fingerprint(plan_scope(record))
     projected: Any
     if kind == "plan":
         projected = record["approval_subject"]
@@ -729,6 +732,11 @@ def subject_fingerprint(record: dict[str, Any]) -> str:
         "version": record.get("version"),
         "approval_subject": projected,
     }
+    if kind == "work_item" and record.get("fingerprint_schema") == "harness.task-scope/v1":
+        from .decision_scope import canonical_scope_value
+        identity["version"] = None
+        identity["approval_subject"] = canonical_scope_value(projected)
+        identity["fingerprint_schema"] = "harness.task-scope/v1"
     return sha256_bytes(canonical_json(identity).encode("utf-8"))
 
 
@@ -744,6 +752,8 @@ def normalize_agent_id(value: str) -> str:
 
 def subject_fingerprint_for_path(path: Path) -> str:
     record = load_json(path)
+    if record.get("kind") == "plan" and "decision_scope" in record.get("approval_subject", {}):
+        return subject_fingerprint(record)
     identity = {
         "subject": subject_fingerprint(record),
         "dependencies": {},

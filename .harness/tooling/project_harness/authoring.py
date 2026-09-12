@@ -94,18 +94,23 @@ def synced_plan_dependencies(
     plan: dict[str, Any],
     record_paths: dict[str, Path],
 ) -> tuple[list[str], list[str]]:
-    """Return the plan's dependency list extended with any missing derived path."""
+    """Maintain proven derived paths while preserving explicit or legacy extras."""
     existing = plan.get("approval_dependencies", [])
     if not isinstance(existing, list) or any(
         not isinstance(item, str) for item in existing
     ):
         raise HarnessError("approval_dependencies must be a string list")
-    dependencies = list(existing)
+    derived = derived_plan_dependencies(root, plan, record_paths)
+    tracked = plan.get("derived_approval_dependencies", [])
+    if not isinstance(tracked, list) or any(not isinstance(item, str) for item in tracked):
+        raise HarnessError("derived_approval_dependencies must be a string list")
+    dependencies = [item for item in existing if item not in tracked or item in derived]
     added: list[str] = []
-    for value in derived_plan_dependencies(root, plan, record_paths):
+    for value in derived:
         if value not in dependencies:
             dependencies.append(value)
             added.append(value)
+    plan["derived_approval_dependencies"] = derived
     return dependencies, added
 
 
@@ -120,9 +125,12 @@ def sync_plan(
     root = root.resolve()
     plan, plan_path = _load_plan(root, plan_id)
     _records, record_paths = load_record_index(root)
+    previous_dependencies = list(plan.get("approval_dependencies", []))
+    previous_derived = plan.get("derived_approval_dependencies")
     dependencies, added = synced_plan_dependencies(root, plan, record_paths)
-    if not added:
-        return {"plan_id": plan_id, "added_dependencies": [], "changed": False}
+    removed = [item for item in previous_dependencies if item not in dependencies]
+    if not added and not removed and previous_derived == plan.get("derived_approval_dependencies"):
+        return {"plan_id": plan_id, "added_dependencies": [], "removed_dependencies": [], "changed": False}
     plan["approval_dependencies"] = dependencies
     plan["updated_at"] = utc_now()
     relative_plan = plan_path.relative_to(root).as_posix()
@@ -133,11 +141,12 @@ def sync_plan(
     transaction = AtomicMutationService(root).apply(
         writes={relative_plan: plan},
         event_type="PLAN_DEPENDENCIES_SYNCED",
-        event_payload={"plan_id": plan_id, "added_dependencies": added},
+        event_payload={"plan_id": plan_id, "added_dependencies": added, "removed_dependencies": removed},
     )
     return {
         "plan_id": plan_id,
         "added_dependencies": added,
+        "removed_dependencies": removed,
         "changed": True,
         "transaction": transaction,
     }
@@ -152,6 +161,9 @@ def create_work_item(
     feature_refs: Iterable[str] = (),
     criterion_refs: Iterable[str] = (),
     capabilities: Iterable[str] = (),
+    write_scope: Iterable[str] = (),
+    verification: Iterable[str] = (),
+    risk: str = "LOW",
     claim_id: str | None = None,
     agent: str = DEFAULT_AGENT,
 ) -> dict[str, Any]:
@@ -206,7 +218,12 @@ def create_work_item(
     task["feature_refs"] = features
     task["criterion_refs"] = criteria
     task["capabilities"] = requested
+    task["write_scope"] = list(write_scope)
+    task["verification"] = list(verification)
+    task["risk"] = risk
     task["forbidden_actions"] = sorted(excluded)
+    if "decision_scope" in subject:
+        task["fingerprint_schema"] = "harness.task-scope/v1"
 
     linked = _string_list(subject, "work_item_refs")
     if task_id not in linked:
@@ -263,66 +280,5 @@ def activate_plan(
     root = root.resolve()
     raise HarnessError(
         "Plans become executable only through human approval: "
-        "'approval prepare', 'approval record', then 'plan apply-decision'"
+        "'approval confirm', then 'plan apply-decision'"
     )
-    plan, plan_path = _load_plan(root, plan_id)
-    status = plan.get("status")
-    if status in RETIRED_PLAN_STATUSES:
-        raise HarnessError(
-            f"Plan {plan_id} is {status} and cannot become the current plan"
-        )
-    subject = _plan_subject(plan)
-    if not _string_list(subject, "work_item_refs"):
-        suggested = next_record_id(root, "work_item")
-        raise HarnessError(
-            f"Plan {plan_id} lists no TASK; create one first with "
-            f"'new task {suggested} \"<title>\" --plan {plan_id}'"
-        )
-
-    _records, record_paths = load_record_index(root)
-    plan["approval_dependencies"], added = synced_plan_dependencies(
-        root, plan, record_paths
-    )
-    before_status = str(status)
-    if status not in EXECUTABLE_PLAN_STATUSES:
-        plan["status"] = "ACTIVE"
-    plan.setdefault("execution_role", "CURRENT_PLANNING_REFERENCE")
-    plan["updated_at"] = utc_now()
-
-    state_path = root / HARNESS_DIR / "state.json"
-    state = load_json(state_path)
-    before_plan = state.get("current_plan")
-    state["current_plan"] = plan_id
-    state["updated_at"] = plan["updated_at"]
-    # Kept accurate only for projects that already track it; this command does
-    # not introduce the field where it is absent.
-    history = state.get("historical_plan_refs")
-    if isinstance(history, list) and isinstance(before_plan, str):
-        if before_plan not in history and before_plan != plan_id:
-            state["historical_plan_refs"] = [*history, before_plan]
-
-    relative_plan = plan_path.relative_to(root).as_posix()
-    relative_state = state_path.relative_to(root).as_posix()
-    validate_records(root, [("plan", plan), ("state", state)])
-    authorize_claim_targets(
-        root, claim_id=claim_id, agent=agent, targets=[relative_plan, relative_state]
-    )
-    transaction = AtomicMutationService(root).apply(
-        writes={relative_plan: plan, relative_state: state},
-        event_type="PLAN_ACTIVATED",
-        event_payload={
-            "plan_id": plan_id,
-            "before_plan_status": before_status,
-            "after_plan_status": plan["status"],
-            "before_current_plan": before_plan,
-            "added_dependencies": added,
-        },
-    )
-    return {
-        "plan_id": plan_id,
-        "plan_status": plan["status"],
-        "current_plan": plan_id,
-        "previous_current_plan": before_plan,
-        "added_dependencies": added,
-        "transaction": transaction,
-    }

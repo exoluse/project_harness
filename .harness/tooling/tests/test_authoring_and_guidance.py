@@ -166,7 +166,7 @@ class AuthoringTests(unittest.TestCase):
 
 
 class GuidanceTests(unittest.TestCase):
-    def test_fresh_project_reaches_a_startable_task_without_editing_records(self):
+    def test_fresh_drafts_need_planning_detail_before_owner_decision(self):
         with tempfile.TemporaryDirectory() as temp:
             root = init_harness(Path(temp) / "demo")
 
@@ -185,8 +185,8 @@ class GuidanceTests(unittest.TestCase):
             )
 
             step = next_step(root)
-            self.assertEqual(step["state"], "NEEDS_PLAN_APPROVAL")
-            self.assertTrue(any("approval prepare" in command for command in step["commands"]))
+            self.assertEqual(step["state"], "NEEDS_PLAN_DETAIL")
+            self.assertTrue(any("report decision-package" in command for command in step["commands"]))
 
     def test_next_points_at_the_repair_command_for_derived_dependencies(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -206,7 +206,7 @@ class GuidanceTests(unittest.TestCase):
                 step["commands"], ["python scripts/harness.py plan sync PLAN-0001"]
             )
 
-    def test_next_reports_the_approval_workflow_for_plan_gated_projects(self):
+    def test_incomplete_plan_gated_project_is_routed_to_planning_checks(self):
         with tempfile.TemporaryDirectory() as temp:
             root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
@@ -219,12 +219,12 @@ class GuidanceTests(unittest.TestCase):
             atomic_write_json(project_path, project)
 
             step = next_step(root)
-            self.assertEqual(step["state"], "NEEDS_PLAN_APPROVAL")
+            self.assertEqual(step["state"], "NEEDS_PLAN_DETAIL")
             self.assertTrue(
-                any("apply-decision" in command for command in step["commands"])
+                any("report decision-package" in command for command in step["commands"])
             )
 
-    def test_next_asks_for_a_new_task_when_every_task_is_complete(self):
+    def test_unscoped_draft_is_not_reported_as_ready_for_approval(self):
         with tempfile.TemporaryDirectory() as temp:
             root = init_harness(Path(temp) / "demo")
             _write_plan(root, "PLAN-0001", "Login")
@@ -232,7 +232,7 @@ class GuidanceTests(unittest.TestCase):
                 root, task_id="TASK-0001", title="Login", plan_id="PLAN-0001"
             )
             step = next_step(root)
-            self.assertEqual(step["state"], "NEEDS_PLAN_APPROVAL")
+            self.assertEqual(step["state"], "NEEDS_PLAN_DETAIL")
 
     def test_next_surfaces_warnings_that_strict_validation_would_fail_on(self):
         with tempfile.TemporaryDirectory() as temp:

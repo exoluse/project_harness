@@ -291,6 +291,11 @@ def result_currentness(root: Path, result: dict[str, Any]) -> tuple[bool, list[s
             plan_path = record_path(root, "plan", plan_id)
             if result.get("plan_fingerprint") != subject_fingerprint_for_path(plan_path):
                 reasons.append("plan fingerprint is stale")
+            from .decision_scope import coverage_blockers, plan_scope
+            plan = load_json(plan_path)
+            scope = plan_scope(plan)
+            if scope:
+                reasons.extend(coverage_blockers(root, plan, scope, task_id=task_id))
         except HarnessError as exc:
             reasons.append(str(exc))
     changed_files = result.get("changed_files")

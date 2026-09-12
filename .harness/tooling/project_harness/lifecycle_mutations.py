@@ -101,9 +101,36 @@ def transition_record(
             reason=reason,
             resume=rework,
         )
+    if kind == "plan":
+        if rework or target_status not in {"CLOSED", "SUPERSEDED"} or not reason.strip():
+            raise HarnessError("Plan retirement requires CLOSED or SUPERSEDED and a reason")
+        path = record_path(root, "plan", record_id)
+        plan = load_json(path)
+        if plan.get("status") in {"CLOSED", "SUPERSEDED"}:
+            raise HarnessError("Plan is already retired")
+        task_ids = plan.get("approval_subject", {}).get("work_item_refs", [])
+        if target_status == "CLOSED" and any(load_json(record_path(
+            root, "work_item", task_id
+        )).get("status") not in {"INTEGRATED", "DONE", "CLOSED", "ABORTED"} for task_id in task_ids):
+            raise HarnessError("Cannot close a plan with unfinished tasks")
+        relative = path.relative_to(root).as_posix()
+        state_path = root / HARNESS_DIR / "state.json"
+        state = load_json(state_path)
+        writes = {relative: plan}
+        authorize_claim_targets(root, claim_id=claim_id, agent=agent, targets=list(writes))
+        before = plan.get("status")
+        plan["status"] = target_status
+        plan["updated_at"] = utc_now()
+        validate_records(root, [("plan", plan), ("state", state)])
+        transaction = AtomicMutationService(root).apply(
+            writes=writes, event_type="RECORD_TRANSITIONED",
+            event_payload={"record_id": record_id, "kind": kind, "before": before,
+                           "after": target_status, "reason": reason, "agent": normalize_agent_id(agent)},
+        )
+        return {"record": plan, "transaction": transaction}
     if kind not in {"requirement", "feature", "work_item"}:
         raise HarnessError(
-            "Transition kind must be project, requirement, feature, or work_item"
+            "Transition kind must be project, plan, requirement, feature, or work_item"
         )
     path = record_path(root, kind, record_id)
     relative = path.relative_to(root).as_posix()

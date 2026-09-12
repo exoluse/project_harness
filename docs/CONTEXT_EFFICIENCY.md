@@ -120,21 +120,15 @@ An efficiency change is invalid if any answer below becomes no:
 Use this checklist when changing `AGENTS.md`, adapters, prompts, or routing
 documents. Token reduction is accepted only after the checklist remains green.
 
-## Runtime work still required
+## Runtime status and remaining work
 
-Policy routing alone cannot remove the current CLI detours. The implementation
-order remains:
+The audited CLI detours are removed: `next` distinguishes draft completeness,
+owner decision, decision application and scope completion. Complete CLI authoring
+and application no longer require manual state-pointer edits. Explicit shared
+scope works across single-level plans and preserves legacy fingerprint semantics.
+See [Runtime gaps](RUNTIME_GAPS.md) for fixes and their regression coverage.
 
-1. Fix `docs/RUNTIME_GAPS.md` items 1 through 5 and 7, with one CLI end-to-end
-   test from `init` to task gate and re-approval.
-2. Make `next` authoritative at approval and decision-application states.
-3. Add complete CLI authoring options so normal preflight does not require
-   manual schema-driven edits.
-4. Implement explicit decision coverage across `harness.plan/v2` plans so plan
-   count does not multiply owner decisions and unrelated work keeps applicable
-   authority. Preserve existing fingerprint semantics until supported.
-5. Add privacy-preserving usage metadata when an adapter provides real token
-   counts; otherwise label character-based estimates as estimates.
-
-These changes touch runtime code, schemas, or tests and therefore require an
-approved PLAN/TASK. This document authorizes none of them by itself.
+Category/parent hierarchy, wider Markdown record migration and optional usage
+metadata remain separate work. When adapters lack real token counts, continue
+to label character-based estimates as estimates. These designs do not add
+routine approval steps and do not authorize their own runtime implementation.

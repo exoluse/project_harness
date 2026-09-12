@@ -667,7 +667,7 @@ class ProceduralApprovalTests(unittest.TestCase):
 
             self.assertEqual(load_json(state_path)["lifecycle_state"], "CANCELLED")
 
-    def test_new_decision_requires_decision_ready_and_does_not_reuse_old_time(self):
+    def test_new_decision_cannot_reopen_closed_project_and_does_not_reuse_old_time(self):
         with tempfile.TemporaryDirectory() as temp:
             root = create_ready_project(Path(temp) / "demo", approve=False)
             first = self._confirm(root, confirmation_id="HCONF-first-0001")
@@ -686,7 +686,7 @@ class ProceduralApprovalTests(unittest.TestCase):
             atomic_write_json(plan_path, plan)
             second = self._confirm(root, confirmation_id="HCONF-second-0001")
 
-            with self.assertRaisesRegex(HarnessError, "only from DECISION_READY"):
+            with self.assertRaisesRegex(HarnessError, "cannot be applied from this lifecycle state"):
                 apply_plan_decision(root, approval_id=second["id"])
 
             state = load_json(state_path)

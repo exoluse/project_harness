@@ -602,6 +602,7 @@ def _verify_attestation(
     enforce_request_expiry: bool,
     require_current_ledger_decision: bool = True,
     verify_procedural_marker: bool = True,
+    subject_override: dict[str, Any] | None = None,
 ) -> tuple[bool, str]:
     if not isinstance(attestation, dict):
         return False, "approval attestation is required"
@@ -610,9 +611,9 @@ def _verify_attestation(
         return False, "approval assurance is missing or invalid"
     try:
         approval_type = str(expected.get("approval_type", ""))
-        subject: dict[str, Any] | None = None
+        subject: dict[str, Any] | None = subject_override
         subject_path = expected.get("subject_path")
-        if approval_type == "PLAN" and isinstance(subject_path, str):
+        if subject is None and approval_type == "PLAN" and isinstance(subject_path, str):
             normalized_subject = normalize_claim_path(root, subject_path)
             candidate_path = root / normalized_subject
             if candidate_path.is_file():
@@ -1092,6 +1093,10 @@ def record_procedural_approval(
         raise HarnessError(
             "Confirmed fingerprint does not match the current approval subject"
         )
+    from .decision_scope import plan_scope
+    declared_scope = plan_scope(subject)
+    if declared_scope and declared_scope["scope_id"] != subject.get("id"):
+        raise HarnessError("Record the prompt decision on its scope origin; apply it to covered plans")
     if authorized_actions is not None and (
         not isinstance(authorized_actions, list)
         or any(not isinstance(item, str) for item in authorized_actions)
@@ -1500,6 +1505,7 @@ def approval_status(
     approval: dict[str, Any],
     *,
     verify_procedural_marker: bool = True,
+    historical: bool = False,
 ) -> tuple[str, str]:
     approval_id_match = re.fullmatch(
         r"APR-([0-9]+)", str(approval.get("id", ""))
@@ -1544,6 +1550,25 @@ def approval_status(
             snapshot_path, expected
         ):
             return "INVALID", f"approval baseline snapshot is missing or changed: {snapshot_value}"
+    from .decision_scope import snapshot_fingerprint, snapshot_subject
+    try:
+        original_subject = snapshot_subject(root, approval)
+        if snapshot_fingerprint(root, approval) != approval.get("subject_fingerprint"):
+            return "INVALID", "baseline content does not match the recorded decision fingerprint"
+    except (HarnessError, TypeError, KeyError) as exc:
+        return "INVALID", str(exc)
+    if historical:
+        expected = {field: approval.get(field) for field in SIGNED_REQUEST_FIELDS}
+        expected["assurance"] = approval_assurance(approval)
+        valid, reason = _verify_attestation(
+            root, approval.get("attestation"), expected,
+            enforce_request_expiry=False, require_current_ledger_decision=False,
+            verify_procedural_marker=False,
+            subject_override=original_subject,
+        )
+        return ("HISTORICAL", "preserved decision integrity verified") if valid else (
+            "INVALID", f"historical approval verification failed: {reason}"
+        )
     subject_path = approval.get("subject_path")
     if not isinstance(subject_path, str):
         return "INVALID", "approval subject_path is missing"
@@ -1569,7 +1594,18 @@ def approval_status(
         current = subject_fingerprint_for_path(path)
     except HarnessError as exc:
         return "INVALID", str(exc)
-    if current != approval.get("subject_fingerprint"):
+    from .decision_scope import plan_scope, scope_fingerprint, snapshot_subject
+    try:
+        original_subject = snapshot_subject(root, approval)
+        scoped = plan_scope(original_subject) if approval.get("approval_type") == "PLAN" else None
+        if scoped is not None and (
+            scope_fingerprint(scoped) != approval.get("subject_fingerprint")
+            or scoped["scope_id"] != approval.get("subject_id")
+        ):
+            return "INVALID", "execution scope snapshot does not match the decision"
+    except (HarnessError, TypeError, KeyError) as exc:
+        return "INVALID", str(exc)
+    if scoped is None and current != approval.get("subject_fingerprint"):
         return "STALE", "approval subject fingerprint changed"
     assurance = approval_assurance(approval)
     expected_attestation = {
@@ -1582,6 +1618,7 @@ def approval_status(
         expected_attestation,
         enforce_request_expiry=False,
         verify_procedural_marker=verify_procedural_marker,
+        subject_override=original_subject if scoped else None,
     )
     if not attestation_valid:
         if (
@@ -1619,7 +1656,18 @@ def find_current_approval(
     *,
     subject_id: str,
     approval_type: str | None = None,
+    task_id: str | None = None,
 ) -> tuple[dict[str, Any] | None, str]:
+    from .decision_scope import coverage_blockers, plan_scope, snapshot_subject
+    target_plan = None
+    if approval_type == "PLAN":
+        try:
+            target_plan = load_json(record_path(root, "plan", subject_id))
+            declared = plan_scope(target_plan)
+            if declared:
+                subject_id = declared["scope_id"]
+        except (HarnessError, TypeError, KeyError) as exc:
+            return None, f"invalid execution scope: {exc}"
     directory = root / HARNESS_DIR / "approvals"
     matches: list[dict[str, Any]] = []
     for path in sorted(directory.glob("APR-*.json")):
@@ -1645,4 +1693,14 @@ def find_current_approval(
     status, reason = approval_status(root, latest)
     if status != "CURRENT":
         return None, f"latest decision {latest.get('id')} is {status}: {reason}"
+    if target_plan is not None and plan_scope(target_plan) is not None:
+        try:
+            approved_scope = plan_scope(snapshot_subject(root, latest))
+            if approved_scope is None:
+                return None, "legacy approval cannot authorize shared execution scope"
+            blockers = coverage_blockers(root, target_plan, approved_scope, task_id=task_id)
+        except (HarnessError, TypeError, KeyError) as exc:
+            return None, f"execution scope validation failed: {exc}"
+        if blockers:
+            return None, "; ".join(blockers)
     return latest, "latest decision is a current approval"

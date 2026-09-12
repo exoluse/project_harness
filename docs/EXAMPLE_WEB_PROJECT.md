@@ -98,14 +98,17 @@ the [HTML guide](HARNESS_POLICY_REPORT.html).
   open items into one document for the owner to read.
 
 ```powershell
-python scripts/harness.py new plan PLAN-0001 "Sprint 1: authentication and home page"
+python scripts/harness.py new plan PLAN-0001 "Sprint 1: authentication and home page" `
+  --requirement REQ-0001 --requirement REQ-0002 --feature FUNC-0001 --feature FUNC-0002
 python scripts/harness.py new task TASK-0001 "Login form and session API" --plan PLAN-0001 `
-  --feature FUNC-0001 --criterion AC-FUNC-0001-001 --capability LOCAL_IMPLEMENTATION
+  --feature FUNC-0001 --criterion AC-FUNC-0001-001 --capability LOCAL_IMPLEMENTATION `
+  --write-scope api/auth --write-scope web/src/pages/login --verification "python scripts/check_repo.py full"
 python scripts/harness.py new task TASK-0002 "Home page layout" --plan PLAN-0001 `
-  --feature FUNC-0002 --criterion AC-FUNC-0002-001 --capability LOCAL_IMPLEMENTATION
-# author the plan's requirement_refs, feature_refs, and verification_strategy,
-# and each task's write_scope (api/auth, web/src/pages/home) and verification
+  --feature FUNC-0002 --criterion AC-FUNC-0002-001 --capability LOCAL_IMPLEMENTATION `
+  --write-scope web/src/pages/home --verification "python scripts/check_repo.py full"
+# Author feature criteria and project-specific verification before preparing scope.
 python scripts/harness.py plan sync PLAN-0001
+python scripts/harness.py plan prepare-scope PLAN-0001 --write-boundary api --write-boundary web --max-risk LOW
 python scripts/harness.py validate --strict
 python scripts/harness.py report decision-package PLAN-0001
 ```
@@ -121,9 +124,8 @@ When execution is requested, the owner decides once on that concrete scope
 by prompt, for example: "Proceed with this scope". The agent records the actual
 message against the fingerprint prepared for the unchanged proposal and
 applies it. The runtime checks execution conditions; it does not decide for
-the owner. No separate approval of "planning complete" is required. Current
-lifecycle application uses `DECISION_READY -> APPROVED` with the interim steps
-below; these two milestones introduce no new runtime states.
+the owner. No separate approval of "planning complete" is required. Application
+sets the project focus and approval state; manual state edits are unnecessary.
 
 ```powershell
 python scripts/harness.py approval confirm `
@@ -133,26 +135,25 @@ python scripts/harness.py approval confirm `
   --confirmation-channel "chat" --confirmation-reference <actual owner approval message reference> `
   --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS --authorized-action DOCUMENTATION `
   --acknowledge-procedural
-# interim (see RUNTIME_GAPS.md): set current_plan and active_plan in state.json,
-# and the project is moved SPECIFYING -> PLANNING -> DECISION_READY with `transition --kind project`
 python scripts/harness.py plan apply-decision --approval APR-0001
 python scripts/harness.py transition --kind work_item --id TASK-0001 --to READY --agent codex --reason "approved scope ready to execute"
 python scripts/harness.py gate task TASK-0001
 ```
 
-The selected task is execution-ready only when its gate passes. A changed
-governed PLAN/TASK fingerprint can invalidate current execution authority;
-explanatory body edits alone do not. Ordinary task refinement is not a new
-business decision, although the current runtime can force another fingerprint
-confirmation. Preserve the original approval as history and report that limit.
+The selected task is execution-ready only when its gate passes. Covered task
+refinement retains the explicit scope decision; changed outcomes or wider
+boundaries need one decision on the material delta. Explanatory body edits alone
+grant no authority. Original approvals remain attributable to their old versions.
 
 With the plan hierarchy in [PLAN_HIERARCHY.md](PLAN_HIERARCHY.md) implemented,
 this project would instead hold one root `PLAN-0001` for the whole engagement
 and child plans such as `API-001` for the back end, `SCR-001` for screens, and
 `PAY-001` for payment. Several plans could execute under the same decision
 when their work stays within its reviewed scope and their gates pass; no
-separate owner approval is needed merely because another plan exists. Until
-implemented, use single-level plans with the current fingerprint constraints.
+separate owner approval is needed merely because another plan exists. Today,
+that same decision sharing already works across single-level plans using
+`new plan --scope-from` and `plan apply-decision --plan`. Category/parent
+hierarchy remains unimplemented.
 The sprints here are examples, not mandatory delivery cycles.
 
 ## 4. Implementation
@@ -174,9 +175,8 @@ Lifecycle: `BUILDING`
   correction from changed requirements. For a material change, assess feasibility
   and impact, prepare its trace and plan, then obtain one proceed decision and
   record that same response as the PLAN decision. Task refinement alone needs
-  no new business decision. Current fingerprint and reapplication limits remain
-  documented in [Runtime gaps](RUNTIME_GAPS.md); do not bypass them or treat
-  historical approvals as revoked.
+  no new business decision within the explicit scope. See [Runtime gaps](RUNTIME_GAPS.md)
+  for fixes and legacy compatibility; never treat historical approvals as revoked.
 - When work moves from one agent to another mid-task, the sender creates a
   handoff naming the changed files, what was verified and what was not, and the
   next action. The receiver acquires its own claim with that handoff.
@@ -189,11 +189,12 @@ python scripts/harness.py gate task TASK-0001
 python scripts/harness.py claim acquire --agent codex --task TASK-0001 --paths api/auth tests/api/auth
 python scripts/harness.py claim acquire --agent claude --task TASK-0002 --paths web/src/pages/home
 
-# implement, then:
-python scripts/check_repo.py fast
+# implement, then run the full checks before pushing:
+python scripts/check_repo.py full
 git add -- api/auth tests/api/auth
 git commit -m "Add session API and login validation"
 git fetch --prune origin
+# Inspect divergence, preserve both sides, and recheck affected work if integration changes it.
 git push
 ```
 

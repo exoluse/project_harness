@@ -9,7 +9,7 @@ versioned basis for dependent work and may be reopened through the change proces
 `AGENTS.md` remains canonical for authority. This document specifies agent
 behavior using existing records and gates. It introduces no schema fields,
 runtime states, commands, automatic transitions, or new approval types. The
-current CLI limitations and interim operations remain in [Workflow](WORKFLOW.md).
+current CLI operations are described in [Workflow](WORKFLOW.md).
 
 ## User and agent responsibilities
 
@@ -136,8 +136,8 @@ scope are agent operations. Coverage must remain demonstrable against the
 presented outcomes, acceptance and verification obligations, capabilities,
 conditions, risks and delivery commitments. A new plan is neither a new
 business requirement by itself nor permission for work outside those bounds.
-Current per-PLAN fingerprint gates remain an implementation limitation, not
-the intended human decision cadence.
+Explicit execution-scope contracts support that sharing across single-level
+plans. Legacy approvals retain their original fingerprint semantics.
 
 Determine order from technical dependencies, risk and efficiency during
 planning, or from the user's stated priorities; either may change during work.
@@ -154,8 +154,8 @@ login changes the requested capability. Similarly, prioritizing checkout can
 bring forward the minimum order-data work it depends on without reprioritizing
 every unrelated order-management feature.
 
-These are policy distinctions. Current runtime compatibility is described below;
-the existing fingerprint gate still binds task structure as well as commitments.
+The runtime enforces these bounds through an explicit versioned execution-scope
+contract; compatibility with older exact-bound approvals is described below.
 
 ### Iteration loop
 
@@ -176,8 +176,8 @@ Timeboxes, demonstrations, retrospectives and backlog ordering are useful when
 they serve the project; no fixed sprint duration or mandatory ceremony is
 imposed. Backlog candidates remain discovery/planning until selected into a
 PLAN with executable TASKs. Reordering within existing scope and dependencies
-does not itself require a new business decision. Today, editing a
-fingerprint-bound field can still require a fresh runtime PLAN confirmation.
+does not itself require a new business decision under the reviewed execution
+scope. Changing the agreed contract requires a decision on the material delta.
 An iteration is not a child PLAN, and this policy does not enable plan hierarchy.
 
 ## Change classification
@@ -189,7 +189,7 @@ or approvals; the size of the edit is not the deciding factor.
 | Change | Agent response | Authority and verification consequence |
 |---|---|---|
 | New input or a draft clarification | Preserve its source and update draft interpretation, requirements or design; identify conflicts | Discovery/planning may proceed within the request; no implementation authority is created |
-| Task addition, split or sequence refinement within agreed requirements and constraints | Update the breakdown and feasible order; trace tasks to the existing criteria and retain the reason | No new business decision solely for refinement; the current runtime may still invalidate its PLAN fingerprint and require confirmation before execution |
+| Task addition, split or sequence refinement within agreed requirements and constraints | Update the breakdown and feasible order; trace tasks to the existing criteria and retain the reason | No new decision when explicit execution-scope coverage and prerequisites remain valid; legacy exact-bound approvals retain their original semantics |
 | Explanatory correction with no normative effect | Correct prose and retain appropriate trace; confirm that behavior, scope and criteria did not change | Existing authority applies only if fingerprints and gates remain current; a product-document edit still needs its authorized TASK |
 | Defect or deliverable revision within the approved contract | Use the covering TASK or plan the required rework; preserve the old attempt and identify changed outputs | Continue only if TASK scope and current approval cover the work; changed artifacts require fresh relevant verification even when the PLAN fingerprint is unchanged |
 | Requirement, design-contract, scope, priority commitment, dependency, criterion or verification-contract change | Assess feasibility and impact; prepare affected requirements, design and PLAN/TASK scope; retain the prior baseline | Record and apply the single owner proceed decision on the prepared change as its PLAN approval; reassess dependent evidence and any acceptance/release approvals |
@@ -200,8 +200,8 @@ constraints requires a `CR-*` change record with its impact and disposition.
 A draft clarification, task refinement or in-contract correction does not
 automatically need a separate CR or CHANGE approval. Preserve the old artifact
 version and refresh applicable evidence even when no CR is needed. Adding a new
-TASK currently changes the runtime's approved subject and requires renewed
-PLAN authority, even when the requirement and agreement remain unchanged.
+TASK within an explicit reviewed scope retains authority when its coverage
+and prerequisites pass. Legacy exact-bound approvals still bind task structure.
 Change, exception and closure approval records remain optional unless the
 applicable contract or higher-risk policy requires them.
 
@@ -259,8 +259,8 @@ an unagreed universal cost or schedule threshold.
 Do not ask again merely because the agent splits a task, adjusts a feasible
 sequence, records the decision, fixes an in-scope implementation defect, or
 runs already described verification. A newly proposed change not covered by the
-owner's decision goes through the cycle once. Current fingerprint limitations
-are handled below and must not be disguised as a new business requirement.
+owner's decision goes through the cycle once. Legacy fingerprint compatibility
+is handled below and must not be disguised as a new business requirement.
 
 For example, after the owner approves email registration with its described
 validation and storage impact, separating duplicate-email tests into another
@@ -270,61 +270,43 @@ explaining that new impact before continuing. Production-data approval remains
 a separate high-risk boundary.
 
 Stop affected work and its dependents while their prerequisites are invalid.
-Unrelated work may continue only under valid current authority. In the current
-single-level implementation, changing an approved PLAN or its bound scope can
-make the decision stale for every TASK in that PLAN. Do not claim task-local
-approval isolation or bypass that stop on the basis of a small impact estimate.
+Unrelated work may continue under valid task-specific execution-scope coverage.
+A shared constraint or explicit dependency change, invalid record or global
+blocker can still stop broader work. Legacy exact-bound plans can become stale
+as a whole; neither mode permits bypassing the gate based on an impact estimate.
 Use `blocked_by` and the existing G0/G1 scopes according to their real semantics.
 This current execution stop does not erase the approval or verification history
 of the prior version and does not by itself require changing a running release.
 
 ### Current runtime compatibility
 
-The following policy distinguishes meaningful decisions from bookkeeping. It
-does not change the current fingerprint algorithm, validators or record schema.
+Use `plan prepare-scope` before presenting the owner decision. The explicit
+`harness.execution-scope/v1` contract binds agreed outcomes, criteria, path and
+capability boundaries, risk ceiling, criterion-specific verification and material constraints.
+Covered tasks may be split, reordered or organized into several single-level
+plans. Apply the same decision to each covered plan; that command records
+applicability and does not create another owner decision.
 
-| Situation | Policy treatment |
+| Situation | Runtime treatment |
 |---|---|
-| Add, split or feasibly reorder tasks within agreed outcomes, criteria, write scope, capabilities, risk and delivery commitments | Refine the plan and preserve trace; no new business decision. Do not remove real blockers or verification obligations. |
-| The same concrete change appears in a PLAN and a CHANGE record | Attribute both to the same actual owner decision; the extra record is not a reason for a second question. Current schema limitations still apply. |
-| An earlier valid approval is replaced by a later decision | Preserve and check the historical snapshot; judge current execution against the applicable current decision. Normal supersession is not a request to approve history again. |
-| Version labels, explanatory text or the order of a semantically unordered list change | Compare governed meaning; presentation alone is not a material change. A meaningful execution sequence or changed requirement remains subject to impact assessment. |
-| A derived reference no longer belongs to the current scope | Identify it as obsolete bookkeeping. Preserve explicitly required dependencies; never remove an ambiguous dependency merely to obtain a passing gate. |
-| A sibling task changes while another result's subjects remain unchanged | Assess the other result's actual files, criteria, bindings, dependencies and verification freshness. Reuse only when still applicable; do not automatically recreate results or repeat checks. |
-| A decision package already contains the current scope, blockers and fingerprint | Reuse that information while its inputs remain unchanged. Recording and applying the decision do not add owner decision points. |
+| Covered task refinement or another plan within the same contract | Check containment, prerequisites and the selected task gate; no new approval record |
+| Same reviewed change represented by PLAN and CHANGE | Reuse the applicable PLAN decision only when the change definition was included in its reviewed scope or exact legacy snapshot |
+| Earlier decision replaced or no longer applicable | Preserve and verify historical snapshots and attestations; enforce current authority separately |
+| Descriptive version/progress or known unordered-list edits | Versioned scope/task fingerprints ignore that bookkeeping; material definitions remain bound |
+| Obsolete derived reference | Sync removes only proven derived extras; explicit or ambiguous dependencies remain |
+| Sibling task changes | Retain unrelated authority and verification only while their actual subjects, scope, dependencies and artifact bindings remain current |
+| Decision package already provides a fingerprint | Reuse it while inputs remain unchanged; recording/application still check freshness |
 
-These are not exceptions for material changes: new behavior, weaker completion
-or verification criteria, wider paths or capabilities, changed conditions or
-significant delivery/risk effects require feasibility and impact assessment.
-Use the scope actually agreed with the owner, not bounds invented afterwards.
+Legacy plans without this contract retain exact PLAN/TASK fingerprint binding.
+They are readable and executable under their original rules. Preparing a new
+scope contract is an explicit migration of the reviewed subject and needs an
+owner decision on that contract; never reinterpret an old decision as wider
+permission. See [Approvals](APPROVALS.md) and [Runtime gaps](RUNTIME_GAPS.md).
 
-The runtime does not yet separate agreed outcomes and constraints from the
-TASK breakdown in the PLAN fingerprint. As a result, even ordinary task
-addition or a change to recorded dependencies can require a new confirmation
-and temporarily stop the PLAN. This is an implementation mismatch with the
-refinement policy, documented in [Runtime gaps](RUNTIME_GAPS.md#8-plan-approval-also-binds-routine-task-refinement).
-No new approval-free runtime path is provided by this document.
-
-Prepare the final reviewed subject and its fingerprint before asking about
-the change, so the single proceed response can be recorded and applied directly.
-Applying that response is bookkeeping and creates no second decision point.
-
-If later routine refinement nevertheless changes a bound fingerprint, keep
-the trace accurate and report the exact gate limitation. Do not bypass it, omit
-tasks, hide normative fields in prose, or invent confirmation of an unreviewed
-proposal. If the current runtime forces another human confirmation, identify
-it explicitly as a temporary compatibility requirement, show the exact revised
-subject, and explain that it is not revocation of the old version or a new
-business requirement. Such a repeat is a runtime gap to remove, not the normal
-change policy. Runtime implementation remains a separately authorized task.
-
-Distinguish that fingerprint requirement from other runtime failures. A warning
-about historical approval, a CHANGE record requiring a separate decision type,
-or an unrelated result becoming stale is not automatically repaired by asking
-the owner again. Name the failing condition, preserve the actual decision and
-history, and report the limitation. Do not fabricate a second decision, delete
-history, falsely advance a record, or rewrite evidence to satisfy the validator.
-See [additional duplication mismatches](RUNTIME_GAPS.md#additional-duplication-mismatches).
+Materially changed outcomes, weaker verification, broader paths/capabilities or
+changed constraints need feasibility and impact assessment and one new informed
+decision. The five cryptographic high-risk boundaries remain mandatory. Invalid
+history or stale evidence is not repaired by inventing another owner decision.
 
 ## Baselines and review boundaries
 

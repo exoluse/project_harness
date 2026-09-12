@@ -603,7 +603,7 @@ def validate_project(root: Path) -> list[Issue]:
             )
         )
     else:
-        if current_plan.get("status") in {"CLOSED", "SUPERSEDED", "STALE"}:
+        if current_plan.get("status") == "STALE":
             issues.append(
                 _issue(
                     "ERROR",
@@ -821,6 +821,11 @@ def validate_project(root: Path) -> list[Issue]:
                         )
         elif kind == "plan":
             subject = record.get("approval_subject")
+            from .decision_scope import plan_scope
+            try:
+                plan_scope(record)
+            except (HarnessError, TypeError, KeyError) as exc:
+                issues.append(_issue("ERROR", "INVALID_EXECUTION_SCOPE", str(exc), path))
             if not isinstance(subject, dict):
                 issues.append(_issue("ERROR", "MISSING_APPROVAL_SUBJECT", "plan requires approval_subject", path))
             else:
@@ -1279,16 +1284,22 @@ def validate_project(root: Path) -> list[Issue]:
                                 path,
                             )
                         )
+            integrity, integrity_reason = approval_status(root, record, historical=True)
+            if integrity == "INVALID":
+                issues.append(_issue("ERROR", "INVALID_APPROVAL", integrity_reason, path))
+                continue
             status, reason = approval_status(root, record)
-            approval_is_active = (
-                approval_required(root, str(record.get("approval_type")))
-                or state.get("active_decision") == record_id
+            # Superseded decisions remain audit history. Only a decision selected
+            # by state or an executable record can block current readiness.
+            approval_is_active = state.get("active_decision") == record_id or any(
+                candidate.get("decision_ref") == record_id
+                and candidate.get("status") not in {"CLOSED", "SUPERSEDED", "REJECTED"}
+                for candidate in records.values()
+                if candidate.get("kind") in {"plan", "change"}
             )
-            if status == "STALE" and approval_is_active:
-                issues.append(_issue("WARNING", "STALE_APPROVAL", reason, path))
-            elif status == "SUPERSEDED" and approval_is_active:
-                issues.append(_issue("WARNING", "SUPERSEDED_APPROVAL", reason, path))
-            elif status == "INVALID" and approval_is_active:
+            # Currentness belongs to execution gates. A pending change or a
+            # superseding decision must not invalidate intact historical records.
+            if status == "INVALID" and approval_is_active:
                 issues.append(_issue("ERROR", "INVALID_APPROVAL", reason, path))
         elif kind == "change":
             for reference in [*_refs(record.get("source_refs")), *_refs(record.get("affects"))]:
@@ -1305,17 +1316,34 @@ def validate_project(root: Path) -> list[Issue]:
                     issues.append(_issue("ERROR", "CHANGE_NO_DECISION", "approved change lacks an approval decision", path))
                 else:
                     decision = records[decision_ref]
-                    status, reason = approval_status(root, decision)
+                    status, reason = approval_status(root, decision, historical=True)
+                    covered_change = False
+                    if decision.get("decision") in {"APPROVED", "APPROVED_WITH_CONDITIONS"} and status == "HISTORICAL":
+                        from .decision_scope import governed_definition, plan_scope, snapshot_subject
+                        try:
+                            original_subject = snapshot_subject(root, decision)
+                            scope = plan_scope(original_subject) if decision.get("approval_type") == "PLAN" else None
+                            covered_change = scope is not None and scope["changes"].get(record_id) == governed_definition(record)
+                            if decision.get("approval_type") == "CHANGE" and decision.get("subject_id") == record_id:
+                                covered_change = governed_definition(original_subject) == governed_definition(record)
+                            if not covered_change and decision.get("approval_type") == "PLAN" and scope is None:
+                                change_path = path.relative_to(root).as_posix()
+                                for entry in decision.get("snapshot_manifest", []):
+                                    if entry.get("path") == change_path:
+                                        original = load_json(root / entry["snapshot_path"])
+                                        covered_change = governed_definition(original) == governed_definition(record)
+                                        break
+                        except (HarnessError, TypeError, KeyError) as exc:
+                            reason = str(exc)
                     if (
-                        decision.get("approval_type") != "CHANGE"
-                        or decision.get("subject_id") != record_id
-                        or status != "CURRENT"
+                        not covered_change
+                        or status != "HISTORICAL"
                     ):
                         issues.append(
                             _issue(
                                 "ERROR",
                                 "CHANGE_DECISION_INVALID",
-                                f"change decision is not current: {reason}",
+                                f"change has no intact decision covering its recorded impact: {reason}",
                                 path,
                             )
                         )
@@ -1569,6 +1597,15 @@ def validate_project(root: Path) -> list[Issue]:
                 issues.append(
                     _issue("ERROR", "STALE_ACTIVE_CLAIM", f"claim {claim.get('id')} plan changed")
                 )
+            from .decision_scope import coverage_blockers, plan_scope
+            try:
+                plan = records.get(plan_id, {})
+                scope = plan_scope(plan)
+                if scope:
+                    for reason in coverage_blockers(root, plan, scope, task_id=task_id):
+                        issues.append(_issue("ERROR", "STALE_ACTIVE_CLAIM", reason))
+            except (HarnessError, TypeError, KeyError) as exc:
+                issues.append(_issue("ERROR", "STALE_ACTIVE_CLAIM", str(exc)))
     for index, left in enumerate(claims):
         for right in claims[index + 1 :]:
             path_conflict = any(

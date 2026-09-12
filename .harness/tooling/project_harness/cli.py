@@ -123,6 +123,10 @@ def cmd_new(args: argparse.Namespace) -> int:
     }:
         raise HarnessError(f"Unsupported generic record kind: {args.kind}")
     if kind == "work_item":
+        for option in ("statement", "source", "acceptance_criterion", "requirement",
+                       "profile", "binding", "verification_command", "scope_from"):
+            if getattr(args, option):
+                raise HarnessError(f"--{option.replace('_', '-')} does not apply to task")
         if not args.plan:
             raise HarnessError(
                 "A TASK must belong to a PLAN; pass --plan PLAN-XXXX so the harness "
@@ -136,6 +140,9 @@ def cmd_new(args: argparse.Namespace) -> int:
             feature_refs=args.feature,
             criterion_refs=args.criterion,
             capabilities=args.capability,
+            write_scope=args.write_scope,
+            verification=args.verification,
+            risk=args.risk or "LOW",
             claim_id=args.claim_id,
             agent=args.agent,
         )
@@ -154,9 +161,10 @@ def cmd_new(args: argparse.Namespace) -> int:
         name
         for name, value in (
             ("plan", args.plan),
-            ("feature", args.feature),
-            ("criterion", args.criterion),
             ("capability", args.capability),
+            ("write-scope", args.write_scope),
+            ("verification", args.verification),
+            ("risk", args.risk),
         )
         if value
     )
@@ -171,7 +179,52 @@ def cmd_new(args: argparse.Namespace) -> int:
     if path.exists():
         raise HarnessError(f"Record already exists: {args.id}")
     value = new_record(kind, args.id, args.title)
+    allowed = {
+        "requirement": {"statement", "source", "acceptance_criterion"},
+        "feature": {"requirement", "criterion", "profile", "binding", "verification_command"},
+        "plan": {"requirement", "feature", "verification_command", "scope_from"},
+    }.get(kind, set())
+    for option in ("statement", "source", "acceptance_criterion", "requirement", "criterion",
+                   "profile", "binding", "verification_command", "scope_from", "feature"):
+        if getattr(args, option) and option not in allowed:
+            raise HarnessError(f"--{option.replace('_', '-')} does not apply to {kind}")
+    if kind == "requirement":
+        value.update(statement=args.statement or "", source_refs=args.source,
+                     acceptance_criteria=args.acceptance_criterion)
+    elif kind == "feature":
+        value["requirement_refs"] = args.requirement
+        for description in args.criterion:
+            criterion_id, separator, statement = description.partition("|")
+            if not separator or not criterion_id.strip() or not statement.strip():
+                raise HarnessError("Feature --criterion requires <id>|<statement>")
+            value["completion_criteria"].append({
+                "id": criterion_id.strip(), "statement": statement.strip(), "required": True,
+                "verification_plan": args.verification_command,
+                "required_profiles": args.profile, "required_bindings": args.binding,
+                "evidence_refs": [],
+            })
+    elif kind == "plan":
+        subject = value["approval_subject"]
+        if args.scope_from:
+            from copy import deepcopy
+            from .decision_scope import plan_scope
+            original = load_json(record_path(root, "plan", args.scope_from))
+            if plan_scope(original) is None:
+                raise HarnessError("--scope-from requires an explicitly prepared execution scope")
+            subject.update(deepcopy(original["approval_subject"]))
+            subject["work_item_refs"] = []
+            value["approval_dependencies"] = [item["path"] for item in subject["decision_scope"]["dependencies"]]
+        subject["requirement_refs"] = args.requirement or subject["requirement_refs"]
+        subject["feature_refs"] = args.feature or subject["feature_refs"]
+        if args.verification_command:
+            subject["verification_strategy"] = {"commands": args.verification_command}
+    from .mutation_service import authorize_claim_targets, validate_records
+    validate_records(root, [(kind, value)])
+    authorize_claim_targets(root, claim_id=args.claim_id, agent=args.agent,
+                            targets=[path.relative_to(root).as_posix()])
     atomic_write_json(path, value)
+    if kind == "plan":
+        sync_plan(root, plan_id=args.id, claim_id=args.claim_id, agent=args.agent)
     _print({"created": str(path.relative_to(root)), "record": value}, args.json)
     return EXIT_PASS
 
@@ -283,7 +336,16 @@ def cmd_plan_sync(args: argparse.Namespace) -> int:
 
 
 def cmd_plan_apply_decision(args: argparse.Namespace) -> int:
-    value = apply_plan_decision(_root(args), approval_id=args.approval)
+    value = apply_plan_decision(_root(args), approval_id=args.approval, plan_id=args.plan)
+    _print(value, args.json)
+    return EXIT_PASS
+
+
+def cmd_plan_prepare_scope(args: argparse.Namespace) -> int:
+    from .decision_scope import prepare_scope
+    value = prepare_scope(_root(args), plan_id=args.id, write_scope=args.write_boundary,
+                          max_risk=args.max_risk, change_refs=args.change,
+                          claim_id=args.claim_id, agent=args.agent)
     _print(value, args.json)
     return EXIT_PASS
 
@@ -545,6 +607,17 @@ def build_parser() -> argparse.ArgumentParser:
     new.add_argument("--feature", action="append", default=[])
     new.add_argument("--criterion", action="append", default=[])
     new.add_argument("--capability", action="append", default=[])
+    new.add_argument("--write-scope", action="append", default=[])
+    new.add_argument("--verification", action="append", default=[])
+    new.add_argument("--risk", choices=["LOW", "MEDIUM", "HIGH", "CRITICAL"])
+    new.add_argument("--statement")
+    new.add_argument("--source", action="append", default=[])
+    new.add_argument("--acceptance-criterion", action="append", default=[])
+    new.add_argument("--requirement", action="append", default=[])
+    new.add_argument("--verification-command", action="append", default=[])
+    new.add_argument("--profile", action="append", default=[])
+    new.add_argument("--binding", action="append", default=[])
+    new.add_argument("--scope-from", help="reuse a prepared execution scope, without recording approval")
     new.add_argument("--claim-id")
     new.add_argument("--agent", default=DEFAULT_AGENT)
     new.set_defaults(func=cmd_new)
@@ -619,7 +692,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="materialize a current PLAN approval into plan and project state",
     )
     plan_apply.add_argument("--approval", required=True)
+    plan_apply.add_argument("--plan", help="target plan within the recorded execution scope")
     plan_apply.set_defaults(func=cmd_plan_apply_decision)
+    scope = plan_sub.add_parser("prepare-scope", help="author explicit execution bounds before the owner decides")
+    scope.add_argument("id")
+    scope.add_argument("--write-boundary", action="append", required=True)
+    scope.add_argument("--max-risk", choices=["LOW", "MEDIUM", "HIGH", "CRITICAL"], required=True)
+    scope.add_argument("--change", action="append", default=[])
+    scope.add_argument("--claim-id")
+    scope.add_argument("--agent", default=DEFAULT_AGENT)
+    scope.set_defaults(func=cmd_plan_prepare_scope)
 
     gate = sub.add_parser("gate")
     gate_sub = gate.add_subparsers(dest="gate_command", required=True)
@@ -764,7 +846,7 @@ def build_parser() -> argparse.ArgumentParser:
     transition.add_argument(
         "--kind",
         required=True,
-        choices=["project", "requirement", "feature", "work_item"],
+        choices=["project", "requirement", "feature", "work_item", "plan"],
     )
     transition.add_argument("--id", required=True)
     transition.add_argument("--to", required=True)

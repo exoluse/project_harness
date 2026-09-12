@@ -286,7 +286,7 @@ def new_record(kind: str, record_id: str, title: str) -> dict:
                 "feature_refs": [],
                 "work_item_refs": [],
                 "workstreams": [],
-                "verification_strategy": {},
+                "verification_strategy": {"commands": ["python scripts/check_repo.py full"]},
                 # Routine local work is authorized by default so a new plan can
                 # carry a task immediately; every capability that needs a human
                 # decision stays excluded until an author widens the subject.

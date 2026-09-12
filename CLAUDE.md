@@ -8,7 +8,7 @@ Classify scope before following execution guidance. Policy-only requests use
 the direct-edit exception, including follow-ups; do not initialize project
 records or prepare a PLAN approval merely to edit the policy.
 
-At `NEEDS_PLAN_APPROVAL`, the current `next` output is wrong: read only **The
-path as it runs today** in `docs/WORKFLOW.md` and item 4 of
-`docs/RUNTIME_GAPS.md`. PLAN approval, task gates, dirty-work preservation, and
-the five cryptographic boundaries remain mandatory.
+Follow `next` for planning detail, prompt decision recording, decision application
+and TASK readiness. A recorded decision awaiting application does not need
+another owner question. Scope containment, task gates, dirty-work preservation
+and the five cryptographic boundaries remain mandatory.

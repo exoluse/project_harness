@@ -5,14 +5,15 @@ from typing import Any
 
 from .authoring import RETIRED_PLAN_STATUSES, next_record_id
 from .constants import HARNESS_DIR
-from .core import load_json
+from .core import load_json, record_path
 from .evaluation import EvaluationContext
-from .gates import task_start_gate
+from .gates import task_start_gate, plan_preflight_gate
+from .approvals import effective_approval_assurance, find_current_approval
 from .policy import execution_mode
 
 # Mirrors the startable set enforced by ``gates.task_start_gate``.
 STARTABLE_TASK_STATUSES = {"READY", "APPROVED", "RUNNING"}
-TERMINAL_TASK_STATUSES = {"INTEGRATED", "DONE", "CLOSED"}
+TERMINAL_TASK_STATUSES = {"INTEGRATED", "DONE", "CLOSED", "ABORTED"}
 
 HARNESS = "python scripts/harness.py"
 
@@ -130,7 +131,7 @@ def next_step(root: Path) -> dict[str, Any]:
 
     current_plan_id = state.get("current_plan")
     plan = plans.get(current_plan_id) if isinstance(current_plan_id, str) else None
-    if plan is None:
+    if plan is None or plan.get("status") in RETIRED_PLAN_STATUSES:
         candidates = sorted(
             record_id
             for record_id, record in plans.items()
@@ -138,9 +139,9 @@ def next_step(root: Path) -> dict[str, Any]:
         )
         if not candidates:
             return step(
-                "NEEDS_PLAN",
-                "every PLAN is retired; create one for the requested change",
-                [f'{HARNESS} new plan {next_record_id(root, "plan")} "<plan title>"'],
+                "SCOPE_COMPLETE",
+                "every PLAN is retired; report its actual disposition or wait for new input",
+                [f"{HARNESS} report completion"],
             )
         target = candidates[-1]
         if not _plan_tasks(plans[target]):
@@ -153,16 +154,50 @@ def next_step(root: Path) -> dict[str, Any]:
                 ],
                 [f"candidate plans: {', '.join(candidates)}"],
             )
-        return step(
-            "NEEDS_PLAN_APPROVAL",
-            f"PLAN {target} needs a current human approval before it can be activated",
-            [
-                f"{HARNESS} approval prepare --type PLAN --subject {target} ...",
-                f"{HARNESS} approval record --request <file> --signature <file>",
-                f"{HARNESS} plan apply-decision --approval <APR-ID>",
-            ],
-            [f"candidate plans: {', '.join(candidates)}"],
-        )
+        plan = plans[target]
+        current_plan_id = target
+
+    linked = _plan_tasks(plan)
+    applied_scope = (
+        "decision_scope" in plan.get("approval_subject", {})
+        and plan.get("decision_ref")
+        and plan.get("status") in {"APPROVED", "APPROVED_WITH_CONDITIONS", "ACTIVE"}
+    )
+    scope_preflight = None
+    if applied_scope:
+        current_approval, _reason = find_current_approval(root, subject_id=current_plan_id, approval_type="PLAN")
+        if current_approval is None:
+            scope_preflight = plan_preflight_gate(root, current_plan_id, context=context)
+    if linked and (not applied_scope or (scope_preflight is not None and scope_preflight.passed)):
+        preflight = scope_preflight or plan_preflight_gate(root, current_plan_id, context=context)
+        if not preflight.passed or warnings:
+            return step("NEEDS_PLAN_DETAIL", "Finish planning checks before asking for execution approval",
+                        [f"{HARNESS} report decision-package {current_plan_id}"],
+                        preflight.blockers + warnings)
+        approval, reason = find_current_approval(root, subject_id=current_plan_id, approval_type="PLAN")
+        if approval is None:
+            subject_path = record_path(root, "plan", current_plan_id).relative_to(root).as_posix()
+            if effective_approval_assurance(root, "PLAN", subject=plan) == "PROCEDURAL":
+                actions = " ".join(f"--authorized-action {item}" for item in plan["approval_subject"].get("authorized_actions", []))
+                commands = [f"{HARNESS} report decision-package {current_plan_id}",
+                            f"{HARNESS} approval confirm --type PLAN --subject {subject_path} "
+                            f"--decision APPROVED --approver <owner> --basis <reviewed-proposal> "
+                            f"--confirm-fingerprint <package-fingerprint> --confirmation-id <unique-id> "
+                            f"--confirmation-channel chat --confirmation-reference <actual-owner-message> "
+                            f"{actions} --acknowledge-procedural"]
+            else:
+                commands = [f"{HARNESS} report decision-package {current_plan_id}",
+                            f"{HARNESS} approval prepare --type PLAN --subject {subject_path} ..."]
+            return step("NEEDS_PLAN_APPROVAL", "Planning checks passed; record the owner's prompt decision only when execution is requested",
+                        commands, [reason, "The agent records an actual decision; these commands do not grant consent."])
+        if plan.get("decision_ref") != approval["id"] or plan.get("status") not in {"APPROVED", "APPROVED_WITH_CONDITIONS", "ACTIVE"}:
+            return step("NEEDS_DECISION_APPLIED", "Apply the recorded decision; no new owner approval is needed",
+                        [f"{HARNESS} plan apply-decision --approval {approval['id']} --plan {current_plan_id}"])
+        if "decision_scope" not in plan["approval_subject"] and (
+            state.get("active_plan") != current_plan_id or state.get("active_decision") != approval["id"]
+        ):
+            return step("NEEDS_DECISION_APPLIED", "Repair the recorded decision application",
+                        [f"{HARNESS} plan apply-decision --approval {approval['id']}"])
 
     linked = _plan_tasks(plan)
     if not linked:
@@ -220,13 +255,15 @@ def next_step(root: Path) -> dict[str, Any]:
         )
     if open_tasks == 0:
         return step(
-            "NEEDS_TASK",
-            f"every TASK in {current_plan_id} is complete; add one for the new change",
-            [
-                f'{HARNESS} new task {next_record_id(root, "work_item")} '
-                f'"<task title>" --plan {current_plan_id}'
-            ],
+            "SCOPE_COMPLETE",
+            f"every TASK in {current_plan_id} is terminal; report verified outcomes and any aborted work",
+            [f'{HARNESS} transition --kind plan --id {current_plan_id} --to CLOSED --agent <agent> --reason "<actual disposition>"'],
         )
+    if applied_scope:
+        approval, _reason = find_current_approval(root, subject_id=current_plan_id, approval_type="PLAN")
+        if approval and plan.get("decision_ref") != approval["id"]:
+            return step("NEEDS_DECISION_APPLIED", "Apply the recorded decision; no new owner approval is needed",
+                        [f"{HARNESS} plan apply-decision --approval {approval['id']} --plan {current_plan_id}"])
     target, blockers = blocked[0]
     return step(
         "TASK_BLOCKED",

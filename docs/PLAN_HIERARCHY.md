@@ -1,13 +1,14 @@
 # Plan Hierarchy
 
-Status: **original design decided on 2026-09-06; decision-coverage policy revised
-on 2026-09-12; not yet implemented.** The revision replaces per-node owner
-approval with one decision for a reviewed execution scope. The runtime today knows
-one level of PLAN and one `state.active_plan`. This document is the policy
-decision and the specification the runtime change will implement, under
-`harness.plan/v2` and `harness.state/v2`. Until that change lands, projects use
-single-level PLANs exactly as `AGENTS.md` describes; nothing here weakens the
-PLAN gate in the meantime.
+Status: **category/parent hierarchy remains a future design.** Explicit shared
+execution-scope coverage is already implemented across single-level PLANs using
+`harness.execution-scope/v1`; one owner decision can cover several applied plans.
+That support does not create parent/child plans or `state.active_plans`.
+
+This document specifies the remaining hierarchy under `harness.plan/v2` and
+`harness.state/v2`. Until implemented, use single-level plans and the commands
+in [Workflow](WORKFLOW.md). Fields and category-prefixed plan commands described
+below belong to that future hierarchy and cannot be used in current records.
 
 ## Why
 
@@ -185,10 +186,11 @@ python scripts/harness.py report decision-package PLAN-0001 # the tree, one pack
 The future decision package must bind the reviewed execution scope and its
 coverage limits. The owner decides on that package once; application associates
 covered ready plans with that decision without further owner questions. The
-coverage representation and versioned fingerprint contract must be implemented
-and tested before this is executable. Existing `approval confirm` cannot be
-replayed onto different PLAN subjects to emulate it, and existing approvals
-must not be silently reinterpreted or widened.
+hierarchy-specific containment and application must be implemented and tested
+before these tree commands are executable. Current single-level plans already
+share an explicit versioned contract through `plan apply-decision --plan`.
+Record a prompt decision once at its scope origin; never replay `approval confirm`
+to invent another decision, or silently reinterpret an existing approval.
 
 `new task --plan` refuses a plan that has children. `new plan --parent` refuses
 a parent that has TASKs, an undeclared category, a reserved prefix, and a
