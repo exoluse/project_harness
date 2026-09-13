@@ -88,7 +88,7 @@
   <header class="hero">
     <div class="eyebrow">PROJECT WORKFLOW</div>
     <h1>프로젝트 시작부터<br>종료까지의 진행 순서</h1>
-    <p>고객의 요구를 받아 계획을 세우고, 실행을 결정한 뒤 구현·검증·전달을 거쳐 프로젝트를 마무리합니다.</p>
+    <p>런타임 초기화 없이 정책과 프로젝트 문서로 진행합니다. 에이전트가 실제 승인 범위·선행 조건·검증 근거를 확인하며 구현·검증·전달을 이어갑니다.</p>
     <div class="scope">시작 → 요구사항 → 설계 → 계획 작성 → 실행 준비 → 구현 → 검증 → 인수 → 전달 → 종료</div>
   </header>
   <nav aria-label="단계 바로가기"><ol class="sequence">
@@ -98,17 +98,17 @@
     <li><a href="#step-07"><span>07</span>검증</a></li><li><a href="#step-08"><span>08</span>고객 인수</a></li>
     <li><a href="#step-09"><span>09</span>배포·전달</a></li><li><a href="#step-10"><span>10</span>인계·종료</a></li>
   </ol></nav>
-  <p class="intro">전체 진행을 요청하면 준비된 단계를 순서대로 이어갑니다. 특정 단계까지만 요청하면 그 단계의 결과를 보고하고 멈춥니다.</p>
+  <p class="intro">전체 진행을 요청하면 권한과 선행 조건이 준비된 단계를 이어갑니다. 특정 단계까지만 요청하면 그 결과를 보고하고 마칩니다. 기존 CLI는 선택적 도구이며, 실제 권한·안전·필수 의존성 문제는 영향받는 작업을 중단시킵니다.</p>
   <main id="steps">
     <ol class="timeline" aria-label="프로젝트 시작부터 종료까지">
       <li class="step" id="step-01"><span class="number" aria-hidden="true">01</span><section class="card" aria-labelledby="title-01">
         <div class="card-head"><h2 id="title-01">프로젝트 시작</h2><span class="label">START</span></div>
-        <p class="description">프롬프트와 고객 문서를 바탕으로 해결할 문제와 원하는 결과를 파악합니다.</p>
-        <dl><div><dt>수행</dt><dd>목표·사용자·범위·제약을 확인하고 가능성과 부족한 정보를 살펴봅니다.</dd></div><div><dt>산출물</dt><dd>프로젝트 개요, 포함·제외 범위, 자료 목록과 확인할 질문.</dd></div><div><dt>완료 기준</dt><dd>무엇을 왜 만드는지 설명할 수 있고, 중요한 불확실성과 확인 대상이 드러납니다.</dd></div></dl>
+        <p class="description">프롬프트와 고객 문서를 바탕으로 목표를 파악합니다. 기존 프로젝트는 코드와 문서를 분석해 현재 진행 상태에서 시작합니다.</p>
+        <dl><div><dt>수행</dt><dd>목표·사용자·범위·제약을 확인하고 가능성과 부족한 정보를 살펴봅니다.</dd></div><div><dt>산출물</dt><dd>프로젝트 개요, 기준 버전, 기존 변경, 분석 범위와 확인할 질문.</dd></div><div><dt>완료 기준</dt><dd>무엇을 왜 만드는지 설명할 수 있고, 중요한 불확실성과 확인 대상이 드러납니다.</dd></div></dl>
       </section></li>
       <li class="step" id="step-02"><span class="number" aria-hidden="true">02</span><section class="card" aria-labelledby="title-02">
         <div class="card-head"><h2 id="title-02">요구사항 정리</h2><span class="label">REQUIREMENTS</span></div>
-        <p class="description">고객의 요청을 구현과 검증에 사용할 수 있는 구체적인 요구사항으로 정리합니다.</p>
+        <p class="description">고객 요청과 기존 자료를 구체적인 요구사항으로 정리합니다. 코드에서 복원한 사실·추정·미확정 사항을 구분하고 현재 구현과 목표 변경을 분리합니다.</p>
         <dl><div><dt>수행</dt><dd>기능·품질·데이터 요구, 우선순위와 완료 기준을 정리하고 충돌을 해소합니다.</dd></div><div><dt>산출물</dt><dd>요구사항 목록, 기능별 완료 기준, 자료와의 연결, 보류 범위.</dd></div><div><dt>완료 기준</dt><dd>이번에 만들 범위가 명확하고, 각 요구의 충족 여부를 확인할 수 있습니다.</dd></div></dl>
       </section></li>
       <li class="step" id="step-03"><span class="number" aria-hidden="true">03</span><section class="card" aria-labelledby="title-03">
@@ -119,14 +119,14 @@
       <li class="step milestone" id="step-04"><span class="number" aria-hidden="true">04</span><section class="card" aria-labelledby="title-04">
         <div class="card-head"><h2 id="title-04">계획 작성</h2><span class="label">계획 작성 완료</span></div>
         <p class="description">설계를 실제로 수행할 작업으로 나누고 순서와 검증 방법을 정합니다.</p>
-        <dl><div><dt>수행</dt><dd>작업 목록·우선순위·의존성·수정 범위·검증 방법·일정과 위험을 정리합니다.</dd></div><div><dt>산출물</dt><dd>작업 계획, 수행 순서, 사전 점검 결과와 미확정 사항.</dd></div><div><dt>완료 기준</dt><dd>요청한 계획을 작성하고 필수 사전 점검을 통과합니다. 실패한 항목은 보완 필요로 보고합니다.</dd></div></dl>
+        <dl><div><dt>수행</dt><dd>작업 목록·우선순위·의존성·수정 범위·검증 방법·일정과 위험을 정리합니다.</dd></div><div><dt>산출물</dt><dd>작업 계획, 수행 순서, 사전 점검 결과와 미확정 사항.</dd></div><div><dt>완료 기준</dt><dd>범위·작업·의존성·검증을 작성하고 입력과의 일관성 및 실행 가능성을 검토합니다. 미확정 사항과 보완할 항목을 보고합니다.</dd></div></dl>
         <p class="note"><strong>계획만 요청했다면 여기서 종료합니다.</strong> 실행 결정이나 구현 허가를 계획 작성 완료 조건으로 요구하지 않습니다.</p>
       </section></li>
       <li class="step milestone decision" id="step-05"><span class="number" aria-hidden="true">05</span><section class="card" aria-labelledby="title-05">
         <div class="card-head"><h2 id="title-05">실행 준비</h2><span class="label">실행 준비 완료</span></div>
         <p class="description">준비한 범위·가능성·영향·검증 계획을 설명하면 사용자가 프롬프트로 실제 수행 여부를 결정합니다.</p>
-        <dl><div><dt>수행</dt><dd>사용자가 “이 범위로 진행해”라고 승인하면 에이전트가 그 결정을 기록·반영하고, 런타임이 기록과 작업의 선행 조건을 검사합니다.</dd></div><div><dt>산출물</dt><dd>사용자의 진행 결정, 반영된 계획, 실행 조건 확인 결과.</dd></div><div><dt>완료 기준</dt><dd>사용자가 승인한 범위에 속하고, 시작할 작업의 필수 실행 조건이 충족됩니다.</dd></div></dl>
-        <p class="note">같은 범위의 유효한 결정은 여러 계획·작업에 걸쳐 유지하며 반복해서 묻지 않습니다. 런타임의 검사 통과가 사용자 승인을 대신하지 않습니다. 결정 대기·보류·거절 상태에서는 해당 구현을 시작하지 않습니다.</p>
+        <dl><div><dt>수행</dt><dd>사용자의 실제 결정을 출처와 함께 남기고, 에이전트가 작업의 범위·의존성·소유권·외부 권한을 확인합니다.</dd></div><div><dt>산출물</dt><dd>사용자의 진행 결정, 반영된 계획, 실행 조건 확인 결과.</dd></div><div><dt>완료 기준</dt><dd>사용자가 승인한 범위에 속하고, 시작할 작업의 필수 실행 조건이 충족됩니다.</dd></div></dl>
+        <p class="note">같은 범위의 유효한 결정은 여러 계획·작업에 걸쳐 유지하며 반복해서 묻지 않습니다. CLI의 해시·결정 적용·게이트는 필수가 아닙니다. 실제 결정이 없거나 보류·거절된 구현은 시작하지 않습니다.</p>
       </section></li>
       <li class="step" id="step-06"><span class="number" aria-hidden="true">06</span><section class="card" aria-labelledby="title-06">
         <div class="card-head"><h2 id="title-06">구현</h2><span class="label">IMPLEMENTATION</span></div>
@@ -144,23 +144,23 @@
         <div class="card-head"><h2 id="title-08">고객 인수 확인</h2><span class="label">ACCEPTANCE</span></div>
         <p class="description">검증된 결과물을 고객에게 제시하고 합의한 인수 기준의 충족 여부를 확인합니다.</p>
         <dl><div><dt>수행</dt><dd>결과물을 시연·검토하고 고객 의견을 정리합니다. 필요한 최종 인수 결정을 받습니다.</dd></div><div><dt>산출물</dt><dd>인수 대상 버전, 고객 확인 결과, 남은 의견과 처리 방침.</dd></div><div><dt>완료 기준</dt><dd>프로젝트에 필요한 인수 기준과 최종 승인 요건이 충족됩니다.</dd></div></dl>
-        <p class="note">최종 고객 인수에는 정해진 별도 승인 절차가 적용됩니다. 인수가 계약상 해당하지 않으면 그 근거를 명시하고 다음 단계로 진행합니다.</p>
+        <p class="note">최종 인수는 해당 버전에 대한 권한 있는 고객의 실제 확인이 필요합니다. 에이전트의 테스트 보고서로 대신할 수 없습니다. 계약상 해당하지 않으면 그 근거를 명시합니다.</p>
       </section></li>
       <li class="step" id="step-09"><span class="number" aria-hidden="true">09</span><section class="card" aria-labelledby="title-09">
         <div class="card-head"><h2 id="title-09">배포·전달</h2><span class="label">DELIVERY</span></div>
         <p class="description">확인된 버전을 합의한 환경이나 전달 방식으로 제공합니다.</p>
         <dl><div><dt>수행</dt><dd>전달 대상·설정·절차·복구 준비를 확인하고, 필요한 승인을 충족한 뒤 배포하거나 결과물을 전달합니다.</dd></div><div><dt>산출물</dt><dd>전달된 버전, 변경 안내, 사용 안내와 전달 후 확인 결과.</dd></div><div><dt>완료 기준</dt><dd>합의한 대상에 결과물이 전달되고 필요한 전달 후 검사가 완료됩니다.</dd></div></dl>
-        <p class="note">운영 배포에는 해당 배포 승인이 필요합니다. 파일 전달 등 운영 배포가 없는 프로젝트는 합의한 전달 방식으로 완료합니다.</p>
+        <p class="note">운영 배포에는 구체적인 사람의 승인과 보호된 CI·환경 또는 권한 있는 사람의 실행 등 외부 통제가 필요합니다. 계약·외부 시스템의 더 강한 승인 요건은 유지합니다.</p>
       </section></li>
       <li class="step finish" id="step-10"><span class="number" aria-hidden="true">10</span><section class="card" aria-labelledby="title-10">
         <div class="card-head"><h2 id="title-10">인계·프로젝트 종료</h2><span class="label">CLOSE</span></div>
-        <p class="description">운영과 후속 대응에 필요한 내용을 인계하고 프로젝트의 남은 의무를 정리합니다.</p>
+        <p class="description">여러 계획의 결과와 근거를 모아 남은 의무를 확인하고 인계합니다. 합의한 전달 조건을 충족하는 문서로 종료할 수 있습니다.</p>
         <dl><div><dt>수행</dt><dd>사용·운영 문서, 담당자, 유지보수와 장애 대응 방법을 인계하고 미해결 사항의 처리와 종료 기준을 확인합니다.</dd></div><div><dt>산출물</dt><dd>최종 결과 정리, 인계 자료, 유지보수 준비 내용과 남은 의무의 처리 결과.</dd></div><div><dt>완료 기준</dt><dd>필요한 전달·인수·인계·유지보수 준비와 종료 기준을 충족합니다. 종료를 막는 미완료 의무가 없습니다.</dd></div></dl>
       </section></li>
     </ol>
     <p class="end">프로젝트 종료 · 결과와 이력을 보존하고 요청한 작업을 마칩니다.</p>
   </main>
-  <footer><span>PROJECT HARNESS · 프로젝트 진행 순서</span><span>계획 작성 완료와 실행 준비 완료를 구분하여 표시</span></footer>
+  <footer><span>PROJECT HARNESS · 정책과 문서 기반 진행</span><span><a href="../AGENTS.md">공통 정책</a> · <a href="WORKFLOW.md">진행 절차</a> · <a href="SECURITY.md">고위험 통제</a></span></footer>
 </div>
 <script>
   'use strict';

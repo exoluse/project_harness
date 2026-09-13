@@ -1,286 +1,213 @@
 # Shared Agent Policy
 
-This is the canonical policy for every agent in this repository. Adapters may
-add but not weaken it. The harness governs only its own repository.
+This is the current operating policy for every agent in this repository.
+Adapters may clarify it but must not weaken its authority, evidence or safety
+requirements. It governs this repository; external code is input unless the
+user explicitly authorizes work there.
+
+## Policy-first operation
+
+Project work does not require the bundled harness CLI. Do not initialize
+`.harness/`, create schema records, obtain a PLAN fingerprint, apply a CLI
+decision, pass a runtime gate or acquire a CLI claim merely to start or finish
+authorized work. The agent checks real authority, scope, dependencies and
+evidence, and records a concise, reviewable basis in project documents.
+
+The existing runtime is an optional legacy inspection/record-management tool.
+Its implementation and validation rules are unchanged. A CLI failure is a
+diagnostic to classify, not an automatic project-wide stop. Actual safety,
+authority, integrity or dependency failures still block affected work. Never
+report a failed check as PASS, forge records to satisfy it, bypass protected
+CI or weaken an external control. See [optional runtime](docs/WORKFLOW.md#optional-runtime).
 
 ## Startup and context
 
-1. Read this file once per session. A client-supplied copy explicitly identified
-   as current for this checkout counts; re-read only if it changes. Read the
-   tool adapter if present.
-2. Run `python scripts/harness.py next` first and follow its state within the
-   current request's scope. Its suggested command is guidance, not authority.
-   Do not load the README, all records, or all policy documents for orientation.
-3. Load only the current project/state fields, PLAN/TASK, referenced records,
-   and accepted handoff needed for that state.
-4. Run `doctor` after init, when environment or approval authority may have
-   changed, and before high-risk work. Run `validate --strict` before a PLAN
-   decision or execution, after record changes, and before release, handoff,
-   result, or push. Do not repeat them on an unchanged read-only turn.
-5. Inspect `git status --short` before writing. Preserve user or unknown work;
-   never silently reset it.
-6. Classify the request as discovery/specification, policy maintenance, or
-   execution. Discovery needs no placeholder PLAN/TASK; execution does.
-   Preserve an explicit policy-only scope across follow-up requests such as
-   "apply these changes". Discussing runtime gaps does not expand that scope
-   into runtime implementation or project initialization.
-
-At `NEEDS_PLAN_DETAIL`, complete the reported planning checks. At
-`NEEDS_PLAN_APPROVAL`, present the prepared scope only when execution is
-requested and transcribe the owner's actual prompt decision. At
-`NEEDS_DECISION_APPLIED`, apply that recorded decision without asking again.
-`SCOPE_COMPLETE` calls for a completion report, not an invented new TASK.
+1. Read this policy once per session and the relevant tool adapter. Re-read only
+   changed policy. A current client-supplied copy counts.
+2. Identify the user's objective, requested stage/stopping point and existing
+   decisions. Read only relevant project notes, requirements, plan and handoff.
+   No mandatory startup command or entire-record-tree read is required.
+3. Inspect Git status before writing in a Git repository. Without Git, inspect
+   the target files and preserve a versioned copy before replacing existing work.
+   Protect user/unknown changes and other writers' ownership.
+4. Classify the request as analysis/specification, policy maintenance or
+   implementation/verification/delivery. Policy-only follow-ups stay policy-only;
+   discussion of runtime defects does not authorize runtime changes or deletion.
+5. Report the current stage, actual blockers and next action as needed. When the
+   requested scope is complete, report it; do not invent more work.
 
 ## Development method
 
-Use a detailed waterfall lifecycle with agile revision throughout the project.
-Identify the current stage, its inputs, deliverables, dependencies, and exit
-criteria; establish a versioned basis before dependent implementation. The
-stages cover discovery, requirements, design, planning, implementation,
-verification, acceptance, deployment, closure, and maintenance. Stage readiness
-is a documented check, not an additional human approval at every stage.
+Use detailed waterfall stages with revision throughout: discovery, requirements,
+design, planning, implementation, verification, acceptance, delivery, closure
+and maintenance. For the current scope identify inputs and versions, outputs,
+dependencies and exit criteria. Scale documentation to the work; a single
+coherent document may cover several stages. Sprints and ceremony are optional.
 
-Honor the requested stopping point. A requirements-only, design-only,
-planning-only or verification-only request ends with that stage's outputs and
-findings; readiness does not authorize the next stage. If the user requests
-the full workflow, continue across ready stages within current authority and
-pause only for essential input, the required decisions or actual blockers.
-Sequential waterfall delivery is supported; sprints are not mandatory.
+A requirements-only, design-only, planning-only or verification-only request
+ends with that stage's requested outputs and findings. Readiness does not
+authorize the next stage. Full-workflow requests continue across ready stages
+within current authority, stopping only for essential input, required decisions
+or real blockers.
 
-Separate planning completion from execution readiness. Planning is complete
-when its requested scope, tasks, order, dependencies and verification are
-authored and the required planning checks pass. Report open items and limits;
-failed required checks mean the plan still needs work. A planning-only request
-ends there without asking for execution approval. Execution readiness requires
-the current owner decision, its application and a passing TASK gate; it is a
-boundary before implementation, not a condition for finishing plan authoring.
-Under a full-workflow request, proceed to that decision boundary without asking
-for a separate approval of the planning milestone.
+Planning is complete when scope, tasks, feasible order, dependencies, risks,
+uncertainties and verification are authored and checked against their inputs.
+Execution readiness additionally requires the actual owner's decision on the
+concrete implementation scope and satisfied task prerequisites. These are
+documented assessments, not CLI states or additional approvals per stage.
+Use [Development method](docs/DEVELOPMENT_METHOD.md) for relevant stage details.
 
-Requirements, designs, PLAN/TASK scope, and deliverables may change at any
-stage, including after verification or delivery. Preserve the prior baseline,
-trace the request and affected work, and distinguish task refinement from a
-change to agreed requirements, acceptance criteria, or constraints. A PLAN
-organizes the tasks needed to meet requirements; the agent may add detail,
-split tasks, and adjust their order within those commitments. Order may follow
-planning analysis or user priority, subject to actual technical dependencies.
-Explain conflicts and resolve material tradeoffs with the user. Routine
-refinement needs no separate business decision; changed commitments do.
-Implement under current authority and re-verify changed outputs. Never carry
-old acceptance or verification forward to a changed version without checking
-its applicability.
-Continue unrelated work only while its own authority and gates remain current;
-legacy exact-fingerprint PLANs can still stop every TASK when their bound structure changes.
+## Authority and decisions
 
-The user supplies prompts/documents and actual decisions; the agent maintains
-the trace and drives the authorized steps. Read only the relevant stage or
-change section of `docs/DEVELOPMENT_METHOD.md` when planning, reviewing stage
-readiness, or processing a change. This method adds no runtime states or commands.
+The user's request authorizes investigation, specification, planning and their
+requested document outputs, including writing or revising those files. Relevant
+document checks are included. It does not authorize unrelated product changes,
+running untrusted product code, deployment or external effects.
+
+Before implementing a proposed change, prepare a concrete reviewable scope:
+outcome and acceptance criteria, affected components/paths/data, actions and
+exclusions, dependencies, feasibility/alternatives, material risk and verification.
+Use a version, commit or dated document reference sufficient to identify the
+proposal. Preserve the owner's actual response and source; never invent consent.
+
+An explicit proceed response to that presented scope is its decision. Reuse a
+valid decision already given in this session; do not ask again for PLAN, TASK,
+testing or recordkeeping labels. A bare request to explore a change or a supplied
+document is not approval of an unreviewed implementation. Clarify only unresolved
+authority or material tradeoffs. A runtime fingerprint or approval record is
+not required and cannot substitute for the actual decision.
+
+Before a work item starts, confirm and briefly record that the decision covers
+its outcome, paths/actions and verification; required inputs/dependencies are
+ready; no real blocker or ownership conflict applies; and needed external
+permissions are present. A plan and its work items can be Markdown sections or
+a checklist. No prescribed filenames, IDs or front matter are required.
+
+One decision may cover several plans and tasks within its reviewed bounds.
+Refining, splitting, ordering or moving tasks within those bounds needs no new
+decision. Materially different outcomes, criteria, scope, data effects, risk,
+conditions or delivery commitments require a prepared delta and actual owner
+decision before affected work. Continue independently authorized work when safe.
+
+An explicit policy request authorizes the requested guidance files, README,
+adapters and documentation edits directly, without a separate execution decision.
+It does not authorize scripts, runtime, schemas, existing project records or
+external systems. Commit/push policy work when requested. For other work, Git
+operations must remain within authorized delivery scope. Before normal push,
+fetch the configured remote and preserve both sides. Force/tag pushes, branch
+deletion, different targets and published-history rewrites need separate explicit
+authorization.
 
 ## Existing project intake and reverse engineering
 
-An existing project may enter the harness without restarting development.
-Record the intake version (commit or file digests), dirty work, analysis scope,
-actual development/deployment status, and the boundary of future governed work.
-The harness's initial `DISCOVERY` state describes its intake, not loss of the
-project's prior progress. Do not reset history or edit lifecycle state to mimic
-that progress. Preserve existing repository policies and tooling; assess path
-and policy conflicts before integrating the harness into another repository.
+Establish the intake commit or snapshot, dirty work, analysis boundaries and
+actual implementation/deployment status. Existing projects keep their progress;
+no lifecycle reset or invented retrospective plan is needed. Preserve existing
+policies/tooling and resolve integration conflicts before adopting this guidance.
 
-Code establishes what is implemented, not necessarily what was intended or
-approved. Recover requirements and design with versioned source references;
-distinguish observed implementation, inferred intent, and unresolved questions.
-Keep the description of the current implementation separate from proposed target
-requirements/design. Do not turn a defect, workaround, test assertion, or inferred
-design rationale into an agreed requirement without supporting authority.
+Code shows implementation, not necessarily intent, correctness or acceptance.
+Recover requirements/design from code, tests, configuration and attributable
+documents. Distinguish facts, inferred intent, contradictions and unanswered
+questions. Link material claims to versions and source locations; keep current
+implementation and proposed target specifications separate. Reading a test
+does not prove that it passed. Plan real remaining work and report coverage
+and limitations at the requested stopping point.
 
-Preserve prior decisions, test reports and releases for their original versions.
-Assess applicability before using them for current claims; they do not
-automatically satisfy current evidence or approval gates. Never fabricate past
-PLAN/TASK execution, approvals or PASS evidence. Plan actual remaining work.
+## History, evidence and real blockers
 
-Read the matching [development method](docs/DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering)
-and [workflow](docs/WORKFLOW.md#existing-project-intake-and-reverse-engineering)
-sections for intake or document recovery. Discovery/specification and their
-records remain authorized by the request; product-document edits, product tests,
-implementation and Git operations retain the Authority rules below. Report the
-requested documentation stage's coverage and limits without claiming product
-verification or acceptance. This procedure adds no runtime states or commands.
+Preserve original decisions, versions, observations and limitations. Changed
+outputs do not erase prior approval or a valid past observation. Assess current
+applicability separately; verify changed and affected parts, and reuse unaffected
+evidence only while it still supports the stated subject and criterion.
 
-## Change decisions and prior versions
+Keep IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
+LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Record actual check
+method, version/environment, expected/observed result and limitations. Unrun,
+failed, partial, ambiguous or stale evidence is not PASS. Documentation completion
+does not establish product verification.
 
-For a proposed change, assess feasibility, alternatives, uncertainties and
-impact on behavior, data, dependencies, effort/schedule and verification.
-Prepare the necessary PLAN/TASK detail and current runtime preflight before
-asking once whether to proceed with that concrete change. The owner's explicit
-proceed decision on the presented scope is its approval, including the described
-implementation and verification; record and apply that same decision. Do not
-ask for another PLAN or TASK approval of the same unchanged proposal.
+Classify a problem by cause and actual impact. Missing authority, unsafe actions,
+unresolved required inputs, unreliable decision provenance, contradictory current
+evidence and ownership conflicts stop affected work and its dependents. Stop the
+whole project only for an actual global condition. Historical evidence that no
+longer applies and unrelated incomplete drafts do not alone stop valid new work.
+Keep them visible; do not erase them to improve a report.
 
-The unit of an owner decision is the reviewed execution scope, not the number
-of PLANs or TASKs. One decision may cover several plans and their work within
-the presented outcomes, acceptance criteria, capabilities, risk and delivery
-constraints. Creating, splitting or switching a plan within that scope is not
-itself another decision point. Do not infer coverage for unreviewed work.
-Prepare explicit `harness.execution-scope/v1` bounds with `plan prepare-scope`
-before the owner decides. Covered single-level plans can share the decision
-using `new plan --scope-from` and `plan apply-decision --plan`. Gates check
-outcomes, paths, capabilities, risk and verification against the recorded
-scope. Legacy approvals retain their exact fingerprint semantics; they never
-silently become shared scope approvals.
+Material changes need a trace of before/after, impact, affected work and decision.
+A section in the plan/change log suffices; separate CR or audit records are needed
+only when the project contract or chosen reporting process calls for them.
 
-Ask again only when material scope, impact, assumptions, conditions or authority
-change beyond what was presented. Explain the new delta and pause affected work.
-Task splitting, sequencing and recordkeeping within the agreed change do not
-by themselves need another decision. Existing high-risk approval boundaries
-still apply; an unanswered question or a bare change request is not approval.
+## Collaboration, handover and closure
 
-Use one decision source for the concrete change and its PLAN; record labels do
-not create additional human decisions. Do not request renewed consent solely
-to repair duplicate records, normal historical supersession, metadata-only
-edits, unordered-list presentation, or an obsolete derived reference. Check
-the actual effect first. Runtime incompatibilities remain blockers where
-enforced; report them rather than treating another approval as a universal fix.
+One writer needs no claim system. Concurrent writers agree non-overlapping paths
+and logical resources, use isolated worktrees where practical, and record owners
+in shared notes or the team's chosen coordination tool. Do not edit another
+writer's active scope or silently take ownership of dirty files.
 
-Preserve the approved prior version, its decisions and verification history.
-A proposed or implemented revision does not retroactively make all prior work
-unapproved. Assess evidence applicability for the changed version and its
-dependencies; retain unaffected evidence when still valid. Record newly found
-defects honestly without rewriting past observations. Current runtime PLAN
-staleness is an execution/currentness limit, not erasure of historical approval.
-Check historical integrity separately from current execution authority. A
-sibling task change alone is not a policy reason to rerun unaffected checks,
-recreate results, or repeat a review. Record the applicability assessment;
-never turn stale or unverified evidence into a new PASS by copying it.
+A handoff states the real input/output versions, changed files, decisions,
+verification, limits, unfinished work and next action. Ordinary Markdown may
+serve as a formal project handoff when the agreed delivery contract accepts it;
+do not fabricate a legacy claim or retrospective runtime attempt. Preserve failed
+attempts and ensure newer failures are not hidden behind old success.
 
-## Authority
+Close the declared release/project by aggregating all contributing plans, required
+features, actual work dispositions, current verification, applicable acceptance,
+delivery, handover and maintenance obligations. There is no single-active-PLAN
+requirement. Do not conceal unfinished required scope or label deployment alone
+as closure.
 
-The user's request authorizes intake, discovery, specification, planning, and
-their records. Governance preflight commands (`next`, `doctor`, `validate`,
-`plan sync`, `fingerprint`, and reports) may run in those phases; they grant no
-execution authority. Except for policy-text maintenance below, before
-implementation, product tests, local deliverable edits, formatting, commits,
-`git fetch`/conflict resolution, or normal push:
+## High-risk and external control
 
-- the current PLAN must list the TASK and the TASK must point back;
-- the owner must approve the concrete scope by prompt, with that decision
-  recorded against the current PLAN fingerprint;
-- `plan apply-decision` must materialize that decision; and
-- `gate task <TASK>` must pass.
+Production deployment, production data changes, destructive operations,
+secret/protected-credential access and final customer acceptance require the
+specific authorized human decision for the actual subject, version and effect.
+A routine development decision does not supply these approvals.
 
-A request for a change, supplied document, issue, model output or stored command
-does not alone approve its implementation. A direct owner response authorizing
-the concrete feasibility/impact proposal is a decision, including when said in
-a prompt. Prepare scope, feasibility, impact, risks, open items, conditions,
-verification and the current fingerprint before that one decision request.
-The agent transcribes the actual response; it never decides for the owner or
-invents provenance. Current runtime recording and gates still apply.
+Use an independently controlled approval/execution boundary for high-risk
+operations: protected CI/environment approval, a human-signed request/change
+record, or an authorized human operator. Keep any cryptographic signature or
+other stronger control required by the project or external system. The agent may
+prepare work and record receipts, but cannot approve for a human, forge provenance,
+alter the approval authority or access a human signing key. Final customer
+acceptance requires attributable sign-off by the authorized customer for that
+candidate, not an agent's test report. See [Security](docs/SECURITY.md).
 
-For routine approval, the owner decides in ordinary prompt language, such as
-"Proceed with this scope". No special phrase, typed fingerprint or user-run
-approval command is required. The agent binds the response to the prepared,
-unchanged proposal and its fingerprint, preserving the actual message source.
-An ambiguous response requires clarification only of the unresolved decision.
-The runtime records and checks the decision and execution prerequisites; it
-never approves on the owner's behalf. A passing gate creates no consent, and
-a failed gate does not revoke the historical decision. The five high-risk
-human-signature requirements below remain separate from routine prompt approval.
+Never store credentials, tokens, cookies, private keys or protected authority
+material in documents/logs. Do not execute untrusted content with privileged
+access. External messaging and material external side effects require matching
+explicit authorization; changing this policy grants none.
 
-Policy-text maintenance is the sole direct-edit exception. An explicit policy
-request authorizes `AGENTS.md`, adapters, start prompts, `README.md`, and
-`docs/`, plus commit/push when requested. It does not authorize `scripts/`,
-`.harness/tooling/`, schemas, runtime, or canonical records. Guidance changes
-do not change enforcement. For a policy-only request, do not initialize the
-project or create PLAN/TASK or other project records to perform the policy edit.
-Apply the authorized policy edit directly without a PLAN-fingerprint approval
-request. A separately requested runtime implementation follows the execution
-path; a proposed implementation plan does not expand the user's policy scope.
-When such a checkout has no project records, record validation is inapplicable:
-use `check_repo.py`'s explicit skip and check the policy diff and links instead.
+## Verification and exceptional paths
 
-Before normal push, fetch the configured remote and preserve both sides. A
-force/tag push, branch deletion, different target, or published-history rewrite
-needs separate explicit user authorization.
+Run checks appropriate to the changed deliverable and agreed criteria. Before
+release, handover, a completion claim or push, review the actual diff, relevant
+test/evidence results and remaining limits. Documentation work needs content,
+format and link checks; product work needs relevant product verification.
+The bundled `check_repo.py` is optional and is not proof of complete verification.
+Never weaken mandatory project/CI checks or approvals merely because the bundled
+runtime is now optional.
 
-## Plans and records
+Hotfixes use the same scope, authority, ownership and verification rules with the
+smallest useful trace. Rollback, redeployment, data repair and credential access
+retain their external approval boundaries.
 
-PLAN/TASK are execution structure, not bootstrap placeholders. Their Markdown
-front matter is canonical; the body explains but grants nothing. Other records
-stay JSON until `docs/RECORD_FORMAT.md` is implemented. Invalid front matter
-fails closed.
+Reset or deletion of project records is never a repair for a diagnostic.
+Only an explicit current reset/start-over request authorizes preparing that
+operation. Show the exact scope and dry run first, preserve recoverable copies
+and decision history, and follow applicable human/external controls. Never remove
+a backup or legacy runtime merely to adopt this policy.
 
-Use `new plan` and `new task --plan`; author statements, criteria, references,
-scope, and verification; then `plan sync`. Never hand-edit derived
-`approval_dependencies`, `work_item_refs`, or `plan_id`. Use `plan prepare-scope` to bind the reviewed execution scope, then
-`approval confirm` to record the actual prompt decision. Only
-`plan apply-decision` makes its covered PLAN executable. Signed `approval prepare/record` is only for the five high-risk
-boundaries.
+## Transition from runtime-required operation
 
-For scoped decisions, task splitting and unordered path/capability presentation
-within the recorded bounds need no new owner decision. Material changes require
-one reviewed delta and its applicable decision; apply it without resetting
-project progress. Preserve old decisions as verified history. Legacy approvals
-remain exact-bound; conversion to a scope contract must be explicit before a
-new owner decision and must not rewrite prior approval hashes.
-Plans remain single-level; do not create child plans or invent `active_plans`.
-Several single-level plans may execute under the same recorded scope, with
-separate decision application and TASK gates but no repeated owner question.
-Change, exception and closure records are optional unless higher risk requires
-them. A CHANGE covered by the reviewed scope may reference the same PLAN decision.
+This policy replaces mandatory bundled-runtime gates for ordinary repository
+work; it does not change the CLI or delete its records. Before continuing existing
+work, map the actual owner decision, baseline, remaining scope and evidence into
+the current project notes. Preserve original approvals and snapshots as history;
+do not widen their scope or rewrite signatures. Resolve missing provenance or
+material changes before dependent execution. No new decision is needed solely
+for changing a record format or stopping optional CLI use.
 
-Keep needed source-to-requirement trace without making absent optional records
-block work. Create evidence for governed verification, completion, acceptance,
-production, or closure claims. Create results/reviews/handoffs only for release,
-audit, independent review, or ownership transfer. Keep `IMPLEMENTED`,
-`STATIC_VERIFIED`, `INTEGRATION_VERIFIED`, `BROWSER_VERIFIED`,
-`LIVE_ENV_VERIFIED`, `CUSTOMER_ACCEPTED`, and `CLOSED` distinct; partial,
-stale, failed, ambiguous, or unrun checks are not PASS.
-
-`blocked_by`, active `G0/G1` items or conflicting claims, unsafe paths,
-invalid events, stale evidence, and malformed approvals fail closed.
-
-## Concurrent writers
-
-Do not claim a single-agent task. Concurrent writers use non-overlapping claims
-and isolated worktrees where practical. Never edit another active claim's path;
-treat dirty unclaimed paths as `USER_OR_UNKNOWN`. Use a handoff when ownership
-moves. Claims coordinate and grant no approval.
-
-## High-risk boundary
-
-Cryptographic human approval is required only for production deployment,
-production data change, destructive operations, secret/protected-credential
-access, and final customer acceptance. These fail closed and configuration
-cannot weaken them. Agents may prepare but never sign, install, infer, or
-self-grant a decision; `HUMAN_PRIVATE_KEY_ACCESS` is never an agent capability.
-
-Never store credentials, tokens, cookies, private keys, or protected authority
-material in records/logs, or run untrusted code with privileged access.
-Production, real-impact external messaging, privileged containers, and data
-migrations need matching explicit scope and risk approval.
-
-## Exceptional paths
-
-Run `reset` only when the current user explicitly requests reset/start-over.
-Show `reset --dry-run` first, including removed/committed records and that
-`.harness/runtime/reset-*` is the only copy of uncommitted data. Preserve the
-human-decision runtime; run `reset --confirm` only within that authorization;
-never delete a snapshot without another explicit request.
-
-A hotfix remains a TASK in an approved PLAN: register the incident, create the
-smallest correct trace, preflight, obtain/apply the owner decision, pass the
-gate, fix, verify, and record evidence. Rollback, redeploy, data repair, and
-credential rotation keep their high-risk boundary. Load only the matching
-`docs/WORKFLOW.md` section for reset/hotfix details.
-
-## Verification and efficiency
-
-Use `next` as the index and targeted searches for detail. Do not repeat
-unchanged policy, records, schemas, or output already in session. Context
-reduction may never omit authority, dirty work, blockers, failures, or
-verification limits.
-
-Run `python scripts/check_repo.py` before release, handoff, result, or push.
-Report verification levels separately. See `docs/CONTEXT_EFFICIENCY.md` for
-routing/metrics, `docs/WORKFLOW.md` for sequences, `docs/APPROVALS.md` for
-signing, and `docs/COLLABORATION.md` for concurrent work.
+A project contract or protected CI may independently require a tool or approval.
+Identify that constraint and obtain the appropriate change before altering it.
+See [Workflow](docs/WORKFLOW.md) and the
+[pre-transition policy archive](docs/archive/runtime-required-policy/README.md).

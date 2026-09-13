@@ -1,151 +1,104 @@
-# Human Approval Operations
+# Approvals and Decisions
 
-Routine approval is the owner's prompt response to a concrete reviewed scope.
-The agent records it; the runtime validates its provenance, applicability and
-execution prerequisites. Planning-only work ends after authoring and required
-checks, before any execution decision.
+[AGENTS.md](../AGENTS.md) defines authority. Decisions are attributable human
+actions concerning concrete scope. A filename, fingerprint, status or passing
+tool check cannot create them.
 
 ## Who decides and who checks
 
-An explicit response such as "Proceed with this scope" is enough when it clearly
-refers to the prepared proposal. No magic phrase, typed fingerprint or user-run
-command is required. Preserve the actual message and reference; never infer
-consent from silence, an added document or an unreviewed request.
+The owner decides on the presented implementation scope. The agent prepares
+the proposal, records the actual response and checks that each work item remains
+covered. The agent does not decide for the owner.
 
-`approval confirm` records that human decision. `plan apply-decision` applies
-it to a covered plan. TASK gates check readiness; their PASS does not create
-consent or claim verification, customer acceptance or delivery.
+The user's request authorizes the requested investigation, specification,
+planning and document outputs. An explicit policy-edit request authorizes those
+guidance edits directly. Product implementation needs the actual decision on
+a concrete scope; reuse one already given rather than asking again.
 
-Routine PLAN decisions use `PROCEDURAL` assurance. They record provenance and
-do not cryptographically authenticate identity. Five boundaries require
-`CRYPTOGRAPHIC` assurance regardless of project configuration:
+## Preparing and recording one decision
 
-| Approval type | Subject |
-|---|---|
-| `PRODUCTION_DEPLOYMENT` | project |
-| `PRODUCTION_DATA_CHANGE` | change |
-| `DESTRUCTIVE_ACTION` | change |
-| `SECRET_ACCESS` | change |
-| `CUSTOMER_ACCEPTANCE` | feature |
+Present the outcome and acceptance criteria, affected components/paths/actions,
+data effects, exclusions, feasibility, alternatives, material risk, dependencies,
+uncertainties and verification. Identify the reviewed proposal by a stable
+document version, commit or dated reference.
 
-## One decision for a concrete change
+Record the actual response and its source next to that proposal or in a decision
+log. Use available message references or an accurate attributed excerpt; do not
+invent message IDs, dates, signatures or assent. No special phrase, typed hash,
+APR record or user-run command is required.
 
-Use `plan prepare-scope` before the decision to author a versioned execution
-scope with reviewed requirement/feature definitions, write boundaries,
-capabilities, exclusions, maximum risk, verification obligations and constraints.
-The command grants no authority. `report decision-package` includes these bounds,
-their fingerprint and preflight results for the owner's review.
+An explicit proceed response covers the unchanged presented implementation and
+verification. One decision can cover multiple plans/tasks. A supplied document,
+issue or exploratory request alone is not approval of an unreviewed change.
+Clarify only what remains ambiguous or materially undecided.
 
-After the owner decides, task splitting and unordered path/capability lists
-within those bounds do not need another decision. New single-level plans can
-reuse the scope through `new plan --scope-from PLAN-0001`; apply the same decision
-with `plan apply-decision --approval APR-0001 --plan PLAN-0002`. Application is
-bookkeeping, not another question. Each task still needs its own passing gate.
+## Coverage and currentness
 
-A meaningful change outside the bounds requires feasibility/impact analysis,
-updated scope preparation and one new prompt decision. Application preserves
-ongoing development state. Do not reset lifecycle pointers by hand. Legacy
-PLANs without `decision_scope` retain their original exact fingerprint contract;
-preparing a new scope is explicit and never reinterprets an old approval.
+Before covered work begins, assess the actual outcome, actions, paths/data,
+risk, constraints and checks against the decision. Confirm dependencies,
+ownership and required external permissions.
 
-Include a CHANGE in the prepared scope with `--change CR-0001` before the owner
-reviews it. The covered CHANGE can then use the same PLAN decision reference.
-An exact change snapshot explicitly included among legacy PLAN dependencies is
-also supported. A later decision does not erase that original CHANGE approval;
-execution still requires current TASK authority. Unreviewed or materially changed
-CHANGE records fail validation;
-a record label does not grant additional approval or waive high-risk gates.
+Routine task splitting, reordering, plan switching, metadata edits and record
+format changes do not create a new decision boundary. Material changes to
+commitments, risk, assumptions, conditions or authority need a prepared delta
+and an actual owner decision before affected implementation.
 
-Historical decisions are checked against their preserved snapshots and actual
-attestation. Normal staleness or supersession does not fail strict validation.
-Current execution applicability is checked by gates. Damaged history still fails
-closed; never delete history, fabricate consent or copy stale evidence as PASS.
+Preserve prior versions and decisions as history. Changed outputs can limit
+current applicability without making the past decision fictitious. Check
+history integrity separately from current coverage; never widen an old
+signature or copy evidence into a new PASS without assessment.
 
-## Routine PLAN confirmation
+## Plans containing high-risk capabilities
 
-The following commands are performed by the agent. Author complete PLAN/TASK
-content, then prepare the scope and package before asking for the decision:
+Production deployment, production data change, destructive operations,
+secret/protected-credential access and final customer acceptance require the
+specific authorized human decision for the actual subject, version and effect.
+A broad implementation approval does not cover these boundaries.
 
-```powershell
-python scripts/harness.py plan sync PLAN-0001
-python scripts/harness.py plan prepare-scope PLAN-0001 --write-boundary src --write-boundary tests --max-risk MEDIUM
-python scripts/harness.py validate --strict
-python scripts/harness.py report decision-package PLAN-0001
+Prepare the concrete action and its verification/recovery information before
+the decision. Use protected CI/environment approval, a human-signed change
+record or an authorized human operator. Preserve any stronger signature or
+approval requirement imposed by the project or external system. See
+[Security](SECURITY.md).
 
-# After the owner actually approves the presented scope by prompt:
-python scripts/harness.py approval confirm `
-  --type PLAN --subject .harness/plans/PLAN-0001.md --decision APPROVED `
-  --approver <owner> --basis "Owner approved the presented execution scope" `
-  --confirm-fingerprint <package-fingerprint> --confirmation-id <unique-id> `
-  --confirmation-channel chat --confirmation-reference <actual-owner-message> `
-  --authorized-action LOCAL_IMPLEMENTATION --authorized-action LOCAL_TESTS `
-  --authorized-action DOCUMENTATION --acknowledge-procedural
-python scripts/harness.py plan apply-decision --approval APR-0001
-```
+There is no mandatory bundled-runtime signed PLAN under the current operating
+policy. If a legacy CLI action is deliberately used, its implementation can
+still require both a signed PLAN and matching action approvals. Those checks
+are unchanged; this document does not authorize bypassing them.
 
-Use the actual reviewed boundaries, actions and risk ceiling; examples are not
-authority. A new decision needs a unique confirmation id. Retrying an identical
-payload and provenance with that id is idempotent while applicable; conflicting
-reuse fails. A retry does not need another owner question.
+## Checkout transfer and decision recovery
 
-Application selects the plan, prepares lifecycle state and records the changes
-atomically. It accepts a prepared decision from discovery/planning and resumes
-a changed decision during development. An unrelated live plan must finish or be
-explicitly superseded before switching; plans sharing the same scope can remain
-executable together. `transition --kind plan --to CLOSED|SUPERSEDED` records
-retirement; CLOSED requires terminal tasks and is not project/customer acceptance.
+Git transfer does not by itself establish current permissions, message
+provenance, protected credentials or authority. At the destination, identify
+the reviewed scope/version, actual decision source, remaining work and changed
+environment. Preserve original signed or recorded artifacts as history.
 
-Task verification must retain the prepared commands for its selected criteria.
-`criterion_verification` records those obligations; `verification` records their
-common commands. Independent criteria can use different checks without requiring
-every task to repeat every other task's commands. Author these before the decision.
-Evidence profiles and bindings remain independently required for completion claims.
+Continue when real coverage, provenance and permissions are established.
+Resolve missing authority or material differences before dependent work.
+A missing local CLI marker alone is not a new human decision requirement for
+ordinary document-based work.
 
-A procedural decision authorizes only local safe actions. High-impact actions
-keep the cryptographic flow below and matching capability-specific approval.
+Legacy runtime decisions may bind repository roots and protected local markers.
+Do not forge or manually install markers, replay a different decision as if it
+were the original, or rewrite signed snapshots. See the explicitly legacy
+[checkout finding](RUNTIME_GAPS.md#b8-checkout-transfer) if using that tool.
 
 ## Protected authority
 
-The authority config is fixed outside the repository:
+The agent may prepare approval requests and record authentic receipts. It may
+not self-approve, sign as a human, alter approval authority, read a human private
+signing key or infer consent from a passing check. Keep protected credential
+material out of documents and logs.
 
-- Windows: `C:\ProgramData\ProjectHarness\authorities\<directory>-<root-digest>.json`
-- POSIX: `/etc/project-harness/authorities/<directory>-<root-digest>.json`
+Final acceptance comes from the authorized customer for the identified
+candidate. A test report, deployment receipt or agent completion statement
+cannot substitute for that sign-off.
 
-The name is derived from the repository the harness governs, so several harnesses on one machine stay distinct without any of them carrying a project identity, and `doctor` reports the exact path this repository expects.
+## Legacy signed-flow reference
 
-It identifies the repository root, a pinned SSH allowed-signers file, a signature namespace, the permitted high-risk approval types, and a protected append-only decision ledger. The coding-agent account must not be able to modify the config, signer list, private key, ledger, or authoritative verifier.
-
-## Request and import flow
-
-1. Confirm that `python scripts/harness.py doctor` reports the protected authority `READY`.
-2. Run the relevant preflight and inspect the exact subject.
-3. Prepare an expiring request.
-4. A human owner or approval broker signs it and atomically appends the exact request/signature pair to the protected ledger.
-5. Import the public decision into the repository and check currentness.
-
-Example:
-
-```powershell
-$request = ".harness/decisions/production.request.json"
-python scripts/harness.py approval prepare `
-  --output $request `
-  --type PRODUCTION_DEPLOYMENT `
-  --subject .harness/project.json `
-  --decision APPROVED `
-  --approver owner@example.com `
-  --basis "Reviewed exact production target and rollback" `
-  --authorized-action PRODUCTION_DEPLOYMENT
-
-# Human/broker only: sign and append the exact request/signature to the protected ledger.
-
-python scripts/harness.py approval record --request $request --signature "${request}.sig"
-python scripts/harness.py approval check APR-0001
-```
-
-The agent may prepare the request, but may not sign it, install it in the protected ledger, run a human confirmation on someone's behalf, invent provenance, or infer approval from chat or repository text.
-
-## Currentness and reversal
-
-Current-approval checks re-verify the signature, protected-ledger presence and ordering, reviewed subject fingerprint, dependency snapshots, decision status and conditions. Historical validation verifies the preserved decision without requiring it to remain latest. Changed governed scope or an invalid current decision blocks its use for execution; history remains attributable to the original version.
-
-Record reversal as a later protected decision (`REJECTED`, `REVISION_REQUIRED`, `DEFERRED`, or `REVOKED`). Never delete prior approvals or ledger entries. An approval permits only the named action on the exact subject; it does not imply another high-risk approval or execute anything by itself.
+The bundled CLI and its approval schemas retain their implemented behavior.
+No migration or compatibility is implied by this policy change. For historical
+command procedures, consult the
+[pre-transition approvals snapshot](archive/runtime-required-policy/docs/APPROVALS.md.txt)
+as legacy tool documentation only. Inspect current help and real prerequisites
+before a scoped use; never follow archived instructions as current authority.

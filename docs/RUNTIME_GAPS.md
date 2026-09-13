@@ -1,9 +1,151 @@
-# Runtime Gaps on the Routine Path
+# Legacy Runtime Findings
 
-Status: **the audited routine-path gaps below are fixed in the runtime.**
-This document retains the original finding headings for troubleshooting links.
-Use `next` for normal routing and [Workflow](WORKFLOW.md) for commands. Manual
-state-pointer edits and artificial lifecycle detours are no longer needed.
+> **Optional CLI reference — not current project workflow requirements.**
+> These findings describe static review of runtime revision `7261297`, not
+> executed reproductions or fixes made by the policy transition. The bundled
+> implementation is unchanged. Follow [AGENTS.md](../AGENTS.md) and
+> [Workflow](WORKFLOW.md#optional-runtime) for current authority and readiness.
+
+The B1–B8 limitations can still affect deliberately selected legacy commands.
+They are not prerequisites for ordinary document-based project progress.
+Required external/contractual checks remain binding, and no failed CLI check
+may be reported as PASS. Preserve the legacy history and diagnose actual impact.
+
+## Current progress blockers
+
+B identifiers are documentation labels, not canonical open items or gate levels.
+Each entry distinguishes legacy behavior and the verification needed before
+claiming a runtime fix. Proposed remedies below are not implementation authority.
+The heading is retained for historical links; these are blockers of the legacy
+command path, not a mandatory list to resolve before project work.
+
+### B1. Historical evidence and strict validation
+
+Current: `validate_project` checks every evidence binding against the working
+tree, including historical or STALE evidence. Old bindings still warn after new
+evidence is recorded; strict rejects warnings. Changed criteria can also make
+old VERIFIED subjects invalid. Sources: [validation](../.harness/tooling/project_harness/validation.py),
+[strict exit handling](../.harness/tooling/project_harness/cli.py).
+
+Required behavior: separate historical integrity from current applicability.
+Until implemented, retain old observations and report the exact strict blocker.
+Do not rewrite hashes, delete history or turn unverified work into PASS.
+Verification needed: revise a verified file/criterion, add real new evidence and
+retain old history without blocking valid new work; tampering and use of stale
+evidence as current proof must still fail.
+
+### B2. Acceptance and deployment TASK execution
+
+Current: TASK execution permits APPROVED, BUILDING, VERIFYING and MAINTAINING,
+but not CUSTOMER_ACCEPTANCE or DEPLOYING. Those latter states lack a direct
+rework return. Entry to CUSTOMER_ACCEPTANCE also uses the feature gate with its
+default customer-approval requirement. Sources: [gates](../.harness/tooling/project_harness/gates.py),
+[transitions](../.harness/tooling/project_harness/lifecycle_mutations.py).
+
+Check the full execution/feedback path before entering those states. If blocked,
+report the state and operation; never relabel the phase, reset or hand-edit state
+to deploy. Verification needed: candidate -> acceptance feedback -> authorized
+rework -> renewed verification/acceptance -> gated deployment -> post-deploy
+checks, with missing or mismatched action approvals still denied.
+
+### B3. High-risk PLAN assurance
+
+Current: PLAN actions outside the procedural local-action allowlist require a
+cryptographic PLAN approval in addition to matching capability approvals.
+Sources: [assurance escalation](../.harness/tooling/project_harness/approvals.py),
+[capability gates](../.harness/tooling/project_harness/gates.py).
+
+Current policy uses specific human decisions and independent external controls;
+see [high-risk decisions](APPROVALS.md#plans-containing-high-risk-capabilities).
+Selecting the legacy CLI still encounters the additional signed PLAN requirement.
+Any future separation of routine scope decisions from action permits must verify
+that local-only scope remains procedural and no high-risk action succeeds without
+its matching current permit and reviewed PLAN coverage.
+
+### B4. Closure across multiple PLANs
+
+Current: every project-required feature must belong to the one active PLAN even
+when execution used several PLANs. Source: [closure gate](../.harness/tooling/project_harness/gates.py).
+
+Current policy closes from a release inventory across contributing plans;
+a legacy active-PLAN rejection does not alone block that document-based review.
+Do not invent a final implementation PLAN or reassign past TASKs to pass the CLI.
+Verification needed: aggregate two PLANs with different features, whether under
+shared or separate decisions, and close only when the full release contract is
+satisfied. Omitting unfinished required scope must still fail.
+
+### B5. Project closure dependency manifest
+
+Current: closure requires project `approval_dependencies`; `plan sync` manages
+PLAN dependencies only. Sources: [sync](../.harness/tooling/project_harness/authoring.py),
+[closure diagnostics](../.harness/tooling/project_harness/gates.py).
+
+Document-based closure uses a release inventory and requires no such field;
+see [closure preparation](WORKFLOW.md#closure-preparation). The earlier policy
+workaround for an explicit project manifest is preserved in the archive.
+Do not mutate legacy records solely to follow the current document workflow. Verification needed for future
+automation: derive the same complete manifest, reject missing/unsafe paths and
+preserve signed snapshots when its live version changes.
+
+### B6. Formal records for a single writer
+
+Current: `result submit` and `handoff create` require an active claim. Sources:
+[CLI](../.harness/tooling/project_harness/cli.py),
+[result submission](../.harness/tooling/project_harness/workflow.py).
+
+Current policy allows a truthful document result/handoff when the delivery
+contract accepts it; see [formal-record handling](COLLABORATION.md#formal-records-for-a-single-writer).
+The legacy commands still enforce claims. Claim-free CLI formal lineage remains
+unimplemented; do not fabricate a past claimed attempt. Verification needed: truthful
+single-writer results/handoffs preserve baseline, ownership and observations;
+unknown dirty work, overlapping writers and stale attempts remain rejected.
+
+### B7. Unrelated drafts and global strict validation
+
+Current: an incomplete required CANDIDATE feature warns even outside the selected
+scope; global strict rejects it. `next` also reports all validation errors before
+selecting work. Sources: [validation](../.harness/tooling/project_harness/validation.py),
+[guidance](../.harness/tooling/project_harness/guidance.py).
+
+Keep unselected ideas as attributable input until required canonical fields can
+be authored truthfully. Preserve existing drafts; never delete them or mark
+required work optional to silence checks. Report remaining strict failures
+without calling unrelated product work defective. Verification needed: separate
+global integrity, selected-scope readiness and future draft completeness;
+actual dependencies and global corruption must still block execution.
+
+### B8. Checkout transfer
+
+Current: Git does not transfer procedural markers or protected authority, and
+decisions bind their repository root. An exact confirmation retry can restore
+a missing marker only while the original payload and provenance remain applicable.
+Source: [procedural recording](../.harness/tooling/project_harness/approvals.py).
+
+Current work checks the real decision source, coverage and destination authority;
+see [decision recovery](APPROVALS.md#checkout-transfer-and-decision-recovery).
+A missing CLI marker alone is not a policy-first decision boundary. For selected
+legacy commands, distinguish same-root recovery from differently bound payloads;
+never install markers by hand. General cross-root CLI migration is unimplemented. Verification needed: exact valid
+retries are idempotent; conflicting latest decisions, changed roots and revoked
+or stale subjects cannot be silently replayed.
+
+## Other guidance inconsistencies
+
+`create_work_item` still warns unconditionally that adding a TASK to an approved
+PLAN requires a fresh decision. For explicit scope contracts, use actual coverage
+and preflight results with the existing decision when valid. For legacy exact
+fingerprints, retain their currentness restriction. Do not invent consent because
+of that warning. Source: [authoring](../.harness/tooling/project_harness/authoring.py).
+
+The prior documentation-output approval mismatch is removed by current policy:
+a request for requirements/design/planning documents authorizes those outputs
+and relevant document checks. It does not authorize unrelated implementation.
+
+## Earlier routine-path fixes
+
+The entries below are retained descriptions of earlier legacy-runtime changes,
+not current workflow instructions or new verification results. All command,
+state, gate and schema requirements in this section apply to that optional CLI.
 
 ## 1. Nothing sets the active plan
 
@@ -78,7 +220,7 @@ wider permission. See [Approvals](APPROVALS.md).
 
 | Original finding | Implemented behavior |
 |---|---|
-| Historical STALE/SUPERSEDED records failed strict validation | Validate original snapshots and attestations as history; enforce latest-decision applicability at execution. Tampering still fails closed. |
+| Historical STALE/SUPERSEDED approvals failed strict validation | Validate original approval snapshots and attestations as history; enforce latest-decision applicability at execution. Evidence staleness remains B1 above. Tampering still fails closed. |
 | PLAN and CHANGE needed separate decision records | An explicitly reviewed CHANGE may reference the same applicable PLAN decision through scope coverage or an exact legacy dependency snapshot. |
 | Sync retained obsolete derived references | Track generated dependencies; remove only proven obsolete derived entries. Preserve ambiguous legacy extras. |
 | Version bookkeeping and unordered lists changed hashes | Versioned contracts normalize known unordered fields and omit descriptive progress/version bookkeeping. Legacy hashes remain unchanged. |
@@ -102,7 +244,10 @@ transitions are not customer acceptance or production verification.
 
 ## Order of work
 
-Routine-path fixes and explicit shared scope are implemented. Hierarchical
+Address the relevant B1–B8 criteria before claiming the legacy CLI implements a
+complete delivery workflow. Ordinary policy-first delivery does not depend on
+those changes. Earlier routine-path
+fixes and explicit shared scope are implemented. Hierarchical
 plans in [Plan hierarchy](PLAN_HIERARCHY.md) and broader Markdown migration in
 [Record format](RECORD_FORMAT.md) remain separate designs. Shared authority
 already works across single-level plans; those future designs are not required

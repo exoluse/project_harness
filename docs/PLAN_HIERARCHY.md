@@ -1,25 +1,33 @@
 # Plan Hierarchy
 
+> **Legacy CLI design reference — not current operating policy.**
+> The hierarchy below is an unimplemented runtime proposal. Ordinary project
+> documents may already use nested plans/tasks; they need no schema migration.
+> Command examples below are proposed legacy interfaces, not a startup recipe.
+> References to gates, signatures and canonical records apply only to that
+> design and the unchanged legacy CLI. Follow [AGENTS.md](../AGENTS.md) and
+> [Workflow](WORKFLOW.md) for current work.
+
 Status: **category/parent hierarchy remains a future design.** Explicit shared
 execution-scope coverage is already implemented across single-level PLANs using
 `harness.execution-scope/v1`; one owner decision can cover several applied plans.
 That support does not create parent/child plans or `state.active_plans`.
 
 This document specifies the remaining hierarchy under `harness.plan/v2` and
-`harness.state/v2`. Until implemented, use single-level plans and the commands
-in [Workflow](WORKFLOW.md). Fields and category-prefixed plan commands described
+`harness.state/v2`. For legacy CLI records, the implemented structure remains single-level.
+Fields and category-prefixed plan commands described
 below belong to that future hierarchy and cannot be used in current records.
 
 ## Why
 
-A project of any size plans in more than one dimension at once. A web project
-has back-end work, screens, infrastructure, and cross-cutting features such as
-payment, each moving at its own pace with its own people. Today that forces a
-choice between one large PLAN that must be re-approved on every change, and a
-sequence of PLANs of which only one can be executable at a time. Neither fits
-concurrent workstreams, and until this lands the constitution's principle that
-only affected work stops holds at plan granularity only: a change to an
-approved plan stops every task in that plan until the owner re-confirms.
+A project can have API, screen, infrastructure and cross-cutting feature work
+with different dependencies and owners. Current single-level PLANs already share
+an explicit execution-scope decision and allow covered task refinement without
+per-PLAN reconfirmation. Hierarchy would add structural grouping and ancestor
+containment; it is not required for that existing authority model. Legacy
+exact-bound approvals retain their original currentness rules. Release closure
+aggregation is a separate [current limitation](RUNTIME_GAPS.md#b4-closure-across-multiple-plans),
+not proof that parent/child PLANs already work or are the only possible fix.
 
 ## Shape
 
@@ -216,8 +224,9 @@ Existing `harness.plan/v1` records remain readable as single-level roots.
 
 ## What does not change
 
-- PLAN approval stays procedural; the five cryptographic boundaries stay
-  cryptographic.
+- Local-only PLAN approval stays procedural; the five action boundaries remain
+  cryptographic. Hierarchy does not remove the current additional signed PLAN
+  requirement for high-risk capabilities described in [Approvals](APPROVALS.md#plans-containing-high-risk-capabilities).
 - A bare request is not a decision on an unreviewed execution scope. The actual
   owner response to the concrete proposal is recorded; provenance is never invented.
 - Every TASK still points to exactly one plan and is listed by it.

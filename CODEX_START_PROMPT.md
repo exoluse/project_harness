@@ -1,8 +1,11 @@
 # Codex Start Prompt
 
-Use the current `AGENTS.md` once per session, then run
-`python scripts/harness.py next`. Load only the records and policy section that
-its state requires; preserve every authority and safety gate.
-Classify the current request first. Policy-only follow-ups remain policy-only:
-edit the authorized text directly without init, PLAN/TASK or a PLAN approval
-request. Runtime recommendations do not expand that scope.
+Read the current `AGENTS.md` once, identify the user's scope and existing
+decisions, and inspect the relevant project notes and working-tree changes.
+Use the policy-first workflow: document actual readiness and verification,
+without mandatory CLI startup, initialization, record schemas or runtime gates.
+
+Preserve the requested stopping point, user/unknown work and external high-risk
+controls. Optional CLI diagnostics do not grant authority or automatically stop
+unrelated work. Policy-only requests authorize guidance edits, not runtime
+implementation, deletion or project-record migration.

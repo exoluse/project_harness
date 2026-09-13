@@ -1,59 +1,57 @@
 # Architecture
 
-The harness separates three concerns that should not be confused:
+The harness is a repository policy and documentation framework with optional
+legacy tooling. [AGENTS.md](../AGENTS.md) defines the operating policy.
+A project can proceed without Python, CLI initialization or schema records.
 
-```text
-discovery / requirements / design -> authored PLAN and TASKs -> planning complete
-owner prompt decision -> agent records/applies decision -> runtime TASK gate -> execution ready -> implementation
-concurrent writers -> claims / worktrees / handoffs
-high-risk action -> protected cryptographic approval
-```
+## Responsibilities
 
-Planning-only work ends after authoring and required planning checks, without
-requesting execution approval. Execution readiness is a separate boundary;
-it does not add a second decision for the same concrete change. These are
-policy milestones, not new runtime states. The full project sequence through
-verification, acceptance, delivery and closure is in the
-[HTML guide](HARNESS_POLICY_REPORT.html); [Development method](DEVELOPMENT_METHOD.md#planning-complete-and-execution-ready)
-defines the criteria.
+| Layer | Responsibility | Authority limit |
+|---|---|---|
+| User/customer | Objectives, concrete scope decisions and applicable acceptance | A decision covers only its actual reviewed bounds. |
+| Policy and adapters | Workflow, trace, verification and safety requirements | Text does not enforce external permissions. |
+| Agent and project documents | Scope/prerequisite assessment, implementation, evidence and reporting | The agent cannot create human consent or claim unrun checks passed. |
+| Optional bundled CLI | Legacy record authoring, diagnostics and reports | Implemented schemas/gates remain unchanged; output is not consent. |
+| External controls | Protected CI, environments, access controls and human execution/approval | Required controls cannot be bypassed through local policy or record edits. |
 
-The owner approves the reviewed scope through a prompt. The agent maintains
-the decision's source and binds it to the prepared proposal; the runtime checks
-the record and execution prerequisites. A gate is not an approval authority:
-PASS creates no consent, and failure does not erase a prior decision. See
-[approval roles](APPROVALS.md#who-decides-and-who-checks).
+## Default flow
 
-## Policy modes
+User objective and existing sources lead to versioned requirements, design and
+planning as requested. Actual owner decisions cover concrete implementation
+scope. The agent checks work-item prerequisites, performs covered work, verifies
+the changed subject and reports results and limitations.
 
-`.harness/project.json` selects:
+Documents may be Markdown sections, existing project files or another agreed
+format. There is no required state machine, single active plan, claim record or
+approval fingerprint. Closure aggregates the actual contributions and obligations.
 
-- `execution_mode`: always `PLAN_GATED`; it is not repository-configurable as an execution bypass;
-- `claim_mode`: `WHEN_CONCURRENT` or legacy `REQUIRED`;
-- `record_mode`: `ON_DEMAND` or legacy `REQUIRED`.
+Existing code can supply observations for reverse engineering. It does not
+prove intent, correctness or customer acceptance. Preserve source versions and
+separate current implementation from proposed changes.
 
-New projects use the first value in each pair. Missing fields retain legacy behavior so older repositories do not silently become less strict.
+## Repository map
 
-## Stores
+| Path | Current role |
+|---|---|
+| `AGENTS.md` | Canonical operating policy. |
+| `CLAUDE.md`, start prompts | Tool entry guidance consistent with the policy. |
+| `README.md`, `docs/` | Workflow, decisions, security, examples and reference material. |
+| `scripts/`, `.harness/tooling/` | Optional legacy runtime and repository checks; unchanged by the policy transition. |
+| Existing `.harness/` project records | Preserved legacy information; no initialization or migration is required. |
+| `docs/archive/runtime-required-policy/` | Exact pre-transition policy text, including pending policy edits, for historical reference. |
 
-- A harness governs one project: the repository it lives in. `project.json` carries a fixed `PROJECT` marker and a human `name`, so no record, command, or approval addresses the project by an identity string.
-- Canonical records live in `.harness/` in the working tree. The harness reads, validates, fingerprints, and gates them there; whether a project commits them to Git is the project's own choice, and no gate depends on a record's Git history.
-- The runtime and the record schemas it validates against live in `.harness/tooling/project_harness/`; the project tree holds no second copy.
-- Human-authored PLAN/TASK records use Markdown with strict YAML-style front matter; machine state and audit records use JSON. `docs/RECORD_FORMAT.md` specifies the decided move of every record to Markdown.
-- `state.current_plan` may be null during initial discovery. It becomes mandatory execution context before implementation; every TASK points to that PLAN and is listed by it.
-- `plan apply-decision` atomically materializes the owner decision, plan status, project focus and event. Explicit execution-scope coverage allows several single-level plans to retain applied authority; `active_plan` is the current focus. Legacy plans retain their exact-bound active-plan checks.
-- `decision_scope.py` defines the versioned reviewed contract and checks task containment. The owner decides through a prompt; this module validates scope, paths, capabilities, risk and verification without deciding for the owner. Historical approval integrity is validated separately from current applicability.
-- Claims, mutexes, and mailboxes live under the Git common runtime so linked worktrees share concurrency state.
-- Protected approval configuration, allowed signers, and decision ledgers live outside the repository.
-- `HANDOFF.md` and reports are derived views, not authority.
+## Compatibility and limitations
 
-## Mutation boundary
+A policy change does not implement new CLI behavior. The runtime still uses
+its existing schemas, state transitions, approval mechanics and claim checks.
+[Runtime gaps](RUNTIME_GAPS.md) describes legacy findings from static review,
+not defects fixed by this transition.
 
-Evidence attachment and lifecycle transitions use one atomic mutation service. In `WHEN_CONCURRENT` mode they may run without a claim when no active claim overlaps their targets. If an overlapping claim exists, the unclaimed mutation fails closed. In legacy `REQUIRED` mode a current matching claim is mandatory.
+Classify diagnostics by actual impact. Missing authority, invalid current proof,
+unsafe actions and required dependencies block affected work. Tool-specific
+format/state limitations do not alone block ordinary authorized document-based
+work. A separately mandated CI/tool check remains mandatory until its authorized
+owner changes that process.
 
-Explicit record-producing commands may emit an event atomically. Ordinary filesystem development does not create audit events merely to obtain permission.
-
-When a PLAN or TASK mutation is written, the mutation service rewrites only its canonical front matter and preserves the Markdown body. Parsing, schema validation, and atomic commit all complete before the record becomes visible. Invalid front matter, duplicate keys, mixed container types, odd indentation, and unquoted invalid scalars fail closed.
-
-## Evaluation
-
-An evaluation context caches records and validation for one command. Gates still enforce declared blockers, open-item scope, evidence freshness, high-risk approval currentness, and event integrity. `fast` and `full` verification tiers share those contracts while differing in test breadth.
+See [Workflow](WORKFLOW.md), [Data model](DATA_MODEL.md) and
+[Security](SECURITY.md) for the operating details.

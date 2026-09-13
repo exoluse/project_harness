@@ -1,7 +1,6 @@
 # Claude Code Start Prompt
 
-Follow `CLAUDE.md`: read the current `AGENTS.md` once, run
-`python scripts/harness.py next`, and load only the context required by the
-reported state.
-Keep policy-only follow-ups within the direct-edit exception: no initialization,
-PLAN/TASK or PLAN approval request is needed for the authorized policy text.
+Follow `CLAUDE.md` and the current `AGENTS.md`. Start from the user's requested
+scope, existing decisions and relevant project notes. No mandatory harness CLI
+command or initialization is needed. Preserve actual scope, evidence, ownership
+and human/external approval boundaries. Policy-only follow-ups stay policy-only.

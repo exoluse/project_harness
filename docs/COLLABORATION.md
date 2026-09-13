@@ -1,36 +1,53 @@
-# Collaboration
+# Collaboration and Handover
 
-## Claims are concurrency control
+Follow [AGENTS.md](../AGENTS.md). Ownership coordination prevents conflicting
+writes; it does not create execution authority.
 
-A claim is needed only while multiple writers can edit concurrently. It is not routine execution authority, human approval, or a prerequisite for a single-agent task.
+## Single writer
 
-Before concurrent work:
+A single writer needs no claim system, runtime attempt or placeholder handoff.
+Inspect dirty files before writing and preserve user/unknown changes. Use a
+concise task list and progress notes sufficient to explain what was changed
+and what remains.
 
-```powershell
-git status --short
-python scripts/harness.py mailbox list --box inbox --agent <agent-id>
-python scripts/harness.py claim acquire --agent <agent-id> --task TASK-0001 --paths <path> [<path> ...]
-```
+## Concurrent writers
 
-Use separate Git worktrees, non-overlapping paths, and non-overlapping logical locks. The runtime under `<git-common-dir>/project-harness-runtime/` makes claims visible across linked worktrees. Do not edit another active claim's files.
+Agree owners and non-overlapping paths and logical resources before concurrent
+editing. Prefer isolated worktrees when practical. Shared project notes or the
+team's coordination tool can record ownership, baseline, scope and status.
 
-## Handoff
+Do not edit another writer's active scope. Account for shared schemas, generated
+files, migrations and other logical collisions even if filenames differ.
+Resolve ownership and integration order explicitly. Each writer still needs
+applicable authority and real prerequisites for their own work.
 
-Use a handoff only when ownership of in-progress work moves between agents. It records exact changed files, file states, verification, limits, risks, and the next action, then releases the sender's claim. The receiver accepts it while acquiring its own claim.
+Use subagents only when the user or applicable higher-level instructions
+authorize delegation. This document does not itself request parallel agents.
 
-```powershell
-python scripts/harness.py handoff create --claim CLM-0001 --from-agent codex --to-agent claude --task TASK-0001 --summary "Continue implementation" --changed-file src/example.py --verification "python -m unittest::PASS" --next-action "Review and continue"
-python scripts/harness.py claim acquire --agent claude --task TASK-0001 --paths src/example.py --handoff HOF-0001
-```
+## Formal records for a single writer
 
-## Results and reviews
+A requested result or handoff can be an ordinary document when the agreed
+delivery contract accepts it. Record the real baseline, changed paths, decisions,
+checks, observations, limits, unfinished work and next action. No prospective or
+retrospective CLI claim is required under current policy.
 
-Results are on-demand audit objects. Use one when a task attempt needs independent review, immutable build lineage, a release gate, or a formal handback. A routine commit does not require one.
+If the optional legacy `result submit` or `handoff create` command is selected,
+its implemented claim and attempt checks still apply. Do not fabricate a claimed
+past run to satisfy them. Use a truthful document handoff if accepted; otherwise
+resolve the chosen process's requirements before claiming formal completion.
 
-When a result is used, its latest attempt controls that audited workflow. A newer failed or incomplete attempt cannot be hidden by an older PASS. Reviewer IDs are provenance strings, not cryptographic identities; hostile separation needs protected CI or an external orchestrator.
+## Transfer and integration
 
-## Dirty work and recovery
+At transfer, identify the actual owner, input/output versions, dirty work,
+applicable decisions, failed or unrun checks, outstanding obligations and next
+steps. The recipient checks applicability and permissions in the new environment;
+a handoff does not widen the original decision.
 
-Unowned dirty paths remain `USER_OR_UNKNOWN`. Never reset, clean, delete, or overwrite them to satisfy a claim. Recovery may abandon a stale lease after its structured checks, but it does not take ownership of dirty files.
+Preserve both sides during integration. Do not silently reset unknown work,
+drop failed attempts or hide a newer failure behind an older success.
+Verification should address the actual integration impact, rather than rerunning
+unaffected checks solely because ownership or document layout changed.
 
-No-Git claims serialize writers but cannot prove committed lineage. Use Git and isolated worktrees for parallel work or release-grade integration.
+Before a normal authorized push, fetch the configured remote and preserve both
+histories. Force/tag pushes, branch deletion, different targets and published
+history rewrites need separate explicit authorization.

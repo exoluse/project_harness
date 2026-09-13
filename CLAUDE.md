@@ -1,14 +1,16 @@
 # Claude Code Adapter
 
-`AGENTS.md` is canonical and is not loaded automatically. Read its current
-repository copy once per session, then run `python scripts/harness.py next` and
-use its state to load only the referenced records or policy section. Re-read an
-unchanged file only when evidence shows that it changed during the session.
-Classify scope before following execution guidance. Policy-only requests use
-the direct-edit exception, including follow-ups; do not initialize project
-records or prepare a PLAN approval merely to edit the policy.
+Read the current `AGENTS.md` once per session; it is the operating policy.
+Use the user's request and relevant project documents to determine stage,
+authority, remaining work and verification. Inspect Git status before edits.
 
-Follow `next` for planning detail, prompt decision recording, decision application
-and TASK readiness. A recorded decision awaiting application does not need
-another owner question. Scope containment, task gates, dirty-work preservation
-and the five cryptographic boundaries remain mandatory.
+The bundled runtime is optional. Do not require `next`, `init`, PLAN/TASK schemas,
+fingerprints, decision application or CLI gates for ordinary project work.
+If used, report its real output and distinguish record diagnostics from actual
+project blockers. Protected CI and external controls remain mandatory where
+applicable.
+
+Reuse actual decisions within their scope; stop for missing authority, material
+changes or real dependencies. Keep user/unknown work and truthful history.
+Policy-only requests permit guidance edits, without initialization, runtime
+implementation or deletion.
