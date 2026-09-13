@@ -275,3 +275,4 @@ searching the existing Markdown; historical records retain their formats/IDs.
 | Work | Scope and state | Dependencies |
 |---|---|---|
 | [CHG-00001](changes/2026-09-13-document-organization.md#chg-00001) | Feature/work organization and autonomous IDs for every new Markdown document and tracked item; policy scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00001](changes/2026-09-13-document-organization.md#dec-00001), [PLAN-00001](changes/2026-09-13-document-organization.md#plan-00001); no runtime change. |
+| [CHG-00002](changes/2026-09-13-readme-guidance.md#chg-00002) | README examples, ID wording and document guidance aligned; scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00003](changes/2026-09-13-readme-guidance.md#dec-00003); uses the current document/ID policy. |
