@@ -215,6 +215,50 @@ unfinished tasks; SUPERSEDED records an intentional abandonment, not completion.
 Plans stay single-level. The category tree in [Plan hierarchy](PLAN_HIERARCHY.md)
 is a separate future design, not a prerequisite for sharing one decision.
 
+## Existing project intake and reverse engineering
+
+Use the [intake stage contract](DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering)
+for an existing repository or supplied code snapshot. This is an agent-driven
+procedure using current records and commands, not an automatic import feature.
+
+1. Identify the requested scope and stopping point: assessment, requirements
+   recovery, design recovery, planning, or continued execution. Start with `next`
+   in the repository governed by this harness and inspect Git status before
+   writing. Read-only assessment and policy maintenance do not authorize `init`.
+   A supplied external codebase is analysis input; this harness governs only its
+   own repository and does not acquire execution authority over that codebase.
+2. Record the commit and relevant dirty changes, or file digests for an unversioned
+   snapshot, along with available development/deployment history and exclusions.
+   Inspect existing agent policies, scripts, CI and `.harness` paths before a
+   requested integration. Preserve both sides, identify conflicts and prepare
+   affected integration work under the existing authority rules. Do not blindly
+   copy the harness over an existing repository or initialize over existing records.
+3. When project intake/registration is requested and the harness is already in
+   place, use `init` only if needed, then `doctor` and `next`. Its initial
+   `DISCOVERY` state tracks intake; describe actual project progress in the
+   relevant records without resetting history or manually advancing runtime
+   state. Register only the sources/artifacts needed for the requested stage.
+4. Read scoped code, tests, configuration and existing documents. Author recovery
+   findings and needed specification records with versioned references, explicit
+   versus inferred intent, contradictions and unknowns. Keep the current
+   implementation separate from proposed targets. The request permits discovery,
+   specification, planning and their records; editing local product-document
+   deliverables still requires an approved PLAN/TASK and passing gate under
+   `AGENTS.md`. Do not create placeholder execution records just to investigate.
+5. Assess historical evidence applicability and report missing verification.
+   Reading code or test definitions is analysis; running product tests, builds
+   or the application retains the normal execution gates and any applicable
+   high-risk boundaries. Record actual observations and limits only. Run
+   `validate --strict` after canonical record changes; document review alone
+   does not establish a runtime, integration or live-environment PASS.
+6. If planning is requested, map actual remaining documentation, verification
+   and change work into PLAN/TASK using the default authoring and preflight path.
+   Preserve past work as history, not invented completed TASKs. Report recovered
+   coverage, gaps, required-check outcomes and owner questions at the requested
+   stopping point. Planning-only work ends after its required checks; requested
+   execution proceeds through the one prepared owner decision, application and
+   TASK gate. A valid existing decision is reused only within its actual coverage.
+
 ## When the harness becomes strict
 
 The harness adds a gate only where the consequence needs one:

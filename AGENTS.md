@@ -77,6 +77,36 @@ the trace and drives the authorized steps. Read only the relevant stage or
 change section of `docs/DEVELOPMENT_METHOD.md` when planning, reviewing stage
 readiness, or processing a change. This method adds no runtime states or commands.
 
+## Existing project intake and reverse engineering
+
+An existing project may enter the harness without restarting development.
+Record the intake version (commit or file digests), dirty work, analysis scope,
+actual development/deployment status, and the boundary of future governed work.
+The harness's initial `DISCOVERY` state describes its intake, not loss of the
+project's prior progress. Do not reset history or edit lifecycle state to mimic
+that progress. Preserve existing repository policies and tooling; assess path
+and policy conflicts before integrating the harness into another repository.
+
+Code establishes what is implemented, not necessarily what was intended or
+approved. Recover requirements and design with versioned source references;
+distinguish observed implementation, inferred intent, and unresolved questions.
+Keep the description of the current implementation separate from proposed target
+requirements/design. Do not turn a defect, workaround, test assertion, or inferred
+design rationale into an agreed requirement without supporting authority.
+
+Preserve prior decisions, test reports and releases for their original versions.
+Assess applicability before using them for current claims; they do not
+automatically satisfy current evidence or approval gates. Never fabricate past
+PLAN/TASK execution, approvals or PASS evidence. Plan actual remaining work.
+
+Read the matching [development method](docs/DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering)
+and [workflow](docs/WORKFLOW.md#existing-project-intake-and-reverse-engineering)
+sections for intake or document recovery. Discovery/specification and their
+records remain authorized by the request; product-document edits, product tests,
+implementation and Git operations retain the Authority rules below. Report the
+requested documentation stage's coverage and limits without claiming product
+verification or acceptance. This procedure adds no runtime states or commands.
+
 ## Change decisions and prior versions
 
 For a proposed change, assess feasibility, alternatives, uncertainties and

@@ -113,6 +113,54 @@ normally sit in `SPECIFYING`; design and planning can be described across
 Revisiting requirements during `BUILDING` is a change cycle, not permission to
 invent a backward transition or reset project history.
 
+## Existing project intake and reverse engineering
+
+Use this method when taking over a project already under development or
+recovering requirements and design from code. Intake establishes a versioned
+basis for the requested scope; it does not require rebuilding completed work
+or reconstructing a fictional history of governed execution. Scale the review
+to the requested component, release or repository, and record exclusions.
+
+| Stage | Inputs and deliverables | Exit criteria |
+|---|---|---|
+| Intake and baseline | Owner's requested stopping point; repository/version or supplied snapshot; dirty-file inventory; existing policies, documents and available development/deployment history; analysis and future management boundaries | The analyzed version, ownership uncertainties, integration conflicts and excluded areas are identifiable; no existing work or history has been overwritten |
+| Requirements recovery | Scoped code, tests, configuration and attributable business documents; current functions, inputs/outputs, permissions, business rules and error behavior linked to source locations | Recovered behavior is traceable; implementation facts, inferred intent, contradictions and unknowns are distinguished; proposed acceptance criteria are not presented as already agreed |
+| Design recovery | Recovered requirements and implementation; component responsibilities, data model, interfaces, dependencies and processing flows | The scoped structure is explained with versioned references; observed mechanisms are separated from inferred rationale and intended constraints; omissions and risky assumptions are visible |
+| Gap assessment and future planning | Current implementation documents, attributable target requirements and constraints, applicable historical evidence | Differences, suspected defects and missing verification are explicit; requested PLAN/TASK work covers real remaining actions, dependencies and verification; normal planning checks pass if planning was requested |
+
+For every material recovered claim, retain the analyzed version, file/symbol or
+document reference, the claim's basis (implementation, existing document, test
+definition or recorded observation), and whether intent is explicit, inferred
+or unresolved. These are explanatory distinctions using existing records and
+prose, not new schema fields or evidence statuses. Use SRC/ART for attributable
+inputs, REQ/FUNC for recovered specifications and criteria, and open items for
+uncertainty or conflict with its actual scope and severity. Do not copy an entire
+codebase into records; reference the relevant version and paths.
+
+Keep current implementation and proposed target documents distinguishable.
+Code is not proof of business intent, correctness, security or acceptance.
+A test definition shows an expectation; reading it does not prove it passed.
+Deployment configuration or an old release report does not establish the current
+live state. Do not infer original design decisions from structure alone. Resolve
+material conflicts with the owner before treating a proposed target as agreed;
+bundle decisions with the normal concrete execution proposal where applicable.
+
+Preserve historical approvals and verification with their original provenance,
+subjects and limitations. Record whether each reused item still applies to the
+current version, criteria, dependencies and bindings. Current governed claims
+must meet the existing evidence and approval gates; unsupported claims remain
+unverified. Do not manufacture retrospective TASKs or approvals, or rerun
+unaffected checks solely to make history look native to the harness.
+
+Recovery is complete for its requested stage when its coverage, source trace,
+current/target distinction, contradictions, omissions and remaining questions
+are reported and its applicable checks pass. Open questions may limit a scoped
+recovery without preventing delivery of those findings; a failed required check
+still prevents a completion claim. Documentation completion establishes no
+product verification, customer acceptance or permission for downstream work.
+Follow the [intake workflow](WORKFLOW.md#existing-project-intake-and-reverse-engineering)
+and the existing Authority rules for writing deliverables and executing checks.
+
 ## Iteration within the lifecycle
 
 ### Requirements, tasks and execution order
