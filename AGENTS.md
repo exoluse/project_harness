@@ -20,6 +20,25 @@ authority, integrity or dependency failures still block affected work. Never
 report a failed check as PASS, forge records to satisfy it, bypass protected
 CI or weaken an external control. See [optional runtime](docs/WORKFLOW.md#optional-runtime).
 
+## Management document format
+
+Write all new harness management documents as Markdown (`.md`), including
+project notes, requirements, designs, plans/tasks, decisions, change traces,
+verification reports and handoffs. Use prose, headings, tables, checklists and
+links; sections in an existing Markdown document are sufficient. Do not create
+JSON or other non-Markdown management records or parallel machine-readable
+copies for ordinary project work. No fixed schema, ID or front matter is required.
+
+Preserve existing records, signed payloads, snapshots and historical documents
+in their original formats; this rule does not authorize conversion or deletion.
+Product code/configuration/data, original evidence artifacts and the optional
+legacy CLI's internal files retain the formats their tools require. Do not run
+the CLI merely to generate management records for ordinary document-based work.
+A separately required contract or external control remains binding; identify
+and resolve any format conflict before the affected delivery.
+
+See [Information model](docs/DATA_MODEL.md) for document content and trace.
+
 ## Startup and context
 
 1. Read this policy once per session and the relevant tool adapter. Re-read only

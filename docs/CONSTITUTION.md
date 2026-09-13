@@ -8,7 +8,9 @@ These principles explain its intent.
 2. **Requested stopping point.** Stage-only work ends at its requested outputs;
    a full workflow continues within current authority and real readiness.
 3. **Useful documentation.** Requirements, design, planning and trace support
-   delivery. Fixed filenames, schema records and placeholder plans are optional.
+   delivery. New management documents use Markdown (`.md`); fixed schemas,
+   filenames, front matter and placeholder plans are not required. Preserve
+   existing records and tool-required formats under the governing policy.
 4. **One decision for one reviewed scope.** Several plans/tasks may share a
    decision; routine refinement does not create repeated approval ceremonies.
 5. **Material changes stay visible.** Preserve the prior baseline, assess the

@@ -23,8 +23,12 @@ those rather than assuming this policy removes them.
 7. Deliver the requested result. For releases or project closure, include all
    contributing work, acceptance and operational obligations as applicable.
 
-A concise project note can hold the stage, baseline, decision reference, task
-list, prerequisites, results and next action. Filenames and IDs are optional.
+A concise Markdown (`.md`) project note can hold the stage, baseline, decision
+reference, task list, prerequisites, results and next action. New harness
+management documents must use `.md`; specific filenames and IDs are optional.
+Do not create parallel JSON management records. Preserve existing records and
+tool-required formats as described in the
+[format policy](../AGENTS.md#management-document-format).
 Do not create empty PLAN/TASK records simply to begin documenting a project.
 
 ## Existing project intake and reverse engineering

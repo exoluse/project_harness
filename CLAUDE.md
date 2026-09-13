@@ -4,6 +4,11 @@ Read the current `AGENTS.md` once per session; it is the operating policy.
 Use the user's request and relevant project documents to determine stage,
 authority, remaining work and verification. Inspect Git status before edits.
 
+Write new harness management documents only as Markdown (`.md`), using ordinary
+sections, tables and links without required schemas or front matter. Do not
+create parallel JSON records. Preserve existing records and apply the product,
+evidence, legacy runtime and external-control boundaries in `AGENTS.md`.
+
 The bundled runtime is optional. Do not require `next`, `init`, PLAN/TASK schemas,
 fingerprints, decision application or CLI gates for ordinary project work.
 If used, report its real output and distinguish record diagnostics from actual

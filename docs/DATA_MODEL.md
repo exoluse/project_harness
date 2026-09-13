@@ -1,8 +1,18 @@
 # Project Information Model
 
-Project information must be reviewable and attributable. It does not require
-a prescribed storage format, schema, directory, ID or front matter. Follow
-[AGENTS.md](../AGENTS.md); use the project's existing documents where possible.
+Project information must be reviewable and attributable. Write all new harness
+management documents as Markdown (`.md`); no fixed schema, directory, ID or front
+matter is required. Follow [AGENTS.md](../AGENTS.md#management-document-format);
+reuse sections in existing Markdown documents where possible. Use prose, tables,
+checklists and links instead of creating JSON records or parallel structured
+copies of management documents.
+
+Preserve existing non-Markdown records and reference them without automatic
+conversion or deletion. Product files such as `package.json`, original evidence
+such as logs or test reports, and optional legacy CLI internal files retain their
+required formats. Summarize verification in Markdown and link to those original
+artifacts. Contractual delivery formats and external controls remain binding;
+resolve actual conflicts before the affected delivery.
 
 ## Suggested information
 
@@ -68,3 +78,26 @@ document-based workflow pass a legacy gate. Runtime record migration is separate
 implementation work requiring its own scope and verification. The
 [record-format proposal](RECORD_FORMAT.md) is a legacy design reference, not a
 format requirement for current project documents.
+
+## Policy change trace: 2026-09-13
+
+- Baseline: `6b4d41f803ca914b18613aef812f0a60260261af`; the working tree was clean
+  before this policy edit.
+- Decision source: in this session, the owner replied "정책을 수정하자\~!" to the
+  proposal to use only `.md` for new management documents, preserve existing
+  records/signatures and exclude product configuration and CLI implementation.
+- Before/after: unrestricted management document formats become Markdown-only
+  for new documents; schemas and front matter remain unnecessary.
+- Scope and readiness: governing policy, tool entry guidance, README and related
+  documentation only. The decision covers these edits and document checks;
+  required inputs are available, with no ownership conflict or external action.
+- Verification criteria: review the diff for consistent scope and preserved
+  exceptions; check whitespace, Markdown structure and local links. Runtime code,
+  schemas, existing project records and archived policy are outside this change.
+- Verification result: STATIC_VERIFIED for the policy edit on this baseline in
+  the Windows/PowerShell workspace. Diff review confirmed the intended scope;
+  `git diff --check` found no whitespace errors. A PowerShell check passed for
+  all 10 changed Markdown files and 56 local links, including heading targets,
+  text decoding and balanced code fences. The initial Python-based check could
+  not run (`python -` exited 1); the PowerShell check supplied the replacement
+  evidence. Product/runtime tests were not run for this documentation-only edit.

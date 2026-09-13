@@ -21,9 +21,11 @@ planning as requested. Actual owner decisions cover concrete implementation
 scope. The agent checks work-item prerequisites, performs covered work, verifies
 the changed subject and reports results and limitations.
 
-Documents may be Markdown sections, existing project files or another agreed
-format. There is no required state machine, single active plan, claim record or
-approval fingerprint. Closure aggregates the actual contributions and obligations.
+New harness management documents use Markdown (`.md`), including sections in
+existing Markdown files. Existing records and tool-required formats are preserved
+under the [format policy](../AGENTS.md#management-document-format). There is no
+required state machine, single active plan, claim record or approval fingerprint.
+Closure aggregates the actual contributions and obligations.
 
 Existing code can supply observations for reverse engineering. It does not
 prove intent, correctness or customer acceptance. Preserve source versions and

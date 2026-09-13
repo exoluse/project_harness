@@ -2,8 +2,9 @@
 
 > **Legacy CLI format proposal — not current operating policy.**
 > The dated decision below is preserved as historical design context, not a new
-> implementation authorization or evidence that migration has occurred. Ordinary
-> project documents need no schema, front matter or prescribed filename.
+> implementation authorization or evidence that migration has occurred. New
+> harness management documents must use `.md`, without required schemas, front
+> matter or fixed filenames; this does not implement the CLI proposal below.
 > Existing CLI records retain their implemented formats. Rules below describe
 > that proposed runtime migration only; follow [AGENTS.md](../AGENTS.md) and
 > [Data model](DATA_MODEL.md) for current work.
@@ -13,7 +14,7 @@ Status: **decided on 2026-09-06, not yet implemented.** Today `PLAN-*` and
 is JSON. The decision below makes Markdown the format of every canonical record
 and of the project and state files, leaving JSON only where a file's exact bytes
 are what a signature or a snapshot binds. Until a separately authorized runtime change lands, that split remains the
-legacy CLI format only. Current project documents follow the flexible model in
+legacy CLI format only. New management documents follow the Markdown policy in
 [Data model](DATA_MODEL.md).
 
 ## Decision
