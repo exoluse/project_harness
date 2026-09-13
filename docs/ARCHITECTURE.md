@@ -27,6 +27,10 @@ a small coherent unit; independently scoped units have separate documents. See
 [document organization](DATA_MODEL.md#document-organization).
 Traceable items use [stable type-prefixed IDs](DATA_MODEL.md#item-ids) and
 resolvable item links; these identities do not enforce approval or verification.
+New project Markdown uses `<document-root>/<classification-path>/<ID>.md`;
+the filename stem exactly matches the body document ID, including overview and shared-context
+documents. Features group item links; the agent chooses physical classification
+folders and hierarchy for the project rather than following fixed directory names.
 Existing records and tool-required formats are preserved
 under the [format policy](../AGENTS.md#management-document-format). There is no
 required state machine, single active plan, claim record or approval fingerprint.

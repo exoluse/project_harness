@@ -20,12 +20,22 @@ and product documents, then writes:
 | Remaining-work plan | Actual gaps, tasks, dependencies, alternatives, risk and verification. |
 
 These are information types, not a limit of one file per type. For a project
-with sign-in and search features, maintain an overview linking separate
-`features/sign-in/` and `features/search/` documents and their shared requirements
-and architecture. Each feature can have its own requirements, design and plan;
-a small search empty-state change can instead use one document with those
-sections. Record why the units are separate and link their dependencies. See
+with sign-in and search features, maintain an overview grouping each feature's
+requirements, designs, plans, tasks and verification links. Store the actual
+documents in suitable classification folders, for example under `project-docs/`.
+The root, folder names and hierarchy are chosen for the project, not mandated
+by this example. A small search empty-state
+change can keep tightly coupled stage notes in its change document; independently
+managed requirements and tasks have their own files. Record the boundaries and
+link dependencies. See
 the [illustrative layout](DATA_MODEL.md#document-organization).
+
+Every generated Markdown file uses `<document-type>/<ID>.md` under that root,
+including the overview and shared specifications: for example
+`overview/DOC-00001.md`, `requirements/REQ-00001.md`,
+`backend-plans/API-00001.md`, `tasks/TASK-API-00001.md` and
+`changes/CHG-00001.md`. Each filename stem exactly matches its body document ID;
+feature names and descriptions belong in the body and overview, not filenames.
 
 Illustrative item trace: requirement `REQ-00001` connects to design `DES-00001`,
 backend plan `API-00001` and screen plan `SCR-00001`; their work items might be

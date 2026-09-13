@@ -24,6 +24,17 @@ the user to classify each one. Follow the [ID convention](docs/DATA_MODEL.md#ite
 link items and preserve IDs across revisions/moves; check coverage, uniqueness
 and references. Apply this to guides, research, reviews and handoffs as well.
 
+Store every new project Markdown document at
+`<document-root>/<classification-path>/<DOCUMENT-ID>.md`, for example
+`project-docs/requirements/REQ-00001.md`. The filename is exactly the body
+document ID plus `.md`, with no title/date suffix. Use type folders for all
+kinds, including overviews, tasks, reports and handoffs; choose new mappings
+autonomously. Root/folder names and nesting are contextual choices, not a fixed
+schema; record and consistently reuse the mapping. Independently managed items
+have their own files. Group features
+through overview/item links. Check folder mapping and exact filename/body ID
+agreement; preserve existing records and externally required formats.
+
 The bundled runtime is optional. Do not require `next`, `init`, PLAN/TASK schemas,
 fingerprints, decision application or CLI gates for ordinary project work.
 If used, report its real output and distinguish record diagnostics from actual

@@ -70,7 +70,9 @@ A useful plan includes:
 Before completing planning, check that independently scoped units have their
 own documents, the overview indexes them, shared specifications have one
 maintained source, and requirements/design/work ID links cover the requested
-scope. Check item-ID coverage, uniqueness and references using the
+scope. Check all new Markdown type-folder mappings and exact `<ID>.md`
+filenames against their body document IDs,
+plus item-ID coverage, uniqueness and references using the
 [ID convention](DATA_MODEL.md#item-ids).
 Identify planned verification without claiming evidence from an unrun stage.
 

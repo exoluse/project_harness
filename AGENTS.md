@@ -50,16 +50,20 @@ ever-growing requirements, design or plan file for the whole project.
 
 Split when a unit needs its own scope/acceptance criteria, design decisions,
 dependencies, owner, verification or delivery history to be reviewed independently.
-Within a small coherent unit, requirements, design, plan and verification may be
-sections in one document. Separate those stages into linked files when their
-detail or lifecycle warrants it. Do not create a file per trivial task or empty
-documents for stages beyond the user's requested stopping point.
+Within a small coherent change, tightly coupled stage notes may be sections in
+its document. Independently managed requirements, designs, plans and tasks use
+their own files in the corresponding type folders. Do not create a file per
+paragraph or empty documents beyond the user's requested stopping point.
 
 Keep shared requirements and architecture at project level and link to them
 from affected units. Link each unit's requirements, design, plan and actual
 verification, including cross-unit dependencies. Maintain the overview's links
 and summary as work changes; detailed facts have one maintained source.
-Filenames and directories are flexible. Preserve existing records and reviewed
+Classify new project documents in suitable folders, using the exact ID-only
+filenames below. Folder names, nesting and the document root are chosen for
+the project; `project-docs/requirements/` is an example, not a mandatory path.
+Maintain feature/work grouping in the overview and item links regardless of
+the physical layout. Preserve existing records and reviewed
 versions; apply this structure to new work and organize existing documents only
 within the authorized scope. See [organization guidance](docs/DATA_MODEL.md#document-organization).
 
@@ -70,6 +74,27 @@ authorized project scope, including guides, research, reviews, meeting notes,
 reports and handoffs, not just requirements/design/planning documents. Give
 each new document an identity: reuse its primary item's ID when it represents
 one item, or assign an appropriate document ID when it collects several items.
+Use `<document-root>/<classification-path>/<DOCUMENT-ID>.md` for every new
+project Markdown document, with the exact same ID visible near the top of its
+body.
+For example, use `project-docs/requirements/REQ-00001.md`,
+`project-docs/designs/DES-00001.md` and `project-docs/tasks/TASK-API-00001.md`.
+The filename is only the ID and `.md`; descriptive suffixes such as
+`REQ-00001-login.md` are not allowed. Titles belong in the document body and
+overview. This includes overviews, shared specifications, research, reports
+and handoffs. A body ID or an ID-bearing directory alone is insufficient.
+Choose the document type, folder and ID before creating the file. The agent
+chooses folder names and hierarchy from the content, workflow and existing
+project conventions; none of the example folder names is mandatory. Record
+and consistently reuse the project's classification mapping, extending it
+autonomously for new kinds. If a folder changes, preserve IDs and update links.
+
+Give each independently managed requirement, design, plan, task or other
+primary item its own `<ID>.md` in its type folder. Overviews and collections
+index those documents rather than absorbing their authoritative detail.
+Acceptance criteria, explanatory text and tightly coupled stage notes for a
+small change may stay within their owning item; this does not require a file
+per paragraph. A separately tracked task uses its own file and links its plan.
 Assign a project-unique, stable ID to each independently tracked item. The agent
 determines meaningful item boundaries from the document's purpose, including
 requirements, criteria, design items, plans, tasks, decisions, findings, changes,
@@ -97,7 +122,8 @@ retired IDs; link replacements when items split, merge or are superseded.
 
 Use IDs with resolvable file/anchor links for relationships. An ID is neither
 a version nor approval or verification evidence; preserve the applicable
-baseline, actual decision and observed result separately. Check ID coverage,
+baseline, actual decision and observed result separately. Check every new
+Markdown type folder and exact filename against its body ID, plus ID coverage,
 uniqueness and references before document completion. Preserve existing IDs
 and historical records; this rule does not authorize bulk retroactive relabeling.
 New traceable items added to existing Markdown follow the same identity rule.
@@ -166,8 +192,8 @@ Before a work item starts, confirm and briefly record that the decision covers
 its outcome, paths/actions and verification; required inputs/dependencies are
 ready; no real blocker or ownership conflict applies; and needed external
 permissions are present. A plan and its work items can be Markdown sections or
-a checklist with stable item IDs. No prescribed filenames or front matter are
-required.
+a checklist with stable item links. Independently managed items use separate
+`<ID>.md` files in their type folders; front matter is not required.
 
 One decision may cover several plans and tasks within its reviewed bounds.
 Refining, splitting, ordering or moving tasks within those bounds needs no new

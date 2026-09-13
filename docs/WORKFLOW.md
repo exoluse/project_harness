@@ -30,7 +30,12 @@ decision reference, tasks, prerequisites, results and next action. A small
 coherent unit may combine these in sections; independent units use separate
 documents under the [organization guidance](DATA_MODEL.md#document-organization).
 New harness management documents must use `.md` and stable item IDs following the
-[ID convention](DATA_MODEL.md#item-ids); specific filenames are optional.
+[ID convention](DATA_MODEL.md#item-ids). New project Markdown uses
+`<document-root>/<classification-path>/<ID>.md`: the filename is exactly the
+document ID plus `.md`, without a descriptive suffix. Independently managed items have
+their own files; feature groups are maintained through overview/item links.
+The agent chooses folder names and hierarchy for the project and records the
+mapping; example paths such as `project-docs/requirements` are not fixed names.
 Do not create parallel JSON management records. Preserve existing records and
 tool-required formats as described in the
 [format policy](../AGENTS.md#management-document-format).
@@ -96,7 +101,8 @@ check does not establish either product integration or production success.
 
 Before completion, release, handover or push, review the diff and relevant
 verification. For document work, also check unit boundaries, overview entries,
-local file/anchor links, new document identities, item-ID coverage/uniqueness
+local file/anchor links, type-folder mapping, exact filename/body document-ID
+agreement, item-ID coverage/uniqueness
 and the requirements-to-design-to-work-to-verification trace for the requested
 stage. Required project/CI checks remain required. Optional tool failure must
 be reported accurately even when unrelated authorized work can continue.

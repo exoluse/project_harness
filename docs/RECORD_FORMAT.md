@@ -3,8 +3,10 @@
 > **Legacy CLI format proposal — not current operating policy.**
 > The dated decision below is preserved as historical design context, not a new
 > implementation authorization or evidence that migration has occurred. New
-> harness management documents must use `.md`, without required schemas, front
-> matter or fixed filenames; this does not implement the CLI proposal below.
+> project documents use classification folders and exact `<ID>.md` filenames;
+> folder names and hierarchy are chosen for the project. Schemas and front
+> matter are not required for current document-based work; this does not
+> implement the CLI proposal below.
 > Existing CLI records retain their implemented formats. Rules below describe
 > that proposed runtime migration only; follow [AGENTS.md](../AGENTS.md) and
 > [Data model](DATA_MODEL.md) for current work.

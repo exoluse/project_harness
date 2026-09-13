@@ -21,3 +21,13 @@ independently tracked items. Determine boundaries and prefixes from content;
 a closed list. Choose and record additional types autonomously. Follow the
 [ID convention](docs/DATA_MODEL.md#item-ids), link items and check coverage,
 uniqueness and references; preserve IDs across revisions and moves.
+
+Every new project Markdown file uses
+`<document-root>/<classification-path>/<DOCUMENT-ID>.md`, such as
+`project-docs/requirements/REQ-00001.md`. Use the exact body ID as the filename
+stem, without descriptive suffixes. Give independently managed items their own
+files, group features through links and choose folders/prefixes for new kinds
+autonomously. Folder/root names and nesting are examples, not a fixed schema;
+record the project's chosen mapping. Check the folder mapping and filename/body
+match, including overviews and handoffs. Preserve existing records and
+externally required formats.
