@@ -13,6 +13,7 @@ project notes, input versions and dirty work. There is no mandatory `next`,
 
 | Need | Read next |
 |---|---|
+| Find current feature/work scope | Project overview index, then the relevant unit and linked shared specifications; see [document organization](DATA_MODEL.md#document-organization). |
 | Stage readiness or requirements/design recovery | Relevant section of [Development method](DEVELOPMENT_METHOD.md). |
 | Scope decision or material change | [Approvals](APPROVALS.md) and the actual proposal/decision. |
 | Work sequence, completion or transition | Relevant section of [Workflow](WORKFLOW.md). |

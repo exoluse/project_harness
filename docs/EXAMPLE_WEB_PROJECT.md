@@ -19,6 +19,24 @@ and product documents, then writes:
 | Design | Current components, interfaces, data flow and risks, with source/version references. |
 | Remaining-work plan | Actual gaps, tasks, dependencies, alternatives, risk and verification. |
 
+These are information types, not a limit of one file per type. For a project
+with sign-in and search features, maintain an overview linking separate
+`features/sign-in/` and `features/search/` documents and their shared requirements
+and architecture. Each feature can have its own requirements, design and plan;
+a small search empty-state change can instead use one document with those
+sections. Record why the units are separate and link their dependencies. See
+the [illustrative layout](DATA_MODEL.md#document-organization).
+
+Illustrative item trace: requirement `REQ-00001` connects to design `DES-00001`,
+backend plan `API-00001` and screen plan `SCR-00001`; their work items might be
+`TASK-API-00001` and `TASK-SCR-00001`. Actual documents use resolvable links to
+each item's anchor and record each task's real parent plan. A later search
+requirement gets the next available `REQ` serial, not another `REQ-00001` in a
+different file. These syntax examples do not allocate IDs or establish evidence.
+
+At this planning-only stopping point, record intended checks in the plans;
+actual verification reports are written when those checks are performed.
+
 For example, finding pagination code supports “the current implementation has a
 pagination path.” It does not establish that pagination is a confirmed business
 requirement or that its tests pass. Keep proposed behavior separate.
@@ -39,8 +57,10 @@ decision without asking again under a different plan or task label.
 
 ## 3. Implement across several plans
 
-The frontend and API work can be separate plans or sections under the same
-reviewed scope. Each work item identifies its dependencies and verification.
+Within a feature, frontend and API work may be sections of its plan when they
+share a small coherent scope, or separate linked plans when ownership,
+dependencies or verification need independent tracking. The overview indexes
+the feature documents, and each work item identifies dependencies and verification.
 Before starting, the agent checks coverage, input readiness, ownership and
 external permissions.
 

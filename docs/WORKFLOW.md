@@ -11,7 +11,8 @@ those rather than assuming this policy removes them.
    relevant project notes. Inspect dirty work before writing.
 2. Establish the current input versions and preserve existing progress.
 3. Produce the requested discovery, requirements, design or planning outputs.
-   Check their content and trace; stop there for a stage-only request.
+   Maintain a project overview and separate independently scoped feature/work
+   documents. Check their content and trace; stop there for a stage-only request.
 4. For implementation, prepare the concrete scope, feasibility, impact, risks,
    alternatives, dependencies and verification. Record the owner's actual
    response to that proposal, or reference an applicable decision already given.
@@ -23,9 +24,13 @@ those rather than assuming this policy removes them.
 7. Deliver the requested result. For releases or project closure, include all
    contributing work, acceptance and operational obligations as applicable.
 
-A concise Markdown (`.md`) project note can hold the stage, baseline, decision
-reference, task list, prerequisites, results and next action. New harness
-management documents must use `.md`; specific filenames and IDs are optional.
+A concise Markdown (`.md`) project overview holds shared context, status and
+links to feature/work documents. Each unit holds its own stage, baseline,
+decision reference, tasks, prerequisites, results and next action. A small
+coherent unit may combine these in sections; independent units use separate
+documents under the [organization guidance](DATA_MODEL.md#document-organization).
+New harness management documents must use `.md` and stable item IDs following the
+[ID convention](DATA_MODEL.md#item-ids); specific filenames are optional.
 Do not create parallel JSON management records. Preserve existing records and
 tool-required formats as described in the
 [format policy](../AGENTS.md#management-document-format).
@@ -90,8 +95,11 @@ Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED; a document
 check does not establish either product integration or production success.
 
 Before completion, release, handover or push, review the diff and relevant
-verification. Required project/CI checks remain required. Optional tool failure
-must be reported accurately even when unrelated authorized work can continue.
+verification. For document work, also check unit boundaries, overview entries,
+local file/anchor links, new document identities, item-ID coverage/uniqueness
+and the requirements-to-design-to-work-to-verification trace for the requested
+stage. Required project/CI checks remain required. Optional tool failure must
+be reported accurately even when unrelated authorized work can continue.
 No test run means no test-pass claim.
 
 ## Closure preparation

@@ -1,11 +1,12 @@
 # Project Information Model
 
 Project information must be reviewable and attributable. Write all new harness
-management documents as Markdown (`.md`); no fixed schema, directory, ID or front
-matter is required. Follow [AGENTS.md](../AGENTS.md#management-document-format);
-reuse sections in existing Markdown documents where possible. Use prose, tables,
-checklists and links instead of creating JSON records or parallel structured
-copies of management documents.
+management documents as Markdown (`.md`) with stable IDs for traceable items;
+no fixed schema, directory or front matter is required. Follow
+[AGENTS.md](../AGENTS.md#management-document-format) and use a project overview
+and feature/work documents as described below. Use prose, tables, checklists
+and links instead of creating JSON records or parallel structured copies of
+management documents.
 
 Preserve existing non-Markdown records and reference them without automatic
 conversion or deletion. Product files such as `package.json`, original evidence
@@ -28,9 +29,170 @@ resolve actual conflicts before the affected delivery.
 | Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
 | Release/handoff | Contributions, versions, decisions, current evidence, unfinished obligations and next owner/action. |
 
-These can be sections in one document or several files. Add separate records
-only when useful or required by the project contract. A plan may contain nested
-tasks or reference several plans; no single-active-plan field is required.
+Within a small coherent feature or work item, these can be sections in one
+document. Independently scoped units use separate documents; stages within a
+unit can also have separate files when useful. A plan may contain nested tasks
+or reference several plans; no single-active-plan field is required.
+
+## Document organization
+
+Use two levels: a project overview for shared context and navigation, and
+documents for independently scoped features or changes. A project with several
+such units must not default to a single accumulating file for each document type.
+For a small project with only one coherent unit, overview and detail may remain
+in one document until a split criterion applies.
+
+The overview holds the objective, shared constraints, shared requirements and
+architecture (or links to them), baseline, current summary and an index of units.
+It also states the document/item-ID convention, including agent-selected
+extensions and any allocation ownership.
+Each index entry links to the unit's documents and states its scope, stage/status
+and material dependencies. Keep detailed decisions and evidence in their owning
+documents and link to them instead of maintaining duplicate accounts.
+
+Split a unit into separate documents when any of these boundaries needs
+independent review or tracking:
+
+- A feature or change has its own outcome, scope and acceptance criteria.
+- Design decisions or interfaces need a distinct review and revision history.
+- Work has a separate owner, dependency chain, verification or delivery cycle.
+- Accumulated detail makes the current scope, decision or evidence hard to find.
+
+Choose the unit boundary first, then choose whether its stages need separate
+files. A small fix can use one document with requirements, design, tasks and
+verification sections. A larger feature can have linked requirements, design,
+plan and verification files. File count and line count are not completion
+criteria; do not create one file per checklist item or empty stage templates.
+Briefly record the chosen boundaries and rationale in the overview or work note.
+
+For example, the following is an illustrative layout, not required filenames
+or a set of files to generate before their stages are requested:
+
+```text
+docs/project/
+  overview.md                     # Shared goals, status and unit index
+  shared-requirements.md          # Constraints used by multiple features
+  architecture.md                 # Shared components and interfaces
+  features/
+    sign-in/
+      requirements.md
+      design.md
+      plan.md
+      verification.md
+    search/
+      requirements.md
+      design.md
+      plan.md
+      verification.md
+  changes/
+    search-empty-state.md         # One small change, with stage sections
+```
+
+Every unit links back to its overview and applicable shared specifications.
+Connect requirements and acceptance criteria to the covering design, planned
+work and actual verification using item IDs with file/anchor links, optionally
+in a compact trace table.
+Links may be many-to-many: several plans can implement one requirement, and a
+shared design can support several features. State cross-unit dependencies and
+the relevant input versions. When verification has not run, record that state
+in the plan instead of creating evidence or implying success.
+
+When adding a new unit, add its index entry and relevant dependency links.
+When scope changes, update the owning detail, affected links and overview
+summary while preserving prior decisions and evidence. New work uses these
+boundaries even when earlier work lives in a large file; reference that baseline.
+Do not automatically split, move or rewrite existing records merely to adopt
+the layout. Any authorized reorganization must preserve reviewed versions and
+repair links. A requested stage still ends at its own outputs.
+
+## Item IDs
+
+Apply identity rules to every Markdown document the agent creates within the
+authorized project scope, whatever its subject: specifications, research,
+guides, meeting notes, reviews, reports, handoffs or kinds not listed here.
+Assign the document an ID appropriate to its purpose. A document representing
+one primary item uses that item's ID; a collection can use a document ID such
+as `DOC-00001`. Show the identity near the top and use it in the overview/index.
+An overview itself also has an identity. A document ID is not a substitute for
+the identities of its independently tracked contents.
+
+The agent determines which contents need independent reference, revision,
+assignment or verification and gives each such item an ID. Requirements,
+separately tracked acceptance criteria, design items, plans, tasks, decisions,
+findings, changes, risks, open issues and verification items are examples,
+not an exhaustive whitelist. New traceable items added to existing Markdown
+follow the same rule. Descriptive paragraphs, metadata fields, navigation
+entries and ordinary headings do not require separate IDs. A criterion kept as
+part of one requirement can use that requirement's identity; give it an `AC` ID if it
+needs independent tracking. A document can contain many IDs without needing
+one file per item, and references reuse the original ID.
+
+Use semantic uppercase type prefixes and five-digit serials, starting at
+`00001`. Reuse established project conventions and the applicable examples
+below. For an unlisted document or item kind, choose and document an appropriate
+prefix autonomously; user approval of each prefix or item boundary is not
+required. The table is a starting vocabulary, not a closed set of allowed types.
+These syntax examples do not allocate real project IDs.
+
+| Item | ID example | Meaning |
+|---|---|---|
+| Document or overview collecting items | `DOC-00001` | A document identity when no primary item supplies it. |
+| Requirement | `REQ-00001` | Intended outcome or constraint. |
+| Independent acceptance criterion | `AC-00001` | A separately tracked checkable condition. |
+| Design item | `DES-00001` | A component, interface, data or other design specification. |
+| Backend plan | `API-00001` | A backend implementation/work plan, not an API endpoint identifier. |
+| Screen plan | `SCR-00001` | A plan for an individual screen. |
+| General or cross-cutting plan | `PLAN-00001` | Work not best classified as a backend or screen plan. |
+| Task/work item | `TASK-API-00001`, `TASK-SCR-00001` | A task in the named work area. |
+| Decision | `DEC-00001` | An attributable actual decision. |
+| Change | `CHG-00001` | A tracked change and its impact. |
+| Risk or open issue | `RISK-00001`, `ISSUE-00001` | An independently tracked uncertainty or unresolved issue. |
+| Verification item | `VER-00001` | A check with subject, criteria and explicit execution status/results. |
+
+For example, a research report can use an agent-selected `RES` document prefix
+and `FIND` for independently referenced findings; meeting notes can use `MTG`
+with existing `DEC` and `TASK` types for decisions and actions. A guide can use
+`GUIDE` and identify independently maintained procedures as appropriate. Choose
+these based on the actual content and existing conventions, not by creating
+all these record types in advance. Record each added prefix's meaning and
+allocation scope in the overview so subsequent work uses it consistently.
+
+In `TASK-<AREA>-00001`, replace `<AREA>` (the user's `XXX`) with a registered
+uppercase work-area token: `API`, `SCR`, `DOC` for documentation, or `GEN` for
+general work. Additional uppercase type/area tokens can be recorded in the
+overview when needed; do not invent a new spelling for an existing type.
+The serial is independent of the parent plan: `TASK-API-00003` may belong to
+`API-00002`. Record the actual parent plan ID and link, plus the requirements,
+design and dependencies it covers. Shared tasks may link to several plans.
+
+Serial allocation is project-wide per complete prefix. Two feature files must
+not both define `REQ-00001`; two API plans must not each restart their tasks at
+`TASK-API-00001`. `TASK-API-00001` and `TASK-SCR-00001` are distinct IDs. Search
+existing definitions and retained/retired IDs before choosing the next unused
+serial. Concurrent writers reserve non-overlapping ranges or prefixes in shared
+Markdown notes; no JSON registry or runtime initialization is required.
+
+Put the ID visibly in the owning heading or table row. Provide a stable anchor,
+for example an ID-only heading `### REQ-00001` with a descriptive title in the
+body, or an explicit anchor for an identified table row. References use the ID
+as link text and resolve to that item's anchor, even within one file. Filenames
+may include a primary ID for convenience but do not replace item identities.
+
+Keep IDs unchanged when content is revised, renamed, reordered or moved; update
+links after moves. Never reuse deleted/retired IDs. For a split or merge, record
+the old item's disposition and links to the new items without overwriting its
+decision or evidence history. Identity alone does not identify a reviewed
+version, prove approval or establish a passed check.
+
+Before completion, check that every new Markdown document and all traceable
+items in the changed deliverables have IDs, definitions are unique within the
+project, the serials do not collide with retained IDs, and references resolve
+to the intended items. Distinguish
+definitions from references and clearly marked examples during this check.
+Existing IDs and historical records remain valid; use links to older material
+without bulk retroactive relabeling. A requested migration has its own scope.
+Externally required document formats remain binding; identify and resolve a
+real format conflict rather than silently skipping this rule.
 
 ## Trace and baselines
 
@@ -101,3 +263,15 @@ format requirement for current project documents.
   text decoding and balanced code fences. The initial Python-based check could
   not run (`python -` exited 1); the PowerShell check supplied the replacement
   evidence. Product/runtime tests were not run for this documentation-only edit.
+
+## Current document work
+
+The current ID convention is defined in [Item IDs](#item-ids). This repository's
+new policy-change note uses `CHG`, `DEC`, `REQ`, `DES`, `PLAN`, `TASK-DOC`,
+`RISK` and `VER` with project-wide serials per full prefix. `DOC` identifies the
+documentation task area in `TASK-DOC`. One writer allocated these IDs after
+searching the existing Markdown; historical records retain their formats/IDs.
+
+| Work | Scope and state | Dependencies |
+|---|---|---|
+| [CHG-00001](changes/2026-09-13-document-organization.md#chg-00001) | Feature/work organization and autonomous IDs for every new Markdown document and tracked item; policy scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00001](changes/2026-09-13-document-organization.md#dec-00001), [PLAN-00001](changes/2026-09-13-document-organization.md#plan-00001); no runtime change. |

@@ -8,8 +8,11 @@ their actual stage without recreating an invented history.
 ## Stage contract
 
 For each requested stage, identify the input versions, scope, deliverables,
-dependencies, verification and exit criteria. Scale the writing to the work:
-sections in existing documents are sufficient. Sprints are optional.
+dependencies, verification and exit criteria. Organize deliverables by feature
+or work unit under a project overview, following the
+[document boundaries](DATA_MODEL.md#document-organization). Sections suffice
+within a small coherent unit; independent units need separate documents.
+Sprints are optional.
 
 | Stage | Inputs | Deliverables and exit criteria |
 |---|---|---|
@@ -64,6 +67,13 @@ A useful plan includes:
 - Verification methods, environments and delivery obligations.
 - The actual scope decision, source and remaining prerequisites.
 
+Before completing planning, check that independently scoped units have their
+own documents, the overview indexes them, shared specifications have one
+maintained source, and requirements/design/work ID links cover the requested
+scope. Check item-ID coverage, uniqueness and references using the
+[ID convention](DATA_MODEL.md#item-ids).
+Identify planned verification without claiming evidence from an unrun stage.
+
 ## Existing project intake and reverse engineering
 
 Preserve the intake commit or snapshot and identify dirty/unknown work before
@@ -94,7 +104,9 @@ static recovery does not require executing it.
 Requirements state the intended outcomes and constraints. Plans organize work
 to meet them. The agent may split, refine, reorder and move tasks within the
 reviewed scope without another decision. Several plans may share a decision,
-and ordinary documents may use whatever hierarchy makes the work clear.
+and ordinary documents use the project overview and feature/work boundaries.
+Task refinement inside a unit can stay in its plan; a new independent feature
+or change gets its own document and an overview entry.
 
 Follow user priorities subject to real dependencies. Explain a material
 tradeoff when priority and feasibility conflict. Keep dependencies visible;

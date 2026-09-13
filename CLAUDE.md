@@ -9,6 +9,21 @@ sections, tables and links without required schemas or front matter. Do not
 create parallel JSON records. Preserve existing records and apply the product,
 evidence, legacy runtime and external-control boundaries in `AGENTS.md`.
 
+Keep a project overview with shared context/status and links to feature/work
+documents. Give independently scoped features or changes separate documents;
+combine stage sections only within a small coherent unit. Do not keep appending
+all new work to one requirements, design or plan file. Link requirements,
+design, work and verification; create only the requested stage outputs. Follow
+[document organization](docs/DATA_MODEL.md#document-organization).
+
+Give every new Markdown document and its independently tracked items stable
+project-unique IDs. Determine meaningful item boundaries and prefixes from the
+content: `REQ-00001`, `API-00001`, `SCR-00001` and `TASK-API-00001` are examples,
+not an exhaustive list. Choose and record new types as needed without asking
+the user to classify each one. Follow the [ID convention](docs/DATA_MODEL.md#item-ids),
+link items and preserve IDs across revisions/moves; check coverage, uniqueness
+and references. Apply this to guides, research, reviews and handoffs as well.
+
 The bundled runtime is optional. Do not require `next`, `init`, PLAN/TASK schemas,
 fingerprints, decision application or CLI gates for ordinary project work.
 If used, report its real output and distinguish record diagnostics from actual

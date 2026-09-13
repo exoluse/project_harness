@@ -25,9 +25,11 @@ CI or weaken an external control. See [optional runtime](docs/WORKFLOW.md#option
 Write all new harness management documents as Markdown (`.md`), including
 project notes, requirements, designs, plans/tasks, decisions, change traces,
 verification reports and handoffs. Use prose, headings, tables, checklists and
-links; sections in an existing Markdown document are sufficient. Do not create
-JSON or other non-Markdown management records or parallel machine-readable
-copies for ordinary project work. No fixed schema, ID or front matter is required.
+links. Organize documents as a project overview plus feature/work documents,
+following the boundaries below. Do not create JSON or other non-Markdown
+management records or parallel machine-readable
+copies for ordinary project work. Traceable items require the stable IDs below;
+no fixed schema or front matter is required.
 
 Preserve existing records, signed payloads, snapshots and historical documents
 in their original formats; this rule does not authorize conversion or deletion.
@@ -38,6 +40,69 @@ A separately required contract or external control remains binding; identify
 and resolve any format conflict before the affected delivery.
 
 See [Information model](docs/DATA_MODEL.md) for document content and trace.
+
+## Document organization
+
+Keep a project overview with shared goals/constraints, current status and links
+to feature or work documents. For work spanning independently scoped features
+or changes, create separate documents for those units; do not default to one
+ever-growing requirements, design or plan file for the whole project.
+
+Split when a unit needs its own scope/acceptance criteria, design decisions,
+dependencies, owner, verification or delivery history to be reviewed independently.
+Within a small coherent unit, requirements, design, plan and verification may be
+sections in one document. Separate those stages into linked files when their
+detail or lifecycle warrants it. Do not create a file per trivial task or empty
+documents for stages beyond the user's requested stopping point.
+
+Keep shared requirements and architecture at project level and link to them
+from affected units. Link each unit's requirements, design, plan and actual
+verification, including cross-unit dependencies. Maintain the overview's links
+and summary as work changes; detailed facts have one maintained source.
+Filenames and directories are flexible. Preserve existing records and reviewed
+versions; apply this structure to new work and organize existing documents only
+within the authorized scope. See [organization guidance](docs/DATA_MODEL.md#document-organization).
+
+## Item identity and trace
+
+Apply this principle to every Markdown document the agent creates in the
+authorized project scope, including guides, research, reviews, meeting notes,
+reports and handoffs, not just requirements/design/planning documents. Give
+each new document an identity: reuse its primary item's ID when it represents
+one item, or assign an appropriate document ID when it collects several items.
+Assign a project-unique, stable ID to each independently tracked item. The agent
+determines meaningful item boundaries from the document's purpose, including
+requirements, criteria, design items, plans, tasks, decisions, findings, changes,
+risks, issues and verification; this is an open set, not a fixed list.
+Ordinary prose, metadata, navigation and explanatory headings need no item ID.
+A reference or summary retains the original item's ID and links to its owning
+definition; it does not create another item or duplicate authoritative detail.
+
+Use type prefixes and five-digit serials: `REQ-00001` for requirements,
+`API-00001` for backend plans, `SCR-00001` for screen plans, and
+`TASK-<AREA>-00001` for tasks, such as `TASK-API-00001` or `TASK-SCR-00001`.
+The task area identifies its work category, not the exact parent plan; link
+parent plans explicitly. The [ID convention](docs/DATA_MODEL.md#item-ids)
+provides starting examples. For a new document or item kind, the agent chooses
+a meaningful type prefix and useful granularity, records the choice and
+continues without asking the user to name each type. Reuse applicable project
+conventions; the example prefixes do not limit which documents receive IDs.
+
+Record the convention and any additional prefixes in the project overview.
+Allocate serials across the project for each full prefix, never restarting at
+file or feature boundaries. Check existing IDs before allocation; concurrent
+writers reserve distinct prefixes or ranges in their shared Markdown notes.
+Preserve IDs across moves, title changes and revisions. Never renumber or reuse
+retired IDs; link replacements when items split, merge or are superseded.
+
+Use IDs with resolvable file/anchor links for relationships. An ID is neither
+a version nor approval or verification evidence; preserve the applicable
+baseline, actual decision and observed result separately. Check ID coverage,
+uniqueness and references before document completion. Preserve existing IDs
+and historical records; this rule does not authorize bulk retroactive relabeling.
+New traceable items added to existing Markdown follow the same identity rule.
+Preserve externally required document formats and resolve an actual conflict
+before affected delivery; do not silently omit identity requirements.
 
 ## Startup and context
 
@@ -60,8 +125,9 @@ See [Information model](docs/DATA_MODEL.md) for document content and trace.
 Use detailed waterfall stages with revision throughout: discovery, requirements,
 design, planning, implementation, verification, acceptance, delivery, closure
 and maintenance. For the current scope identify inputs and versions, outputs,
-dependencies and exit criteria. Scale documentation to the work; a single
-coherent document may cover several stages. Sprints and ceremony are optional.
+dependencies and exit criteria. Scale documentation within the feature/work
+boundaries above; a small coherent unit may cover several stages in one document.
+Sprints and ceremony are optional.
 
 A requirements-only, design-only, planning-only or verification-only request
 ends with that stage's requested outputs and findings. Readiness does not
@@ -100,7 +166,8 @@ Before a work item starts, confirm and briefly record that the decision covers
 its outcome, paths/actions and verification; required inputs/dependencies are
 ready; no real blocker or ownership conflict applies; and needed external
 permissions are present. A plan and its work items can be Markdown sections or
-a checklist. No prescribed filenames, IDs or front matter are required.
+a checklist with stable item IDs. No prescribed filenames or front matter are
+required.
 
 One decision may cover several plans and tasks within its reviewed bounds.
 Refining, splitting, ordering or moving tasks within those bounds needs no new

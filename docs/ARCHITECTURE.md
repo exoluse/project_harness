@@ -21,8 +21,13 @@ planning as requested. Actual owner decisions cover concrete implementation
 scope. The agent checks work-item prerequisites, performs covered work, verifies
 the changed subject and reports results and limitations.
 
-New harness management documents use Markdown (`.md`), including sections in
-existing Markdown files. Existing records and tool-required formats are preserved
+New harness management documents use Markdown (`.md`), organized as a project
+overview linking feature/work documents. Stage sections can share a file within
+a small coherent unit; independently scoped units have separate documents. See
+[document organization](DATA_MODEL.md#document-organization).
+Traceable items use [stable type-prefixed IDs](DATA_MODEL.md#item-ids) and
+resolvable item links; these identities do not enforce approval or verification.
+Existing records and tool-required formats are preserved
 under the [format policy](../AGENTS.md#management-document-format). There is no
 required state machine, single active plan, claim record or approval fingerprint.
 Closure aggregates the actual contributions and obligations.
