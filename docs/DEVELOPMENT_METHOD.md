@@ -42,8 +42,9 @@ authorizes writing its document outputs and relevant document checks; no
 placeholder project, PLAN or TASK record is needed.
 
 Under a full-workflow request, continue across ready stages within the actual
-decision and permissions. Prepare a concrete implementation proposal before
-the owner decision when that decision has not already been given. Ask only for
+decision and permissions. A clear direct implementation request can supply that
+decision; record its scope under [Approvals](APPROVALS.md). Prepare a proposal
+when the concrete scope is not already covered. Ask only for
 essential missing input, material choices or genuinely required authority.
 Do not add a separate approval of planning completion.
 
@@ -130,7 +131,7 @@ do not infer a global stop from an unrelated draft or a tool's single-plan model
 ## Baselines and review boundaries
 
 Use commits, versioned documents or dated snapshots sufficient to identify
-the basis for dependent work. Preserve the actual decision and its proposal.
+the basis for dependent work. Preserve the actual request/decision and its scope.
 Do not require hashes or a fixed record format solely for ceremony.
 
 A changed version requires an applicability assessment of existing decisions
@@ -170,7 +171,7 @@ needed only when an agreed project or external process requires it.
 ## When to ask again
 
 Ask again when a material commitment, assumption, impact, condition or authority
-has changed beyond the reviewed proposal. Explain the delta. Missing essential
+has changed beyond the authorized scope. Explain the delta. Missing essential
 input also requires clarification; a simple task split does not.
 
 Do not renew approval merely because a plan ID, file layout, optional tool

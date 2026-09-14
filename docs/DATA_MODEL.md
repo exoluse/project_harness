@@ -26,7 +26,7 @@ resolve actual conflicts before the affected delivery.
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
 | Plan | Goal, scope, dependencies, ordered task links, overall completion criteria and actual decision reference. |
 | Task/work item | Concrete output, owner, affected paths/logical resources, plan/input links, prerequisites, status and completion checks. |
-| Decision | Reviewed proposal/version, actual owner response/source, bounds and conditions. |
+| Decision | Concrete scope/version, actual owner request or response/source, bounds and conditions. |
 | Change trace | Request, before/after, impact, affected work, decision and verification. |
 | Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
 | Release/handoff | Contributions, versions, decisions, current evidence, unfinished obligations and next owner/action. |
@@ -218,7 +218,8 @@ Serial allocation is project-wide per complete prefix. Two feature files must
 not both define `REQ-00001`; two API plans must not each restart their tasks at
 `TASK-API-00001`. `TASK-API-00001` and `TASK-SCR-00001` are distinct IDs. Search
 existing definitions and retained/retired IDs before choosing the next unused
-serial. Concurrent writers reserve non-overlapping ranges or prefixes in shared
+serial, reusing a verified baseline under the rules below. Concurrent writers
+reserve non-overlapping ranges or prefixes in shared
 Markdown notes; no JSON registry or runtime initialization is required.
 
 Put the ID visibly in the owning heading or table row. Provide a stable anchor,
@@ -275,6 +276,31 @@ Existing IDs and historical records remain valid; use links to older material
 without bulk retroactive relabeling. A requested migration has its own scope.
 Externally required document formats remain binding; identify and resolve a
 real format conflict rather than silently skipping this rule.
+
+## Allocation and validation reuse
+
+Establish a verified allocation basis for each needed complete prefix using
+existing definitions, retired IDs and outstanding reservations. Record its
+covered version/scope and the assigned ranges in the existing shared overview
+or allocation notes. Do not create a second registry or new file per allocation.
+If no reliable basis exists, inspect the relevant project-wide definitions and
+retained allocation history before selecting a free range.
+
+Within an assigned range, consume unused serials and record their disposition.
+Reuse the verified basis plus subsequent allocation changes instead of reading
+every document for each new ID. Folder, feature or checkout boundaries do not
+reset the sequence. Exhausted ranges need a new non-overlapping allocation.
+Check shared allocation changes before extending or transferring a range;
+uncertain, conflicting or stale reservations must be reconciled first. A local
+highest-number search alone does not account for other writers or retired IDs.
+
+For subsequent document validation, compare newly defined IDs with that basis
+and other new definitions, and check changed files plus affected references.
+Broaden the scan when baseline coverage is missing or unreliable, allocation
+conflicts appear, or changes to conventions/validation rules affect prior
+results. Preserve project-wide uniqueness and never reuse retired IDs. This
+changes how evidence is obtained, not the identity or filename requirements.
+See [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 ## Independent items and supporting detail
 
@@ -427,3 +453,4 @@ in illustrative layouts are not mandatory replacements for this mapping.
 | [CHG-00003](changes/CHG-00003.md#chg-00003) | Contextual classification folders and exact ID-only Markdown filenames; policy scope complete, STATIC_VERIFIED. | Owner clarification and Git delivery authorization are recorded in the change note; no runtime change or historical migration. |
 | [CHG-00004](changes/CHG-00004.md#chg-00004) | Item-boundary and required-name clarification; unused HTML guide removed; scope complete, STATIC_VERIFIED. | Owner explicitly authorized policy corrections and deletion of the current HTML guide; archive preserved. |
 | [CHG-00005](changes/CHG-00005.md#chg-00005) | Clarify plan/task responsibilities, shared directory mapping and concurrent ID allocation as the collaboration basis. | Owner authorized these policy edits in this session; verification and scope are recorded in the change note. |
+| [CHG-00006](changes/CHG-00006.md#chg-00006) | Direct-request authority, allocation/check reuse and concise agent entry guidance. | Owner authorized the efficiency policy changes and re-review; scope and evidence are recorded in the change note. |

@@ -127,6 +127,10 @@ Record the convention and any additional prefixes in the project overview.
 Allocate serials across the project for each full prefix, never restarting at
 file or feature boundaries. Check existing IDs before allocation; concurrent
 writers reserve distinct prefixes or ranges in their shared Markdown notes.
+Reuse a verified allocation baseline and consume the assigned unused range;
+check intervening allocations instead of rescanning every document for each ID.
+If coverage or ownership is uncertain, reconcile it before allocating. Follow
+[allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse).
 Preserve IDs across moves, title changes and revisions. Never renumber or reuse
 retired IDs; link replacements when items split, merge or are superseded.
 
@@ -211,13 +215,24 @@ requested document outputs, including writing or revising those files. Relevant
 document checks are included. It does not authorize unrelated product changes,
 running untrusted product code, deployment or external effects.
 
-Before implementing a proposed change, prepare a concrete reviewable scope:
+An explicit implementation or fix request is itself a scope decision when its
+intended outcome and bounds are clear from the request and session context.
+Record that request and the concrete scope derived from it, then proceed with
+covered edits and relevant checks. Routine choices of files, implementation
+details and tests within those bounds do not require another proceed response.
+An exploratory or stage-only request does not authorize later implementation.
+High-risk actions and external effects retain their specific authorization and
+control requirements; a direct request does not bypass them.
+
+Before implementation, establish a concrete reviewable scope:
 outcome and acceptance criteria, affected components/paths/data, actions and
 exclusions, dependencies, feasibility/alternatives, material risk and verification.
 Use a version, commit or dated document reference sufficient to identify the
-proposal. Preserve the owner's actual response and source; never invent consent.
+scope. Scale the detail to the work and link existing definitions. Preserve
+the owner's actual request or response and source; never invent consent.
 
-An explicit proceed response to that presented scope is its decision. Reuse a
+When the scope needs a decision, present it and obtain the actual owner's
+response. An explicit proceed response to that scope is also a decision. Reuse a
 valid decision already given in this session; do not ask again for PLAN, TASK,
 testing or recordkeeping labels. A bare request to explore a change or a supplied
 document is not approval of an unreviewed implementation. Clarify only unresolved
@@ -338,6 +353,12 @@ access. External messaging and material external side effects require matching
 explicit authorization; changing this policy grants none.
 
 ## Verification and exceptional paths
+
+Reuse applicable evidence for unchanged files and criteria. Check changed
+deliverables and affected references/dependencies against a known baseline;
+completion, handover and push require reviewing that coverage, not automatically
+rerunning the same suite. Broaden checks for gaps, failures, changed assumptions
+or mandatory controls. Follow [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 Run checks appropriate to the changed deliverable and agreed criteria. Before
 release, handover, a completion claim or push, review the actual diff, relevant

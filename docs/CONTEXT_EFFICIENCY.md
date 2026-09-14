@@ -24,12 +24,37 @@ project notes, input versions and dirty work. There is no mandatory `next`,
 Use targeted searches for additional detail. Do not load all policies, records,
 schemas or the entire README for routine orientation.
 
+Keep entry prompts/adapters short: point to the governing policy and relevant
+sections, adding tool-specific instructions only where useful. A policy already
+read or supplied in the current session need not be reread through each link.
+The linked rules remain binding; shortening the entry text does not make them
+optional or require loading every linked document at startup.
+
 ## Reuse and verification
 
 Reuse unchanged context and applicable evidence. Recheck when the subject,
 criteria, dependencies, environment, authority or external requirements change.
 Task splitting, ownership transfer or metadata edits alone do not justify
 repeating unaffected product checks.
+
+Use a known checked baseline with the recorded scope, criteria and results.
+Inspect changes since that baseline, then check changed deliverables and their
+affected references/dependencies. For Markdown, include modified text/links,
+new IDs, mapping changes and references to moved, renamed or removed targets.
+Validate new definitions against the verified project-wide ID allocation basis
+under [allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse).
+
+Completion, handover or push requires reviewing evidence coverage and the actual
+diff. It does not alone invalidate a successful check. After adding a check
+receipt to a note, inspect that edit and any links/IDs it introduces; do not
+repeat unaffected checks merely to record their result again. Preserve the
+original result and identify what the incremental check covers.
+
+Broaden verification when a baseline is absent/unreliable, intervening changes
+are unknown, criteria or validation rules change, a failure suggests wider
+impact, or project/CI controls require it. Unchanged files are reusable only to
+the extent the baseline still covers them. A scan of changed files alone does
+not prove project-wide uniqueness without a reliable allocation baseline.
 
 Run checks appropriate to the actual deliverable. For documents, review content,
 format and links. For product changes, run the relevant product checks and

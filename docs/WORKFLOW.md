@@ -13,9 +13,11 @@ those rather than assuming this policy removes them.
 3. Produce the requested discovery, requirements, design or planning outputs.
    Maintain a project overview and separate independently scoped feature/work
    documents. Check their content and trace; stop there for a stage-only request.
-4. For implementation, prepare the concrete scope, feasibility, impact, risks,
-   alternatives, dependencies and verification. Record the owner's actual
-   response to that proposal, or reference an applicable decision already given.
+4. For implementation, establish scope, feasibility, impact, risks, dependencies
+   and verification at a useful level. A clear direct implementation request
+   supplies its scope decision; record it or reference an applicable prior
+   decision. Present alternatives and obtain a decision for unresolved material
+   choices or uncovered scope under [Approvals](APPROVALS.md).
 5. Before each work item, assess decision coverage, input readiness, ownership,
    safety and required external permissions. Document real blockers and their
    affected scope. No mandatory CLI command is part of this assessment.
@@ -59,8 +61,9 @@ work; do not invent earlier approvals or force a lifecycle reset. See
 
 ## Scope decisions and work-item readiness
 
-The owner decides in ordinary prompt language on a concrete presented scope.
-Record the actual response, source and proposal version; do not invent an
+The owner decides in ordinary prompt language through a clear direct request
+or a response to a concrete proposal. Record the actual request/response, source
+and applicable scope version; do not invent an
 approval quote, signer or timestamp. The decision may cover several plans and
 their implementation/verification within the stated bounds.
 
@@ -108,7 +111,10 @@ verification. For document work, also check unit boundaries, overview entries,
 local file/anchor links, type-folder mapping, exact filename/body document-ID
 agreement or the documented required-name mapping, item-ID coverage/uniqueness
 and the requirements-to-design-to-work-to-verification trace for the requested
-stage. Required project/CI checks remain required. Optional tool failure must
+stage. Reuse applicable baseline results and check changed files and affected
+references under [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification);
+a transition from completion to push alone does not require a fresh full scan.
+Required project/CI checks remain required. Optional tool failure must
 be reported accurately even when unrelated authorized work can continue.
 No test run means no test-pass claim.
 

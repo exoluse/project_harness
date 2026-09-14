@@ -6,9 +6,10 @@ tool check cannot create them.
 
 ## Who decides and who checks
 
-The owner decides on the presented implementation scope. The agent prepares
-the proposal, records the actual response and checks that each work item remains
-covered. The agent does not decide for the owner.
+The owner decides the implementation scope through a sufficiently concrete
+direct request or a response to a proposal. The agent records the actual source
+and checks that each work item remains covered. The agent does not decide for
+the owner.
 
 The user's request authorizes the requested investigation, specification,
 planning and document outputs. An explicit policy-edit request authorizes those
@@ -17,13 +18,22 @@ a concrete scope; reuse one already given rather than asking again.
 
 ## Preparing and recording one decision
 
-Present the outcome and acceptance criteria, affected components/paths/actions,
-data effects, exclusions, feasibility, alternatives, material risk, dependencies,
-uncertainties and verification. Identify the reviewed proposal by a stable
-document version, commit or dated reference.
+An explicit fix/implementation request can supply the decision without a prior
+agent proposal when its outcome and bounds are clear in context. Record that
+request and the derived scope; choose routine implementation details and relevant
+checks within it and proceed. Missing exact filenames or test names alone is
+not a reason to ask again. Clarify essential ambiguity or material tradeoffs;
+do not expand scope or bypass high-risk/external controls.
 
-Record the actual response and its source next to that proposal or in a decision
-log. Use available message references or an accurate attributed excerpt; do not
+Establish the outcome and acceptance criteria, affected components/paths/actions,
+data effects, exclusions, feasibility, alternatives, material risk, dependencies,
+uncertainties and verification. Identify the concrete scope by a stable
+document version, commit or dated reference. Scale detail to the work and link
+existing definitions. Present a proposal for a decision only where the current
+request and existing decisions do not already cover the concrete action.
+
+Record the actual request or response and its source next to that scope or in
+a decision log. Use available message references or an accurate attributed excerpt; do not
 invent message IDs, dates, signatures or assent. No special phrase, typed hash,
 APR record or user-run command is required.
 
