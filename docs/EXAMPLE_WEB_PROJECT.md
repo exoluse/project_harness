@@ -51,8 +51,8 @@ For example, finding pagination code supports “the current implementation has 
 pagination path.” It does not establish that pagination is a confirmed business
 requirement or that its tests pass. Keep proposed behavior separate.
 
-The document request authorizes those files and their relevant checks. It does
-not require `init`, PLAN/TASK records or executing unfamiliar product code.
+The document request authorizes those files and their relevant checks;
+unrelated implementation or product-code execution is outside this scope.
 Report document coverage and open items at this stopping point.
 
 ## 2. Prepare one concrete implementation decision
@@ -100,13 +100,5 @@ decision or agent test report cannot replace either.
 
 Aggregate frontend/API work, actual decisions, current evidence, delivery,
 handover and maintenance obligations into a release inventory. Several plans
-can contribute; no single active PLAN is required. A Markdown handoff is
+can contribute. A Markdown handoff is
 sufficient if the delivery contract accepts it.
-
-## Optional tooling
-
-The bundled CLI may inspect existing legacy records when useful. Its schemas,
-state rules and approval checks remain unchanged. Record tool limitations
-honestly; do not manufacture history to fit this example. Independently required
-CI checks and human approvals remain binding. See
-[Workflow](WORKFLOW.md#optional-runtime).

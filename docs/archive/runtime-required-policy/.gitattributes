@@ -1,3 +1,0 @@
-# Preserve snapshot bytes and the SHA-256 values in README.md across checkouts.
-# Retained CRLF endings are intentional, while normal whitespace checks still apply.
-*.txt -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

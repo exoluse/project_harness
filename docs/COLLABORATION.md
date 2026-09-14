@@ -33,11 +33,11 @@ writers hand their changes to that owner or agree a transfer before editing.
 When a checkout is shared, serialize Git index/branch operations through the
 assigned integration owner. Record relevant ownership, mapping and allocation
 changes before affected work continues. Existing Markdown notes are sufficient;
-these principles add no separate approval, registry service or runtime gate.
+these principles add no separate approval or registry service.
 
 ## Single writer
 
-A single writer needs no claim system, runtime attempt or placeholder handoff.
+A single writer needs no claim system or placeholder handoff.
 Inspect dirty files before writing and preserve user/unknown changes. Use a
 concise task list and progress notes sufficient to explain what was changed
 and what remains.
@@ -60,13 +60,7 @@ authorize delegation. This document does not itself request parallel agents.
 
 A requested result or handoff can be an ordinary document when the agreed
 delivery contract accepts it. Record the real baseline, changed paths, decisions,
-checks, observations, limits, unfinished work and next action. No prospective or
-retrospective CLI claim is required under current policy.
-
-If the optional legacy `result submit` or `handoff create` command is selected,
-its implemented claim and attempt checks still apply. Do not fabricate a claimed
-past run to satisfy them. Use a truthful document handoff if accepted; otherwise
-resolve the chosen process's requirements before claiming formal completion.
+checks, observations, limits, unfinished work and next action.
 
 ## Transfer and integration
 

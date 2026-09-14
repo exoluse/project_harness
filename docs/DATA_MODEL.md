@@ -11,8 +11,7 @@ management documents.
 
 Preserve existing non-Markdown records and reference them without automatic
 conversion or deletion. Product files such as `package.json`, original evidence
-such as logs or test reports, and optional legacy CLI internal files retain their
-required formats. Summarize verification in Markdown and link to those original
+such as logs or test reports, and tool-internal files retain their required formats. Summarize verification in Markdown and link to those original
 artifacts. Contractual delivery formats and external controls remain binding;
 resolve actual conflicts before the affected delivery.
 
@@ -220,7 +219,7 @@ not both define `REQ-00001`; two API plans must not each restart their tasks at
 existing definitions and retained/retired IDs before choosing the next unused
 serial, reusing a verified baseline under the rules below. Concurrent writers
 reserve non-overlapping ranges or prefixes in shared
-Markdown notes; no JSON registry or runtime initialization is required.
+Markdown notes; no separate JSON registry is required.
 
 Put the ID visibly in the owning heading or table row. Provide a stable anchor,
 for example an ID-only heading `### REQ-00001` with a descriptive title in the
@@ -399,58 +398,11 @@ decisions, evidence and applicable acceptance/delivery/maintenance obligations.
 A release inventory is sufficient; no canonical closure dependency manifest is
 required under this policy.
 
-## Existing runtime records
+## Harness policy maintenance
 
-Existing JSON and Markdown records under `.harness/` are preserved. They retain
-their legacy schemas and meaning when read or changed with the optional CLI.
-Ordinary project documents do not become CLI records simply because they use
-the words plan, task or approval.
-
-Do not rewrite signed snapshots, derived runtime fields or events to make a
-document-based workflow pass a legacy gate. Runtime record migration is separate
-implementation work requiring its own scope and verification. The
-[record-format proposal](RECORD_FORMAT.md) is a legacy design reference, not a
-format requirement for current project documents.
-
-## Policy change trace: 2026-09-13
-
-- Baseline: `6b4d41f803ca914b18613aef812f0a60260261af`; the working tree was clean
-  before this policy edit.
-- Decision source: in this session, the owner replied "정책을 수정하자\~!" to the
-  proposal to use only `.md` for new management documents, preserve existing
-  records/signatures and exclude product configuration and CLI implementation.
-- Before/after: unrestricted management document formats become Markdown-only
-  for new documents; schemas and front matter remain unnecessary.
-- Scope and readiness: governing policy, tool entry guidance, README and related
-  documentation only. The decision covers these edits and document checks;
-  required inputs are available, with no ownership conflict or external action.
-- Verification criteria: review the diff for consistent scope and preserved
-  exceptions; check whitespace, Markdown structure and local links. Runtime code,
-  schemas, existing project records and archived policy are outside this change.
-- Verification result: STATIC_VERIFIED for the policy edit on this baseline in
-  the Windows/PowerShell workspace. Diff review confirmed the intended scope;
-  `git diff --check` found no whitespace errors. A PowerShell check passed for
-  all 10 changed Markdown files and 56 local links, including heading targets,
-  text decoding and balanced code fences. The initial Python-based check could
-  not run (`python -` exited 1); the PowerShell check supplied the replacement
-  evidence. Product/runtime tests were not run for this documentation-only edit.
-
-## Current document work
-
-The current ID convention is defined in [Item IDs](#item-ids). This repository's
-new policy-change note uses `CHG`, `DEC`, `REQ`, `DES`, `PLAN`, `TASK-DOC`,
-`RISK` and `VER` with project-wide serials per full prefix. `DOC` identifies the
-documentation task area in `TASK-DOC`. One writer allocated these IDs after
-searching the existing Markdown; historical records retain their formats/IDs.
-For new change notes, this repository reuses its existing `docs` document root
-and `changes` classification folder: `docs/changes/<CHG-ID>.md`. Folder names
-in illustrative layouts are not mandatory replacements for this mapping.
-
-| Work | Scope and state | Dependencies |
-|---|---|---|
-| [CHG-00001](changes/2026-09-13-document-organization.md#chg-00001) | Feature/work organization and autonomous IDs for every new Markdown document and tracked item; policy scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00001](changes/2026-09-13-document-organization.md#dec-00001), [PLAN-00001](changes/2026-09-13-document-organization.md#plan-00001); no runtime change. |
-| [CHG-00002](changes/2026-09-13-readme-guidance.md#chg-00002) | README examples, ID wording and document guidance aligned; scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00003](changes/2026-09-13-readme-guidance.md#dec-00003); uses the current document/ID policy. |
-| [CHG-00003](changes/CHG-00003.md#chg-00003) | Contextual classification folders and exact ID-only Markdown filenames; policy scope complete, STATIC_VERIFIED. | Owner clarification and Git delivery authorization are recorded in the change note; no runtime change or historical migration. |
-| [CHG-00004](changes/CHG-00004.md#chg-00004) | Item-boundary and required-name clarification; unused HTML guide removed; scope complete, STATIC_VERIFIED. | Owner explicitly authorized policy corrections and deletion of the current HTML guide; archive preserved. |
-| [CHG-00005](changes/CHG-00005.md#chg-00005) | Clarify plan/task responsibilities, shared directory mapping and concurrent ID allocation as the collaboration basis. | Owner authorized these policy edits in this session; verification and scope are recorded in the change note. |
-| [CHG-00006](changes/CHG-00006.md#chg-00006) | Direct-request authority, allocation/check reuse and concise agent entry guidance. | Owner authorized the efficiency policy changes and re-review; scope and evidence are recorded in the change note. |
+Maintain this harness's policy and guidance directly under
+[policy maintenance](../AGENTS.md#harness-policy-maintenance). Git history
+replaces a policy-change index and separate archive/change-note files.
+Earlier policy records and their allocated IDs remain discoverable in Git
+history; removing their working-tree copies does not make those IDs reusable.
+The document and ID rules above continue to govern actual project deliverables.

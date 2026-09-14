@@ -7,18 +7,9 @@ user explicitly authorizes work there.
 
 ## Policy-first operation
 
-Project work does not require the bundled harness CLI. Do not initialize
-`.harness/`, create schema records, obtain a PLAN fingerprint, apply a CLI
-decision, pass a runtime gate or acquire a CLI claim merely to start or finish
-authorized work. The agent checks real authority, scope, dependencies and
-evidence, and records a concise, reviewable basis in project documents.
-
-The existing runtime is an optional legacy inspection/record-management tool.
-Its implementation and validation rules are unchanged. A CLI failure is a
-diagnostic to classify, not an automatic project-wide stop. Actual safety,
-authority, integrity or dependency failures still block affected work. Never
-report a failed check as PASS, forge records to satisfy it, bypass protected
-CI or weaken an external control. See [optional runtime](docs/WORKFLOW.md#optional-runtime).
+Ordinary project work does not require the bundled CLI. Assess actual authority,
+scope, dependencies and evidence under this policy. When using the tool, consult
+[optional runtime](docs/WORKFLOW.md#optional-runtime).
 
 ## Management document format
 
@@ -33,9 +24,8 @@ no fixed schema or front matter is required.
 
 Preserve existing records, signed payloads, snapshots and historical documents
 in their original formats; this rule does not authorize conversion or deletion.
-Product code/configuration/data, original evidence artifacts and the optional
-legacy CLI's internal files retain the formats their tools require. Do not run
-the CLI merely to generate management records for ordinary document-based work.
+Product code/configuration/data, original evidence artifacts and tool-internal
+files retain the formats their tools require.
 A separately required contract or external control remains binding; identify
 and resolve any format conflict before the affected delivery.
 
@@ -182,7 +172,7 @@ or retroactive labeling. See [required names](docs/DATA_MODEL.md#required-name-e
    Protect user/unknown changes and other writers' ownership.
 4. Classify the request as analysis/specification, policy maintenance or
    implementation/verification/delivery. Policy-only follow-ups stay policy-only;
-   discussion of runtime defects does not authorize runtime changes or deletion.
+   discussion of defects does not authorize unrelated implementation or deletion.
 5. Report the current stage, actual blockers and next action as needed. When the
    requested scope is complete, report it; do not invent more work.
 
@@ -205,7 +195,7 @@ Planning is complete when scope, tasks, feasible order, dependencies, risks,
 uncertainties and verification are authored and checked against their inputs.
 Execution readiness additionally requires the actual owner's decision on the
 concrete implementation scope and satisfied task prerequisites. These are
-documented assessments, not CLI states or additional approvals per stage.
+documented assessments; they do not add an approval at each stage.
 Use [Development method](docs/DEVELOPMENT_METHOD.md) for relevant stage details.
 
 ## Authority and decisions
@@ -236,8 +226,8 @@ response. An explicit proceed response to that scope is also a decision. Reuse a
 valid decision already given in this session; do not ask again for PLAN, TASK,
 testing or recordkeeping labels. A bare request to explore a change or a supplied
 document is not approval of an unreviewed implementation. Clarify only unresolved
-authority or material tradeoffs. A runtime fingerprint or approval record is
-not required and cannot substitute for the actual decision.
+authority or material tradeoffs. A record label cannot substitute for the
+actual decision.
 
 Before a work item starts, confirm and briefly record that the decision covers
 its outcome, paths/actions and verification; required inputs/dependencies are
@@ -260,6 +250,25 @@ operations must remain within authorized delivery scope. Before normal push,
 fetch the configured remote and preserve both sides. Force/tag pushes, branch
 deletion, different targets and published-history rewrites need separate explicit
 authorization.
+
+## Harness policy maintenance
+
+For maintenance of this harness's own policy, README and agent guidance, edit
+the current files directly. Git history and diffs provide the version/change
+trace; when a commit is requested, its message records the reason and relevant
+verification. While edits are uncommitted, the working diff and conversation
+carry the scope, actual user decision, check results and remaining limits.
+These satisfy the ordinary readiness, decision and change-record requirements
+for policy maintenance; do not create or update a separate change note, decision
+record, policy-work index or archive snapshot merely to document the edit.
+There is no requirement to operate `archive/` or `changes/` for this purpose.
+
+Keep existing historical files and links unless their cleanup is explicitly
+requested. New documentation is appropriate when it is itself a requested
+deliverable or needed current guidance; apply the Markdown/ID rules to such
+files. Actual project development retains its requirements, plans, tasks,
+decisions and verification documents under the normal rules. Required external
+records remain binding. Commit/push still requires the applicable user request.
 
 ## Existing project intake and reverse engineering
 
@@ -299,6 +308,8 @@ Keep them visible; do not erase them to improve a report.
 Material changes need a trace of before/after, impact, affected work and decision.
 A section in the plan/change log suffices; separate CR or audit records are needed
 only when the project contract or chosen reporting process calls for them.
+For this harness's own policy edits, use the Git/conversation trace described
+in [policy maintenance](#harness-policy-maintenance).
 
 ## Collaboration, handover and closure
 
@@ -321,15 +332,14 @@ writer's active scope or silently take ownership of dirty files.
 
 A handoff states the real input/output versions, changed files, decisions,
 verification, limits, unfinished work and next action. Ordinary Markdown may
-serve as a formal project handoff when the agreed delivery contract accepts it;
-do not fabricate a legacy claim or retrospective runtime attempt. Preserve failed
-attempts and ensure newer failures are not hidden behind old success.
+serve as a formal project handoff when the agreed delivery contract accepts it.
+Preserve failed attempts and ensure newer failures are not hidden behind old
+success.
 
 Close the declared release/project by aggregating all contributing plans, required
 features, actual work dispositions, current verification, applicable acceptance,
-delivery, handover and maintenance obligations. There is no single-active-PLAN
-requirement. Do not conceal unfinished required scope or label deployment alone
-as closure.
+delivery, handover and maintenance obligations. Do not conceal unfinished
+required scope or label deployment alone as closure.
 
 ## High-risk and external control
 
@@ -364,9 +374,7 @@ Run checks appropriate to the changed deliverable and agreed criteria. Before
 release, handover, a completion claim or push, review the actual diff, relevant
 test/evidence results and remaining limits. Documentation work needs content,
 format and link checks; product work needs relevant product verification.
-The bundled `check_repo.py` is optional and is not proof of complete verification.
-Never weaken mandatory project/CI checks or approvals merely because the bundled
-runtime is now optional.
+Never weaken mandatory project/CI checks or approvals.
 
 Hotfixes use the same scope, authority, ownership and verification rules with the
 smallest useful trace. Rollback, redeployment, data repair and credential access
@@ -375,20 +383,4 @@ retain their external approval boundaries.
 Reset or deletion of project records is never a repair for a diagnostic.
 Only an explicit current reset/start-over request authorizes preparing that
 operation. Show the exact scope and dry run first, preserve recoverable copies
-and decision history, and follow applicable human/external controls. Never remove
-a backup or legacy runtime merely to adopt this policy.
-
-## Transition from runtime-required operation
-
-This policy replaces mandatory bundled-runtime gates for ordinary repository
-work; it does not change the CLI or delete its records. Before continuing existing
-work, map the actual owner decision, baseline, remaining scope and evidence into
-the current project notes. Preserve original approvals and snapshots as history;
-do not widen their scope or rewrite signatures. Resolve missing provenance or
-material changes before dependent execution. No new decision is needed solely
-for changing a record format or stopping optional CLI use.
-
-A project contract or protected CI may independently require a tool or approval.
-Identify that constraint and obtain the appropriate change before altering it.
-See [Workflow](docs/WORKFLOW.md) and the
-[pre-transition policy archive](docs/archive/runtime-required-policy/README.md).
+and decision history, and follow applicable human/external controls.

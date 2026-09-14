@@ -15,5 +15,5 @@ Use the shared [plan/task, directory and allocation basis](docs/COLLABORATION.md
 
 Reuse applicable context, allocations and checks under
 [efficiency guidance](docs/CONTEXT_EFFICIENCY.md); consult linked detail when
-relevant, without rereading unchanged policy. The bundled CLI is optional.
+relevant, without rereading unchanged policy.
 This entry summarizes the shared policy; all its requirements remain binding.

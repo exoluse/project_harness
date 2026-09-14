@@ -26,18 +26,17 @@ These principles explain its intent.
    decisions while assessing their applicability to changed work.
 8. **Real blockers have an impact boundary.** Stop affected work for missing
    authority, safety, integrity, ownership or required dependencies; do not
-   infer a global stop from unrelated drafts or legacy tool limitations.
+   infer a global stop from unrelated drafts or tool limitations.
 9. **Human and external control.** High-risk actions require specific authorized
    human decisions and independently controlled boundaries. Stronger project
    or external requirements remain binding.
-10. **Tools support work.** The bundled runtime is optional. Do not fabricate
-    records, bypass protected checks or claim tool fixes that were not made.
+10. **Tools support work.** Use tools for relevant evidence; their output does
+    not create authority or establish results outside the checks performed.
 
 Existing projects retain their progress and source history. Reverse engineering
 distinguishes observed implementation, inferred intent and confirmed requirements.
 Single-writer work needs no claim system; concurrent work needs clear ownership.
 Closure accounts for all contributing work and the actual delivery contract.
 
-The [pre-transition archive](archive/runtime-required-policy/README.md) preserves
-the previous runtime-required policy. Its text is historical, not an additional
-set of active requirements.
+Git history preserves earlier policy versions. Their text is historical, not
+an additional set of active requirements.

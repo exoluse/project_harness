@@ -1,8 +1,7 @@
 # Security and External Authority
 
-[AGENTS.md](../AGENTS.md) governs this repository. Policy-first operation removes
-the bundled runtime as a mandatory workflow dependency. It does not remove
-actual authorization, credential protection or independently enforced controls.
+[AGENTS.md](../AGENTS.md) governs this repository. Apply actual authorization,
+credential protection and independently enforced controls to the affected work.
 
 ## Five high-risk boundaries
 
@@ -33,7 +32,7 @@ allowlist, disabling a required check or substituting the agent as the approver.
 
 When a required human or external control is unavailable, prepare the reviewable
 work and report the blocked action. Continue independent authorized work when
-safe. Do not claim that an optional local CLI pass supplied the missing authority.
+safe. A passing check does not supply missing authority.
 
 ## Protected material and untrusted inputs
 
@@ -61,15 +60,3 @@ history preservation does not make it current proof.
 For tampered authority, contradictory current evidence or unclear ownership,
 assess the real scope of impact and stop dependent work until resolved.
 An unrelated historical draft does not automatically stop the entire project.
-
-## Runtime boundary
-
-The bundled CLI is optional and its implementation is unchanged. Existing
-signed records and protected local authority retain their original meaning.
-Do not remove or mutate them to avoid a diagnostic. If a chosen CLI operation
-requires a signature or gate, satisfy that tool's real prerequisites or leave
-the operation unperformed; do not claim it succeeded.
-
-Policy adoption does not authorize deleting the runtime, migrating canonical
-records, resetting a project or changing external controls. Those are distinct
-actions with their own scope and applicable approval requirements.

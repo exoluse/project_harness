@@ -1,8 +1,0 @@
-# Codex Start Prompt
-
-Use the current `AGENTS.md` once per session, then run
-`python scripts/harness.py next`. Load only the records and policy section that
-its state requires; preserve every authority and safety gate.
-Classify the current request first. Policy-only follow-ups remain policy-only:
-edit the authorized text directly without init, PLAN/TASK or a PLAN approval
-request. Runtime recommendations do not expand that scope.

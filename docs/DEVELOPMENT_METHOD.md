@@ -2,8 +2,8 @@
 
 This repository uses detailed waterfall stages with revision throughout.
 [AGENTS.md](../AGENTS.md) is the governing policy. Stages describe work and
-evidence; they are not mandatory CLI states. Existing projects can enter at
-their actual stage without recreating an invented history.
+evidence. Existing projects enter at their actual stage without recreating
+an invented history.
 
 ## Stage contract
 
@@ -57,9 +57,8 @@ clearly disclosed execution prerequisites may remain open.
 
 Execution is ready when the owner has decided on the concrete implementation
 scope, the selected work is covered and its real dependencies, ownership,
-safety and external permissions are ready. A CLI fingerprint, applied decision,
-lifecycle enum or machine gate is not a prerequisite under the current policy.
-Tool output cannot create consent or turn missing evidence into a pass.
+safety and external permissions are ready. Tool output cannot create consent
+or turn missing evidence into a pass.
 
 A useful plan includes:
 
@@ -174,18 +173,5 @@ Ask again when a material commitment, assumption, impact, condition or authority
 has changed beyond the authorized scope. Explain the delta. Missing essential
 input also requires clarification; a simple task split does not.
 
-Do not renew approval merely because a plan ID, file layout, optional tool
-marker or lifecycle field differs. Do not widen an old decision to cover work
+Do not renew approval merely because a plan ID or file layout differs. Do not widen an old decision to cover work
 that was never reviewed. Continue independent covered work when safe.
-
-## Current runtime compatibility
-
-The bundled runtime remains unchanged and optional. Its strict validation,
-state transitions, fingerprints and record constraints can reject a valid
-document-based workflow. Diagnose that mismatch without claiming the CLI passed
-or editing its history to satisfy it. Actual authority, integrity, dependencies
-and externally mandated checks remain binding.
-
-See [optional runtime](WORKFLOW.md#optional-runtime) and the
-[legacy findings](RUNTIME_GAPS.md). Those findings are not prerequisites for
-ordinary project progress under this policy.

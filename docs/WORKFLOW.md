@@ -1,9 +1,14 @@
 # Workflow
 
-This is the current policy-first workflow. Follow [AGENTS.md](../AGENTS.md).
-Project initialization, schema records and bundled CLI gates are not required.
-A project contract or protected CI can impose separate requirements; identify
-those rather than assuming this policy removes them.
+Follow [AGENTS.md](../AGENTS.md) for the current workflow and authority.
+Identify applicable project-contract and protected-CI requirements.
+
+For this harness's own policy, README and agent-guidance maintenance, use
+[policy maintenance](../AGENTS.md#harness-policy-maintenance): edit current
+files, use Git/diffs for history and report scope/decisions/checks in the
+conversation. Do not create change notes, update a policy-work index or archive
+copies merely to record those edits. The project-document workflow below
+continues to apply to actual development and requested document deliverables.
 
 ## The path as it runs today
 
@@ -20,7 +25,7 @@ those rather than assuming this policy removes them.
    choices or uncovered scope under [Approvals](APPROVALS.md).
 5. Before each work item, assess decision coverage, input readiness, ownership,
    safety and required external permissions. Document real blockers and their
-   affected scope. No mandatory CLI command is part of this assessment.
+   affected scope.
 6. Execute covered work and verify the changed deliverables against the agreed
    criteria. Preserve observations, failures and limits.
 7. Deliver the requested result. For releases or project closure, include all
@@ -96,8 +101,8 @@ may share an owner decision or reference their own decisions. Switching or
 splitting plans does not by itself require approval.
 
 Carry forward unfinished work explicitly. Verify the next work item's coverage
-and dependencies; do not retire or reassign past work solely to satisfy a
-legacy state field. Report completion when the requested scope is complete.
+and dependencies. Keep actual assignments and status accurate, and report
+completion when the requested scope is complete.
 
 ## Verification and completion
 
@@ -123,8 +128,7 @@ No test run means no test-pass claim.
 Aggregate the declared release/project across all contributing plans. Review
 required outcomes, work dispositions, decisions, applicable evidence, actual
 customer acceptance, delivery status, handover and maintenance obligations.
-Use a release inventory or existing project document; no project schema field
-or single-active-PLAN membership is required.
+Use a release inventory or existing project document.
 
 Every required item must be complete or have an explicit disposition consistent
 with the agreed scope. Do not omit unfinished work to obtain closure. Final
@@ -160,46 +164,46 @@ the exact target paths, affected committed/uncommitted records, recoverable
 copies and preserved decision history. Apply the applicable destructive-operation
 human/external boundary. Never reset to silence diagnostics.
 
-If the optional legacy reset command is selected, inspect its actual dry-run
-output and snapshot behavior before executing it. Do not assume Git contains
-uncommitted records. Do not remove snapshots, authority material or runtime code
-as a side effect of policy adoption.
+Verify recoverability, including uncommitted records, before destructive work.
 
 ## Optional runtime
 
-The existing `scripts/harness.py`, `scripts/check_repo.py`, schemas and
-`.harness/tooling/` remain available and unchanged. Using them is optional
-under this policy; installing Python or running `init` is not a startup step.
+The bundled `scripts/harness.py`, `scripts/check_repo.py`, schemas and
+`.harness/tooling/` are optional tools for existing record management and
+inspection. Ordinary document-based work needs no Python setup, `init`, `next`,
+PLAN fingerprint, CLI decision, runtime gate or claim. Do not invoke the CLI
+merely to generate management records.
 
-Use existing help/report commands when their output is useful. Record-changing
-commands need matching task scope and must preserve history. Do not initialize
-records for a policy-only request. A chosen legacy command still enforces its
-own format, signatures, markers and state rules; this policy does not make
-unsupported commands or transitions work.
+When choosing a CLI operation, read its current help and relevant prerequisites.
+Its implementation is unchanged: record formats, state transitions, signed PLAN
+and action decisions, claims and attempt checks still apply where implemented.
+`result submit` and `handoff create` may require a claim/attempt; a truthful
+Markdown handoff is sufficient when the delivery contract accepts it.
 
-Classify a diagnostic before deciding what stops:
+Existing records retain their original format and meaning. Record mutation,
+migration, reset or tool removal needs matching task authority. Before a reset,
+inspect the actual dry run and snapshot behavior and preserve recoverable
+copies, including uncommitted work. Never forge records, rewrite signed payloads,
+install authority markers by hand or fabricate past attempts to satisfy a tool.
+Across checkouts, a local marker cannot replace real decision provenance or
+permissions; see the [checkout finding](RUNTIME_GAPS.md#b8-checkout-transfer).
 
-| Finding | Handling |
-|---|---|
-| Missing real decision, unsafe action, required dependency or ownership conflict | Stop affected work and resolve the underlying issue. |
-| Tampered authority or contradictory current evidence | Preserve evidence, investigate impact and block dependent claims/work. |
-| Historical evidence no longer applicable | Retain it as history; obtain current evidence where needed. |
-| Unrelated incomplete draft or bundled lifecycle/format limitation | Record the limitation; continue independently authorized document-based work. |
-| Contractually required tool/CI check fails | Resolve it or obtain an authorized process change; do not bypass it. |
+Report the actual result and classify its impact. A format/state limitation
+alone does not stop unrelated authorized work. Missing authority, unsafe actions,
+required dependencies, ownership conflicts or contradictory current evidence
+block affected work. A chosen operation with unmet requirements remains
+unperformed or failed; do not report it as successful. Required project/CI
+checks, human decisions and external controls remain binding.
+A `check_repo.py` pass alone does not prove complete product verification.
 
-Never relabel a failed CLI run as PASS, fabricate a claim, edit a signature or
-install an authority marker by hand. The legacy limitations in
-[Runtime gaps](RUNTIME_GAPS.md) remain unimplemented unless separately verified.
+When continuing work from the former runtime-required process, identify the
+actual owner decision, baseline, remaining scope and applicable evidence.
+Preserve provenance and prior versions; resolve missing authority or material
+changes before dependent work. Changing record format or stopping optional CLI
+use alone needs no renewed decision. Historical procedures are available in Git
+and are not current authority.
 
-## Transition from the old workflow
-
-Preserve legacy records and approval snapshots. Map the actual owner decision,
-reviewed baseline, remaining scope, current evidence and limitations into the
-team's project documents. Respect the decision's original bounds and resolve
-unclear provenance before affected execution.
-
-Stopping optional CLI use or changing document format alone does not require
-another decision. A project contract, protected CI or independently required
-signature remains binding until changed by its authorized owner.
-The [pre-transition archive](archive/runtime-required-policy/README.md) is
-historical reference, not current operating instructions.
+Consult [Runtime gaps](RUNTIME_GAPS.md) only for relevant known limitations.
+The [record-format proposal](RECORD_FORMAT.md) and
+[plan-hierarchy proposal](PLAN_HIERARCHY.md) are historical design references,
+not requirements for current project documents.
