@@ -15,6 +15,14 @@ link requirements, design, plans and verification. Do not default to one growing
 file per document type or create outputs beyond the requested stage. See
 [document organization](docs/DATA_MODEL.md#document-organization).
 
+For collaboration, distinguish plans (goals, scope, dependencies and task order)
+from tasks (outputs, accountable writers, edit boundaries and completion checks).
+Before concurrent editing, share the chosen folder mapping and non-overlapping
+ID allocations; use the same semantic prefixes across agents and checkouts.
+Assign shared-document editing and Git integration as part of the work.
+Use existing overview/plan/task notes for this coordination; follow the
+[collaboration basis](docs/COLLABORATION.md#collaboration-basis).
+
 Assign stable project-unique IDs to every new Markdown document and its
 independently tracked items. Determine boundaries and prefixes from content;
 `REQ-00001`, `API-00001`, `SCR-00001` and `TASK-<AREA>-00001` are examples, not

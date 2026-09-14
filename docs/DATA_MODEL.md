@@ -24,7 +24,8 @@ resolve actual conflicts before the affected delivery.
 | Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
-| Plan/work items | Scope, tasks, order, dependencies, verification and actual decision reference. |
+| Plan | Goal, scope, dependencies, ordered task links, overall completion criteria and actual decision reference. |
+| Task/work item | Concrete output, owner, affected paths/logical resources, plan/input links, prerequisites, status and completion checks. |
 | Decision | Reviewed proposal/version, actual owner response/source, bounds and conditions. |
 | Change trace | Request, before/after, impact, affected work, decision and verification. |
 | Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
@@ -120,6 +121,36 @@ boundaries even when earlier work lives in a large file; reference that baseline
 Do not automatically split, move or rewrite existing records merely to adopt
 the layout. Any authorized reorganization must preserve reviewed versions and
 repair links. A requested stage still ends at its own outputs.
+
+## Plans and tasks
+
+A plan organizes an outcome across work items. It defines the goal, included
+and excluded scope, input requirements/design, dependencies, feasible task order
+and overall completion criteria. Backend `API`, screen `SCR` and general `PLAN`
+documents are examples of plans; they link to the owning task files.
+
+A task is a concrete unit that can be assigned and completed independently.
+Its owning `TASK-<AREA>` file records the expected output, accountable writer,
+affected paths and logical resources, parent plan/input links, prerequisites,
+current status and completion checks. Before assignment is known, state that
+it is unassigned; resolve ownership before concurrent execution. These are
+content requirements, not mandatory headings or front matter.
+
+Keep task definitions and detailed results in their owning files. Plans contain
+links, ordering and useful progress summaries; update those summaries from the
+tasks. A task shared by several plans retains one ID, owning file and writer.
+Completion of the planned outcome is assessed against its scope and criteria
+using task outcomes and applicable combined verification. Planning itself ends
+when the plan and task definitions are authored and checked against their inputs;
+it does not require those tasks to have executed. Planning-only work records
+intended checks without claiming execution.
+
+Directory ownership and task ownership complement each other. Record the chosen
+document root and type-to-folder mapping in the overview, and the actual edit
+scope in tasks. Two tasks may work in one directory if their file/resource
+boundaries are clear. A folder name or document ID alone does not assign work.
+Use the [collaboration basis](COLLABORATION.md#collaboration-basis) to make these
+boundaries and ID allocations visible to concurrent writers.
 
 ## Item IDs
 
@@ -395,3 +426,4 @@ in illustrative layouts are not mandatory replacements for this mapping.
 | [CHG-00002](changes/2026-09-13-readme-guidance.md#chg-00002) | README examples, ID wording and document guidance aligned; scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00003](changes/2026-09-13-readme-guidance.md#dec-00003); uses the current document/ID policy. |
 | [CHG-00003](changes/CHG-00003.md#chg-00003) | Contextual classification folders and exact ID-only Markdown filenames; policy scope complete, STATIC_VERIFIED. | Owner clarification and Git delivery authorization are recorded in the change note; no runtime change or historical migration. |
 | [CHG-00004](changes/CHG-00004.md#chg-00004) | Item-boundary and required-name clarification; unused HTML guide removed; scope complete, STATIC_VERIFIED. | Owner explicitly authorized policy corrections and deletion of the current HTML guide; archive preserved. |
+| [CHG-00005](changes/CHG-00005.md#chg-00005) | Clarify plan/task responsibilities, shared directory mapping and concurrent ID allocation as the collaboration basis. | Owner authorized these policy edits in this session; verification and scope are recorded in the change note. |

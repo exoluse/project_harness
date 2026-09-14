@@ -287,6 +287,18 @@ only when the project contract or chosen reporting process calls for them.
 
 ## Collaboration, handover and closure
 
+Organize collaboration around clear plan/task boundaries, a shared directory
+mapping and unique ID-only Markdown filenames. Plans define goals, scope,
+dependencies, task order and overall completion criteria; tasks define concrete
+outputs, an accountable writer, affected paths/logical resources and completion
+checks. Each independent plan/task owns its file and links related items.
+Before concurrent editing, make task assignments, folder purposes and applicable
+ID allocation ranges visible to all writers. Use meaningful existing prefixes;
+agent names do not replace document types. Include shared-document editing and
+Git integration in the assigned scope. Maintain this coordination in existing
+overview/plan/task notes; no additional approval or mandatory claim system is
+needed. See [collaboration guidance](docs/COLLABORATION.md#collaboration-basis).
+
 One writer needs no claim system. Concurrent writers agree non-overlapping paths
 and logical resources, use isolated worktrees where practical, and record owners
 in shared notes or the team's chosen coordination tool. Do not edit another

@@ -107,6 +107,13 @@ static recovery does not require executing it.
 
 ## Requirements, tasks and execution order
 
+Keep the [plan/task distinction](DATA_MODEL.md#plans-and-tasks) explicit:
+plans organize goals, scope, dependencies, task sequence and overall completion;
+tasks specify concrete outputs, owners, edit boundaries and completion checks.
+Before concurrent execution, confirm that these assignments, the shared folder
+mapping and non-overlapping ID allocations are visible to the participating
+writers under the [collaboration basis](COLLABORATION.md#collaboration-basis).
+
 Requirements state the intended outcomes and constraints. Plans organize work
 to meet them. The agent may split, refine, reorder and move tasks within the
 reviewed scope without another decision. Several plans may share a decision,

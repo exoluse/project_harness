@@ -3,6 +3,38 @@
 Follow [AGENTS.md](../AGENTS.md). Ownership coordination prevents conflicting
 writes; it does not create execution authority.
 
+## Collaboration basis
+
+All participating agents use the same plan/task boundaries, directory mapping
+and document-ID convention, regardless of their tool. Make the following clear
+in the existing overview and linked plan/task documents before concurrent work:
+
+| Basis | Shared information |
+|---|---|
+| Plans and tasks | Plans organize goals, scope, dependencies, task order and overall completion criteria. Each task states its concrete output, writer, affected paths/logical resources and completion checks, and links its plan and required inputs. |
+| Directory structure | The overview records the document root and type-to-folder mapping. Choose names and nesting for the project, reuse them consistently and identify each writer's actual edit scope. |
+| Markdown filenames and serials | Each independent item owns an exact `<ID>.md` file in its mapped folder, subject to documented required-name exceptions. Allocate unique five-digit serials project-wide per complete semantic prefix. |
+
+See [plans and tasks](DATA_MODEL.md#plans-and-tasks) and the
+[ID convention](DATA_MODEL.md#item-ids). Folder and prefix examples are starting
+choices; agents extend the shared mapping for actual needs. One directory can
+contain several writers' files when their edit scopes do not overlap.
+
+Before allocating concurrently, record non-overlapping ranges or meaningful
+prefix ownership where all writers can see them. Separate checkouts must use
+that shared allocation, not independently choose the same next number from
+their local copies. Do not introduce agent-specific prefixes for the same
+document type. Reserve ranges within the existing prefix instead. Keep IDs
+stable through reassignment, and never reuse retired IDs.
+
+Include the overview, shared specifications and Git integration in the ownership
+agreement. Identify who edits shared files and who integrates changes; other
+writers hand their changes to that owner or agree a transfer before editing.
+When a checkout is shared, serialize Git index/branch operations through the
+assigned integration owner. Record relevant ownership, mapping and allocation
+changes before affected work continues. Existing Markdown notes are sufficient;
+these principles add no separate approval, registry service or runtime gate.
+
 ## Single writer
 
 A single writer needs no claim system, runtime attempt or placeholder handoff.
