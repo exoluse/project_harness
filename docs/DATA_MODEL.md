@@ -225,6 +225,24 @@ The serial is independent of the parent plan: `TASK-API-00003` may belong to
 `API-00002`. Record the actual parent plan ID and link, plus the requirements,
 design and dependencies it covers. Shared tasks may link to several plans.
 
+Interpret an ID using its complete registered prefix and final five-digit
+serial; do not infer meaning from an isolated token. The following are syntax
+examples, not allocations:
+
+| ID | Complete prefix | Type and meaning |
+|---|---|---|
+| `DOC-00001` | `DOC` | Overview/collection document; `DOC` is the document-type prefix. |
+| `TASK-DOC-00001` | `TASK-DOC` | Task in the documentation area; `TASK` is the type and `DOC` is the area. |
+| `API-00001` | `API` | Backend plan, not an endpoint or route. |
+| `TASK-API-00001` | `TASK-API` | Backend task; its parent plan is identified by an explicit link. |
+
+An endpoint is identified in its specification by its actual method/path or
+the project's endpoint convention, for example `GET /orders`; it is not assigned
+an `API` plan ID merely because it is an API. Keep the established ID vocabulary
+and register a distinct meaningful type for a separately tracked endpoint
+specification if needed. Token reuse in different positions does not merge
+allocation counters or justify renaming existing IDs.
+
 Serial allocation is project-wide per complete prefix. Two feature files must
 not both define `REQ-00001`; two API plans must not each restart their tasks at
 `TASK-API-00001`. `TASK-API-00001` and `TASK-SCR-00001` are distinct IDs. Search
@@ -279,12 +297,37 @@ For example, `backend-plans/API-00001.md` links to its owning task files at
 
 ## Allocation and validation reuse
 
-Establish a verified allocation basis for each needed complete prefix using
-existing definitions, retired IDs and outstanding reservations. Record its
-covered version/scope and the assigned ranges in the existing shared overview
-or allocation notes. Do not create a second registry or new file per allocation.
-If no reliable basis exists, inspect the relevant project-wide definitions and
-retained allocation history before selecting a free range.
+Use an `ID allocation` section (or its local-language equivalent) in the actual
+project overview as the default shared allocation record. If the team already
+uses another shared Markdown location, link its exact file/section from the
+overview and maintain the allocation there only. Folder names stay contextual;
+writers must be able to discover one authoritative allocation location.
+
+Use a compact Markdown table with the following minimum information, reusing
+shared baseline notes for rows checked together:
+
+| Field | Required content |
+|---|---|
+| Complete prefix | Registered type/area meaning, such as `TASK-DOC`. |
+| Verified basis | Commit/version and scope checked, including definitions, retained/retired IDs and outstanding reservations; actual check result and any limits. A version alone is not proof of verification. |
+| Allocated range | Inclusive serial bounds assigned within that prefix. |
+| Owner | Writer responsible for consuming the range; identify any agreed transfer. |
+| Disposition | Used serials or owning-document links, retired serials, and remaining reserved/available numbers. Record gaps explicitly rather than assuming everything below the largest number was used. |
+
+These are required contents, not fixed column spellings or a new machine schema.
+For example, a hypothetical `TASK-DOC` range `00001` through `00020` owned by
+writer A may state: used `00001` and `00003`, retired `00002`, remaining
+`00004` through `00020` reserved for A. Its row must also link the actual checked
+basis. This example does not allocate IDs in this harness repository.
+
+Establish the basis by inspecting project-wide definitions, retained allocation
+history and reservations before allocating. When creating the first project
+overview, check and assign its own ID as part of the initial allocation and
+record that basis in the new overview; no pre-existing registry is necessary.
+A single writer uses the same concise section and may reserve only the numbers
+currently needed. Harness guidance outside the [ID scope](#id-scope) needs no
+allocation table simply to maintain policy. Do not create a second registry or
+a new document per allocation.
 
 Within an assigned range, consume unused serials and record their disposition.
 Reuse the verified basis plus subsequent allocation changes instead of reading

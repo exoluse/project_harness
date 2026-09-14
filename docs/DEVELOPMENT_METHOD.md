@@ -134,6 +134,9 @@ dependencies.
 
 ## Change classification
 
+Apply the [material-change criteria](APPROVALS.md#material-changes) against the
+actual authorized scope; the table below describes the resulting workflow.
+
 | Change | Treatment |
 |---|---|
 | Task detail, ordering or document formatting within scope | Record useful rationale and proceed under current authority. |

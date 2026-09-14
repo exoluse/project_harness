@@ -114,6 +114,9 @@ details and tests within those bounds do not require another proceed response.
 An exploratory or stage-only request does not authorize later implementation.
 High-risk actions and external effects retain their specific authorization and
 control requirements; a direct request does not bypass them.
+Use the [clear-request criteria](docs/APPROVALS.md#clear-implementation-requests)
+and [material-change criteria](docs/APPROVALS.md#material-changes) for these
+judgments rather than inferring a new approval boundary from implementation size.
 
 Before implementation, establish a concrete reviewable scope:
 outcome and acceptance criteria, affected components/paths/data, actions and

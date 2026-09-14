@@ -41,6 +41,55 @@ verification. One decision can cover multiple plans/tasks. A supplied document,
 issue or exploratory request alone is not approval of an unreviewed change.
 Clarify only what remains ambiguous or materially undecided.
 
+## Clear implementation requests
+
+Treat a direct implementation/fix request as clear when all of these hold:
+
+- The requested action and target can be identified from the request, session
+  context and relevant project inputs; investigation alone is not the request.
+- The intended result and a useful completion check can be stated without
+  choosing a materially different outcome for the user.
+- The necessary work fits the stated boundaries and existing decisions without
+  requiring the agent to choose an unresolved material commitment for the user.
+
+Clarity establishes intent and scope, not execution readiness. Check real
+dependencies, ownership and required external permissions separately.
+
+The user need not supply exact files, algorithms or test commands. Investigate
+technical unknowns and choose routine details within scope. If a condition is
+unresolved, ask only about the missing outcome, boundary or material choice;
+continue independent authorized work. Do not require a fixed prompt template
+or a second proceed response merely to restate a clear request.
+
+## Material changes
+
+Compare the proposed action with the actual authorized scope and conditions.
+A change is material when it introduces or alters a commitment not already
+covered by that decision in any of these areas:
+
+- Intended behavior, deliverables or acceptance criteria.
+- Public interfaces or compatibility relied on by users or other systems.
+- Data collection, access, retention, migration or destructive effects.
+- Security/privacy boundaries, external permissions or required controls.
+- Spending, service dependencies, agreed resource limits or delivery promises.
+- Assumptions or risks whose change invalidates the basis of the prior decision.
+
+File count, code size, task splitting and implementation difficulty alone do
+not make a change material. If the current request explicitly authorizes the
+new effect, reuse it as the decision rather than asking again. Otherwise prepare
+the before/after effect and obtain the owner's decision for affected work.
+Specific high-risk/external controls still apply. Where impact is uncertain,
+investigate first; clarify before performing the potentially uncovered effect.
+
+| Situation | Assessment and action |
+|---|---|
+| Fix the identified calculation defect to match an existing expected result | Clear fix request; locate the implementation, make covered edits and verify the result. |
+| Split an internal function while fixing that defect, preserving interfaces and accepted behavior | Routine implementation detail within scope; no renewed decision. |
+| "Improve this" without a target outcome or usable context | Investigate what can be established and clarify the missing outcome before selecting one. |
+| Change an API response format consumed by other systems during an internal fix | Material if compatibility change is not covered; present the effect and obtain a decision. |
+| Add a paid service or send user data to a new provider | Check spending, data and external permissions; obtain any uncovered decision before the effect. |
+| User explicitly requests a defined response-format migration | Use that request for the covered migration; assess dependencies and required controls without repeating approval. |
+
 ## Coverage and currentness
 
 Before covered work begins, assess the actual outcome, actions, paths/data,
@@ -49,7 +98,8 @@ ownership and required external permissions.
 
 Routine task splitting, reordering, plan switching, metadata edits and record
 format changes do not create a new decision boundary. Material changes to
-commitments, risk, assumptions, conditions or authority need a prepared delta
+commitments, risk, assumptions, conditions or authority under the
+[material-change criteria](#material-changes) need a prepared delta
 and an actual owner decision before affected implementation.
 
 Preserve prior versions and decisions as history. Changed outputs can limit
