@@ -31,26 +31,10 @@ continues to apply to actual development and requested document deliverables.
 7. Deliver the requested result. For releases or project closure, include all
    contributing work, acceptance and operational obligations as applicable.
 
-A concise Markdown (`.md`) project overview holds shared context, status and
-links to feature/work documents. Each unit holds its own stage, baseline,
-decision reference, tasks, prerequisites, results and next action. A small
-coherent unit may combine these in sections; independent units use separate
-documents under the [organization guidance](DATA_MODEL.md#document-organization).
-New harness management documents must use `.md` and stable item IDs following the
-[ID convention](DATA_MODEL.md#item-ids). New project Markdown uses
-`<document-root>/<classification-path>/<ID>.md`: the filename is exactly the
-document ID plus `.md`, without a descriptive suffix. Independently managed items have
-their own files; feature groups are maintained through overview/item links.
-The agent chooses folder names and hierarchy for the project and records the
-mapping; example paths such as `project-docs/requirements` are not fixed names.
-Use [independent-item boundaries](DATA_MODEL.md#independent-items-and-supporting-detail)
-for file separation. Tool/contract/repository-required names keep their actual
-paths under the [required-name exception](DATA_MODEL.md#required-name-exceptions),
-with document identity and the reason recorded in the overview.
-Do not create parallel JSON management records. Preserve existing records and
-tool-required formats as described in the
-[format policy](../AGENTS.md#management-document-format).
-Do not create empty PLAN/TASK records simply to begin documenting a project.
+When authoring stage outputs, use the
+[document organization standard](DATA_MODEL.md#document-organization) to locate
+the overview and owning documents. Apply the Information model's detailed
+rules; create only the outputs needed for the requested stage.
 
 ## Existing project intake and reverse engineering
 
@@ -112,12 +96,9 @@ Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED; a document
 check does not establish either product integration or production success.
 
 Before completion, release, handover or push, review the diff and relevant
-verification. For document work, also check unit boundaries, overview entries,
-local file/anchor links, type-folder mapping, exact filename/body document-ID
-agreement or the documented required-name mapping, item-ID coverage/uniqueness
-and the requirements-to-design-to-work-to-verification trace for the requested
-stage. Reuse applicable baseline results and check changed files and affected
-references under [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification);
+verification. Apply [document validation](DATA_MODEL.md#document-validation)
+for document deliverables at the requested stage. Reuse applicable baseline
+results under [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification);
 a transition from completion to push alone does not require a fresh full scan.
 Required project/CI checks remain required. Optional tool failure must
 be reported accurately even when unrelated authorized work can continue.

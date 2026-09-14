@@ -33,132 +33,33 @@ See [Information model](docs/DATA_MODEL.md) for document content and trace.
 
 ## Document organization
 
-Keep a project overview with shared goals/constraints, current status and links
-to feature or work documents. For work spanning independently scoped features
-or changes, create separate documents for those units; do not default to one
-ever-growing requirements, design or plan file for the whole project.
-
-Split when a unit needs its own scope/acceptance criteria, design decisions,
-dependencies, owner, verification or delivery history to be reviewed independently.
-Within a small coherent change, tightly coupled stage notes may be sections in
-its document. Independently managed requirements, designs, plans and tasks use
-their own files in the corresponding type folders. Do not create a file per
-paragraph or empty documents beyond the user's requested stopping point.
-
-Keep shared requirements and architecture at project level and link to them
-from affected units. Link each unit's requirements, design, plan and actual
-verification, including cross-unit dependencies. Maintain the overview's links
-and summary as work changes; detailed facts have one maintained source.
-Classify new project documents in suitable folders, using the exact ID-only
-filenames below. Folder names, nesting and the document root are chosen for
-the project; `project-docs/requirements/` is an example, not a mandatory path.
-Maintain feature/work grouping in the overview and item links regardless of
-the physical layout. Preserve existing records and reviewed
-versions; apply this structure to new work and organize existing documents only
-within the authorized scope. See [organization guidance](docs/DATA_MODEL.md#document-organization).
+Keep a project overview linking independently managed feature/work items.
+Maintain detailed facts in one owning document and reference them elsewhere.
+The [Information model](docs/DATA_MODEL.md) is the required detailed standard
+for document boundaries, identities, paths, exceptions and validation under
+this policy. Other guidance summarizes or links these rules rather than
+redefining them. Apply the relevant sections when authoring or checking
+documents; a current copy already read in the session remains usable.
 
 ## Item identity and trace
 
-Apply this principle to every Markdown document the agent creates in the
-authorized project scope, including guides, research, reviews, meeting notes,
-reports and handoffs, not just requirements/design/planning documents. Give
-each new document an identity: reuse its primary item's ID when it represents
-one item, or assign an appropriate document ID when it collects several items.
-Except for [required-name files](#required-name-markdown-files), use
-`<document-root>/<classification-path>/<DOCUMENT-ID>.md` for every new project
-Markdown document, with the exact same ID visible near the top of its body.
-For example, use `project-docs/requirements/REQ-00001.md`,
-`project-docs/designs/DES-00001.md` and `project-docs/tasks/TASK-API-00001.md`.
-The filename is only the ID and `.md`; descriptive suffixes such as
-`REQ-00001-login.md` are not allowed. Titles belong in the document body and
-overview. This includes overviews, shared specifications, research, reports
-and handoffs. A body ID or an ID-bearing directory alone is insufficient.
-Choose the document type, folder and ID before creating the file. The agent
-chooses folder names and hierarchy from the content, workflow and existing
-project conventions; none of the example folder names is mandatory. Record
-and consistently reuse the project's classification mapping, extending it
-autonomously for new kinds. If a folder changes, preserve IDs and update links.
-
-Give each independently managed requirement, design, plan, task or other
-primary item its own `<ID>.md` in its type folder. Overviews and collections
-index those documents rather than absorbing their authoritative detail.
-An independent item has its own outcome/scope or is separately assigned,
-accepted, completed, decided or verified. Technical dependencies do not remove
-that management boundary. Separate requirements or tasks remain separate items
-even when they are short, share a feature/owner or appear in one small change.
-
-Supporting descriptions, examples, metadata and acceptance details that define
-only their parent item's meaning or completion stay in the parent's document.
-They have no independently managed status or outcome; a heading or a linkable
-paragraph alone does not make them independent items. If a supporting detail
-acquires its own management boundary, give it its own ID/file and link it from
-the parent. A plan lists links to its task files. A small change may keep tightly
-coupled stage notes, but may not relabel independent requirements/tasks as
-metadata to avoid separate files. See [item boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail).
-Assign a project-unique, stable ID to each independently tracked item. The agent
-determines meaningful item boundaries from the document's purpose, including
-requirements, criteria, design items, plans, tasks, decisions, findings, changes,
-risks, issues and verification; this is an open set, not a fixed list.
-Ordinary prose, metadata, navigation and explanatory headings need no item ID.
-A reference or summary retains the original item's ID and links to its owning
-definition; it does not create another item or duplicate authoritative detail.
-
-Use type prefixes and five-digit serials: `REQ-00001` for requirements,
-`API-00001` for backend plans, `SCR-00001` for screen plans, and
-`TASK-<AREA>-00001` for tasks, such as `TASK-API-00001` or `TASK-SCR-00001`.
-The task area identifies its work category, not the exact parent plan; link
-parent plans explicitly. The [ID convention](docs/DATA_MODEL.md#item-ids)
-provides starting examples. For a new document or item kind, the agent chooses
-a meaningful type prefix and useful granularity, records the choice and
-continues without asking the user to name each type. Reuse applicable project
-conventions; the example prefixes do not limit which documents receive IDs.
-
-Record the convention and any additional prefixes in the project overview.
-Allocate serials across the project for each full prefix, never restarting at
-file or feature boundaries. Check existing IDs before allocation; concurrent
-writers reserve distinct prefixes or ranges in their shared Markdown notes.
-Reuse a verified allocation baseline and consume the assigned unused range;
-check intervening allocations instead of rescanning every document for each ID.
-If coverage or ownership is uncertain, reconcile it before allocating. Follow
-[allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse).
-Preserve IDs across moves, title changes and revisions. Never renumber or reuse
-retired IDs; link replacements when items split, merge or are superseded.
-
-Use IDs with resolvable file/anchor links for relationships. An ID is neither
-a version nor approval or verification evidence; preserve the applicable
-baseline, actual decision and observed result separately. Check every new
-Markdown type folder and exact filename against its body ID (or its documented
-required-name mapping), plus ID coverage,
-uniqueness and references before document completion. Preserve existing IDs
-and historical records; this rule does not authorize bulk retroactive relabeling.
-New traceable items added to existing Markdown follow the same identity rule.
-Preserve externally required document formats and resolve an actual conflict
-before affected delivery; do not silently omit identity requirements.
+Apply IDs to actual project deliverables under the
+[ID scope](docs/DATA_MODEL.md#id-scope); the harness's own policy, overview and
+exception guidance are outside that scope. Independent project items own exact
+`<ID>.md` files in contextual
+classification folders, subject to the required-name rule below. Agents choose
+appropriate types and folders; examples do not define a closed vocabulary.
+Follow the mandatory [ID rules](docs/DATA_MODEL.md#item-ids),
+[item boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail),
+[document paths](docs/DATA_MODEL.md#document-paths) and
+[validation criteria](docs/DATA_MODEL.md#document-validation).
 
 ## Required-name Markdown files
 
-The exact `<ID>.md` filename and classification-path rule has a narrow exception
-for a name or location required by a tool, a project contract, or a repository
-entry convention. Examples include `AGENTS.md`, `CLAUDE.md`, `SKILL.md` and the
-repository landing `README.md` when their consumer requires that path/name.
-Keep the required name/location so the consumer can find the file. Do not
-create a duplicate `<ID>.md` copy of its authoritative content.
-
-Assign a stable document ID and show it in the body when the consumer's format
-permits it. Record the ID, canonical path and concrete reason/source for the
-exception in the project overview/index. If the required body format also
-forbids an ID, keep the identity mapping only in that index. References resolve
-to the required-name file; independently managed contents still follow the
-item-boundary rules. An ordinary project note gets no exception merely because
-an author prefers a descriptive filename.
-
-The agent checks the actual consumer/contract requirement and records this
-exception under the existing task authority; no additional permission is
-needed solely to preserve a required name. Verify the name/location and
-applicable consumer format, the index mapping, identity uniqueness and links
-instead of demanding an ID-only basename. Other scope, safety and external
-approval requirements remain binding. Existing records need no bulk renaming
-or retroactive labeling. See [required names](docs/DATA_MODEL.md#required-name-exceptions).
+Apply the mandatory [required-name exceptions](docs/DATA_MODEL.md#required-name-exceptions)
+when a tool, contract or repository entry convention requires a particular
+name/location. Preserve consumer compatibility and document identity under
+that rule; do not create duplicate authoritative copies.
 
 ## Startup and context
 
@@ -232,9 +133,8 @@ actual decision.
 Before a work item starts, confirm and briefly record that the decision covers
 its outcome, paths/actions and verification; required inputs/dependencies are
 ready; no real blocker or ownership conflict applies; and needed external
-permissions are present. A plan and its work items can be Markdown sections or
-a checklist with stable item links. Independently managed items use separate
-`<ID>.md` files in their type folders; front matter is not required.
+permissions are present. Organize the plan and its work items under the
+[Information model](docs/DATA_MODEL.md#plans-and-tasks).
 
 One decision may cover several plans and tasks within its reviewed bounds.
 Refining, splitting, ordering or moving tasks within those bounds needs no new
@@ -265,8 +165,8 @@ There is no requirement to operate `archive/` or `changes/` for this purpose.
 
 Keep existing historical files and links unless their cleanup is explicitly
 requested. New documentation is appropriate when it is itself a requested
-deliverable or needed current guidance; apply the Markdown/ID rules to such
-files. Actual project development retains its requirements, plans, tasks,
+deliverable or needed current guidance. Use Markdown, and apply IDs according
+to the [ID scope](docs/DATA_MODEL.md#id-scope). Actual project development retains its requirements, plans, tasks,
 decisions and verification documents under the normal rules. Required external
 records remain binding. Commit/push still requires the applicable user request.
 

@@ -20,22 +20,10 @@ planning as requested. Actual owner decisions cover concrete implementation
 scope. The agent checks work-item prerequisites, performs covered work, verifies
 the changed subject and reports results and limitations.
 
-New harness management documents use Markdown (`.md`), organized as a project
-overview linking feature/work documents. Stage sections can share a file within
-a small coherent unit; independently scoped units have separate documents. See
-[document organization](DATA_MODEL.md#document-organization).
-Traceable items use [stable type-prefixed IDs](DATA_MODEL.md#item-ids) and
-resolvable item links; these identities do not enforce approval or verification.
-New project Markdown uses `<document-root>/<classification-path>/<ID>.md`;
-the filename stem exactly matches the body document ID, including overview and shared-context
-documents. Features group item links; the agent chooses physical classification
-folders and hierarchy for the project rather than following fixed directory names.
-Supporting descriptions stay in their parent item; separately managed outcomes
-and work get their own files. Tool/contract/repository-required filenames retain
-their paths with indexed identity under the
-[required-name exception](DATA_MODEL.md#required-name-exceptions).
-Existing records and tool-required formats are preserved
-under the [format policy](../AGENTS.md#management-document-format).
+Project documents connect the overview, independently managed items and their
+evidence through stable references. The [Information model](DATA_MODEL.md)
+defines their organization and detailed rules under
+[AGENTS.md](../AGENTS.md#document-organization).
 Closure aggregates the actual contributions and obligations.
 
 Existing code can supply observations for reverse engineering. It does not

@@ -69,15 +69,8 @@ A useful plan includes:
 - Verification methods, environments and delivery obligations.
 - The actual scope decision, source and remaining prerequisites.
 
-Before completing planning, check that independently scoped units have their
-own documents, the overview indexes them, shared specifications have one
-maintained source, and requirements/design/work ID links cover the requested
-scope. Check all new Markdown type-folder mappings and exact `<ID>.md`
-filenames against their body document IDs,
-plus item-ID coverage, uniqueness and references using the
-[ID convention](DATA_MODEL.md#item-ids).
-For documented required-name exceptions, check the actual consumer name/format
-and index identity mapping under [required names](DATA_MODEL.md#required-name-exceptions).
+Before completing planning, review requirements/design/work coverage against
+the requested scope and apply [document validation](DATA_MODEL.md#document-validation).
 Identify planned verification without claiming evidence from an unrun stage.
 
 ## Existing project intake and reverse engineering

@@ -8,14 +8,8 @@ These principles explain its intent.
 2. **Requested stopping point.** Stage-only work ends at its requested outputs;
    a full workflow continues within current authority and real readiness.
 3. **Useful documentation.** Requirements, design, planning and trace support
-   delivery. New management documents use Markdown (`.md`). New Markdown
-   documents use classification folders and exact `<ID>.md` filenames. The
-   agent chooses folder names and hierarchy for the project. Schemas, front
-   matter and placeholder plans are not required. Preserve
-   existing records and tool-required formats under the governing policy.
-   Independent outcomes/work have their own files; parent-specific descriptions
-   stay with the parent. Required tool/contract/repository entry names retain
-   their paths with a documented ID mapping instead of duplicate files.
+   delivery. Keep one maintained source per independent item, preserve history
+   and use the [Information model](DATA_MODEL.md) for detailed document rules.
 4. **One decision for one reviewed scope.** Several plans/tasks may share a
    decision; routine refinement does not create repeated approval ceremonies.
 5. **Material changes stay visible.** Preserve the prior baseline, assess the

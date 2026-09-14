@@ -1,19 +1,49 @@
 # Project Information Model
 
-Project information must be reviewable and attributable. Write all new harness
-management documents as Markdown (`.md`) with stable IDs for traceable items;
-use suitable classification folders and exact `<ID>.md` filenames, without
-fixed schemas or front matter. Follow
-[AGENTS.md](../AGENTS.md#management-document-format) and use a project overview
-and feature/work documents as described below. Use prose, tables, checklists
-and links instead of creating JSON records or parallel structured copies of
-management documents.
+This is the required detailed standard for project document organization,
+identity, paths, exceptions and validation, designated by
+[AGENTS.md](../AGENTS.md#document-organization). Keep definitions here; other
+guidance links them and may show brief summaries or examples.
+The [management format policy](../AGENTS.md#management-document-format)
+governs Markdown, existing records and tool-required formats.
+
+| Need | Governing section |
+|---|---|
+| Harness guidance or project deliverable | [ID scope](#id-scope) |
+| Overview and relationships | [Document organization](#document-organization) |
+| Plan/task responsibilities | [Plans and tasks](#plans-and-tasks) |
+| Identity, types and numbering | [Item IDs](#item-ids) |
+| Canonical filename and folder mapping | [Document paths](#document-paths) |
+| Separate item or supporting detail | [Item boundaries](#independent-items-and-supporting-detail) |
+| Consumer-required name/location | [Required-name exceptions](#required-name-exceptions) |
+| Completion checks | [Document validation](#document-validation) |
+| Reuse of checked allocations | [Allocation reuse](#allocation-and-validation-reuse) |
 
 Preserve existing non-Markdown records and reference them without automatic
 conversion or deletion. Product files such as `package.json`, original evidence
-such as logs or test reports, and tool-internal files retain their required formats. Summarize verification in Markdown and link to those original
-artifacts. Contractual delivery formats and external controls remain binding;
+such as logs or test reports, and tool-internal files retain their required
+formats. Summarize verification in Markdown and link to those original artifacts. Contractual delivery formats and external controls remain binding;
 resolve actual conflicts before the affected delivery.
+
+## ID scope
+
+The harness's own policy, framework overview, exception guidance and agent
+instructions do not receive document or rule IDs. This applies to new guidance
+as well as existing files, including `AGENTS.md`, the harness `README.md` and
+its policy documentation. Use meaningful or consumer-required Markdown names;
+no ID filename, classification-folder mapping or exception-ID registry is needed
+for these guidance files. Maintain them through Git under
+[policy maintenance](../AGENTS.md#harness-policy-maintenance).
+
+Actual project deliverables remain subject to the ID rules: project overviews,
+requirements, designs, plans, tasks, decisions, research and verification, among
+others. Classify by purpose, not filename or folder: a framework overview
+explains how to use the harness; a project overview tracks a project's outcomes
+and work. A project document does not become exempt by being called a guide
+or exception. Examples in harness guidance remain illustrative, not allocations.
+Preserve existing historical IDs; this distinction does not authorize stripping
+them from records. Explicit contract or external identity requirements remain
+binding.
 
 ## Suggested information
 
@@ -55,27 +85,15 @@ Each index entry links to the unit's documents and states its scope, stage/statu
 and material dependencies. Keep detailed decisions and evidence in their owning
 documents and link to them instead of maintaining duplicate accounts.
 
-Split a unit into separate documents when any of these boundaries needs
-independent review or tracking:
+Apply the [item-boundary rules](#independent-items-and-supporting-detail)
+when splitting work. Keep tightly coupled stage notes in the owning item and
+use links for independently managed requirements, designs, tasks and evidence.
+Split accumulated detail when it obscures scope, decisions or evidence.
+Record the chosen boundaries and rationale briefly in the overview or work note.
 
-- A feature or change has its own outcome, scope and acceptance criteria.
-- Design decisions or interfaces need a distinct review and revision history.
-- Work has a separate owner, dependency chain, verification or delivery cycle.
-- Accumulated detail makes the current scope, decision or evidence hard to find.
-
-Choose independent item boundaries first and store their documents by type.
-A small fix can use one change document with tightly coupled stage notes;
-separately managed requirements or tasks still have their own linked files.
-A larger feature connects its requirements, designs, plans, tasks and evidence
-through the overview and item links. File count and line count are not completion
-criteria; do not create one file per checklist item or empty stage templates.
-Briefly record the chosen boundaries and rationale in the overview or work note.
-
-The rule is classification by document nature plus exact `<ID>.md` filenames.
-The root `project-docs`, folder names and nesting below are examples, not a
-fixed directory schema. Choose them for the project and record the mapping.
-These example IDs are not allocations in this repository. Create only files
-for requested stages:
+The following example applies [document paths](#document-paths). Folder names
+and nesting are illustrative; the IDs are not allocations in this repository.
+Create only documents needed for the requested stage:
 
 ```text
 project-docs/
@@ -153,27 +171,21 @@ boundaries and ID allocations visible to concurrent writers.
 
 ## Item IDs
 
-Apply identity rules to every Markdown document the agent creates within the
-authorized project scope, whatever its subject: specifications, research,
+Apply identity rules to every Markdown deliverable within the
+[ID scope](#id-scope), whatever its subject: specifications, research,
 guides, meeting notes, reviews, reports, handoffs or kinds not listed here.
 Assign the document an ID appropriate to its purpose. A document representing
 one primary item uses that item's ID; a collection can use a document ID such
-as `DOC-00001`. Choose the identity before creating the file, use it as the
-entire filename stem, show it near the top of the body and use it in the index.
+as `DOC-00001`. Choose the identity before creating the file and use it in
+the index; [document paths](#document-paths) defines filename/body placement.
 An overview itself also has an identity. A document ID is not a substitute for
 the identities of its independently tracked contents.
 
-The agent determines which contents need independent reference, revision,
-assignment or verification and gives each such item an ID. Requirements,
-separately tracked acceptance criteria, design items, plans, tasks, decisions,
-findings, changes, risks, open issues and verification items are examples,
-not an exhaustive whitelist. New traceable items added to existing Markdown
-follow the same rule. Descriptive paragraphs, metadata fields, navigation
-entries and ordinary headings do not require separate IDs. A criterion kept as
-part of one requirement uses that requirement's identity. A separately managed
-criterion gets its own `AC` ID and file. Many referenced IDs may appear in one
-document, but that does not authorize defining several independent items there.
-Use the [boundary rules](#independent-items-and-supporting-detail) below.
+Use the [item-boundary rules](#independent-items-and-supporting-detail) to
+identify independently tracked contents. Apply IDs to new traceable items
+added to existing Markdown as well. Requirements, acceptance criteria, designs,
+plans, tasks, decisions, findings, changes, risks, issues and verification are
+examples, not an exhaustive list.
 
 Use semantic uppercase type prefixes and five-digit serials, starting at
 `00001`. Reuse established project conventions and the applicable examples
@@ -226,55 +238,44 @@ for example an ID-only heading `### REQ-00001` with a descriptive title in the
 body, or an explicit anchor for an identified table row. References use the ID
 as link text and resolve to that item's anchor, even within one file.
 
-Except for [required-name files](#required-name-exceptions), every newly
-generated project Markdown file uses
-`<document-root>/<classification-path>/<DOCUMENT-ID>.md`. The entire filename
-stem must exactly match the owning document's ID, including uppercase type tokens and
-the five-digit serial. Do not add a title, date or descriptive suffix to the
-filename. This covers overview/index, shared context, requirements, designs,
-plans, tasks, research, reports, changes and handoffs alike. Use
-`overview/DOC-00001.md`, not `overview.md` or `DOC-00001-overview.md`.
-
-Each independently managed requirement belongs in its own file, normally named
-`requirements/REQ-00001.md`. A plan at `backend-plans/API-00001.md` links its
-tasks at `tasks/TASK-API-00001.md` and other task paths. Collection/overview
-documents have their own ID and index the owning documents; they do not replace
-them with one growing requirements or task file. Explanations, acceptance
-criteria belonging to one requirement, and tightly coupled stage notes within
-a small change may remain in that owning document. Independently managed items
-get separate files when those boundaries apply; do not split every paragraph.
-
-Record the classification-to-folder mapping in the project overview. Examples
-include `REQ` to `requirements`, `DES` to `designs`, `API` to `backend-plans`,
-`SCR` to `screen-plans`, `TASK-<AREA>` to `tasks`, and `VER` to `verifications`.
-These are not reserved directory names: a project may use `specs/requirements`,
-`plans/backend`, `work-items` or another meaningful structure. Reuse the chosen
-convention consistently within its stated scope. For a new kind or changed
-context, the agent selects suitable folders and prefixes and records them
-without asking the user to classify them. Folder changes preserve IDs and
-update overview/item links; they do not authorize historical-record migration.
-Do not create empty type folders or placeholder files before they are needed.
-Group a feature's requirement/design/plan/task/verification links in the overview
-and record the feature in the owning documents; keep physical storage consistent
-with the project's chosen classification rather than blindly copying the example.
-
 Keep IDs unchanged when content is revised, renamed, reordered or moved; update
 links after moves. Never reuse deleted/retired IDs. For a split or merge, record
 the old item's disposition and links to the new items without overwriting its
 decision or evidence history. Identity alone does not identify a reviewed
 version, prove approval or establish a passed check.
 
-Before completion, check that every new Markdown document and all traceable
-items in the changed deliverables have IDs, every new file is in its mapped
-type folder with exactly `<body-document-ID>.md` as its filename or satisfies
-the documented required-name exception, definitions
-are unique within the project, serials do not collide with retained IDs, and references resolve
-to the intended items. Distinguish
-definitions from references and clearly marked examples during this check.
 Existing IDs and historical records remain valid; use links to older material
 without bulk retroactive relabeling. A requested migration has its own scope.
-Externally required document formats remain binding; identify and resolve a
-real format conflict rather than silently skipping this rule.
+Externally required document formats remain binding; resolve a real conflict
+rather than silently omitting identity requirements.
+
+## Document paths
+
+Except for [required-name files](#required-name-exceptions), every new project
+Markdown document uses `<document-root>/<classification-path>/<DOCUMENT-ID>.md`.
+The entire filename stem exactly matches the owning document ID, including
+uppercase type tokens and the five-digit serial. Show the document ID near the
+top of the body. Titles and descriptions belong in the body and overview;
+do not append a title, date or description to the filename.
+A body ID or ID-bearing directory alone does not satisfy this rule.
+Use `overview/DOC-00001.md`, not `overview.md` or `DOC-00001-overview.md`.
+The rule covers all document kinds, including overviews, shared specifications,
+research, reports, changes and handoffs.
+
+The agent chooses and records the root and classification-to-folder mapping
+in the project overview, reusing project conventions. Examples include `REQ`
+to `requirements`, `API` to `backend-plans`, `SCR` to `screen-plans` and
+`TASK-<AREA>` to `tasks`. These are not reserved names: `specs/requirements`,
+`plans/backend` or `work-items` are also possible. Select and record suitable
+folders for new kinds or changed context without asking the user to classify
+each one. Reuse mappings consistently within their stated scope.
+
+Folder changes preserve IDs and repair overview/item links; they do not
+authorize historical-record migration. Do not create empty type folders or
+placeholder files before they are needed. Group feature relationships through
+the overview and owning documents, independently of the physical layout.
+For example, `backend-plans/API-00001.md` links to its owning task files at
+`tasks/TASK-API-00001.md` and other applicable paths.
 
 ## Allocation and validation reuse
 
@@ -326,12 +327,14 @@ parent and preserve the prior version and decision history.
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
 | A small change records its source, scope rationale and observed check result | These may be metadata/stage notes of that change; independently managed requirements/tasks still get separate files. |
 
-Before completing documents, check that every independent item has exactly one
-owning file and that embedded detail has no separate management boundary.
+Ordinary prose, navigation and explanatory headings need no independent ID.
 Do not use the small-change exception or the word "metadata" to conceal
 separately managed items inside a single growing document.
 
 ## Required-name exceptions
+
+This section applies to project deliverables within the [ID scope](#id-scope).
+The harness's own guidance is excluded there and needs no exception-ID mapping.
 
 Keep an exact filename/location when a consuming tool, project contract or
 repository entry convention requires it. Examples include a tool's `AGENTS.md`,
@@ -355,14 +358,27 @@ ID to its body if compatible. A normal requirements document continues to use
 and documents the exception within the already authorized task; preserving a
 required name does not need an additional approval ceremony.
 
-Verification checks the actual required name/location and applicable consumer
-format, index ID/path/reason mapping, uniqueness and links. Where the body has
-an ID, check it against the index; otherwise check the stated format restriction.
-Replace ordinary path/name/body-ID checks only to the extent required by the
-documented consumer constraint; the index mapping and other applicable checks
-remain required. Do not treat every existing descriptive filename as a new
-exception or relabel history in bulk. Existing records keep their names and
-applicable prior evidence.
+## Document validation
+
+Before completing document work, apply these checks to the requested stage.
+Use [allocation reuse](#allocation-and-validation-reuse) and
+[verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification) to determine
+the affected scope and reusable evidence.
+
+| Check | Evidence to verify |
+|---|---|
+| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; overviews reference owners and supporting detail meets the item-boundary rules. Harness guidance needs no identity or path-mapping checks. |
+| Identity and allocation | New definitions are unique project-wide and do not collide with retained/retired IDs or reservations; distinguish definitions, references and illustrative examples. |
+| Ordinary paths | Each new file matches the recorded folder mapping and the filename/body identity specified in [Document paths](#document-paths). |
+| Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
+| Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. |
+| Scope and history | No unauthorized migration or historical relabeling; IDs and prior decision/evidence history are preserved, and unrun verification is not reported as success. |
+| Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
+
+Required-name checks replace ordinary path/name/body checks only to the extent
+required by the documented consumer constraint; identity, links and other checks
+remain applicable. Do not treat every existing descriptive filename as a new
+exception. Existing records keep their names and applicable prior evidence.
 
 ## Trace and baselines
 
