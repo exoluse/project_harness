@@ -31,6 +31,10 @@ New project Markdown uses `<document-root>/<classification-path>/<ID>.md`;
 the filename stem exactly matches the body document ID, including overview and shared-context
 documents. Features group item links; the agent chooses physical classification
 folders and hierarchy for the project rather than following fixed directory names.
+Supporting descriptions stay in their parent item; separately managed outcomes
+and work get their own files. Tool/contract/repository-required filenames retain
+their paths with indexed identity under the
+[required-name exception](DATA_MODEL.md#required-name-exceptions).
 Existing records and tool-required formats are preserved
 under the [format policy](../AGENTS.md#management-document-format). There is no
 required state machine, single active plan, claim record or approval fingerprint.

@@ -25,7 +25,7 @@ the user to classify each one. Follow the [ID convention](docs/DATA_MODEL.md#ite
 link items and preserve IDs across revisions/moves; check coverage, uniqueness
 and references. Apply this to guides, research, reviews and handoffs as well.
 
-Store every new project Markdown document at
+Except for the required-name files described below, store new project Markdown at
 `<document-root>/<classification-path>/<DOCUMENT-ID>.md`, for example
 `project-docs/requirements/REQ-00001.md`. The filename is exactly the body
 document ID plus `.md`, with no title/date suffix. Use type folders for all
@@ -35,6 +35,17 @@ schema; record and consistently reuse the mapping. Independently managed items
 have their own files. Group features
 through overview/item links. Check folder mapping and exact filename/body ID
 agreement; preserve existing records and externally required formats.
+
+Use a separate file for an item with its own outcome/scope or separately managed
+assignment, completion, acceptance, decision or verification. Keep only supporting
+explanations and parent-specific criteria inside the parent. A plan links task
+files; a small change does not absorb independent items as metadata.
+
+For tool/contract/repository entry files requiring a fixed name/location, keep
+that path, assign a document ID and record ID/path/reason in the overview.
+Show the ID in the body when compatible; otherwise use the overview mapping.
+Do not create duplicate ID-named copies. Verify the consumer requirement and
+mapping within existing authority; see [required names](docs/DATA_MODEL.md#required-name-exceptions).
 
 Preserve the requested stopping point, user/unknown work and external high-risk
 controls. Optional CLI diagnostics do not grant authority or automatically stop

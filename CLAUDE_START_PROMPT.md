@@ -22,7 +22,7 @@ a closed list. Choose and record additional types autonomously. Follow the
 [ID convention](docs/DATA_MODEL.md#item-ids), link items and check coverage,
 uniqueness and references; preserve IDs across revisions and moves.
 
-Every new project Markdown file uses
+Except for the required-name files described below, new project Markdown uses
 `<document-root>/<classification-path>/<DOCUMENT-ID>.md`, such as
 `project-docs/requirements/REQ-00001.md`. Use the exact body ID as the filename
 stem, without descriptive suffixes. Give independently managed items their own
@@ -31,3 +31,10 @@ autonomously. Folder/root names and nesting are examples, not a fixed schema;
 record the project's chosen mapping. Check the folder mapping and filename/body
 match, including overviews and handoffs. Preserve existing records and
 externally required formats.
+
+Separate independently managed outcomes/work into their own files; keep only
+parent-specific explanations and criteria in the parent. Preserve names/paths
+required by tools, contracts or repository entry conventions, record their
+document ID/path/reason in the overview and add the ID to the body when allowed.
+Avoid duplicate copies and extra approval solely for the required name; check
+the [required-name exception](docs/DATA_MODEL.md#required-name-exceptions).

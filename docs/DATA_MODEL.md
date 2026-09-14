@@ -140,9 +140,10 @@ findings, changes, risks, open issues and verification items are examples,
 not an exhaustive whitelist. New traceable items added to existing Markdown
 follow the same rule. Descriptive paragraphs, metadata fields, navigation
 entries and ordinary headings do not require separate IDs. A criterion kept as
-part of one requirement can use that requirement's identity; give it an `AC` ID if it
-needs independent tracking. A document can contain many IDs without needing
-one file per item, and references reuse the original ID.
+part of one requirement uses that requirement's identity. A separately managed
+criterion gets its own `AC` ID and file. Many referenced IDs may appear in one
+document, but that does not authorize defining several independent items there.
+Use the [boundary rules](#independent-items-and-supporting-detail) below.
 
 Use semantic uppercase type prefixes and five-digit serials, starting at
 `00001`. Reuse established project conventions and the applicable examples
@@ -194,7 +195,8 @@ for example an ID-only heading `### REQ-00001` with a descriptive title in the
 body, or an explicit anchor for an identified table row. References use the ID
 as link text and resolve to that item's anchor, even within one file.
 
-Every newly generated project Markdown file uses
+Except for [required-name files](#required-name-exceptions), every newly
+generated project Markdown file uses
 `<document-root>/<classification-path>/<DOCUMENT-ID>.md`. The entire filename
 stem must exactly match the owning document's ID, including uppercase type tokens and
 the five-digit serial. Do not add a title, date or descriptive suffix to the
@@ -202,7 +204,7 @@ filename. This covers overview/index, shared context, requirements, designs,
 plans, tasks, research, reports, changes and handoffs alike. Use
 `overview/DOC-00001.md`, not `overview.md` or `DOC-00001-overview.md`.
 
-Each independently managed requirement belongs in its own file such as
+Each independently managed requirement belongs in its own file, normally named
 `requirements/REQ-00001.md`. A plan at `backend-plans/API-00001.md` links its
 tasks at `tasks/TASK-API-00001.md` and other task paths. Collection/overview
 documents have their own ID and index the owning documents; they do not replace
@@ -233,7 +235,8 @@ version, prove approval or establish a passed check.
 
 Before completion, check that every new Markdown document and all traceable
 items in the changed deliverables have IDs, every new file is in its mapped
-type folder with exactly `<body-document-ID>.md` as its filename, definitions
+type folder with exactly `<body-document-ID>.md` as its filename or satisfies
+the documented required-name exception, definitions
 are unique within the project, serials do not collide with retained IDs, and references resolve
 to the intended items. Distinguish
 definitions from references and clearly marked examples during this check.
@@ -241,6 +244,69 @@ Existing IDs and historical records remain valid; use links to older material
 without bulk retroactive relabeling. A requested migration has its own scope.
 Externally required document formats remain binding; identify and resolve a
 real format conflict rather than silently skipping this rule.
+
+## Independent items and supporting detail
+
+Use one owning file per independently managed primary item. Independence is
+about management, not technical isolation: a requirement or task can depend on
+another and still need its own ID/file. An item has an independent boundary
+when it has its own outcome/scope or can be separately assigned, accepted,
+completed, decided or verified. Small size, a common owner, one feature or one
+release does not remove that boundary.
+
+Supporting detail only explains or qualifies its parent's meaning/completion;
+it has no separate outcome or management status. Keep those descriptions,
+examples, metadata and parent-specific acceptance details in the parent's file.
+An independently linkable paragraph alone is not a separate work item. If the
+detail later needs separate tracking, give it a new ID/file, link it from the
+parent and preserve the prior version and decision history.
+
+| Situation | Required treatment |
+|---|---|
+| Login and search have distinct requirements, even with the same owner | Separate `REQ` files; the overview groups them by feature. |
+| One requirement has input examples, rationale and parent-specific acceptance details | Sections of that requirement; no new file or independent ID for each explanation. |
+| An acceptance criterion is separately tracked with its own disposition | Its own `AC` file, linked to the parent requirement. |
+| A backend plan includes separately assignable tasks | Each task has a `TASK-<AREA>` file; the plan contains links and sequence/dependency information. |
+| Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
+| A small change records its source, scope rationale and observed check result | These may be metadata/stage notes of that change; independently managed requirements/tasks still get separate files. |
+
+Before completing documents, check that every independent item has exactly one
+owning file and that embedded detail has no separate management boundary.
+Do not use the small-change exception or the word "metadata" to conceal
+separately managed items inside a single growing document.
+
+## Required-name exceptions
+
+Keep an exact filename/location when a consuming tool, project contract or
+repository entry convention requires it. Examples include a tool's `AGENTS.md`,
+`CLAUDE.md` or `SKILL.md`, and a repository landing `README.md`. These files are
+exceptions to the ID-only basename and classification-path requirements, not
+to identity, trace, scope or verification. The exception must have a concrete
+consumer/contract reason; personal filename preference is insufficient.
+
+Choose the stable document ID as usual. Put it in the body when permitted by
+the required format, and record its ID, canonical path and exception reason/
+source in the overview/index. If the required body cannot include an ID, the
+index supplies the identity mapping. Link to the actual required-name file;
+do not create an ID-named duplicate just to satisfy the ordinary layout.
+Independently managed content still has one owning definition; use links to
+other item documents rather than duplicating them into an entry file.
+
+For example, when a consumer requires a root `AGENTS.md`, retain that path,
+record its document ID and the consumer requirement in the index, and add the
+ID to its body if compatible. A normal requirements document continues to use
+`requirements/REQ-00001.md` under the chosen document root. The agent assesses
+and documents the exception within the already authorized task; preserving a
+required name does not need an additional approval ceremony.
+
+Verification checks the actual required name/location and applicable consumer
+format, index ID/path/reason mapping, uniqueness and links. Where the body has
+an ID, check it against the index; otherwise check the stated format restriction.
+Replace ordinary path/name/body-ID checks only to the extent required by the
+documented consumer constraint; the index mapping and other applicable checks
+remain required. Do not treat every existing descriptive filename as a new
+exception or relabel history in bulk. Existing records keep their names and
+applicable prior evidence.
 
 ## Trace and baselines
 
@@ -328,3 +394,4 @@ in illustrative layouts are not mandatory replacements for this mapping.
 | [CHG-00001](changes/2026-09-13-document-organization.md#chg-00001) | Feature/work organization and autonomous IDs for every new Markdown document and tracked item; policy scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00001](changes/2026-09-13-document-organization.md#dec-00001), [PLAN-00001](changes/2026-09-13-document-organization.md#plan-00001); no runtime change. |
 | [CHG-00002](changes/2026-09-13-readme-guidance.md#chg-00002) | README examples, ID wording and document guidance aligned; scope complete, STATIC_VERIFIED in the local working tree. | [DEC-00003](changes/2026-09-13-readme-guidance.md#dec-00003); uses the current document/ID policy. |
 | [CHG-00003](changes/CHG-00003.md#chg-00003) | Contextual classification folders and exact ID-only Markdown filenames; policy scope complete, STATIC_VERIFIED. | Owner clarification and Git delivery authorization are recorded in the change note; no runtime change or historical migration. |
+| [CHG-00004](changes/CHG-00004.md#chg-00004) | Item-boundary and required-name clarification; unused HTML guide removed; scope complete, STATIC_VERIFIED. | Owner explicitly authorized policy corrections and deletion of the current HTML guide; archive preserved. |

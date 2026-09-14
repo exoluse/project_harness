@@ -13,6 +13,9 @@ These principles explain its intent.
    agent chooses folder names and hierarchy for the project. Schemas, front
    matter and placeholder plans are not required. Preserve
    existing records and tool-required formats under the governing policy.
+   Independent outcomes/work have their own files; parent-specific descriptions
+   stay with the parent. Required tool/contract/repository entry names retain
+   their paths with a documented ID mapping instead of duplicate files.
 4. **One decision for one reviewed scope.** Several plans/tasks may share a
    decision; routine refinement does not create repeated approval ceremonies.
 5. **Material changes stay visible.** Preserve the prior baseline, assess the

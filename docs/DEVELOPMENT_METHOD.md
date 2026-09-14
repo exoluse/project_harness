@@ -12,6 +12,8 @@ dependencies, verification and exit criteria. Organize deliverables by feature
 or work unit under a project overview, following the
 [document boundaries](DATA_MODEL.md#document-organization). Sections suffice
 within a small coherent unit; independent units need separate documents.
+Use the [item-boundary criteria](DATA_MODEL.md#independent-items-and-supporting-detail)
+to distinguish parent-specific explanation from independently managed work.
 Sprints are optional.
 
 | Stage | Inputs | Deliverables and exit criteria |
@@ -74,6 +76,8 @@ scope. Check all new Markdown type-folder mappings and exact `<ID>.md`
 filenames against their body document IDs,
 plus item-ID coverage, uniqueness and references using the
 [ID convention](DATA_MODEL.md#item-ids).
+For documented required-name exceptions, check the actual consumer name/format
+and index identity mapping under [required names](DATA_MODEL.md#required-name-exceptions).
 Identify planned verification without claiming evidence from an unrun stage.
 
 ## Existing project intake and reverse engineering
@@ -107,8 +111,10 @@ Requirements state the intended outcomes and constraints. Plans organize work
 to meet them. The agent may split, refine, reorder and move tasks within the
 reviewed scope without another decision. Several plans may share a decision,
 and ordinary documents use the project overview and feature/work boundaries.
-Task refinement inside a unit can stay in its plan; a new independent feature
-or change gets its own document and an overview entry.
+Refine plan-level grouping, ordering and dependencies in the plan. Refine a
+separately managed task in its owning task file; the plan updates its links
+rather than holding a second definition. A new independent feature or change
+gets the corresponding owning documents and an overview entry.
 
 Follow user priorities subject to real dependencies. Explain a material
 tradeoff when priority and feasibility conflict. Keep dependencies visible;

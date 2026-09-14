@@ -67,10 +67,11 @@ decision without asking again under a different plan or task label.
 
 ## 3. Implement across several plans
 
-Within a feature, frontend and API work may be sections of its plan when they
-share a small coherent scope, or separate linked plans when ownership,
-dependencies or verification need independent tracking. The overview indexes
-the feature documents, and each work item identifies dependencies and verification.
+Within a feature, one plan may group frontend and API task links in sections.
+Each separately managed task has its own file; separate plans are appropriate
+when their scope, ownership or verification needs independent tracking. The
+overview indexes the documents, and each work item identifies dependencies
+and verification. A small shared scope does not merge separate task definitions.
 Before starting, the agent checks coverage, input readiness, ownership and
 external permissions.
 

@@ -36,6 +36,10 @@ document ID plus `.md`, without a descriptive suffix. Independently managed item
 their own files; feature groups are maintained through overview/item links.
 The agent chooses folder names and hierarchy for the project and records the
 mapping; example paths such as `project-docs/requirements` are not fixed names.
+Use [independent-item boundaries](DATA_MODEL.md#independent-items-and-supporting-detail)
+for file separation. Tool/contract/repository-required names keep their actual
+paths under the [required-name exception](DATA_MODEL.md#required-name-exceptions),
+with document identity and the reason recorded in the overview.
 Do not create parallel JSON management records. Preserve existing records and
 tool-required formats as described in the
 [format policy](../AGENTS.md#management-document-format).
@@ -102,7 +106,7 @@ check does not establish either product integration or production success.
 Before completion, release, handover or push, review the diff and relevant
 verification. For document work, also check unit boundaries, overview entries,
 local file/anchor links, type-folder mapping, exact filename/body document-ID
-agreement, item-ID coverage/uniqueness
+agreement or the documented required-name mapping, item-ID coverage/uniqueness
 and the requirements-to-design-to-work-to-verification trace for the requested
 stage. Required project/CI checks remain required. Optional tool failure must
 be reported accurately even when unrelated authorized work can continue.

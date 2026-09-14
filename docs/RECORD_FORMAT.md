@@ -7,6 +7,8 @@
 > folder names and hierarchy are chosen for the project. Schemas and front
 > matter are not required for current document-based work; this does not
 > implement the CLI proposal below.
+> Required tool/contract/repository filenames use the documented
+> [exception](DATA_MODEL.md#required-name-exceptions) with indexed identity.
 > Existing CLI records retain their implemented formats. Rules below describe
 > that proposed runtime migration only; follow [AGENTS.md](../AGENTS.md) and
 > [Data model](DATA_MODEL.md) for current work.

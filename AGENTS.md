@@ -74,9 +74,9 @@ authorized project scope, including guides, research, reviews, meeting notes,
 reports and handoffs, not just requirements/design/planning documents. Give
 each new document an identity: reuse its primary item's ID when it represents
 one item, or assign an appropriate document ID when it collects several items.
-Use `<document-root>/<classification-path>/<DOCUMENT-ID>.md` for every new
-project Markdown document, with the exact same ID visible near the top of its
-body.
+Except for [required-name files](#required-name-markdown-files), use
+`<document-root>/<classification-path>/<DOCUMENT-ID>.md` for every new project
+Markdown document, with the exact same ID visible near the top of its body.
 For example, use `project-docs/requirements/REQ-00001.md`,
 `project-docs/designs/DES-00001.md` and `project-docs/tasks/TASK-API-00001.md`.
 The filename is only the ID and `.md`; descriptive suffixes such as
@@ -92,9 +92,19 @@ autonomously for new kinds. If a folder changes, preserve IDs and update links.
 Give each independently managed requirement, design, plan, task or other
 primary item its own `<ID>.md` in its type folder. Overviews and collections
 index those documents rather than absorbing their authoritative detail.
-Acceptance criteria, explanatory text and tightly coupled stage notes for a
-small change may stay within their owning item; this does not require a file
-per paragraph. A separately tracked task uses its own file and links its plan.
+An independent item has its own outcome/scope or is separately assigned,
+accepted, completed, decided or verified. Technical dependencies do not remove
+that management boundary. Separate requirements or tasks remain separate items
+even when they are short, share a feature/owner or appear in one small change.
+
+Supporting descriptions, examples, metadata and acceptance details that define
+only their parent item's meaning or completion stay in the parent's document.
+They have no independently managed status or outcome; a heading or a linkable
+paragraph alone does not make them independent items. If a supporting detail
+acquires its own management boundary, give it its own ID/file and link it from
+the parent. A plan lists links to its task files. A small change may keep tightly
+coupled stage notes, but may not relabel independent requirements/tasks as
+metadata to avoid separate files. See [item boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail).
 Assign a project-unique, stable ID to each independently tracked item. The agent
 determines meaningful item boundaries from the document's purpose, including
 requirements, criteria, design items, plans, tasks, decisions, findings, changes,
@@ -123,12 +133,38 @@ retired IDs; link replacements when items split, merge or are superseded.
 Use IDs with resolvable file/anchor links for relationships. An ID is neither
 a version nor approval or verification evidence; preserve the applicable
 baseline, actual decision and observed result separately. Check every new
-Markdown type folder and exact filename against its body ID, plus ID coverage,
+Markdown type folder and exact filename against its body ID (or its documented
+required-name mapping), plus ID coverage,
 uniqueness and references before document completion. Preserve existing IDs
 and historical records; this rule does not authorize bulk retroactive relabeling.
 New traceable items added to existing Markdown follow the same identity rule.
 Preserve externally required document formats and resolve an actual conflict
 before affected delivery; do not silently omit identity requirements.
+
+## Required-name Markdown files
+
+The exact `<ID>.md` filename and classification-path rule has a narrow exception
+for a name or location required by a tool, a project contract, or a repository
+entry convention. Examples include `AGENTS.md`, `CLAUDE.md`, `SKILL.md` and the
+repository landing `README.md` when their consumer requires that path/name.
+Keep the required name/location so the consumer can find the file. Do not
+create a duplicate `<ID>.md` copy of its authoritative content.
+
+Assign a stable document ID and show it in the body when the consumer's format
+permits it. Record the ID, canonical path and concrete reason/source for the
+exception in the project overview/index. If the required body format also
+forbids an ID, keep the identity mapping only in that index. References resolve
+to the required-name file; independently managed contents still follow the
+item-boundary rules. An ordinary project note gets no exception merely because
+an author prefers a descriptive filename.
+
+The agent checks the actual consumer/contract requirement and records this
+exception under the existing task authority; no additional permission is
+needed solely to preserve a required name. Verify the name/location and
+applicable consumer format, the index mapping, identity uniqueness and links
+instead of demanding an ID-only basename. Other scope, safety and external
+approval requirements remain binding. Existing records need no bulk renaming
+or retroactive labeling. See [required names](docs/DATA_MODEL.md#required-name-exceptions).
 
 ## Startup and context
 
