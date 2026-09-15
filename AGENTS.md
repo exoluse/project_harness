@@ -139,6 +139,11 @@ ready; no real blocker or ownership conflict applies; and needed external
 permissions are present. Organize the plan and its work items under the
 [Information model](docs/DATA_MODEL.md#plans-and-tasks).
 
+For small corrections, use its
+[minimum documentation example](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
+Stage notes and completion checks alone do not create independent document
+boundaries; retain separate files for independently managed items.
+
 One decision may cover several plans and tasks within its reviewed bounds.
 Refining, splitting, ordering or moving tasks within those bounds needs no new
 decision. Materially different outcomes, criteria, scope, data effects, risk,
@@ -250,6 +255,13 @@ Production deployment, production data changes, destructive operations,
 secret/protected-credential access and final customer acceptance require the
 specific authorized human decision for the actual subject, version and effect.
 A routine development decision does not supply these approvals.
+
+Classify actual effects under
+[development action boundaries](docs/SECURITY.md#classifying-development-actions).
+Covered source edits, verified disposable local cleanup and protected internal
+authentication use the applicable existing authority under those criteria.
+Record resets, protected-value access and material external effects retain
+their specific controls.
 
 Use an independently controlled approval/execution boundary for high-risk
 operations: protected CI/environment approval, a human-signed request/change

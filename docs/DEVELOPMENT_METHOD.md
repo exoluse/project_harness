@@ -14,6 +14,9 @@ or work unit under a project overview, following the
 within a small coherent unit; independent units need separate documents.
 Use the [item-boundary criteria](DATA_MODEL.md#independent-items-and-supporting-detail)
 to distinguish parent-specific explanation from independently managed work.
+For a bounded correction, the
+[minimum documentation example](DATA_MODEL.md#minimum-documentation-for-a-small-change)
+shows how stage notes and completion checks can stay in one owning document.
 Sprints are optional.
 
 | Stage | Inputs | Deliverables and exit criteria |

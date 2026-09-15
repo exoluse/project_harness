@@ -350,9 +350,11 @@ See [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 Use one owning file per independently managed primary item. Independence is
 about management, not technical isolation: a requirement or task can depend on
 another and still need its own ID/file. An item has an independent boundary
-when it has its own outcome/scope or can be separately assigned, accepted,
-completed, decided or verified. Small size, a common owner, one feature or one
-release does not remove that boundary.
+when it has a distinct outcome/scope or the actual work requires separate
+assignment, acceptance, completion, decision or verification status. The
+possibility of testing a step or assigning it to someone else alone does not
+create that boundary. Small size, a common owner, one feature or one release
+does not remove an actual independent boundary.
 
 Supporting detail only explains or qualifies its parent's meaning/completion;
 it has no separate outcome or management status. Keep those descriptions,
@@ -366,13 +368,51 @@ parent and preserve the prior version and decision history.
 | Login and search have distinct requirements, even with the same owner | Separate `REQ` files; the overview groups them by feature. |
 | One requirement has input examples, rationale and parent-specific acceptance details | Sections of that requirement; no new file or independent ID for each explanation. |
 | An acceptance criterion is separately tracked with its own disposition | Its own `AC` file, linked to the parent requirement. |
-| A backend plan includes separately assignable tasks | Each task has a `TASK-<AREA>` file; the plan contains links and sequence/dependency information. |
+| A backend plan includes tasks managed as separate outputs | Each task has a `TASK-<AREA>` file; the plan contains links and sequence/dependency information. |
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
 | A small change records its source, scope rationale and observed check result | These may be metadata/stage notes of that change; independently managed requirements/tasks still get separate files. |
 
 Ordinary prose, navigation and explanatory headings need no independent ID.
 Do not use the small-change exception or the word "metadata" to conceal
 separately managed items inside a single growing document.
+
+### Minimum documentation for a small change
+
+For one bounded correction with one completion decision, keep its tightly
+coupled requirements, design rationale, work steps and check results in the
+owning change document. A development stage, an implementation step or a test
+command does not by itself require a separate `REQ`, `DES`, `PLAN`, `TASK` or
+`VER` file. Link existing requirements and other owning documents instead of
+redefining them. Apply any contractually required separate deliverables.
+
+For example, correcting the displayed count for an empty search result can
+use an existing project overview plus `changes/CHG-00001.md`. This is an
+illustration, not an allocated ID, actual decision or verification result.
+Choose the real unused ID and folder using the project's existing conventions.
+The change document can contain the following sections:
+
+| Section | Minimum useful content for this example |
+|---|---|
+| Source and scope | Actual fix request/source, input revision, expected empty-result count, affected component and exclusions; link the existing requirement if present. |
+| Approach and readiness | Cause and chosen correction, relevant alternatives/risks, responsible writer, ready dependencies and confirmation that the request covers the edits and checks. |
+| Work steps | Inspect the count calculation, make the covered correction and check empty and non-empty results; record progress here. |
+| Verification | Candidate version, method/environment, expected and observed counts, original evidence links where available, failures and unrun checks. |
+| Completion | Result against the stated criterion, remaining limits and applicable delivery/next action. |
+
+The overview links this change and updates its summary and ID allocation in
+their existing sections. No separate decision, plan, task or verification
+document is needed solely to repeat those sections. A project with only one
+coherent unit may use the existing combined overview/detail option under
+[document organization](#document-organization), subject to the same identity
+and boundary rules. This example adds no new exemption from ID allocation.
+
+Split out an item when it has a distinct outcome or needs its own management
+status: for example, a separately delivered pagination redesign discovered
+during the count fix, an independently assigned backend change, or a separately
+tracked acceptance criterion. A regression check used only to establish the
+count fix's completion remains supporting detail, even though it can be run
+independently. Preserve existing owners, IDs and history when linking or
+splitting; this guidance does not authorize consolidating existing records.
 
 ## Required-name exceptions
 
