@@ -7,9 +7,12 @@ user explicitly authorizes work there.
 
 ## Policy-first operation
 
-Ordinary project work does not require the bundled CLI. Assess actual authority,
-scope, dependencies and evidence under this policy. When using the tool, consult
-[optional runtime](docs/WORKFLOW.md#optional-runtime).
+This repository ships policy and documentation only. It contains no runtime,
+CLI, schema or record store, and no tool setup is required to follow this
+policy. Assess actual authority, scope, dependencies and evidence under this
+policy, and keep management records in ordinary project documents. Records left
+by the former bundled runtime are historical input; see
+[former runtime records](docs/WORKFLOW.md#former-runtime-records).
 
 ## Management document format
 

@@ -10,7 +10,7 @@ The harness is a repository policy and documentation framework.
 | User/customer | Objectives, concrete scope decisions and applicable acceptance | A decision covers only its actual reviewed bounds. |
 | Policy and adapters | Workflow, trace, verification and safety requirements | Text does not enforce external permissions. |
 | Agent and project documents | Scope/prerequisite assessment, implementation, evidence and reporting | The agent cannot create human consent or claim unrun checks passed. |
-| Bundled tools | Record authoring, diagnostics and reports | See [tool usage](WORKFLOW.md#optional-runtime). |
+| Project tooling | Whatever the governed project already uses for build, test and validation | Tool output is evidence for what it checked, never authority. |
 | External controls | Protected CI, environments, access controls and human execution/approval | Required controls cannot be bypassed through local policy or record edits. |
 
 ## Default flow
@@ -37,8 +37,10 @@ separate current implementation from proposed changes.
 | `AGENTS.md` | Canonical operating policy. |
 | `CLAUDE.md`, start prompts | Tool entry guidance consistent with the policy. |
 | `README.md`, `docs/` | Workflow, decisions, security, examples and reference material. |
-| `scripts/`, `.harness/tooling/` | Bundled tools; see [usage and limitations](WORKFLOW.md#optional-runtime). |
-| Existing `.harness/` project records | Tool-managed records. |
+| Existing `.harness/` records in an adopted project | Records left by the retired runtime; see [former runtime records](WORKFLOW.md#former-runtime-records). |
+
+The repository ships no runtime, CLI, schema or record store. Every path above
+is Markdown; a governed project supplies its own build and test tooling.
 
 See [Workflow](WORKFLOW.md), [Data model](DATA_MODEL.md) and
 [Security](SECURITY.md) for the operating details.

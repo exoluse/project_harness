@@ -19,7 +19,7 @@ for the current scope.
 | Work sequence, completion or transition | Relevant section of [Workflow](WORKFLOW.md). |
 | Concurrent ownership or handover | [Collaboration](COLLABORATION.md) and current ownership notes. |
 | High-risk action | [Security](SECURITY.md) and applicable external requirements. |
-| Bundled CLI use | [Optional runtime](WORKFLOW.md#optional-runtime), then only the relevant tool references. |
+| Records left by the retired runtime | [Former runtime records](WORKFLOW.md#former-runtime-records). |
 
 Use targeted searches for additional detail. Do not load all policies, records,
 schemas or the entire README for routine orientation.

@@ -2,13 +2,20 @@
 
 작성일: 2026-09-07 · 대상: `C:\workspace\harness`의 현재 작업 트리
 
+> **이 문서는 2026-09-07 시점의 관찰 기록이며 현재 평가나 정책이 아닙니다.**
+> 여기서 지적한 CLI 런타임·스키마·테스트는 이후 저장소에서 제거되었고 소스는
+> Git 이력에 보존되어 있습니다. 아래의 개선 제안은 실행되지 않았습니다. 본문의
+> 수치·관찰·판정은 당시 작업 트리에 대한 것이고, 코드 경로는 Git 이력에서 파일을
+> 찾기 위한 텍스트로만 남겨 두었습니다. 현재 기준은 [AGENTS.md](../AGENTS.md)와
+> [폐기된 런타임 기록](WORKFLOW.md#former-runtime-records)입니다.
+
 **판정: 정책은 승인·소유권·검증의 경계를 잘 구분하지만, 현재 런타임에는 프로젝트 시작과 변경 후 재개를 막는 연결 문제가 남아 있다. 우선 투자할 곳은 정상 승인 경로의 완성과 실패·재시도 감소다.** 문서 분량을 추가로 줄이는 작업은 그다음이다. 현재 상태를 장기간 프로젝트가 매끄럽게 진행되는 하네스로 평가하기는 어렵다.
 
 최초 작업은 정책 검토와 보고서 작성이었다. 그 단계에서는 정책·코드 수정, 프로젝트 초기화, 승인 기록 생성, 제품 테스트, 커밋·푸시를 수행하지 않았다. 아래 개선안은 제안이며 실행 승인이나 새 정책이 아니다. 후속 커밋·푸시 요청에 따른 게시 검사는 문서 끝에 별도로 기록했다.
 
 **검토 기준과 현재 상태**
 
-현재 정책은 사용자에게 제공된 `AGENTS.md`와 작업 트리의 시작 프롬프트, 관련 운영 문서로 확인했다. 기존 정책 일관성 검토(`docs/POLICY_REVIEW.md`, 검토 시 로컬 미추적 문서로 이번 커밋에는 미포함)와 [런타임 문제 목록](RUNTIME_GAPS.md)을 참고하되, 주요 장애는 현재 소스의 조건문·CLI 인자·테스트 준비 코드와 대조했다. 이번 검토는 별도 검토자가 수행한 독립 검증이 아니다. 아래 수치와 정책 평가는 당시 미커밋 변경을 포함하므로, 링크 대상의 커밋된 내용과 차이가 있을 수 있다.
+현재 정책은 사용자에게 제공된 `AGENTS.md`와 작업 트리의 시작 프롬프트, 관련 운영 문서로 확인했다. 기존 정책 일관성 검토(`docs/POLICY_REVIEW.md`, 검토 시 로컬 미추적 문서로 이번 커밋에는 미포함)와 런타임 문제 목록(`docs/RUNTIME_GAPS.md`, 현재는 삭제되어 Git 이력에만 있음)을 참고하되, 주요 장애는 현재 소스의 조건문·CLI 인자·테스트 준비 코드와 대조했다. 이번 검토는 별도 검토자가 수행한 독립 검증이 아니다. 아래 수치와 정책 평가는 당시 미커밋 변경을 포함하므로, 링크 대상의 커밋된 내용과 차이가 있을 수 있다.
 
 | 항목 | 이번에 확인한 사실 | 해석 |
 |---|---|---|
@@ -34,19 +41,19 @@
 
 | 번호·우선순위 | 발생 조건과 현재 동작 | 프로젝트에 미치는 영향 | 권고 및 근거 |
 |---|---|---|---|
-| R1 · P1 | 새 프로젝트에서 승인 후 `apply-decision`을 호출하면 `active_plan`이 필요하다. `activate_plan`은 먼저 예외를 던진다. 최초 적용에는 `DECISION_READY`도 필요하다. | 공식 CLI만으로 처음부터 실행 상태까지 연결되지 않는다. 현재 절차는 상태 포인터 수동 편집과 3회 lifecycle 전환에 의존한다. | 승인 검증 후 적용 명령이 허용된 초기 상태를 처리하도록 완성한다. [lifecycle.py 138행](../.harness/tooling/project_harness/lifecycle.py#L138), [authoring.py 264행](../.harness/tooling/project_harness/authoring.py#L264), 문제 목록 1·2. |
-| R2 · P1 | 승인된 PLAN에 TASK를 추가하면 이전 fingerprint가 달라진다. 교체 분기는 이전 결정이 `SUPERSEDED`일 때만 허용하고, 상태 판정은 fingerprint 불일치를 먼저 `STALE`로 반환한다. | 새 소유자 결정을 받아도 기존 실행 lifecycle에서 적용이 막힐 수 있다. 정상적인 요구 변경이 복구 작업으로 바뀐다. | 같은 대상의 최신 유효 결정을 검증한 뒤 변경된 범위의 재적용과 재개 상태를 처리한다. [lifecycle.py 52행](../.harness/tooling/project_harness/lifecycle.py#L52), [approvals.py 1568행](../.harness/tooling/project_harness/approvals.py#L1568), 문제 목록 3. |
-| R3 · P1 | 검증기가 승인 유형의 필수 여부를 과거 승인 각각의 활성 여부로 사용한다. 과거 결정이 `STALE_APPROVAL` 또는 `SUPERSEDED_APPROVAL` 경고를 만들고 `--strict`는 경고에도 실패한다. | 최신 TASK 게이트가 통과해도 구현·릴리스에 필요한 strict 검증이 계속 실패할 수 있다. R1/R2의 임시 상태 편집만으로 해결되지 않는다. | 정상적으로 대체된 이력과 현재 효력이 필요한 승인을 구분한다. 이력 무결성·최신성·이전 승인으로의 우회 금지는 유지한다. [validation.py 1282행](../.harness/tooling/project_harness/validation.py#L1282), [cli.py 104행](../.harness/tooling/project_harness/cli.py#L104), 문제 목록 8. |
-| R4 · P1 | `NEEDS_PLAN_APPROVAL` 안내가 일반 확인 대신 `approval prepare/record`를 제시한다. 해당 분기는 기록된 미적용 결정을 구분하지 않는다. | 에이전트가 불필요한 서명 절차를 탐색하거나 같은 결정을 다시 요청하고, 문서를 다시 읽게 된다. | 실제 assurance에 맞는 안내와 미적용 결정 상태, preflight 차단 사유를 출력한다. [guidance.py 131행](../.harness/tooling/project_harness/guidance.py#L131), 문제 목록 4. |
-| R5 · P1 | `new task`는 feature·criterion·capability를 받지만 write scope·verification 작성 인자가 없다. schema는 `write_scope: []`를 허용한다. | 필수 내용은 직접 작성해야 하고, 구현 범위 누락은 에이전트의 정책 준수에 의존한다. 작성 비용과 실행 범위 통제의 빈틈이 함께 존재한다. | 필요한 내용의 CLI 작성 지원과 구현 TASK의 비어 있지 않은 범위 검사를 함께 추가한다. 읽기 전용 작업은 구분한다. [cli.py 540행](../.harness/tooling/project_harness/cli.py#L540), [work-item schema 14행](../.harness/tooling/project_harness/schemas/work-item.schema.json#L14), 문제 목록 5·10. |
-| R6 · P1 | lifecycle 전환 표에 PLAN이 없고, TASK 시작은 해당 PLAN이 단일 `active_plan`인지 검사한다. | 완료한 PLAN을 종료·교체하는 정상 경로가 불완전하다. 다음 스프린트도 수동 상태 조정에 의존한다. | 미완료 TASK를 버리지 않는 종료·교체 명령을 구현하고 strict까지 검증한다. [lifecycle_mutations.py 45행](../.harness/tooling/project_harness/lifecycle_mutations.py#L45), [gates.py 713행](../.harness/tooling/project_harness/gates.py#L713), 문제 목록 7. |
-| R7 · P2 | 단일 작성자는 기본적으로 claim이 필요 없지만 공식 `handoff create`와 `result submit`은 활성 claim을 요구한다. | 작업 말미에 공식 인수인계·감사 결과가 필요해지면 기존 작업의 계보를 적법하게 연결하기 어렵다. | 공식 기록이 필요한 작업은 시작할 때 해당 경로를 확인한다. 향후 단일 작성자용 공식 기록 경로를 명세·구현하되 claim을 소급 생성하지 않는다. [collaboration.py 1050행](../.harness/tooling/project_harness/collaboration.py#L1050), [workflow.py 83행](../.harness/tooling/project_harness/workflow.py#L83), 문제 목록 9. |
-| R8 · P2 | 한 PLAN의 TASK 범위 변경은 그 PLAN의 모든 TASK 승인을 낡게 만든다. 자식 PLAN과 여러 활성 PLAN은 미구현이다. | UI·API 등 여러 작업 흐름을 하나의 큰 PLAN에 넣을수록 무관한 작업도 재승인 대기에 들어간다. | 현재는 함께 검토·완료할 수 있는 범위로 계획한다. 정상 경로 수정 뒤 leaf 단위 승인을 구현한다. [변경 절차](WORKFLOW.md#changing-an-approved-plan), [계층 PLAN 설계](PLAN_HIERARCHY.md). |
-| R9 · P1 | fresh-project 테스트는 이름과 달리 `NEEDS_PLAN_APPROVAL`에서 끝난다. CLI 승인 테스트는 helper가 미리 `active_plan`과 `DECISION_READY`를 써 둔 프로젝트에서 시작한다. | 구성 요소 테스트만으로는 사용자가 처음부터 끝까지 진행할 수 있는지 보장하지 못한다. | 준비 상태를 우회 주입하지 않는 CLI 전 구간 테스트를 추가한다. [guidance test 169행](../.harness/tooling/tests/test_authoring_and_guidance.py#L169), [helpers.py 218행](../.harness/tooling/tests/helpers.py#L218), [approval test 122행](../.harness/tooling/tests/test_procedural_approvals.py#L122). |
+| R1 · P1 | 새 프로젝트에서 승인 후 `apply-decision`을 호출하면 `active_plan`이 필요하다. `activate_plan`은 먼저 예외를 던진다. 최초 적용에는 `DECISION_READY`도 필요하다. | 공식 CLI만으로 처음부터 실행 상태까지 연결되지 않는다. 현재 절차는 상태 포인터 수동 편집과 3회 lifecycle 전환에 의존한다. | 승인 검증 후 적용 명령이 허용된 초기 상태를 처리하도록 완성한다. lifecycle.py 138행 (`.harness/tooling/project_harness/lifecycle.py`), authoring.py 264행 (`.harness/tooling/project_harness/authoring.py`), 문제 목록 1·2. |
+| R2 · P1 | 승인된 PLAN에 TASK를 추가하면 이전 fingerprint가 달라진다. 교체 분기는 이전 결정이 `SUPERSEDED`일 때만 허용하고, 상태 판정은 fingerprint 불일치를 먼저 `STALE`로 반환한다. | 새 소유자 결정을 받아도 기존 실행 lifecycle에서 적용이 막힐 수 있다. 정상적인 요구 변경이 복구 작업으로 바뀐다. | 같은 대상의 최신 유효 결정을 검증한 뒤 변경된 범위의 재적용과 재개 상태를 처리한다. lifecycle.py 52행 (`.harness/tooling/project_harness/lifecycle.py`), approvals.py 1568행 (`.harness/tooling/project_harness/approvals.py`), 문제 목록 3. |
+| R3 · P1 | 검증기가 승인 유형의 필수 여부를 과거 승인 각각의 활성 여부로 사용한다. 과거 결정이 `STALE_APPROVAL` 또는 `SUPERSEDED_APPROVAL` 경고를 만들고 `--strict`는 경고에도 실패한다. | 최신 TASK 게이트가 통과해도 구현·릴리스에 필요한 strict 검증이 계속 실패할 수 있다. R1/R2의 임시 상태 편집만으로 해결되지 않는다. | 정상적으로 대체된 이력과 현재 효력이 필요한 승인을 구분한다. 이력 무결성·최신성·이전 승인으로의 우회 금지는 유지한다. validation.py 1282행 (`.harness/tooling/project_harness/validation.py`), cli.py 104행 (`.harness/tooling/project_harness/cli.py`), 문제 목록 8. |
+| R4 · P1 | `NEEDS_PLAN_APPROVAL` 안내가 일반 확인 대신 `approval prepare/record`를 제시한다. 해당 분기는 기록된 미적용 결정을 구분하지 않는다. | 에이전트가 불필요한 서명 절차를 탐색하거나 같은 결정을 다시 요청하고, 문서를 다시 읽게 된다. | 실제 assurance에 맞는 안내와 미적용 결정 상태, preflight 차단 사유를 출력한다. guidance.py 131행 (`.harness/tooling/project_harness/guidance.py`), 문제 목록 4. |
+| R5 · P1 | `new task`는 feature·criterion·capability를 받지만 write scope·verification 작성 인자가 없다. schema는 `write_scope: []`를 허용한다. | 필수 내용은 직접 작성해야 하고, 구현 범위 누락은 에이전트의 정책 준수에 의존한다. 작성 비용과 실행 범위 통제의 빈틈이 함께 존재한다. | 필요한 내용의 CLI 작성 지원과 구현 TASK의 비어 있지 않은 범위 검사를 함께 추가한다. 읽기 전용 작업은 구분한다. cli.py 540행 (`.harness/tooling/project_harness/cli.py`), work-item schema 14행 (`.harness/tooling/project_harness/schemas/work-item.schema.json`), 문제 목록 5·10. |
+| R6 · P1 | lifecycle 전환 표에 PLAN이 없고, TASK 시작은 해당 PLAN이 단일 `active_plan`인지 검사한다. | 완료한 PLAN을 종료·교체하는 정상 경로가 불완전하다. 다음 스프린트도 수동 상태 조정에 의존한다. | 미완료 TASK를 버리지 않는 종료·교체 명령을 구현하고 strict까지 검증한다. lifecycle_mutations.py 45행 (`.harness/tooling/project_harness/lifecycle_mutations.py`), gates.py 713행 (`.harness/tooling/project_harness/gates.py`), 문제 목록 7. |
+| R7 · P2 | 단일 작성자는 기본적으로 claim이 필요 없지만 공식 `handoff create`와 `result submit`은 활성 claim을 요구한다. | 작업 말미에 공식 인수인계·감사 결과가 필요해지면 기존 작업의 계보를 적법하게 연결하기 어렵다. | 공식 기록이 필요한 작업은 시작할 때 해당 경로를 확인한다. 향후 단일 작성자용 공식 기록 경로를 명세·구현하되 claim을 소급 생성하지 않는다. collaboration.py 1050행 (`.harness/tooling/project_harness/collaboration.py`), workflow.py 83행 (`.harness/tooling/project_harness/workflow.py`), 문제 목록 9. |
+| R8 · P2 | 한 PLAN의 TASK 범위 변경은 그 PLAN의 모든 TASK 승인을 낡게 만든다. 자식 PLAN과 여러 활성 PLAN은 미구현이다. | UI·API 등 여러 작업 흐름을 하나의 큰 PLAN에 넣을수록 무관한 작업도 재승인 대기에 들어간다. | 현재는 함께 검토·완료할 수 있는 범위로 계획한다. 정상 경로 수정 뒤 leaf 단위 승인을 구현한다. [변경 절차](WORKFLOW.md#changing-an-approved-plan), 계층 PLAN 설계(`docs/PLAN_HIERARCHY.md`, 삭제됨). |
+| R9 · P1 | fresh-project 테스트는 이름과 달리 `NEEDS_PLAN_APPROVAL`에서 끝난다. CLI 승인 테스트는 helper가 미리 `active_plan`과 `DECISION_READY`를 써 둔 프로젝트에서 시작한다. | 구성 요소 테스트만으로는 사용자가 처음부터 끝까지 진행할 수 있는지 보장하지 못한다. | 준비 상태를 우회 주입하지 않는 CLI 전 구간 테스트를 추가한다. guidance test 169행 (`.harness/tooling/tests/test_authoring_and_guidance.py`), helpers.py 218행 (`.harness/tooling/tests/helpers.py`), approval test 122행 (`.harness/tooling/tests/test_procedural_approvals.py`). |
 
 R1~R6을 따로 고치고 각각 통과했다고 판단하면 R3 같은 후속 차단이 남을 수 있다. 최초 승인, 범위 변경 후 재승인, 완료 후 다음 PLAN 전환을 하나의 연속된 사용 경로로 검증해야 한다. 과거 승인 경고를 없애려고 이력을 삭제하거나 strict를 낮추는 방식은 적절하지 않다.
 
-검증 결과의 표현에도 주의가 필요하다. [check_repo.py](../scripts/check_repo.py)는 프로젝트의 `tests/`를 대상으로 하고, 하네스 자체 테스트는 `full --self-test`일 때 추가한다. 테스트나 프로젝트 기록이 없으면 SKIPPED로 표시하면서 전체 종료 코드가 0일 수 있다. 현재처럼 미초기화된 저장소에서 wrapper의 성공 여부만 보면 실제 검사 범위를 과대평가할 수 있다. 이 동작은 소스로 확인했으며 이번에 wrapper를 실행하지 않았다.
+검증 결과의 표현에도 주의가 필요하다. `scripts/check_repo.py`는 프로젝트의 `tests/`를 대상으로 하고, 하네스 자체 테스트는 `full --self-test`일 때 추가한다. 테스트나 프로젝트 기록이 없으면 SKIPPED로 표시하면서 전체 종료 코드가 0일 수 있다. 현재처럼 미초기화된 저장소에서 wrapper의 성공 여부만 보면 실제 검사 범위를 과대평가할 수 있다. 이 동작은 소스로 확인했으며 이번에 wrapper를 실행하지 않았다.
 
 **토큰 효율: 이번에 측정한 것**
 
@@ -106,7 +113,7 @@ UTF-8 텍스트를 읽어 CRLF를 LF로 통일한 문자 수를 계산했다. �
 
 원문 문서·출처는 보존하면서 모델이 읽는 부분을 줄여야 한다. 요약만 남기고 승인 조건이나 실패를 삭제하면 재작업과 판단 오류 비용이 늘어난다. 캐시된 입력은 총입력·비용과 별도로 측정하며, 캐시가 있다는 이유로 입력이 무료라고 가정하지 않는다.
 
-Markdown 전환은 읽기·편집 경험을 개선할 수 있지만, 같은 구조와 내용을 유지한다면 확장자 변경만으로 토큰이 줄어든다고 볼 수 없다. [전체 기록 형식 변경](RECORD_FORMAT.md)은 승인 경로의 결함을 해결한 뒤 별도 이유와 측정으로 평가하는 것이 적절하다. 미구현 `--parent`, `active_plans`, 기록 변환 명령을 현재 운영에 사용하면 안 된다.
+Markdown 전환은 읽기·편집 경험을 개선할 수 있지만, 같은 구조와 내용을 유지한다면 확장자 변경만으로 토큰이 줄어든다고 볼 수 없다. 전체 기록 형식 변경(`docs/RECORD_FORMAT.md`, 삭제됨)은 승인 경로의 결함을 해결한 뒤 별도 이유와 측정으로 평가하는 것이 적절하다. 미구현 `--parent`, `active_plans`, 기록 변환 명령을 현재 운영에 사용하면 안 된다.
 
 **권고하는 작업 묶음과 완료 기준**
 

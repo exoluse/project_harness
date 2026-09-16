@@ -100,8 +100,8 @@ verification. Apply [document validation](DATA_MODEL.md#document-validation)
 for document deliverables at the requested stage. Reuse applicable baseline
 results under [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification);
 a transition from completion to push alone does not require a fresh full scan.
-Required project/CI checks remain required. Optional tool failure must
-be reported accurately even when unrelated authorized work can continue.
+Required project/CI checks remain required. Report a check failure accurately
+even when unrelated authorized work can continue.
 No test run means no test-pass claim.
 
 ## Closure preparation
@@ -147,44 +147,29 @@ human/external boundary. Never reset to silence diagnostics.
 
 Verify recoverability, including uncommitted records, before destructive work.
 
-## Optional runtime
+## Former runtime records
 
-The bundled `scripts/harness.py`, `scripts/check_repo.py`, schemas and
-`.harness/tooling/` are optional tools for existing record management and
-inspection. Ordinary document-based work needs no Python setup, `init`, `next`,
-PLAN fingerprint, CLI decision, runtime gate or claim. Do not invoke the CLI
-merely to generate management records.
+This repository no longer ships a CLI, runtime, schemas or record store. There
+is nothing to install, initialize or invoke, and no tool gate, claim, PLAN
+fingerprint or runtime marker takes part in current work. Management records are
+ordinary project documents under the [Information model](DATA_MODEL.md).
 
-When choosing a CLI operation, read its current help and relevant prerequisites.
-Its implementation is unchanged: record formats, state transitions, signed PLAN
-and action decisions, claims and attempt checks still apply where implemented.
-`result submit` and `handoff create` may require a claim/attempt; a truthful
-Markdown handoff is sufficient when the delivery contract accepts it.
+A project adopted from the earlier runtime-required process may still hold
+`.harness/` records, signed payloads, baselines and snapshots. Preserve them:
+they retain their original format, meaning and evidentiary value, and they are
+historical input rather than current authority. Record mutation, migration,
+conversion or deletion needs its own matching task authority under
+[Security](SECURITY.md#classifying-development-actions); no such migration is
+implied by this repository dropping its tooling. Never forge records, rewrite
+signed payloads, install authority markers by hand or fabricate past attempts.
 
-Existing records retain their original format and meaning. Record mutation,
-migration, reset or tool removal needs matching task authority. Before a reset,
-inspect the actual dry run and snapshot behavior and preserve recoverable
-copies, including uncommitted work. Never forge records, rewrite signed payloads,
-install authority markers by hand or fabricate past attempts to satisfy a tool.
-Across checkouts, a local marker cannot replace real decision provenance or
-permissions; see the [checkout finding](RUNTIME_GAPS.md#b8-checkout-transfer).
+When continuing that work, identify the actual owner decision, baseline,
+remaining scope and applicable evidence, and resolve missing authority or
+material changes before dependent work. Stopping tool use or changing record
+format alone needs no renewed decision. Required project/CI checks, human
+decisions and external controls remain binding regardless of local tooling.
 
-Report the actual result and classify its impact. A format/state limitation
-alone does not stop unrelated authorized work. Missing authority, unsafe actions,
-required dependencies, ownership conflicts or contradictory current evidence
-block affected work. A chosen operation with unmet requirements remains
-unperformed or failed; do not report it as successful. Required project/CI
-checks, human decisions and external controls remain binding.
-A `check_repo.py` pass alone does not prove complete product verification.
-
-When continuing work from the former runtime-required process, identify the
-actual owner decision, baseline, remaining scope and applicable evidence.
-Preserve provenance and prior versions; resolve missing authority or material
-changes before dependent work. Changing record format or stopping optional CLI
-use alone needs no renewed decision. Historical procedures are available in Git
-and are not current authority.
-
-Consult [Runtime gaps](RUNTIME_GAPS.md) only for relevant known limitations.
-The [record-format proposal](RECORD_FORMAT.md) and
-[plan-hierarchy proposal](PLAN_HIERARCHY.md) are historical design references,
-not requirements for current project documents.
+The former runtime's source, tests, schemas and design documents remain in Git
+history, together with the findings that motivated its retirement. Consult that
+history only when an adopted project's existing records need interpreting; none
+of it states a requirement for current work.

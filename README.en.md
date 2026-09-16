@@ -6,7 +6,7 @@
 
 It connects what to build, why it was designed that way, which work was authorized, and what was actually verified. Agents use this evidence to continue work, while users decide important scope and changes.
 
-A harness provides direction and checks for an agent's work. Its core components are repository policy, development procedures, project documents, and actual decision records. Normal operation follows the policy and project documents; see the [optional CLI guidance](docs/WORKFLOW.md#optional-runtime) for tool usage.
+A harness provides direction and checks for an agent's work. Its core components are repository policy, development procedures, project documents, and actual decision records. Normal operation follows the policy and project documents; the repository ships no runtime, CLI or schema and needs no tool setup.
 
 [Getting started](#getting-started) · [Documents](#what-documents-record) · [Implementation decisions](#implementation-decisions-and-changes) · [High-risk controls](#blockers-and-high-risk-controls) · [Detailed guidance](#detailed-documentation)
 
@@ -92,7 +92,6 @@ The same operating principles apply to web, mobile, library and data projects. E
 | [Codex entry](CODEX_START_PROMPT.md), [Claude entry](CLAUDE_START_PROMPT.md) and [adapter](CLAUDE.md) | Direct each agent to the shared policy and current work context. |
 | [Development and operating guidance](#detailed-documentation) in `docs/` | Explains stage outputs, approvals, collaboration, handoff and closure. |
 | Actual project documents | Hold goals, requirements, design, plans, decisions, verification and progress. |
-| [Optional CLI](docs/WORKFLOW.md#optional-runtime) in `scripts/` and `.harness/tooling/` | Python tools for authoring, checking and reporting existing harness records. |
 | External authority controls | Enforce high-risk permissions through protected CI, environment approvals and access controls. |
 
 The project overview connects documents by feature and work unit. See the [document layout example](#overview-and-featurework-documents), and apply the detailed [Information model](docs/DATA_MODEL.md) when authoring documents.
@@ -413,10 +412,6 @@ This repository's policy governs this repository by default. Before adopting it 
 
 Documentation also needs maintenance. Preserve the context, changes and verification needed for the next decision rather than recording every action at length. Document volume alone does not guarantee project quality.
 
-## Optional CLI
-
-The [CLI section of Workflow](docs/WORKFLOW.md#optional-runtime) collects usage requirements and limitations for tools that manage existing records. Consult it when using those tools.
-
 ## Maintaining the harness policy itself
 
 Edit current policy, README and agent-guidance files directly, and manage history through Git commits and diffs. Commit messages record the reason and relevant verification. Before committing, the working diff and conversation can carry the requested scope, actual decision and check results.
@@ -441,5 +436,3 @@ Start with the shared policy and documents relevant to the request, then consult
 | [Architecture](docs/ARCHITECTURE.md) · [Constitution](docs/CONSTITUTION.md) | Roles of policy, documents and tools, and core principles |
 | [Context efficiency](docs/CONTEXT_EFFICIENCY.md) | Relevant context selection, evidence reuse and handoff context |
 | [Existing web project example](docs/EXAMPLE_WEB_PROJECT.md) | From document recovery through implementation, verification and delivery |
-| [Runtime gaps](docs/RUNTIME_GAPS.md) | Known optional-CLI limitations and verification bounds |
-| [Plan hierarchy](docs/PLAN_HIERARCHY.md) · [Record format](docs/RECORD_FORMAT.md) | Historical CLI design references, distinct from current operating requirements |
