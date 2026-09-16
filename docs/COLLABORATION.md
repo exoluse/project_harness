@@ -15,6 +15,9 @@ in the existing overview and linked plan/task documents before concurrent work:
 | Directory structure | The overview records the document root and type-to-folder mapping. Choose names and nesting for the project, reuse them consistently and identify each writer's actual edit scope. |
 | Markdown filenames and serials | Each independent item owns an exact `<ID>.md` file in its mapped folder, subject to documented required-name exceptions. Allocate unique five-digit serials project-wide per complete semantic prefix. |
 
+Use the [requirement boundaries](DATA_MODEL.md#requirement-boundaries) as the
+shared basis for product scope. Writers working on the same requirement link
+the same REQ; a task assignment or handoff does not create another requirement.
 See [plans and tasks](DATA_MODEL.md#plans-and-tasks) and the
 [ID convention](DATA_MODEL.md#item-ids). Folder and prefix examples are starting
 choices; agents extend the shared mapping for actual needs. One directory can

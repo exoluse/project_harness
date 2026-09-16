@@ -35,6 +35,12 @@ See [Information model](docs/DATA_MODEL.md) for document content and trace.
 
 Keep a project overview linking independently managed feature/work items.
 Maintain detailed facts in one owning document and reference them elsewhere.
+Use requirements as the primary basis for separating product scope. Keep a
+requirement's supporting conditions, explanations and check methods with it.
+Connect designs, plans, tasks and verification to the requirements they cover. Separate
+related work only when it needs its own management boundary under the
+[item-boundary rules](docs/DATA_MODEL.md#independent-items-and-supporting-detail).
+Fixes that restore specified behavior reference the existing requirement.
 The [Information model](docs/DATA_MODEL.md) is the required detailed standard
 for document boundaries, identities, paths, exceptions and validation under
 this policy. Other guidance summarizes or links these rules rather than

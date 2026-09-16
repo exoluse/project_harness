@@ -8,11 +8,54 @@ It connects what to build, why it was designed that way, which work was authoriz
 
 A harness provides direction and checks for an agent's work. Its core components are repository policy, development procedures, project documents, and actual decision records. Normal operation follows the policy and project documents; see the [optional CLI guidance](docs/WORKFLOW.md#optional-runtime) for tool usage.
 
+[Getting started](#getting-started) · [Documents](#what-documents-record) · [Implementation decisions](#implementation-decisions-and-changes) · [High-risk controls](#blockers-and-high-risk-controls) · [Detailed guidance](#detailed-documentation)
+
+## Getting started
+
+Normal operation needs an agent that can read and edit repository files, together with project inputs. Git can track versions and changes. Without Git, preserve a baseline copy before replacing existing files. Implementation and testing also need the environment appropriate to the product's technology.
+
+1. Have the agent read the [shared policy](AGENTS.md) and relevant entry guidance.
+2. State the desired result and this request's stopping point.
+3. Provide relevant code and document locations, existing decisions, constraints and protected scope.
+4. Let the agent inspect the current state and necessary inputs, then author the requested outputs.
+5. Use a clear implementation or fix request as the scope decision, check prerequisites and proceed. Resolve material open choices and actions needing separate authority at their applicable boundaries.
+6. Review the deliverables, checks performed and remaining limitations.
+
+Tool entry guidance is available in the [Codex start prompt](CODEX_START_PROMPT.md), [Claude start prompt](CLAUDE_START_PROMPT.md) and [Claude adapter](CLAUDE.md).
+
+### Request a small fix directly
+
+> Fix the search result count showing 1 when there are no results. Show 0 and verify that the count is also correct when results exist.
+
+The agent records this request as the scope decision, identifies the cause, edit scope and verification methods, then performs the covered changes and checks. No second proceed response is needed for the same scope. A small fix with no independently managed outputs can use the existing overview and one change document. See the [minimum documentation example](#minimum-documentation-for-a-small-fix). Requests and results in this section illustrate usage; they are not actual approval or check evidence.
+
+### Prepare a new project through planning
+
+> I want to build a work-management service for a small team. Define the goals and constraints, then prepare requirements, design and a work plan. Stop at planning this time, and identify important open questions and alternatives.
+
+This request authorizes investigation and document creation. The agent defines how requirements will be checked and reviews whether the design and work sequence support them. Once the requested plan is complete, it reports the result and remaining execution prerequisites.
+
+### Analyze and continue an existing project
+
+> Recover the requirements and design from the current code. Distinguish what is implemented, inferred intent and questions that need confirmation, then plan the remaining work. Preserve existing changes and history.
+
+The agent identifies a baseline commit or snapshot and analyzes relevant code. It identifies missing evidence and actual remaining work rather than replanning completed implementation from scratch.
+
+### Implement a prepared scope
+
+> Proceed with the scope and verification methods in the plan you presented. Exclude production deployment this time.
+
+When this is an actual response to a concrete plan, it supplies the decision for that scope. The agent records the response and proposal version, then performs covered work. Example wording in this README is not an actual approval record for any project.
+
+### Request only review or handoff
+
+> Review this release's changes and verification evidence, and prepare a handoff document. Include unrun checks, known issues and the next owner's first action.
+
+This request ends with review and handoff material. Fixing product defects discovered during review requires checking the actual authority and scope for those fixes.
+
 ## Purpose
 
-Software development involves more than writing code. User intent must become concrete requirements, designs must be feasible, change impacts must be assessed, and results must be checked against their criteria. These decisions and remaining work must stay understandable when ownership changes.
-
-Project Harness maintains these connections within the project. It records the reasoning and evidence agents need across conversations and work sessions through documents and versions.
+Project documents and versions preserve the evidence needed to address these problems across conversations and work sessions.
 
 | Common problem | Guidance provided by the harness |
 |---|---|
@@ -43,24 +86,14 @@ The same operating principles apply to web, mobile, library and data projects. E
 
 [AGENTS.md](AGENTS.md) is the governing operating policy. This README introduces the project and how to start; use the relevant policies together with actual project decisions and evidence for detailed judgments.
 
-| Component | Role |
+| Component and location | Role |
 |---|---|
-| Shared policy | Defines agent authority, development methods, change handling, verification and safety. |
-| Start prompts and adapters | Direct each agent to the shared policy and current work context. |
-| Development and operating guidance | Explains stage outputs, approvals, collaboration, handoff and closure. |
+| [Shared policy](AGENTS.md) | Defines agent authority, development methods, change handling, verification and safety. |
+| [Codex entry](CODEX_START_PROMPT.md), [Claude entry](CLAUDE_START_PROMPT.md) and [adapter](CLAUDE.md) | Direct each agent to the shared policy and current work context. |
+| [Development and operating guidance](#detailed-documentation) in `docs/` | Explains stage outputs, approvals, collaboration, handoff and closure. |
 | Actual project documents | Hold goals, requirements, design, plans, decisions, verification and progress. |
-| Optional CLI | Supports authoring, checking and reporting existing harness records. |
+| [Optional CLI](docs/WORKFLOW.md#optional-runtime) in `scripts/` and `.harness/tooling/` | Python tools for authoring, checking and reporting existing harness records. |
 | External authority controls | Enforce high-risk permissions through protected CI, environment approvals and access controls. |
-
-The repository's main files have these roles:
-
-| Path | Contents |
-|---|---|
-| `AGENTS.md` | Shared operating policy |
-| `CODEX_START_PROMPT.md` | Codex entry guidance |
-| `CLAUDE_START_PROMPT.md`, `CLAUDE.md` | Claude entry guidance and adapter |
-| `docs/` | Development methods, workflow, approvals, security, collaboration and examples |
-| `scripts/`, `.harness/tooling/` | Optional Python CLI and checking tools |
 
 The project overview connects documents by feature and work unit. See the [document layout example](#overview-and-featurework-documents), and apply the detailed [Information model](docs/DATA_MODEL.md) when authoring documents.
 
@@ -132,43 +165,6 @@ The requested stopping point is part of the scope. A requirements-only request e
 
 Readiness is assessed from documents and evidence. It does not require another human approval or sprint at every stage. Important implementation decisions and high-risk permissions are checked at their applicable boundaries.
 
-## Getting started
-
-Normal operation needs an agent that can read and edit repository files, together with project inputs. Git can track versions and changes. Without Git, preserve a baseline copy before replacing existing files. Implementation and testing also need the environment appropriate to the product's technology.
-
-1. Have the agent read the [shared policy](AGENTS.md) and relevant entry guidance.
-2. State the desired result and this request's stopping point.
-3. Provide relevant code and document locations, existing decisions, constraints and protected scope.
-4. Let the agent inspect the current state and necessary inputs, then author the requested outputs.
-5. Before implementation, check the actual scope decision and task prerequisites.
-6. Review the deliverables, checks performed and remaining limitations.
-
-Tool entry guidance is available in the [Codex start prompt](CODEX_START_PROMPT.md), [Claude start prompt](CLAUDE_START_PROMPT.md) and [Claude adapter](CLAUDE.md).
-
-### Prepare a new project through planning
-
-> I want to build a work-management service for a small team. Define the goals and constraints, then prepare requirements, design and a work plan. Stop at planning this time, and identify important open questions and alternatives.
-
-This request authorizes investigation and document creation. The agent defines how requirements will be checked and reviews whether the design and work sequence support them. Once the requested plan is complete, it reports the result and remaining execution prerequisites.
-
-### Analyze and continue an existing project
-
-> Recover the requirements and design from the current code. Distinguish what is implemented, inferred intent and questions that need confirmation, then plan the remaining work. Preserve existing changes and history.
-
-The agent identifies a baseline commit or snapshot and analyzes relevant code. It identifies missing evidence and actual remaining work rather than replanning completed implementation from scratch.
-
-### Implement a prepared scope
-
-> Proceed with the scope and verification methods in the plan you presented. Exclude production deployment this time.
-
-When this is an actual response to a concrete plan, it supplies the decision for that scope. The agent records the response and proposal version, then performs covered work. Example wording in this README is not an actual approval record for any project.
-
-### Request only review or handoff
-
-> Review this release's changes and verification evidence, and prepare a handoff document. Include unrun checks, known issues and the next owner's first action.
-
-This request ends with review and handoff material. Fixing product defects discovered during review requires checking the actual authority and scope for those fixes.
-
 ## Recovering documentation from existing code
 
 Reverse engineering can produce requirements, design and plans for an existing project. It recovers structure and behavior from implementation and presents them in a reviewable form.
@@ -191,7 +187,11 @@ See [Development method](docs/DEVELOPMENT_METHOD.md#existing-project-intake-and-
 
 ## What documents record
 
-New harness management documents use Markdown (`.md`) and contain the information needed for subsequent work and decisions.
+New harness management documents use Markdown (`.md`) and contain the information needed for subsequent work and decisions. The table lists information types. Each row does not require its own file; files belong to items that are actually managed independently.
+
+**Requirements are the primary unit for separating product scope.** Give a behavior, outcome or constraint its own REQ when its fulfillment needs a separate assessment. Keep supporting conditions, explanations and check methods with the same requirement. For example, search and exporting search results are separate requirements, while displaying zero for an empty result is a condition of search.
+
+Fixes that restore specified behavior and added tests reference the existing REQ. Connect designs, plans, tasks and verification to the requirements they cover, separating them when the actual work needs its own assignment, deliverable, completion status or shared definition. Several tasks can implement one requirement, and one task or check can cover several requirements. See [Requirement boundaries](docs/DATA_MODEL.md#requirement-boundaries) and [Related work boundaries](docs/DATA_MODEL.md#related-work-and-supporting-detail) for the detailed criteria.
 
 | Information | Essential content |
 |---|---|
@@ -205,11 +205,24 @@ New harness management documents use Markdown (`.md`) and contain the informatio
 | Verification evidence | Subject version, method and environment, expected/observed result, artifacts and limitations |
 | Handoff/closure | Contributing work, delivered version, remaining obligations, owner and next action |
 
+### Minimum documentation for a small fix
+
+For example, correcting the count displayed for an empty search result can use **the existing project overview plus one change document**. The change document contains:
+
+- The actual request and source, baseline version, expected outcome and edit scope.
+- The cause, approach, owner and assessment of authority, dependencies and risks.
+- Work order and progress.
+- The checked version, environment, expected and observed results, failures, unrun checks and remaining limits.
+
+Update the overview's change link, progress summary and ID allocation. The change references the existing search REQ; if no requirement is recorded yet, retain the actual source of the expected behavior. Stages and test commands alone do not create new requirements or files for each stage. Split work that needs separately managed assignment, deliverables or completion status, and link existing definitions and evidence.
+
+ID, allocation and verification rules, and contractually required separate deliverables, still apply. See [Minimum documentation for a small change](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change) for the detailed example and split criteria.
+
 ### Overview and feature/work documents
 
-The basic structure is **one `<ID>.md` file per item in classification folders**, connected through a project overview. Detailed rules are in [Document organization](docs/DATA_MODEL.md#document-organization) and [Document paths](docs/DATA_MODEL.md#document-paths).
+When several items need independent management, connect **one `<ID>.md` file per independent item in classification folders** through the project overview. Detailed rules are in [Document organization](docs/DATA_MODEL.md#document-organization) and [Document paths](docs/DATA_MODEL.md#document-paths).
 
-The following illustrates a project layout. Choose folder names and hierarchy for the project; these IDs are examples. Create documents for the stages currently needed.
+The following illustrates a project with several features and work items. Choose folder names and hierarchy for the project; these IDs are examples. Create documents needed for the requested stage and actual item boundaries.
 
 ```text
 project-docs/
@@ -291,7 +304,7 @@ Before implementation, establish the outcome and acceptance criteria, affected c
 
 Preserve earlier versions. A change does not make a prior decision or observation fictitious. Assess whether the evidence still applies to the current version, and reverify changed and affected parts.
 
-Splitting plans or changing task order, grouping or document location within reviewed bounds reuses the applicable decision. Do not renumber IDs; link earlier items when splitting or replacing them. See [Approvals and decisions](docs/APPROVALS.md) for detailed criteria.
+Link earlier items when splitting or replacing them. See [Approvals and decisions](docs/APPROVALS.md) for detailed criteria on implementation decisions and material changes.
 
 ## Verification and completion
 
@@ -335,27 +348,27 @@ These are the practical effects the policy aims to support. Actual outcomes depe
 
 ### Preserve the basis for decisions
 
-Connecting requirements, design choices, actual decisions and verification makes it possible to explain what needs checking after a change. It helps a new session or owner avoid reconstructing intent from code alone.
+Links between requirements, design, decisions and verification help the next owner find the reason for a change and the scope to check.
 
 ### Preserve existing progress
 
-Adoption does not reset development to fit a new format. Start from the current version and actual implementation, recover documents, and plan unresolved questions and remaining work.
+Plan remaining work from the current version and actual progress.
 
 ### Separate routine adjustments from important scope changes
 
-Agents can split and reorder work within scope while users decide changes to actual commitments. This keeps routine plan maintenance distinct from important decisions.
+Agents adjust work within scope, while users decide changes to actual commitments.
 
 ### Make completion reports precise
 
-Separating implementation, verification, acceptance and closure helps users understand what has actually been established. Missing tests and environment limitations can become explicit follow-up work.
+Users can distinguish what has actually been verified from checks that remain.
 
 ### Adopt only what the work needs
 
-Start with policy and documents, using existing files and work-management practices. Small changes do not need every record type, and a request can end at a single stage.
+Document the requested stage and actual item boundaries, using existing files and work-management practices.
 
 ### Explain blockers and their impact
 
-Identify blocked work from real dependencies and authority. Unrelated drafts or optional-tool format limitations need not stop the entire project, while unsafe work or unsupported claims remain blocked.
+Identify affected work and determine which independent work can continue.
 
 The policy does not guarantee token savings, faster development or fewer defects by a stated percentage. Such comparisons require separate measurement under comparable scope and conditions.
 
@@ -364,6 +377,17 @@ The policy does not guarantee token savings, faster development or fewer defects
 Stop affected work and its dependents when authority is missing, required inputs or dependencies are not ready, ownership conflicts exist, or safety, decision provenance or current verification is unreliable. Stop the entire project only for a genuinely global condition.
 
 Unrelated unfinished drafts or historical evidence that no longer applies do not alone stop independent work. Preserve the issue and limitations, and assess actual impact.
+
+Classify actions by their actual targets, data loss, recoverability, shared or production impact, and exposure of protected values.
+
+| Situation | Assessment |
+|---|---|
+| Edit or remove code within the request | Use the existing development decision when targets and ownership are understood, relevant versions are preserved, and there is no loss of unique work or material shared/operational effect. |
+| Clean local build or test outputs | Perform as part of authorized work only after confirming exact paths, ownership, regeneration and the absence of unique data or evidence that must be retained. Folder names alone are insufficient. |
+| Perform an authorized operation through an authenticated tool | Do not repeat credential approval solely for internal authentication. Authentication does not authorize a new resource, purpose or external action. |
+| Delete unique or unknown work, retained records or shared data, or access protected values directly | Establish the specific authority and controls for the destructive operation or protected-credential access. |
+
+If scope is unclear, inspect safely and defer the affected action until resolved. Project-record resets always require a current explicit reset request, preflight checks and recoverability measures. Existing contracts and stronger external controls remain binding. See [Development action boundaries](docs/SECURITY.md#classifying-development-actions) for detailed criteria.
 
 The following actions need a specific decision from an authorized human for the subject, version and effect:
 

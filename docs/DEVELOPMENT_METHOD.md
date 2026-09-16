@@ -110,8 +110,14 @@ Before concurrent execution, confirm that these assignments, the shared folder
 mapping and non-overlapping ID allocations are visible to the participating
 writers under the [collaboration basis](COLLABORATION.md#collaboration-basis).
 
-Requirements state the intended outcomes and constraints. Plans organize work
-to meet them. The agent may split, refine, reorder and move tasks within the
+Requirements state the intended outcomes and constraints and provide the
+primary basis for separating product scope. Apply the
+[requirement boundaries](DATA_MODEL.md#requirement-boundaries) before splitting
+documents: supporting conditions stay with their requirement, and fixes that
+restore specified behavior reference the existing REQ. Plans, tasks and
+verification connect to the requirements they cover; separate files follow
+actual work boundaries, not a mandatory set of stages per REQ.
+The agent may split, refine, reorder and move tasks within the
 reviewed scope without another decision. Several plans may share a decision,
 and ordinary documents use the project overview and feature/work boundaries.
 Refine plan-level grouping, ordering and dependencies in the plan. Refine a

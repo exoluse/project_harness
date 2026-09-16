@@ -30,6 +30,15 @@ managed requirements and tasks have their own files. Record the boundaries and
 link dependencies. See
 the [illustrative layout](DATA_MODEL.md#document-organization).
 
+Use requirements as the primary scope boundaries under the
+[requirement criteria](DATA_MODEL.md#requirement-boundaries). Search and export
+are distinct requirements; displaying zero for an empty search result is a
+condition of search. A correction or regression test for that count references
+the existing search REQ. Separate frontend/backend tasks may cover the same
+REQ, and a shared design or verification item may cover several REQs without
+duplicating them. Create those work files only for actual separate management
+needs; stages alone do not require a file per requirement.
+
 Every generated Markdown file uses `<document-type>/<ID>.md` under that root,
 including the overview and shared specifications: for example
 `overview/DOC-00001.md`, `requirements/REQ-00001.md`,

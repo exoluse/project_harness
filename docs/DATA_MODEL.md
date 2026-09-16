@@ -85,10 +85,12 @@ Each index entry links to the unit's documents and states its scope, stage/statu
 and material dependencies. Keep detailed decisions and evidence in their owning
 documents and link to them instead of maintaining duplicate accounts.
 
-Apply the [item-boundary rules](#independent-items-and-supporting-detail)
-when splitting work. Keep tightly coupled stage notes in the owning item and
-use links for independently managed requirements, designs, tasks and evidence.
-Split accumulated detail when it obscures scope, decisions or evidence.
+Use requirements as the primary basis for separating product scope under the
+[item-boundary rules](#independent-items-and-supporting-detail). Connect design,
+planned work and verification to the requirements they cover. Keep tightly
+coupled stage notes in the owning item and use links for separately managed
+outputs. Length alone does not create a new item; use sections and navigation
+when accumulated supporting detail obscures scope, decisions or evidence.
 Record the chosen boundaries and rationale briefly in the overview or work note.
 
 The following example applies [document paths](#document-paths). Folder names
@@ -146,12 +148,20 @@ and excluded scope, input requirements/design, dependencies, feasible task order
 and overall completion criteria. Backend `API`, screen `SCR` and general `PLAN`
 documents are examples of plans; they link to the owning task files.
 
-A task is a concrete unit that can be assigned and completed independently.
+A task is a concrete output that the actual work assigns and completes as a
+separate unit. Implementation steps serving that output may remain in its file.
 Its owning `TASK-<AREA>` file records the expected output, accountable writer,
 affected paths and logical resources, parent plan/input links, prerequisites,
 current status and completion checks. Before assignment is known, state that
 it is unassigned; resolve ownership before concurrent execution. These are
 content requirements, not mandatory headings or front matter.
+
+Plans and tasks reference the requirements they cover. One requirement can
+need several tasks, and one task can serve several requirements. Create a
+separate plan/task file when its outcome, assignment or completion needs that
+management boundary; do not generate a full set of stage files for every REQ.
+Use the [boundary criteria](#independent-items-and-supporting-detail) for small
+changes, supporting detail and work before requirements are established.
 
 Keep task definitions and detailed results in their owning files. Plans contain
 links, ordering and useful progress summaries; update those summaries from the
@@ -347,26 +357,68 @@ See [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 ## Independent items and supporting detail
 
-Use one owning file per independently managed primary item. Independence is
-about management, not technical isolation: a requirement or task can depend on
-another and still need its own ID/file. An item has an independent boundary
-when it has a distinct outcome/scope or the actual work requires separate
-assignment, acceptance, completion, decision or verification status. The
-possibility of testing a step or assigning it to someone else alone does not
-create that boundary. Small size, a common owner, one feature or one release
-does not remove an actual independent boundary.
+Requirements are the primary basis for separating product scope. Establish
+what must be satisfied, then organize the design, work and verification needed
+to satisfy it. Each separately identified requirement owns one REQ ID/file;
+other independently managed items retain their appropriate types and owning
+files under [document paths](#document-paths).
 
-Supporting detail only explains or qualifies its parent's meaning/completion;
-it has no separate outcome or management status. Keep those descriptions,
-examples, metadata and parent-specific acceptance details in the parent's file.
-An independently linkable paragraph alone is not a separate work item. If the
-detail later needs separate tracking, give it a new ID/file, link it from the
-parent and preserve the prior version and decision history.
+### Requirement boundaries
+
+A requirement states an intended behavior, outcome or constraint. Assign a
+separate REQ when it expresses a separately meaningful commitment whose scope
+and fulfillment need their own assessment, such as search and exporting search
+results. Requirements may depend on one another; technical independence is
+not required. A shared security or performance constraint can also be a
+requirement when it has its own scope and fulfillment criteria.
+
+Keep the conditions, rationale, examples, parent-specific acceptance criteria
+and check methods that explain one requirement with that requirement. A
+separately executable assertion or test does not alone make a new requirement.
+Stages, algorithms, code files and test commands are not requirement boundaries.
+If an acceptance criterion actually needs its own acceptance disposition, use
+an AC item linked to its requirement rather than relabeling it as a new REQ.
+
+Before assigning a new REQ, check existing requirements. A correction that
+restores an already specified behavior references the existing REQ; adding a
+test for it does not create another REQ. Revise the same requirement under its
+existing ID when its identity remains the same, preserving prior versions and
+decisions. A new commitment or an actual split/merge follows the existing
+[identity and history rules](#item-ids). Identity does not authorize a material
+change to the requirement or acceptance criteria.
+
+### Related work and supporting detail
+
+Designs, plans, tasks, changes and verification reference the requirements
+they cover. These relationships may be many-to-many. A shared design or check
+has one owning definition linked to all relevant REQs. Do not create one copy
+or a complete set of stage documents per requirement.
+
+Give related work a separate ID/file when the actual work needs a separately
+assigned or delivered output, its own completion/decision status, or a shared
+definition maintained across requirements. Keep implementation steps and
+supporting explanations in their owning item. Merely being able to assign a
+step to someone else, run a test separately or link a paragraph is insufficient.
+Small size or a common owner does not remove a real separate work boundary.
+
+Expected behavior and acceptance criteria belong to the requirement; actual
+check results may remain in the work document or a separately managed
+verification document referencing it. Do not duplicate authoritative definitions
+or evidence. A failed check is a result, not by itself a new tracked item.
+
+Discovery, research, project overviews and other work can precede or support
+requirements. Use the appropriate document type and actual objective/source
+without inventing a REQ or approval to fill a link. Link requirements when they
+are established. Decisions, issues and other records retain their own types
+when separately managed; requirements do not replace every other identity.
 
 | Situation | Required treatment |
 |---|---|
 | Login and search have distinct requirements, even with the same owner | Separate `REQ` files; the overview groups them by feature. |
+| Search results must be exportable as a file in addition to being searchable | A separate export REQ linked to the search requirement and relevant work. |
+| An empty search result must display a count of zero | A condition/acceptance detail in the search requirement, unless separately managed acceptance requires an AC item. |
 | One requirement has input examples, rationale and parent-specific acceptance details | Sections of that requirement; no new file or independent ID for each explanation. |
+| A fix restores the specified search count, or a regression test checks it | Reference the existing search REQ from the change/work and checks; no new REQ solely for the fix or test. |
 | An acceptance criterion is separately tracked with its own disposition | Its own `AC` file, linked to the parent requirement. |
 | A backend plan includes tasks managed as separate outputs | Each task has a `TASK-<AREA>` file; the plan contains links and sequence/dependency information. |
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
@@ -378,11 +430,12 @@ separately managed items inside a single growing document.
 
 ### Minimum documentation for a small change
 
-For one bounded correction with one completion decision, keep its tightly
-coupled requirements, design rationale, work steps and check results in the
-owning change document. A development stage, an implementation step or a test
-command does not by itself require a separate `REQ`, `DES`, `PLAN`, `TASK` or
-`VER` file. Link existing requirements and other owning documents instead of
+For one bounded correction with one set of completion criteria, keep the
+expected correction, design rationale, work steps and check results in the
+owning change document and reference the existing requirement. A development
+stage, an implementation step or a test command does not by itself require a
+separate `REQ`, `DES`, `PLAN`, `TASK` or `VER` file. Link existing requirements
+and other owning documents instead of
 redefining them. Apply any contractually required separate deliverables.
 
 For example, correcting the displayed count for an empty search result can
@@ -393,7 +446,7 @@ The change document can contain the following sections:
 
 | Section | Minimum useful content for this example |
 |---|---|
-| Source and scope | Actual fix request/source, input revision, expected empty-result count, affected component and exclusions; link the existing requirement if present. |
+| Source and scope | Actual fix request/source, input revision, expected empty-result count, affected component and exclusions; link the existing search REQ, or identify the actual expected-behavior source if no requirement is yet recorded. |
 | Approach and readiness | Cause and chosen correction, relevant alternatives/risks, responsible writer, ready dependencies and confirmation that the request covers the edits and checks. |
 | Work steps | Inspect the count calculation, make the covered correction and check empty and non-empty results; record progress here. |
 | Verification | Candidate version, method/environment, expected and observed counts, original evidence links where available, failures and unrun checks. |
@@ -406,11 +459,12 @@ coherent unit may use the existing combined overview/detail option under
 [document organization](#document-organization), subject to the same identity
 and boundary rules. This example adds no new exemption from ID allocation.
 
-Split out an item when it has a distinct outcome or needs its own management
-status: for example, a separately delivered pagination redesign discovered
-during the count fix, an independently assigned backend change, or a separately
-tracked acceptance criterion. A regression check used only to establish the
-count fix's completion remains supporting detail, even though it can be run
+Split out a new requirement when the requested result adds a separate
+commitment, such as exporting search results. Split related work only for an
+actual separate assignment, delivery, decision or completion boundary, such
+as an independently assigned backend change or a separately tracked acceptance
+criterion. A regression check used only to establish the count fix's completion
+remains supporting detail, even though it can be run
 independently. Preserve existing owners, IDs and history when linking or
 splitting; this guidance does not authorize consolidating existing records.
 
@@ -450,7 +504,7 @@ the affected scope and reusable evidence.
 
 | Check | Evidence to verify |
 |---|---|
-| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; overviews reference owners and supporting detail meets the item-boundary rules. Harness guidance needs no identity or path-mapping checks. |
+| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; requirement boundaries describe distinct commitments, supporting conditions remain with their requirement, and separately managed work references the REQs it covers. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
 | Identity and allocation | New definitions are unique project-wide and do not collide with retained/retired IDs or reservations; distinguish definitions, references and illustrative examples. |
 | Ordinary paths | Each new file matches the recorded folder mapping and the filename/body identity specified in [Document paths](#document-paths). |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
