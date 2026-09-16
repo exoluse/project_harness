@@ -39,12 +39,15 @@ REQ, and a shared design or verification item may cover several REQs without
 duplicating them. Create those work files only for actual separate management
 needs; stages alone do not require a file per requirement.
 
-Every generated Markdown file uses `<document-type>/<ID>.md` under that root,
+Project deliverables normally use `<document-type>/<ID>.md` under that root,
 including the overview and shared specifications: for example
 `overview/DOC-00001.md`, `requirements/REQ-00001.md`,
 `backend-plans/API-00001.md`, `tasks/TASK-API-00001.md` and
 `changes/CHG-00001.md`. Each filename stem exactly matches its body document ID;
 feature names and descriptions belong in the body and overview, not filenames.
+For a consumer-required name such as `README.md`, apply the
+[required-name exception](DATA_MODEL.md#required-name-exceptions): retain the
+required path and indexed identity instead of creating an ID-named duplicate.
 
 Illustrative item trace: requirement `REQ-00001` connects to design `DES-00001`,
 backend plan `API-00001` and screen plan `SCR-00001`; their work items might be
@@ -66,13 +69,18 @@ Report document coverage and open items at this stopping point.
 
 ## 2. Prepare one concrete implementation decision
 
-If implementation is requested, present the proposed outcome and acceptance
-criteria, affected routes/components/data, exclusions, dependencies, feasible
-options, risks and checks. Identify the proposal version.
+For a clear direct request such as “Fix the empty search result count to show
+zero and check non-empty results,” record the actual request/source and derived
+scope. Establish the outcome and acceptance criteria, affected components/data,
+exclusions, dependencies, feasible approach, risks and checks, then proceed
+when prerequisites are ready under the [clear-request criteria](APPROVALS.md#clear-implementation-requests).
+The request supplies the scope decision; no second proceed response is needed.
 
-An actual owner response such as “Proceed with this scope” is recorded with its
-source. Do not copy this example as a real decision. Reuse an already applicable
-decision without asking again under a different plan or task label.
+When the request leaves a material choice or uncovered scope, present the
+concrete proposal and its version for the owner's decision. Record the actual
+response, such as “Proceed with this scope,” and its source. Do not copy these
+examples as real decisions. Reuse applicable decisions across plans/tasks;
+high-risk actions retain their specific authority and external controls.
 
 ## 3. Implement across several plans
 

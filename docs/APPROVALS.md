@@ -107,6 +107,35 @@ current applicability without making the past decision fictitious. Check
 history integrity separately from current coverage; never widen an old
 signature or copy evidence into a new PASS without assessment.
 
+## Cancellation, withdrawal and resumption
+
+Apply the latest attributable owner decision to its actual scope. Cancellation
+ends the selected work; a pause leaves it pending; withdrawal removes the
+specified permission. Identify affected work and its dependents. Continue other
+work only when it remains authorized and outside the requested stop boundary.
+
+1. Stop starting affected work. Use available authorized stop controls for work
+   in progress; report an operation that cannot be stopped safely and its known
+   effects. A stop request does not prove that an operation has stopped or that
+   earlier effects have been undone.
+2. In the existing plan or work note, record the actual request/source, affected
+   scope and version, completed effects, unfinished work and any condition for
+   resumption. Preserve earlier decisions, code, documents and evidence.
+3. Cancellation, pause or withdrawal alone does not authorize deletion, rollback
+   or data repair. Those actions retain their own scope and applicable
+   [external controls](SECURITY.md).
+4. Before resuming, check the current request, still-valid decisions, changed
+   files/environment, dependencies and ownership. Reuse decisions that still
+   cover the work. A clear resume request can itself supply the scope decision;
+   clarify only uncovered scope or material changes. A withdrawn permission is
+   usable again only when the current decision restores it and any required
+   external control is satisfied; the old record alone cannot restore it.
+
+For example, withdrawing deployment approval blocks further deployment work
+and its dependents, while separately authorized development may continue. A request
+to resume development does not itself restore deployment permission. A pause
+of the whole project stops new work across that project.
+
 ## Plans containing high-risk capabilities
 
 Production deployment, production data change, destructive operations,

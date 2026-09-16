@@ -159,6 +159,11 @@ decision. Materially different outcomes, criteria, scope, data effects, risk,
 conditions or delivery commitments require a prepared delta and actual owner
 decision before affected work. Continue independently authorized work when safe.
 
+Apply cancellations, pauses and permission withdrawals to the affected scope
+under [cancellation and resumption](docs/APPROVALS.md#cancellation-withdrawal-and-resumption).
+Preserve work and decision history, record actual effects and pending work, and
+check current authority and prerequisites before resuming.
+
 An explicit policy request authorizes the requested guidance files, README,
 adapters and documentation edits directly, without a separate execution decision.
 It does not authorize scripts, runtime, schemas, existing project records or

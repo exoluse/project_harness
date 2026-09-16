@@ -305,6 +305,10 @@ Preserve earlier versions. A change does not make a prior decision or observatio
 
 Link earlier items when splitting or replacing them. See [Approvals and decisions](docs/APPROVALS.md) for detailed criteria on implementation decisions and material changes.
 
+Apply cancellation, pause or permission withdrawal to the scope the user specifies and its dependent work. Record whether work has stopped, effects already produced and unfinished work in the existing plan or work document. The request alone does not authorize code deletion or rollback.
+
+Before resuming, check the current request, still-valid decisions, changed files/environment and prerequisites. Reuse decisions that remain applicable; use withdrawn permissions again only when restored by the current decision and required external controls. See [Cancellation, withdrawal and resumption](docs/APPROVALS.md#cancellation-withdrawal-and-resumption) for the detailed rules.
+
 ## Verification and completion
 
 Report the subject version and environment, criteria, actual observations and limits with each verification result. Distinguish the claims each result establishes.

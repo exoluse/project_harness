@@ -39,8 +39,9 @@ separate current implementation from proposed changes.
 | `README.md`, `docs/` | Workflow, decisions, security, examples and reference material. |
 | Existing `.harness/` records in an adopted project | Records left by the retired runtime; see [former runtime records](WORKFLOW.md#former-runtime-records). |
 
-The repository ships no runtime, CLI, schema or record store. Every path above
-is Markdown; a governed project supplies its own build and test tooling.
+The repository ships no runtime, CLI, schema or record store. Its policy and
+guidance use Markdown. Former runtime records in adopted projects keep their
+original formats; a governed project supplies its own build and test tooling.
 
 See [Workflow](WORKFLOW.md), [Data model](DATA_MODEL.md) and
 [Security](SECURITY.md) for the operating details.

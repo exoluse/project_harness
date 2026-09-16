@@ -78,6 +78,11 @@ A sibling task edit or stale historical observation does not automatically
 invalidate unrelated work. Explain actual dependency or scope impacts. Do not
 copy an old PASS into new evidence without checking applicability.
 
+For a cancellation, pause or withdrawn permission, follow
+[cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption).
+Keep the actual stopping state and remaining work in the owning plan/work note;
+use those facts when checking authority and readiness to resume.
+
 ## Switching to the next plan
 
 Plans are an organizational choice, not a single active slot. Several plans
