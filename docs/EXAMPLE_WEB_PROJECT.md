@@ -112,6 +112,31 @@ behavior. Record which document checks actually ran and what remains unknown.
 All product checks above remain planned until executed. No new implementation
 permission follows from this example or from completing its planning checks.
 
+### Open-item lifecycle example
+
+Consider a variant of the fictional count correction: the inspected contract
+does not say whether a missing `total` means an empty result or an invalid
+response. This changes the earlier example's known inputs; the agent cannot
+assume zero. Keep the question in the owning work document unless investigation
+or shared use needs a separate item under the normal boundary rules. The
+following states and decisions are illustrative, not actual events.
+
+| Event | State, impact and required record |
+|---|---|
+| Gap discovered | OPEN. Link the response contract/version and contradictory or missing definition. The planning agent owns follow-up; the product/API decision owner must settle intended behavior. The affected display plan cannot be completed. Resolution requires an authoritative contract or attributable owner decision defining the missing-total behavior. |
+| Investigation starts | IN_PROGRESS. Inspect authorized contract sources and callers; record what they establish and any remaining ambiguity. Needed-by point: before finalizing the display/state design. Next review: after that inspection, or sooner if a relevant input changes. |
+| Sources cannot settle intent | WAITING. Present the owner with alternatives, evidence and the affected scope. Record whose answer is needed and revisit on response or at the needed-by point. Independent work may continue; do not silently implement a zero fallback. |
+| Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Link that answer and retain the former uncertainty; this settles intent, not proof of product behavior. |
+| Answer incorporated | Update the owning contract/requirement, display design, work steps and planned missing-total check. Assess implementation authority and other prerequisites. Once those propagation checks are recorded, close this question as resolved. Product implementation and testing remain separate work with their actual states. |
+| Later contradictory input | If a revised contract invalidates the answer, reopen the same question as OPEN, preserve the old decision and closure, record the new version and next action, and reassess the affected plan and dependent work. |
+
+If the owner instead defers the question, retain the unresolved state and
+blocking effect, with the next action and review trigger. A delayed answer does
+not complete the display plan. If the question duplicates a shared issue,
+reference that issue and its owner; the display work keeps that dependency even
+if the duplicate entry is closed. A handoff carries the surviving item and its
+current resolution criterion, owner, needed-by point and next action.
+
 ## 2. Prepare one concrete implementation decision
 
 For a clear direct request such as “Fix the empty search result count to show

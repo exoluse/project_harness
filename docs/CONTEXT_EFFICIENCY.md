@@ -17,6 +17,7 @@ for the current scope.
 | Stage readiness or requirements/design recovery | Relevant section of [Development method](DEVELOPMENT_METHOD.md). |
 | Scope decision or material change | [Approvals](APPROVALS.md) and the actual proposal/decision. |
 | Work sequence, completion or transition | Relevant section of [Workflow](WORKFLOW.md). |
+| Unresolved question, prerequisite or finding | Its owning record and affected work, using the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle). |
 | Concurrent ownership or handover | [Collaboration](COLLABORATION.md) and current ownership notes. |
 | High-risk action | [Security](SECURITY.md) and applicable external requirements. |
 | Records left by the retired runtime | [Former runtime records](WORKFLOW.md#former-runtime-records). |
@@ -70,6 +71,10 @@ time.
 Retain the objective/stopping point, input/output versions, actual decision
 bounds, ownership and dirty work, completed work, current failures and remaining
 obligations. State the next action and what would unblock affected work.
+For retained open items, link their current state, owner, next action,
+needed-by/review trigger and resolution or closure evidence. Reassess the
+affected items at the [lifecycle review points](WORKFLOW.md#review-escalation-and-reopening),
+without copying the full item history into each progress note.
 
 Do not invent performance or token savings. If measuring efficiency, record the
 actual method, workload and limitations; comparisons need comparable scope.

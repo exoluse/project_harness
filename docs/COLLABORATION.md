@@ -72,6 +72,13 @@ applicable decisions, failed or unrun checks, outstanding obligations and next
 steps. The recipient checks applicability and permissions in the new environment;
 a handoff does not widen the original decision.
 
+Carry links to retained open items with their current state, blocking impact,
+resolution criterion, owner, next action and needed-by/review trigger. Include
+unpropagated resolutions, deferred work and missing assignments. Record any
+actual ownership transfer; receipt of a handoff is not resolution or consent.
+Apply the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle) when the recipient
+checks current applicability and dependent-work readiness.
+
 Preserve both sides during integration. Do not silently reset unknown work,
 drop failed attempts or hide a newer failure behind an older success.
 Verification should address the actual integration impact, rather than rerunning

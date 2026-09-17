@@ -57,6 +57,7 @@ binding.
 | Task/work item | Concrete output, owner, affected paths/logical resources, plan/input links, prerequisites, ordered actions, applicable implementation detail, status and concrete completion checks. |
 | Decision | Concrete scope/version, actual owner request or response/source, bounds and conditions. |
 | Change trace | Request, before/after, impact, affected work, decision and verification. |
+| Open item | Question/finding, source, state, owner, next action, needed-by point, affected work, resolution criterion, evidence and disposition history; see [Open items](#open-items). |
 | Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
 | Release/handoff | Contributions, versions, decisions, current evidence, unfinished obligations and next owner/action. |
 
@@ -521,6 +522,7 @@ the affected scope and reusable evidence.
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. |
 | Planning detail and omissions | For planning deliverables, apply the [planning completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks): original-source coverage, detailed executable work, scenario/integration coverage, concrete verification and honest unknown dispositions. Valid IDs and links alone do not establish an adequate plan. |
+| Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must retain evidence and update affected definitions and dependency status; a status change alone is insufficient. |
 | Scope and history | No unauthorized migration or historical relabeling; IDs and prior decision/evidence history are preserved, and unrun verification is not reported as success. |
 | Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
 
@@ -538,6 +540,41 @@ relationships without requiring every optional record type.
 When recovering documents from code, label observation, inference, confirmed
 intent and uncertainty. Link observations to the inspected revision and source
 locations. Keep current implementation and proposed target separate.
+
+## Open items
+
+An open item is an unresolved question, decision, prerequisite, contradiction
+or finding that needs follow-up to establish scope, readiness or completion.
+It can arise at any stage. Routine work already defined by a task does not
+need a second issue merely because it is unfinished. A failed check may stay
+in its owning work record; its unresolved impact still needs the follow-up
+information below when work continues or is handed off.
+
+Use the existing [item boundaries](#independent-items-and-supporting-detail).
+Keep a parent-specific question and its history in the owning requirement,
+design, plan or task when it needs no separate management boundary. A separately
+assigned investigation, decision or shared issue with its own completion status
+owns the appropriate ID/file, such as an `ISSUE` or `RISK`; retain existing IDs
+and reference actual decisions and resolution tasks rather than duplicating
+them. Moving work between plans does not create a new identity for the same
+issue. Small size alone does not exempt independently managed items.
+
+| Content | What to record in the owning item or linked authoritative section |
+|---|---|
+| Subject and source | The concrete question, missing input or conflicting observations; discovery source and relevant version, distinguishing facts from assumptions. |
+| State and accountability | Current lifecycle state, accountable follow-up owner, actual resolver/decision authority where different, and any explicitly unassigned responsibility. |
+| Impact | Affected requirements, criteria, plans/tasks and dependents; what cannot be planned, started or completed, and what can proceed independently. |
+| Next action and timing | Investigation, decision or prerequisite action; provider being awaited, expected output, needed-by milestone/date and next review trigger. Use event-based timing when no date is established. |
+| Resolution criterion | Observable evidence or attributable decision that will answer the question or satisfy the prerequisite, and how it will be checked. |
+| Outcome and propagation | Answer/result, applicable decision/evidence and version, remaining limits, updated owning definitions and dependent-readiness assessment; for deferral/exclusion, the reason, authority and retained obligation. |
+| History | Prior and new state/disposition, reason, actor and actual date or version reference for material transitions, including closure and reopening. Preserve prior answers and failed attempts. |
+
+These are content requirements, not a fixed schema or a separate registry.
+Compact sections/tables and links suffice. A project overview indexes shared
+or blocking items where needed for navigation; detailed tracking has one owner.
+Do not create a parallel issue list, record for every checklist cell, or new
+file for each state transition. Follow the
+[open-item lifecycle](WORKFLOW.md#open-item-lifecycle) for handling and checks.
 
 ## Decisions and evidence
 

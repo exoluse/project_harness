@@ -174,6 +174,14 @@ Unknowns that can change consequential behavior, contracts, data effects or feas
 
 Follow the [detailed planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) for the writing sequence, detail checklist and completion criteria. The [worked example](docs/EXAMPLE_WEB_PROJECT.md#detailed-planning-example) illustrates the depth for a small correction.
 
+### Tracking open items through resolution
+
+Maintain open items in their owning documents with these meanings: `OPEN` → `IN_PROGRESS` or `WAITING` → `RESOLVED` (resolution evidence established) → `CLOSED` (checked and propagated). Transitions follow actual progress; equivalent project labels are acceptable. Only items needing separate assignment, completion status or a shared definition become independent records under the existing identity and boundary rules.
+
+Record the source/version, owner, next action, needed-by point/review trigger, affected work and resolution criterion. Review at planning completion, dependent work start/resumption, handoff/delivery/closure and relevant input changes. When a needed-by point is missed, report the impact and required decision/input; waiting does not create an answer or approval.
+
+Check resolution evidence, propagate the result into the affected requirements, design, plans and verification, and assess each dependent task's actual readiness. Deferral is not resolution; closure as duplicate, non-applicable or authoritatively canceled records that reason and remaining obligations. Reopen the same item when new evidence invalidates its resolution, preserving history. Follow the [open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle) and [record content](docs/DATA_MODEL.md#open-items) for details.
+
 ## Recovering documentation from existing code
 
 Reverse engineering can produce requirements, design and plans for an existing project. It recovers structure and behavior from implementation and presents them in a reviewable form.

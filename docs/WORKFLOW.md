@@ -67,9 +67,120 @@ Before starting affected implementation, confirm:
 - There is no applicable ownership conflict or unresolved safety issue.
 - Necessary human decisions and external permissions are present.
 
-This is a review of facts, not a new approval ceremony. Record changes and open
-items at a useful level; do not repeat unchanged checks for every small edit.
+Review the open items that affect the selected work under the
+[open-item lifecycle](#open-item-lifecycle), including any unresolved owner or
+provider responsibility. This is a review of facts, not a new approval ceremony.
+Do not repeat unchanged checks for every small edit.
 See [Approvals](APPROVALS.md).
+
+## Open-item lifecycle
+
+Apply this procedure to unresolved items from discovery through maintenance.
+Use the [open-item content and boundaries](DATA_MODEL.md#open-items) for where
+to record them. The lifecycle is maintained in ordinary project documents;
+it does not require a tracker, background monitor or additional approval stage.
+
+### Capture and classify
+
+Record a concrete question or finding when it needs follow-up. Identify its
+source/version, affected work, resolution criterion, accountable owner, next
+action, needed-by point and next review trigger. If ownership is not yet known,
+state that it is unassigned and identify the assignment needed; do not pretend
+that a named team or external provider has accepted responsibility. Resolve
+accountability before starting dependent work that requires it.
+
+Distinguish an unresolved scope/design choice from an execution prerequisite
+and a bounded local implementation choice under the
+[planning disposition rules](DEVELOPMENT_METHOD.md#planning-completion-checks).
+State whether it blocks planning completion, work start, verification, delivery
+or closure, and which dependents are affected. Do not block unrelated work or
+downgrade a consequential unknown merely to finish a plan.
+
+Investigate questions that can be answered from authorized sources. When a
+human decision is needed, present the question, relevant evidence, alternatives,
+recommendation and affected scope to the actual decision owner. Reuse valid
+decisions; a clarification does not require approving the whole plan again.
+Waiting, silence or a target date passing never supplies an answer or permission.
+
+### States and transitions
+
+Use the following meanings; equivalent project or local-language labels are
+acceptable if their mapping is clear. State describes progress on the item;
+blocking impact and deferral are recorded separately.
+
+| State | Meaning and transition condition |
+|---|---|
+| OPEN | Follow-up is required and no resolution is established. Move to IN_PROGRESS when an identified action starts, or WAITING when a concrete outside input prevents progress. |
+| IN_PROGRESS | Investigation or resolution work is actually underway with an owner and next action. Move to WAITING for a named dependency, or RESOLVED when evidence satisfies the recorded resolution criterion. |
+| WAITING | A specific answer, dependency, assignment or permission is outstanding. Record who/what is awaited and when to revisit it. Return to IN_PROGRESS when useful resolution work resumes, or RESOLVED if the received evidence directly satisfies the criterion. |
+| RESOLVED | The answer/result meets the item's resolution criterion with attributable evidence or a valid decision. Propagation and dependent-readiness checks may still remain; this state alone does not unblock work. |
+| CLOSED | The resolution has been checked, affected definitions/statuses updated and the closure disposition recorded, or a justified non-resolution closure below has been completed. This does not establish product acceptance or project closure. |
+
+An immediately answered item may go from OPEN to RESOLVED without invented
+intermediate activity. Resolution review and closure may happen in the same
+session, with their actual checks recorded. No separate reviewer or human
+approval is required solely for these labels; actual decision and high-risk
+boundaries still apply. Failed resolution checks return the item to OPEN,
+IN_PROGRESS or WAITING as appropriate, preserving the failed evidence.
+
+### Resolution, closure and dependent work
+
+Check the proposed answer or result against the recorded criterion and input
+version. An answer must come from an authoritative source when the question
+requires one. A question about intended behavior can be resolved by the actual
+owner's decision; a claim that behavior works needs the applicable verification.
+A proposed fix, scheduled test or supplied credential/environment alone does
+not prove the dependent work's success. Do not store protected values as evidence.
+
+Before CLOSED with a resolved disposition:
+
+1. Record the checked answer/result, method or decision source, version and limits.
+2. Update or link the affected owning requirements, design, plan, tasks and checks.
+   Apply [material-change rules](APPROVALS.md#material-changes) before performing
+   work beyond existing authority; resolving a question is not implementation.
+3. Assess each affected dependency. Record what is ready and what remains blocked
+   by other items or permissions, with remaining actions and owners. Reuse
+   applicable evidence; do not automatically resume canceled or paused work.
+4. Record the closure reason/history and update relevant overview/handoff links.
+
+Deferral leaves the item unresolved. Record the rationale, impact, authorized
+scope/timing decision when needed, accountable owner, next action and review
+trigger; retain its actual state and blocking effect. Moving an item to another
+plan, accepting a risk or moving a deadline does not by itself satisfy a required
+criterion. A required unresolved item still prevents the affected completion
+claim unless the actual authorized scope has changed.
+
+Close without resolution only for an evidenced duplicate, a demonstrated
+non-applicable item or an actual authorized cancellation/exclusion of the
+obligation. Record that disposition explicitly rather than saying "resolved,"
+link the surviving item or decision, and check effects on dependents and
+retained obligations. A duplicate's dependents follow the surviving item;
+deleting the duplicate reference cannot remove their blocker. An agent cannot
+exclude a requirement to produce a clean report.
+
+### Review, escalation and reopening
+
+Review affected items before completing planning, starting/resuming dependent
+work, handing off, or claiming the relevant verification, delivery or closure.
+Also review when their needed-by point/review trigger is reached, an answer or
+dependency arrives, or relevant scope, input, environment, evidence or ownership
+changes. Reuse unchanged assessments; no fixed polling loop or repeated full
+project scan is required.
+
+When a needed-by point is missed or an item has no feasible next action, surface
+the actual impact and needed decision/input to the user or authorized owner,
+and update the action, responsibility and review trigger. Report unassigned
+or unreachable owners explicitly. Do not invent a deadline extension, silently
+defer the work, or contact external parties without applicable authorization.
+Continue independent covered work while the affected work remains blocked.
+
+Reopen a RESOLVED or CLOSED item when new evidence contradicts its answer, the
+same failure recurs, a relied-on decision is withdrawn, or changed assumptions
+invalidate its resolution/disposition. Retain its identity and prior closure;
+record the new source/version, reason, current state (OPEN, IN_PROGRESS or
+WAITING), owner, action and affected dependents. Reassess their readiness and
+stop affected work as necessary. A genuinely different issue follows the normal
+item-boundary rules and links the earlier one instead of overwriting its history.
 
 ## Changing an approved plan
 
@@ -81,6 +192,8 @@ owner decision once, then implement and reverify affected parts.
 A sibling task edit or stale historical observation does not automatically
 invalidate unrelated work. Explain actual dependency or scope impacts. Do not
 copy an old PASS into new evidence without checking applicability.
+Reassess affected open items and reopen invalidated resolutions under the
+[lifecycle rules](#review-escalation-and-reopening).
 
 For a cancellation, pause or withdrawn permission, follow
 [cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption).
@@ -124,6 +237,9 @@ Every required item must be complete or have an explicit disposition consistent
 with the agreed scope. Do not omit unfinished work to obtain closure. Final
 customer acceptance and production actions retain [external controls](SECURITY.md).
 A documentation engagement closes at its agreed document scope.
+Reconcile retained open items, deferrals and non-resolution closures under the
+[open-item lifecycle](#open-item-lifecycle); handing them over does not itself
+satisfy an outstanding required obligation.
 
 ## Collaboration and handoff
 

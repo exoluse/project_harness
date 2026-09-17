@@ -240,6 +240,15 @@ whole project only for an actual global condition. Historical evidence that no
 longer applies and unrelated incomplete drafts do not alone stop valid new work.
 Keep them visible; do not erase them to improve a report.
 
+Manage unresolved questions, decisions, prerequisites and findings through the
+[open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle), using the
+[owning records](docs/DATA_MODEL.md#open-items). Record an owner, next action,
+needed-by point, affected work and resolution criterion. Reassess at relevant
+work boundaries and input changes; close only with the required evidence or
+an authorized non-resolution disposition. Propagate the outcome and recheck
+dependent readiness. Reopen the same item when its resolution no longer holds,
+preserving history. A status label cannot remove a blocker or create consent.
+
 Material changes need a trace of before/after, impact, affected work and decision.
 A section in the plan/change log suffices; separate CR or audit records are needed
 only when the project contract or chosen reporting process calls for them.

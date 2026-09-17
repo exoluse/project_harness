@@ -212,6 +212,13 @@ Classify remaining unknowns explicitly:
 - A routine local implementation choice may remain open when its constraints
   and observable result are fixed and it cannot change the reviewed commitments.
 
+Track follow-up under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle).
+These planning dispositions describe impact, not lifecycle states: an OPEN or
+WAITING execution prerequisite can be compatible with a complete plan, while
+an unresolved consequential design choice cannot. Check resolution evidence
+and its propagation into the affected plan before removing that planning gap.
+Deferral or a status label alone does not satisfy a planning completion check.
+
 Collect findings from these checks in the current plan/work note, fix actual
 gaps and recheck affected coverage and dependencies. Reuse unaffected review
 evidence. Do not restart the entire plan for wording preferences, stop after
@@ -312,6 +319,8 @@ actual authorized scope; the table below describes the resulting workflow.
 6. Verify changed outputs and affected dependencies; retain applicable evidence
    and document the applicability assessment.
 7. Update progress, remaining obligations and handover information.
+   Reassess affected [open items](WORKFLOW.md#open-item-lifecycle), propagate
+   resolutions and reopen items whose basis no longer holds.
 
 A change section or log may carry this trace. A separate CHANGE/CR record is
 needed only when an agreed project or external process requires it.
