@@ -59,7 +59,7 @@
 
 새 프로젝트의 조사·계획, 기존 제품의 기능 추가·수정, 코드에서 문서 복원, 검토·인계에 사용할 수 있습니다. 웹·모바일·서버·DB·AI를 함께 사용하는 서비스에도 적용할 수 있으며, 분야별 기술 선택과 검증 방법은 해당 프로젝트에서 정합니다.
 
-작은 수정은 간단한 문서로 처리하고, 여러 팀이나 독립된 작업 흐름이 있으면 개요와 작업 경계를 나눕니다. 문서 종류가 많다는 이유만으로 모든 종류의 파일을 만들지는 않습니다.
+작은 수정은 기존 상세 문서를 재사용하고 변경과 영향 범위를 반영합니다. 여러 팀이나 독립된 작업 흐름이 있으면 개요와 작업 경계를 나누며, 요청한 단계에 필요한 파일을 작성합니다.
 
 ## 무엇으로 구성되어 있는가
 
@@ -90,7 +90,7 @@ README는 사용 방법과 대표 예시를 소개합니다. 상세 절차와 �
 | 검증 | 대상 버전·환경, 예상·관찰 결과, 실행 상태·증거·한계 |
 | 변경·인계 | 변경 영향, 현재 상태, 미완료 의무와 다음 담당자의 행동 |
 
-이 표는 정보의 종류를 보여 줍니다. 별도 담당·산출물·완료 상태나 공통 정의를 관리해야 할 때 파일을 분리하며, 상세 기준은 [항목 경계](docs/DATA_MODEL.md#independent-items-and-supporting-detail)를 따릅니다.
+요구사항별로 요구사항·설계·계획·작업·검증 파일을 연결하고, 공통 정의는 하나의 소유 문서를 참조합니다. 해당 단계에 필요한 파일을 작성하며, 추가 분리는 실제 담당·산출물·완료 경계에 따릅니다. 상세 기준은 [문서 구성](docs/DATA_MODEL.md#document-organization)과 [항목 경계](docs/DATA_MODEL.md#independent-items-and-supporting-detail)에 있습니다.
 
 ### 문서와 항목의 ID
 
@@ -123,9 +123,9 @@ ID: API-024
 
 ### 작은 수정의 최소 문서
 
-빈 검색 결과의 개수를 고치는 작업은 **기존 개요 + `CHG-001-result-count.md` 같은 변경 문서 하나**로 정리할 수 있습니다. 기존 요구사항을 연결하고 실제 요청·기준 버전, 수정 범위·방법·담당자, 작업 순서와 검사 결과·한계를 담습니다.
+빈 검색 결과의 개수를 고치는 작업은 **기존 요구사항과 연결된 설계·계획·작업·검증 파일을 재사용**합니다. 실제 요청과 기준 버전을 연결하고, 영향도 분석은 소유 계획·작업에 한 번 기록합니다. 각 문서는 영향받는 내용을 최신 상태로 갱신하며 ID와 이전 결정·검증 이력을 보존합니다.
 
-독립 관리할 출력이 없다면 계획·작업·검증 파일을 각각 만들 필요는 없습니다. 요구사항이 아직 없다면 실제 기대 동작의 출처를 적습니다. [작은 수정의 최소 기준](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change)을 적용합니다.
+기대 동작과 기존 계약이 명확한 단일 수정은 [간략 계획](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)을 사용합니다. 상세 수준과 파일 분리를 유지하면서 변경과 영향 범위를 구체화하고, 유효한 기존 정의·검토 결과를 재사용합니다. 별도 커버리지 표나 항목별 N/A 기록은 필요하지 않습니다. 필요한 정의가 없다면 실제 근거에서 준비하며, [작은 수정의 최소 기준](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change)을 적용합니다.
 
 ### 전체 개요와 기능·작업별 문서
 
@@ -136,6 +136,7 @@ project-docs/
   overview/DOC-001-project-overview.md
   features/FEATURE-001-user-management.md
   requirements/REQ-001-user-list.md
+  designs/DES-001-user-list.md
   screens/SCR-AD-001-user-list.md
   contracts/API-024-user-list.md
   plans/PLAN-001-user-list.md
@@ -148,7 +149,7 @@ project-docs/
   verifications/VER-001-user-list.md
 ```
 
-전체 개요는 문서와 진행 상태를 연결하고, 세부 정의는 각 소유 문서에 둡니다. 기능·팀이 늘면 [영역별 개요](docs/DATA_MODEL.md#area-overviews)로 탐색을 나눌 수 있습니다. 지정된 [외부 작업 도구](docs/DATA_MODEL.md#external-work-trackers)가 담당·상태를 관리한다면 그 정보를 Markdown에 병행 관리하지 않습니다.
+전체 개요는 문서와 진행 상태를 연결하고, 세부 정의는 각 소유 문서에 둡니다. 상위 요약은 범위·단계·차단 사항·의존성 등 그 내용이 달라질 때 [갱신 기준](docs/DATA_MODEL.md#summary-ownership-and-updates)에 따라 반영합니다. 기능·팀이 늘면 [영역별 개요](docs/DATA_MODEL.md#area-overviews)로 탐색을 나눌 수 있습니다. 지정된 [외부 작업 도구](docs/DATA_MODEL.md#external-work-trackers)가 담당·상태를 관리한다면 그 정보를 Markdown에 병행 관리하지 않습니다.
 
 ### 항목을 연결하는 방법
 
@@ -182,7 +183,7 @@ project-docs/
 
 모든 작성자는 같은 항목 정의, ID 형식·채번 범위와 폴더 매핑을 사용합니다. 동시 편집 전에는 작업 산출물, 파일·공유 자원의 소유권, 공유 문서 담당자와 Git 통합 방법을 정합니다. 다른 체크아웃에서도 같은 배정을 사용하며, 작성자마다 새 접두사나 중복 파일을 만들지 않습니다.
 
-단독 작업에는 별도 claim 체계가 필요하지 않습니다. 자세한 기준은 [협업 기반](docs/COLLABORATION.md#collaboration-basis)을 따릅니다.
+단독 작업에는 별도 claim 체계가 필요하지 않습니다. 남아 있는 배정·예약이 없다면 채번도 검증한 기존 기준과 접두사·부모별 다음 번호만 유지합니다. 동시 작성으로 전환할 때는 [공유 배정](docs/DATA_MODEL.md#allocation-and-validation-reuse)을 정합니다. 자세한 기준은 [협업 기반](docs/COLLABORATION.md#collaboration-basis)을 따릅니다.
 
 ## 어떻게 진행되는가
 
@@ -206,11 +207,13 @@ flowchart TD
 
 ### 개발 계획의 상세 수준과 누락 검토
 
-계획과 연결된 명세·작업은 구현 담당자가 중요한 동작과 결정을 추측하지 않아도 될 만큼 구체적이어야 합니다. [상세 계획 절차](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure)와 [완료 점검](docs/DEVELOPMENT_METHOD.md#planning-completion-checks)을 적용해 원본 입력의 커버리지, 실행 내용과 검증, 중요한 미확정 사항의 처리를 확인합니다.
+계획과 연결된 명세·작업은 구현 담당자가 중요한 동작과 결정을 추측하지 않아도 될 만큼 구체적이어야 합니다. [계획 수준 선택](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)에 따라 간략 검토 또는 상세 절차를 적용합니다. 여러 산출물의 통합, 공개 계약 신설·변경, 데이터 수명주기·접근 정책 변경 등은 상세 계획으로 다룹니다. 관련 없는 점검 항목마다 N/A를 기록하지 않습니다.
+
+작업 준비 상태는 [실행 범위와 현재성](docs/APPROVALS.md#coverage-and-currentness)에 따라 소유 계획·작업에 한 번 기록합니다. 연결된 작업은 이를 재사용하고, 시작·재개 시 달라진 입력·의존성·권한과 차단 사항만 갱신합니다.
 
 ### 미결사항을 해결까지 추적하기
 
-담당자·다음 행동·영향·해결 조건은 소유 문서에 둡니다. `RESOLVED`는 해결 근거 확보, `CLOSED`는 확인과 관련 문서·작업 반영까지 완료한 상태입니다. 보류는 해결이 아니며, 새 근거가 기존 해결을 무효화하면 이력을 보존하고 다시 엽니다. [미결사항 절차](docs/WORKFLOW.md#open-item-lifecycle)와 [필수 내용](docs/DATA_MODEL.md#open-items)을 따릅니다.
+같은 세션에서 답을 확인하고 관련 내용까지 반영한 질문은 소유 문서에 질문·답·근거만 남깁니다. 담당·범위·검토 시점은 명확한 부모 값을 상속하며, 해결 확인과 반영을 함께 마쳤다면 [하나의 종료 기록](docs/EXAMPLE_WEB_PROJECT.md#open-item-lifecycle-example)에 근거를 연결할 수 있습니다. 후속 조치나 인계가 남으면 담당자·다음 행동·영향·해결 조건을 추적합니다. `RESOLVED`는 해결 근거 확보, `CLOSED`는 확인과 관련 문서·작업 반영까지 완료한 상태입니다. 보류는 해결이 아니며, 새 근거가 기존 해결을 무효화하면 이력을 보존하고 다시 엽니다. [미결사항 절차](docs/WORKFLOW.md#open-item-lifecycle)와 [필수 내용](docs/DATA_MODEL.md#open-items)을 따릅니다.
 
 ## 기존 코드에서 문서를 복원하는 방법
 
@@ -254,7 +257,7 @@ flowchart TD
 
 ## 협업과 인계는 어떻게 하는가
 
-동시 작업에는 가능한 경우 분리된 worktree를 사용하고 실제 파일·자원 충돌을 확인합니다. 인계에는 기준과 변경 버전, 실제 결정, 검증·실패·미실행 범위, 미완료 의무와 다음 담당자의 첫 행동을 남깁니다.
+동시 작업에는 가능한 경우 분리된 worktree를 사용하고 실제 파일·자원 충돌을 확인합니다. [조정 대기 기준](docs/COLLABORATION.md#coordination-waits)에 따라 미확정 배정·계약·통합 결과에 의존하는 작업을 구분합니다. 단순 요약 반영이나 통합 차례를 기다리는 동안에도 선행 조건이 갖춰진 독립 작업은 계속합니다. 인계에는 기준과 변경 버전, 실제 결정, 검증·실패·미실행 범위, 미완료 의무와 다음 담당자의 첫 행동을 남깁니다.
 
 프로젝트 종료는 여러 계획의 결과와 해당하는 인수·전달·유지보수 의무를 함께 확인합니다. 배포만으로 종료가 성립하지는 않습니다. [협업과 인계](docs/COLLABORATION.md), [종료 준비](docs/WORKFLOW.md#closure-preparation)를 따릅니다.
 

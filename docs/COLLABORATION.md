@@ -42,7 +42,9 @@ these principles add no separate approval or registry service.
 
 ## Single writer
 
-A single writer needs no claim system or placeholder handoff.
+A single writer needs no claim system or placeholder handoff. Use the
+[single-writer allocation rule](DATA_MODEL.md#allocation-and-validation-reuse)
+when no delegated ranges or outstanding reservations remain.
 Inspect dirty files before writing and preserve user/unknown changes. Use a
 concise task list and progress notes sufficient to explain what was changed
 and what remains.
@@ -58,6 +60,27 @@ Do not edit another writer's active scope. Account for shared schemas, generated
 files, migrations and other logical collisions even if filenames differ.
 Resolve ownership and integration order explicitly. Each writer still needs
 applicable authority and real prerequisites for their own work.
+
+### Coordination waits
+
+Identify the awaited input, responsible owner and affected dependent work in
+the existing task/plan or open item. Keep unaffected, authorized work moving
+when its ownership, ID allocation, contracts, inputs and permissions are ready.
+Use the shared assignments; a wait never authorizes taking over another
+writer's scope or making an unrecorded allocation.
+
+| Awaited item | Work that waits |
+|---|---|
+| Ownership or ID allocation | Work requiring that unresolved assignment or new allocation. Existing independently assigned work may continue. |
+| Shared contract or integration output | Consumers that require its unresolved content or version. Work with independent ready inputs may continue. |
+| Progress-summary update | Reflection in the shared document follows its owner; already covered independent work need not wait solely for that edit. Missing decisions or assignments are not mere summary updates. |
+| Git integration turn | The queued integration operation and work requiring its result. Independent work may continue without concurrent shared-index/branch operations or unauthorized shared-file edits. |
+
+Record pending shared updates once with the owner and needed-by point in the
+existing handoff/task note. Apply [summary currentness](DATA_MODEL.md#summary-ownership-and-updates)
+before a decision, dependent start/resumption, handoff or completion claim
+relies on the summary. Surface blockers promptly; pending reflection cannot
+hide a failure, change actual readiness or establish integration success.
 
 ## Subagent delegation
 

@@ -59,7 +59,7 @@ Preserve goals, reasons for changes, actual decisions and verification results a
 
 Use the framework for discovery and planning, changes to existing products, recovering documentation from code, reviews and handoffs. It applies to services combining web, mobile, backend, databases and AI; each project determines its technology choices and verification methods.
 
-Keep documentation small for a bounded correction, and separate navigation and ownership when teams or independent work streams grow. An available document kind does not require creating a file of that kind.
+Small corrections reuse existing detailed documents and update the change and its impacts. Split navigation and work boundaries for multiple teams or independent work streams, creating files needed for the requested stage.
 
 ## Components
 
@@ -90,7 +90,7 @@ Write new management documents in Markdown and keep each definition in one ownin
 | Verification | Subject version and environment, expected/observed results, execution status, evidence and limits |
 | Changes and handoffs | Change impacts, current state, unfinished obligations and the next owner's action |
 
-These are information kinds. Separate files when the work needs independent assignment, delivery, completion status or a shared definition, following the [item boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail).
+Link separate requirement, design, plan, task and verification files for each requirement; reference one owner for shared definitions. Create files for the requested stage and split further at actual assignment, output or completion boundaries. Apply [document organization](docs/DATA_MODEL.md#document-organization) and [item boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail).
 
 ### Document and item IDs
 
@@ -123,9 +123,9 @@ Do not create multiple owning files for one ID with different descriptions. Titl
 
 ### Minimum documentation for a small fix
 
-A correction to the empty-result count can use **the existing overview plus one change document**, such as `CHG-001-result-count.md`. Link the existing requirement and record the actual request, baseline, expected correction, scope, approach, owner, work sequence, check results and limits.
+An empty-result count correction **reuses the existing requirement and linked design, plan, task and verification files**. Link the actual request and baseline, and record the impact assessment once in the owning plan/work document. Update affected content in its owning files while preserving IDs and prior decisions and evidence.
 
-No separate plan, task and verification files are needed solely to repeat that content when there are no independently managed outputs. If no requirement exists yet, identify the actual source of expected behavior. Apply the [small-change guidance](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
+Use [compact planning](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) for one correction with established behavior and contracts. Preserve detail and file boundaries, specify the change and its impacts, and reuse applicable definitions and review results. No separate coverage matrix or per-row N/A record is needed. Prepare missing definitions from actual sources under the [small-change guidance](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
 
 ### Overview and feature/work documents
 
@@ -136,6 +136,7 @@ project-docs/
   overview/DOC-001-project-overview.md
   features/FEATURE-001-user-management.md
   requirements/REQ-001-user-list.md
+  designs/DES-001-user-list.md
   screens/SCR-AD-001-user-list.md
   contracts/API-024-user-list.md
   plans/PLAN-001-user-list.md
@@ -148,7 +149,7 @@ project-docs/
   verifications/VER-001-user-list.md
 ```
 
-The overview connects documents and progress; details stay in their owning files. Add [area overviews](docs/DATA_MODEL.md#area-overviews) when navigation needs to split across features or teams. When a designated [external tracker](docs/DATA_MODEL.md#external-work-trackers) owns assignment or status, do not maintain that information in parallel Markdown records.
+The overview connects documents and progress; details stay in their owning files. Apply the [summary update rules](docs/DATA_MODEL.md#summary-ownership-and-updates) when a summary's scope, stage, blockers, dependencies or other stated content changes. Add [area overviews](docs/DATA_MODEL.md#area-overviews) when navigation needs to split across features or teams. When a designated [external tracker](docs/DATA_MODEL.md#external-work-trackers) owns assignment or status, do not maintain that information in parallel Markdown records.
 
 ### Connecting items
 
@@ -182,7 +183,7 @@ Users provide goals, constraints and priorities and decide concrete execution sc
 
 All writers use shared item definitions, ID formats, allocation scopes and folder mappings. Before concurrent editing, agree outputs, file/resource ownership, shared-document owners and Git integration. Separate checkouts use the same allocations; do not invent writer-specific prefixes or duplicate owning files.
 
-A single writer needs no separate claim system. Apply the [collaboration basis](docs/COLLABORATION.md#collaboration-basis).
+A single writer needs no separate claim system. With no outstanding delegations or reservations, allocation needs only the checked baseline and the next serial per prefix/parent scope. Establish [shared allocations](docs/DATA_MODEL.md#allocation-and-validation-reuse) before concurrent writing. Apply the [collaboration basis](docs/COLLABORATION.md#collaboration-basis).
 
 ## Development flow
 
@@ -206,11 +207,13 @@ Each stage has input versions, outputs, dependencies and exit criteria. Stop at 
 
 ### Development plan detail and omission review
 
-The plan and linked specifications/tasks must be concrete enough that implementers need not invent consequential behavior or decisions. Apply the [detailed planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) and [completion checks](docs/DEVELOPMENT_METHOD.md#planning-completion-checks) for source coverage, execution detail, verification and consequential unknown dispositions.
+The plan and linked specifications/tasks must be concrete enough that implementers need not invent consequential behavior or decisions. [Choose planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and use the compact review or detailed procedure accordingly. Integration across independently managed outputs, new or changed public contracts, and data-lifecycle or access-policy changes require detailed planning. Do not record N/A for every unrelated checklist area.
+
+Record readiness once in the owning plan/work note under [coverage and currentness](docs/APPROVALS.md#coverage-and-currentness). Linked tasks reuse that assessment; at start or resumption, update changed inputs, dependencies, permissions and blockers.
 
 ### Tracking open items through resolution
 
-Keep owners, next actions, impacts and resolution criteria in the owning record. RESOLVED means resolution evidence is established; CLOSED also includes checking and propagation into related definitions and work. Deferral is not resolution; reopen invalidated resolutions while preserving history. Apply the [open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle) and [required content](docs/DATA_MODEL.md#open-items).
+A question answered, checked and incorporated in the same session needs only the question, answer and evidence in its owning note. Inherit clear parent values for owner, scope and review timing; when resolution checking and propagation finish together, link the evidence in [one closure entry](docs/EXAMPLE_WEB_PROJECT.md#open-item-lifecycle-example). If follow-up or handoff remains, track owners, next actions, impacts and resolution criteria. RESOLVED means resolution evidence is established; CLOSED also includes checking and propagation into related definitions and work. Deferral is not resolution; reopen invalidated resolutions while preserving history. Apply the [open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle) and [required content](docs/DATA_MODEL.md#open-items).
 
 ## Recovering documentation from existing code
 
@@ -254,7 +257,7 @@ Distinguish document checks from product verification. Passing ID, filename and 
 
 ## Collaboration and handoff
 
-Use separate worktrees where practical for concurrent work and inspect actual file/resource conflicts. A handoff carries baseline and changed versions, actual decisions, passing/failing/unrun checks and limits, unfinished obligations and the next owner's first action.
+Use separate worktrees where practical for concurrent work and inspect actual file/resource conflicts. Under [coordination waits](docs/COLLABORATION.md#coordination-waits), identify work that depends on unresolved assignments, contracts or integration results. Independent work with ready prerequisites may continue while a summary update or integration turn is pending. A handoff carries baseline and changed versions, actual decisions, passing/failing/unrun checks and limits, unfinished obligations and the next owner's first action.
 
 Project closure aggregates contributing plans and applicable acceptance, delivery and maintenance obligations. Deployment alone is not closure. Apply [Collaboration and handover](docs/COLLABORATION.md) and [closure preparation](docs/WORKFLOW.md#closure-preparation).
 

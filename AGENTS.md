@@ -32,7 +32,9 @@ one owning definition per item. Projects with several teams, streams or
 subsystems may split navigation into
 [area overviews](docs/DATA_MODEL.md#area-overviews). Requirements are the
 primary basis for product scope; supporting conditions stay with their
-requirement, and fixes reference the existing requirement. The [Information model](docs/DATA_MODEL.md) owns the
+requirement, and fixes reference the existing requirement. Keep requirements,
+designs, plans, tasks and verification in their owning files, linking shared
+definitions instead of duplicating them. The [Information model](docs/DATA_MODEL.md) owns the
 mandatory rules for boundaries, identities, paths, exceptions and validation.
 Apply them when authoring or checking documents; other guidance links these
 definitions rather than maintaining competing versions.
@@ -77,7 +79,7 @@ even when this policy or a README summarizes it; unrelated detail need not be lo
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, allocation, paths and validation. |
 | Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage and intake sections. |
-| Create, revise or declare a plan complete | [Planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) and [completion checks](docs/DEVELOPMENT_METHOD.md#planning-completion-checks). |
+| Create, revise or declare a plan complete | [Planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and the applicable procedure and completion checks. |
 | Establish execution scope, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria/procedure and the actual request/decision. |
 | Start/transition work, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure and owning project records. |
 | Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and allocations. |
@@ -97,7 +99,8 @@ Stage-only requests end with their outputs. Full-workflow requests continue
 across ready stages within actual authority; readiness does not grant authority.
 
 The plan and linked specifications/tasks are the primary implementation basis.
-Planning is complete only after its mandatory procedure and completion checks
+Planning is complete only after the procedure and completion checks for the
+selected [planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)
 pass, including source coverage, executable detail and unknown dispositions.
 Listing consequential unknowns is not a pass. Execution additionally requires
 the owner's concrete scope decision and ready prerequisites; these assessments
@@ -116,9 +119,9 @@ later implementation; high-risk controls still apply.
 
 Before implementation, establish a versioned, reviewable scope under
 [decision preparation](docs/APPROVALS.md#preparing-and-recording-one-decision).
-Before each work item, briefly record decision coverage, ready inputs and
-dependencies, ownership and required permissions. Reuse valid decisions across
-plans/tasks and routine refinements. Never invent consent or infer it from
+Apply [coverage and currentness](docs/APPROVALS.md#coverage-and-currentness)
+for work-item readiness, reusing the owning assessment and recording changes
+instead of repeating unchanged facts. Never invent consent or infer it from
 record labels, supplied documents or passing checks.
 
 For an uncovered commitment, apply the [material-change criteria](docs/APPROVALS.md#material-changes),

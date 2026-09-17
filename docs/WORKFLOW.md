@@ -18,8 +18,8 @@ continues to apply to actual development and requested document deliverables.
 3. Produce the requested discovery, requirements, design or planning outputs.
    Maintain a project overview and separate independently scoped feature/work
    documents. For planning, follow the
-   [detailed planning procedure](DEVELOPMENT_METHOD.md#detailed-planning-procedure)
-   and pass its [completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks),
+   selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth)
+   and pass its applicable completion checks,
    including source coverage and executable detail. Check content and trace;
    stop there for a stage-only request.
 4. For implementation, establish scope, feasibility, impact, risks, dependencies
@@ -27,9 +27,8 @@ continues to apply to actual development and requested document deliverables.
    supplies its scope decision; record it or reference an applicable prior
    decision. Present alternatives and obtain a decision for unresolved material
    choices or uncovered scope under [Approvals](APPROVALS.md).
-5. Before each work item, assess decision coverage, input readiness, ownership,
-   safety and required external permissions. Document real blockers and their
-   affected scope.
+5. Apply [work-item readiness](#scope-decisions-and-work-item-readiness), reusing
+   the owning assessment and recording changed facts and real blockers.
 6. Execute covered work and verify the changed deliverables against the agreed
    criteria. Preserve observations, failures and limits.
 7. Deliver the requested result. For releases or project closure, include all
@@ -54,24 +53,12 @@ work; do not invent earlier approvals or force a lifecycle reset. See
 
 ## Scope decisions and work-item readiness
 
-The owner decides in ordinary prompt language through a clear direct request
-or a response to a concrete proposal. Record the actual request/response, source
-and applicable scope version; do not invent an
-approval quote, signer or timestamp. The decision may cover several plans and
-their implementation/verification within the stated bounds.
-
-Before starting affected implementation, confirm:
-
-- The outcome, paths/actions, data effects and checks are covered.
-- Required input versions and technical dependencies are ready.
-- There is no applicable ownership conflict or unresolved safety issue.
-- Necessary human decisions and external permissions are present.
-
-Review the open items that affect the selected work under the
-[open-item lifecycle](#open-item-lifecycle), including any unresolved owner or
-provider responsibility. This is a review of facts, not a new approval ceremony.
-Do not repeat unchanged checks for every small edit.
-See [Approvals](APPROVALS.md).
+[Approvals](APPROVALS.md#coverage-and-currentness) owns readiness criteria,
+recording and reuse. When selecting or resuming work, use that assessment and
+review the [open items](#open-item-lifecycle) affecting the selected scope,
+including unresolved owner or provider responsibilities. Update the owning
+assessment for changed facts; do not maintain another readiness checklist here
+or require a new approval solely because the work item changes.
 
 ## Open-item lifecycle
 
@@ -81,11 +68,17 @@ to record them. The lifecycle is maintained in ordinary project documents or a
 designated [external tracker](DATA_MODEL.md#external-work-trackers); it does
 not require a tracker, background monitor or additional approval stage.
 
+For a clarification answered, checked and incorporated in the same session
+without remaining follow-up, use the short question/answer/evidence note under
+[Open items](DATA_MODEL.md#open-items). The tracking steps below apply when
+follow-up remains; do not manufacture a lifecycle for a completed clarification.
+
 ### Capture and classify
 
 Record a concrete question or finding when it needs follow-up. Identify its
 source/version, affected work, resolution criterion, accountable owner, next
-action, needed-by point and next review trigger. If ownership is not yet known,
+action, needed-by point and next review trigger. Reuse unambiguous parent values
+under the Information model instead of copying them. If ownership is not yet known,
 state that it is unassigned and identify the assignment needed; do not pretend
 that a named team or external provider has accepted responsibility. Resolve
 accountability before starting dependent work that requires it.
@@ -124,6 +117,15 @@ approval is required solely for these labels; actual decision and high-risk
 boundaries still apply. Failed resolution checks return the item to OPEN,
 IN_PROGRESS or WAITING as appropriate, preserving the failed evidence.
 
+When resolution checking, propagation and dependent-readiness review finish
+together, one dated/versioned entry may record the answer/evidence, affected
+owner links, readiness outcome and final CLOSED disposition. That entry covers
+both resolution and closure; do not copy the evidence into a separate entry for
+each label. Inherit unambiguous parent values under
+[Open items](DATA_MODEL.md#open-items). If propagation or a closure check remains,
+retain RESOLVED with the remaining action; grouping the record does not waive
+either condition. See the [worked example](EXAMPLE_WEB_PROJECT.md#open-item-lifecycle-example).
+
 ### Resolution, closure and dependent work
 
 Check the proposed answer or result against the recorded criterion and input
@@ -142,7 +144,8 @@ Before CLOSED with a resolved disposition:
 3. Assess each affected dependency. Record what is ready and what remains blocked
    by other items or permissions, with remaining actions and owners. Reuse
    applicable evidence; do not automatically resume canceled or paused work.
-4. Record the closure reason/history and update relevant overview/handoff links.
+4. Record the closure reason/history and update relevant overview/handoff links
+   under [summary ownership and updates](DATA_MODEL.md#summary-ownership-and-updates).
 
 Deferral leaves the item unresolved. Record the rationale, impact, authorized
 scope/timing decision when needed, accountable owner, next action and review

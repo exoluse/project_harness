@@ -96,6 +96,19 @@ Before covered work begins, assess the actual outcome, actions, paths/data,
 risk, constraints and checks against the decision. Confirm dependencies,
 ownership and required external permissions.
 
+Keep this readiness assessment once in the owning plan/work note, with the
+actual decision source, assessed scope/version and supporting evidence or
+links. Tasks may inherit it through their parent link when the covered scope
+and shared prerequisites are clear; no separate readiness record is required.
+Before a selected item starts or resumes, check for changes and item-specific
+dependencies or blockers. Record only those differences and any new assessment
+needed, rather than repeating the shared checklist or unchanged confirmations.
+Changed inputs, failed checks, ownership conflicts or unavailable permissions
+reopen the affected assessment; an old ready label does not establish readiness.
+Use [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification) to determine
+which supporting checks remain applicable. Harness policy maintenance uses
+the Git/conversation basis specified in [AGENTS](../AGENTS.md#harness-policy-maintenance).
+
 Routine task splitting, reordering, plan switching, metadata edits and record
 format changes do not create a new decision boundary. Material changes to
 commitments, risk, assumptions, conditions or authority under the

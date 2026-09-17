@@ -12,6 +12,7 @@ governs Markdown, existing records and tool-required formats.
 |---|---|
 | Harness guidance or project deliverable | [ID scope](#id-scope) |
 | Overview and relationships | [Document organization](#document-organization) |
+| Progress summaries and update scope | [Summary ownership and updates](#summary-ownership-and-updates) |
 | Several teams, streams or subsystems | [Area overviews](#area-overviews) |
 | Plan/task responsibilities | [Plans and tasks](#plans-and-tasks) |
 | Identity, types and numbering | [Item IDs](#item-ids) |
@@ -61,14 +62,15 @@ binding.
 | Task/work item | Concrete output, owner, affected paths/logical resources, plan/input links, prerequisites, ordered actions, applicable implementation detail, status and concrete completion checks. |
 | Decision | Concrete scope/version, actual owner request or response/source, bounds and conditions. |
 | Change trace | Request, before/after, impact, affected work, decision and verification. |
-| Open item | Question/finding, source, state, owner, next action, needed-by point, affected work, resolution criterion, evidence and disposition history; see [Open items](#open-items). |
+| Open item | Question/finding and evidence; continued follow-up adds state, responsibility, impact, next action and resolution history under [Open items](#open-items). |
 | Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
 | Release/handoff | Contributions, versions, decisions, current evidence, unfinished obligations and next owner/action. |
 
-Within a small coherent change, tightly coupled stage notes can be sections
-in its document. Independently managed items use separate files in their type
-folders. A plan may organize nested task links or reference several plans;
-no single-active-plan field is required.
+Keep supporting conditions and implementation steps in their owning files.
+Requirements and their design, plan, task and verification definitions use
+separate files under [document organization](#document-organization). A plan may
+organize nested task links or reference several plans; no single-active-plan
+field is required.
 
 ## Document organization
 
@@ -77,13 +79,15 @@ independently scoped items stored in suitable classification folders. The agent
 chooses folder names, nesting and the document root for the project's content,
 workflow and existing conventions. Feature/work units remain logical groups
 in the overview and relationships between items regardless of physical layout.
-A project with several
-such units must not default to a single accumulating file for each document type.
-For a small project with only one coherent unit, overview and detail may remain
-in one document until a split criterion applies.
+A project with several such units must not default to a single accumulating
+file for each document type.
+Each requirement owns its REQ file and links the separate owning design, plan,
+task and verification files needed at the requested stage. Shared definitions
+or work keep one owning file linked by all covered requirements. Create files
+when their stage/output is needed, not as placeholders for future stages.
 
-The overview holds the objective, shared constraints, shared requirements and
-architecture (or links to them), baseline, current summary and an index of units.
+The overview holds the objective, shared project context, links to shared
+requirements and architecture, baseline, current summary and an index of units.
 It also states the document/item-ID convention, including agent-selected
 extensions and any allocation ownership.
 Each index entry links to the unit's documents and states its scope, stage/status
@@ -92,9 +96,9 @@ documents and link to them instead of maintaining duplicate accounts.
 
 Use requirements as the primary basis for separating product scope under the
 [item-boundary rules](#independent-items-and-supporting-detail). Connect design,
-planned work and verification to the requirements they cover. Keep tightly
-coupled stage notes in the owning item and use links for separately managed
-outputs. Length alone does not create a new item; use sections and navigation
+planned work and verification to the requirements they cover. Keep supporting
+detail within its owning document role and link the other roles' definitions.
+Length alone does not create a new item; use sections and navigation
 when accumulated supporting detail obscures scope, decisions or evidence.
 Record the chosen boundaries and rationale briefly in the overview or work note.
 
@@ -128,7 +132,7 @@ project-docs/
   decisions/
     DEC-001.md
   changes/
-    CHG-001.md                  # Small change with tightly coupled notes
+    CHG-001.md                  # Change trace when separately required
   handoffs/
     HANDOFF-001.md
 ```
@@ -149,6 +153,36 @@ boundaries even when earlier work lives in a large file; reference that baseline
 Do not automatically split, move or rewrite existing records merely to adopt
 the layout. Any authorized reorganization must preserve reviewed versions and
 repair links. A requested stage still ends at its own outputs.
+
+### Summary ownership and updates
+
+Detailed facts have one owner: requirements own expected outcomes and acceptance
+criteria; designs/contracts own behavior and structure; plans own order,
+dependencies and overall completion criteria; tasks own execution and task
+status; verification documents own actual check results. Designated tracker
+ownership follows [external work trackers](#external-work-trackers).
+
+Plans and overviews summarize their own scope's progress, major stage, blockers
+and material dependencies, linking the owning facts and evidence. Select summary
+detail needed for those judgments; do not duplicate task-by-task status or test
+logs at every level. A task's completion does not establish requirement-level
+verification, customer acceptance or overall completion.
+
+Use the owning [impact assessment](DEVELOPMENT_METHOD.md#change-cycle-and-propagation)
+to update summaries when their stated scope, stage, blockers, dependencies,
+commitments or evidence applicability changes, or a referenced path changes.
+An edit to a child does not alone require edits at every parent level. If a
+summary includes exact counts or individual statuses, keep those accurate too;
+an unchanged high-level label cannot justify retaining a false detailed claim.
+
+Route shared-summary updates through their owner under
+[collaboration](COLLABORATION.md#coordination-waits). Pending reflection in a
+shared summary must not hide a known blocker or supply readiness. Check current
+owning records before dependent work starts/resumes and before relying on a
+summary for a decision, handoff or completion claim; reconcile relevant summaries
+before that use. Stop propagation at levels whose facts and judgments remain
+valid. Preserve historical snapshots with their dates/versions rather than
+maintaining them as parallel current status.
 
 ### Area overviews
 
@@ -199,25 +233,29 @@ expected output, accountable writer, affected paths and logical resources,
 parent plan/input links, prerequisites,
 current status, ordered actions and concrete completion checks. Supply or link
 the applicable implementation details and verification scenarios required by
-the [detailed planning procedure](DEVELOPMENT_METHOD.md#detailed-planning-procedure).
+the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth).
 Before assignment is known, state that
 it is unassigned; resolve ownership before concurrent execution. These are
 content requirements, not mandatory headings or front matter.
 
 Plans and tasks reference the requirements they cover. One requirement can
-need several tasks, and one task can serve several requirements. Create a
-separate plan/task file when its outcome, assignment or completion needs that
-management boundary; do not generate a full set of stage files for every REQ.
+need several tasks, and one task can serve several requirements. Keep plan and
+task definitions in their respective files and use actual output, assignment and
+completion boundaries to split further. Reuse shared files across requirements;
+do not create duplicate definitions or placeholders for unrequested stages.
 Use the [boundary criteria](#independent-items-and-supporting-detail) for small
 changes, supporting detail and work before requirements are established.
 
-Keep task definitions and detailed results in their owning files. Plans contain
+Keep task definitions and execution status in their owning files, linking actual
+check results from verification documents. Plans contain
 links, ordering and useful progress summaries; update those summaries from the
 tasks. A task shared by several plans retains one ID, owning file and writer.
-Completion of the planned outcome is assessed against its scope and criteria
-using task outcomes and applicable combined verification. Planning itself ends
+Apply [summary ownership and updates](#summary-ownership-and-updates) rather
+than copying detailed task states into each parent. Completion of the planned
+outcome is assessed against its scope and criteria using task outcomes and
+applicable combined verification. Planning itself ends
 when the plan and task definitions satisfy the
-[planning completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks);
+completion checks for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth);
 it does not require those tasks to have executed. Planning-only work records
 intended checks without claiming execution.
 
@@ -391,7 +429,28 @@ Use an `ID allocation` section (or its local-language equivalent) in the actual
 project overview as the default shared allocation record. If the team already
 uses another shared Markdown location, link its exact file/section from the
 overview and maintain the allocation there only. Folder names stay contextual;
-writers must be able to discover one authoritative location for each range.
+writers must be able to discover one authoritative location for each scope.
+
+Establish an initial basis by checking project-wide definitions, retained and
+retired IDs, allocation history and outstanding reservations. Record the checked
+version/scope, result and any limits once; reuse it with subsequent allocation
+changes. When creating the first overview, include its own ID in this check and
+record the basis there. No pre-existing registry is necessary.
+
+For a single writer without delegated ranges or outstanding reservations, the
+allocation section needs only each allocation scope and its next serial, plus
+a link to that shared checked basis. Advance the serial when allocating; never
+move it backward or fill earlier gaps. The initial serial must exceed every
+used, retired or previously allocated serial in that scope. Existing owning
+document links identify issued items; no per-allocation owner, range reservation
+or gap-disposition table is required. For example, `TASK-API: next 004` means
+`001` through `003` cannot be newly allocated, whether used, retired or skipped.
+Preserve their actual history without inventing a disposition for unused gaps.
+If prior allocations are uncertain, reconcile them before choosing the serial.
+
+Before introducing concurrent writers or delegated ranges, use the shared range
+record below. Returning to a single writer requires reconciling those ranges
+and reservations first; the simple counter cannot silently supersede them.
 
 With [area overviews](#area-overviews), the root allocation section delegates
 non-overlapping serial ranges per allocation scope to areas and records each
@@ -401,7 +460,8 @@ Complete IDs stay unique project-wide, and areas do not introduce their own pref
 for an existing type. When an area exhausts a range, obtain a new delegation
 from the root allocation owner before allocating further.
 
-Use a compact Markdown table with the following minimum information, reusing
+For concurrent or delegated allocation, use a compact Markdown table with the
+following minimum information, reusing
 shared baseline notes for rows checked together:
 
 | Field | Required content |
@@ -418,12 +478,7 @@ writer A may state: used `001` and `003`, retired `002`, remaining
 `004` through `020` reserved for A. Its row must also link the actual checked
 basis. This example does not allocate IDs in this harness repository.
 
-Establish the basis by inspecting project-wide definitions, retained allocation
-history and reservations before allocating. When creating the first project
-overview, check and assign its own ID as part of the initial allocation and
-record that basis in the new overview; no pre-existing registry is necessary.
-A single writer uses the same concise section and may reserve only the numbers
-currently needed. Harness guidance outside the [ID scope](#id-scope) needs no
+Harness guidance outside the [ID scope](#id-scope) needs no
 allocation table simply to maintain policy. Do not create a second registry or
 a new document per allocation.
 
@@ -481,8 +536,10 @@ change to the requirement or acceptance criteria.
 
 Designs, plans, tasks, changes and verification reference the requirements
 they cover. These relationships may be many-to-many. A shared design or check
-has one owning definition linked to all relevant REQs. Do not create one copy
-or a complete set of stage documents per requirement.
+has one owning definition linked to all relevant REQs. Preserve separate
+requirement, design, plan, task and verification files under
+[document organization](#document-organization), reusing shared definitions
+without creating a copy for every requirement.
 
 Give related work a separate ID/file when the actual work needs a separately
 assigned or delivered output, its own completion/decision status, or a shared
@@ -492,8 +549,8 @@ step to someone else, run a test separately or link a paragraph is insufficient.
 Small size or a common owner does not remove a real separate work boundary.
 
 Expected behavior and acceptance criteria belong to the requirement; actual
-check results may remain in the work document or a separately managed
-verification document referencing it. Do not duplicate authoritative definitions
+check results belong to the verification document referencing it. Work documents
+link those results. Do not duplicate authoritative definitions
 or evidence. A failed check is a result, not by itself a new tracked item.
 
 Discovery, research, project overviews and other work can precede or support
@@ -512,51 +569,54 @@ when separately managed; requirements do not replace every other identity.
 | An acceptance criterion is separately tracked with its own disposition | Its own `AC` file, linked to the parent requirement. |
 | A backend plan includes tasks managed as separate outputs | Each task has its own file under the project ID convention; the plan contains links and sequence/dependency information. |
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
-| A small change records its source, scope rationale and observed check result | These may be metadata/stage notes of that change; independently managed requirements/tasks still get separate files. |
+| A small correction restores an existing requirement | Reuse the requirement's linked files, put changed detail and results in their respective owners, and keep source/change trace in the owning plan/work note. |
 
 Ordinary prose, navigation and explanatory headings need no independent ID.
-Do not use the small-change exception or the word "metadata" to conceal
+Do not use compact planning or the word "metadata" to conceal
 separately managed items inside a single growing document.
 
 ### Minimum documentation for a small change
 
-For one bounded correction with one set of completion criteria, keep the
-expected correction, design rationale, work steps and check results in the
-owning change document and reference the existing requirement. A development
-stage, an implementation step or a test command does not by itself require a
-separate `REQ`, `DES`, `PLAN`, `TASK` or `VER` file. Link existing requirements
-and other owning documents instead of
-redefining them. Apply any contractually required separate deliverables.
+For a correction eligible for [compact planning](DEVELOPMENT_METHOD.md#choosing-planning-depth),
+reuse the requirement's existing design, plan, task and verification files.
+Keep their IDs and document roles; create a new item only when identity and
+work boundaries require it. Preserve completed work and old evidence rather
+than rewriting them as the new correction. If required definitions are missing,
+prepare them for the affected scope; do not claim an unreviewed baseline is reusable.
 
-For example, correcting the displayed count for an empty search result can
-use an existing project overview plus `changes/CHG-001.md`. This is an
-illustration, not an allocated ID, actual decision or verification result.
-Choose the real unused ID and folder using the project's existing conventions.
-The change document can contain the following sections:
+For example, an empty search count correction keeps the existing search REQ.
+The following describes content ownership, not a mandatory set of headings,
+new IDs or a new copy of each document for every correction:
 
-| Section | Minimum useful content for this example |
+| Owning document | Content for this correction |
 |---|---|
-| Source and scope | Actual fix request/source, input revision, expected empty-result count, affected component and exclusions; link the existing search REQ, or identify the actual expected-behavior source if no requirement is yet recorded. |
-| Approach and readiness | Cause and chosen correction, relevant alternatives/risks, responsible writer, ready dependencies and confirmation that the request covers the edits and checks. |
-| Work steps | Inspect the count calculation, make the covered correction and check empty and non-empty results; record progress here. |
-| Verification | Candidate version, method/environment, expected and observed counts, original evidence links where available, failures and unrun checks. |
-| Completion | Result against the stated criterion, remaining limits and applicable delivery/next action. |
+| Requirement | Reference the established expected count and acceptance conditions. If no requirement is recorded, establish it from the actual expected-behavior source; do not invent a new commitment. |
+| Design/contract | Reuse applicable behavior and contracts; update the correction's approach and affected interactions where the design changes. |
+| Plan | Link the actual request and baseline, record the impact assessment and reuse basis once, and specify affected scope, order, dependencies and planned checks. Reuse readiness under [Approvals](APPROVALS.md#coverage-and-currentness); record the compact planning review and remaining prerequisites here. |
+| Task | Identify the cause, chosen correction, affected paths, ordered execution and completion checks. Link the plan, owning design and verification instead of copying them. |
+| Verification | Record the candidate version, method/environment, expected and observed results, evidence, failures, unrun checks and limits after execution. Checks not yet run remain planned in the plan/task or a linked check definition, never successful evidence. |
+| Overview | Keep links and the relevant summary current under [summary updates](#summary-ownership-and-updates). Update ID allocation only when an item is actually allocated. |
 
-The overview links this change and updates its summary and ID allocation in
-their existing sections. No separate decision, plan, task or verification
-document is needed solely to repeat those sections. A project with only one
-coherent unit may use the existing combined overview/detail option under
-[document organization](#document-organization), subject to the same identity
-and boundary rules. This example adds no new exemption from ID allocation.
+The linked files must provide the same executable detail as any implementation
+plan. Compare them with the original relevant inputs, walk the affected behavior
+and check expected results and regression risks under the
+[compact review](DEVELOPMENT_METHOD.md#choosing-planning-depth). No separate
+coverage matrix, per-area N/A table or duplicate review log is required.
 
-Split out a new requirement when the requested result adds a separate
-commitment, such as exporting search results. Split related work only for an
-actual separate assignment, delivery, decision or completion boundary, such
-as an independently assigned backend change or a separately tracked acceptance
-criterion. A regression check used only to establish the count fix's completion
-remains supporting detail, even though it can be run
-independently. Preserve existing owners, IDs and history when linking or
-splitting; this guidance does not authorize consolidating existing records.
+Use a change section in the owning plan/work document for the request, impact
+and history. A separate CHANGE/CR record is needed only when the agreed project
+or external process requires it, under the
+[change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation); it links
+the owning definitions and evidence. Keep each affected owner current so an
+implementer need not reconstruct its instructions from successive change notes.
+Preserve history and do not consolidate or automatically reorganize existing records.
+
+Split out a new requirement for a separate commitment, such as exporting search
+results. Use further task or verification items when actual assignment,
+delivery or completion boundaries require them. A regression scenario may stay
+inside the owning verification item; separate executability alone does not
+create another ID. Allocation, filenames and required external deliverables
+retain their normal rules.
 
 ## Required-name exceptions
 
@@ -601,7 +661,7 @@ the affected scope and reusable evidence.
 | Ordinary paths | Each new file matches the recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. |
-| Planning detail and omissions | For planning deliverables, apply the [planning completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks): original-source coverage, detailed executable work, scenario/integration coverage, concrete verification and honest unknown dispositions. Valid IDs and links alone do not establish an adequate plan. |
+| Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
 | Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must retain evidence and update affected definitions and dependency status; a status change alone is insufficient. |
 | Scope and history | No unauthorized migration or historical relabeling; IDs and prior decision/evidence history are preserved, and unrun verification is not reported as success. |
 | Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
@@ -626,9 +686,19 @@ locations. Keep current implementation and proposed target separate.
 An open item is an unresolved question, decision, prerequisite, contradiction
 or finding that needs follow-up to establish scope, readiness or completion.
 It can arise at any stage. Routine work already defined by a task does not
-need a second issue merely because it is unfinished. A failed check may stay
-in its owning work record; its unresolved impact still needs the follow-up
-information below when work continues or is handed off.
+need a second issue merely because it is unfinished. A failed check stays
+in its owning verification record, linked from the work; its unresolved impact
+still needs the follow-up information below when work continues or is handed off.
+
+A question answered and checked within the same work session, with no remaining
+follow-up or independent management boundary, needs only the question, answer
+and authoritative source/evidence with its relevant version in the owning work
+note. Incorporate any affected definition/check there or link the updated owner.
+No separate OI, owner/timing fields or transition log is required for that
+completed clarification. This shortcut does not supply human decisions or
+product verification: actual authority, evidence and material-change rules
+still apply. If the answer leaves a dependency, unresolved impact or handoff,
+use the follow-up content below.
 
 Use the existing [item boundaries](#independent-items-and-supporting-detail).
 Keep a parent-specific question and its history in the owning requirement,
@@ -638,6 +708,11 @@ owns the appropriate ID/file, such as an `ISSUE` or `RISK`; retain existing IDs
 and reference actual decisions and resolution tasks rather than duplicating
 them. Moving work between plans does not create a new identity for the same
 issue. Small size alone does not exempt independently managed items.
+
+For items needing continued follow-up, use the following content. Inherit
+owner, scope and review milestone from the parent when unambiguous; record
+only differing values locally. Do not invent dates, owners or intermediate
+states merely to fill fields.
 
 | Content | What to record in the owning item or linked authoritative section |
 |---|---|

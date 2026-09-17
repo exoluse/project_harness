@@ -10,13 +10,14 @@ an invented history.
 For each requested stage, identify the input versions, scope, deliverables,
 dependencies, verification and exit criteria. Organize deliverables by feature
 or work unit under a project overview, following the
-[document boundaries](DATA_MODEL.md#document-organization). Sections suffice
-within a small coherent unit; independent units need separate documents.
+[document boundaries](DATA_MODEL.md#document-organization). Keep supporting
+detail in sections of its owning file and preserve the requirement, design,
+plan, task and verification file boundaries.
 Use the [item-boundary criteria](DATA_MODEL.md#independent-items-and-supporting-detail)
 to distinguish parent-specific explanation from independently managed work.
 For a bounded correction, the
 [minimum documentation example](DATA_MODEL.md#minimum-documentation-for-a-small-change)
-shows how stage notes and completion checks can stay in one owning document.
+shows how to reuse those files and update only affected content.
 Sprints are optional.
 
 | Stage | Inputs | Deliverables and exit criteria |
@@ -56,18 +57,57 @@ Do not add a separate approval of planning completion.
 The development plan and its linked specifications/tasks are the primary basis
 for implementation. Planning must make the intended work executable and
 checkable, including the details that would otherwise be discovered piecemeal
-during implementation. Follow the procedure and completion checks below.
+during implementation. Select the planning depth below and apply its completion
+checks; the compact path replaces the detailed procedure for eligible work.
 Failed required planning checks mean the plan needs work; classify remaining
 unknowns by their actual effect rather than treating their disclosure as a pass.
 
-Execution is ready when the owner has decided on the concrete implementation
-scope, the selected work is covered and its real dependencies, ownership,
-safety and external permissions are ready. Tool output cannot create consent
-or turn missing evidence into a pass.
+Execution readiness is governed by
+[coverage and currentness](APPROVALS.md#coverage-and-currentness). Planning
+completion alone cannot create consent or turn missing evidence into a pass.
+
+### Choosing planning depth
+
+Use a compact plan for one bounded correction when the expected behavior and
+existing contracts are established, one coherent set of work and checks covers
+the outcome, and no consequential scope/design unknown remains. File count or
+line count alone does not determine eligibility. New or changed public contracts,
+data lifecycle or access-policy changes, coordination of independently managed
+outputs, and high-risk external effects require the detailed procedure for
+their affected scope. Required project/contract checks still apply on either path.
+
+For eligible work, reuse the requirement's linked owning files under the
+[small-change guidance](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+Identify the reviewed baseline and assess the change under the
+[change cycle](#change-cycle-and-propagation). Reuse definitions, decisions and
+review evidence only where they remain applicable; specify changed behavior,
+implementation steps and checks to the same executable detail as other planned
+work. File separation alone does not require the detailed procedure, and compact
+planning does not authorize merging files or reducing required detail.
+Before implementation, connect the source/version and expected result to the
+affected scope, chosen correction, ordered steps and planned checks. Link the
+existing readiness assessment; record only changes or unresolved prerequisites.
+No separate source inventory, coverage matrix, per-row N/A explanations or
+seven-step review log is required when these connections are clear in the plan
+and its linked definitions.
+
+Complete compact planning by comparing the plan and affected definitions with
+the original relevant inputs, walking the affected behavior and checking that
+the steps and planned checks cover the expected result and applicable regression
+risks. Confirm that consequential unknowns are resolved and links/versions are
+consistent. Record
+the reviewed inputs, actual findings or no gaps found, and any remaining
+execution prerequisites in a brief review note. This establishes planning
+coverage; product checks remain planned until performed. The unknown-disposition
+rules under [completion checks](#planning-completion-checks) apply to both paths.
+
+If investigation reveals work outside these bounds, expand the affected plan
+using the detailed procedure and reuse valid sources, decisions and checks.
+Changing planning depth does not itself require another human approval.
 
 ### Detailed planning procedure
 
-Use this order when preparing or revising a development plan. Reuse current
+For work requiring detailed planning, use this order. Reuse current
 inputs and applicable checks; update affected parts when later work reveals
 a gap. Keep the requested stopping point and actual implementation authority.
 
@@ -118,9 +158,10 @@ a gap. Keep the requested stopping point and actual implementation authority.
 
 ### Required implementation detail
 
-Apply every row to the affected scope and record its coverage or a brief
-reason it does not apply in the existing plan/work note. Related inapplicable
-rows may share one explanation. This is an omission checklist, not authority
+Use these areas to find omissions in the affected scope. Record applicable
+details in their owning sections; do not copy them into an applicability table
+or write N/A for unrelated rows. Explain an exclusion when it could otherwise
+hide a source obligation or material risk. This checklist grants no authority
 to add features. Domain-specific obligations from the inputs remain required
 even when this checklist does not name them.
 
@@ -142,13 +183,14 @@ without inventing required behavior, public contracts, data effects or material
 verification criteria. Resolve consequential algorithms and ordering rules;
 routine local coding choices may remain with the implementer. Do not prescribe
 every line of code or copy specifications into every task. Small corrections
-still need their applicable detail, but may keep it in one owning work document
-under the [minimum documentation example](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+retain this level of detail through reused definitions and updates to the
+affected owning files under the
+[minimum documentation example](DATA_MODEL.md#minimum-documentation-for-a-small-change).
 
 ### Coverage and working structure
 
-Keep an explicit coverage table or equivalent linked checklist in the existing
-plan/owning work document. Start from the source inventory, not from the tasks
+For detailed planning, keep a coverage table or equivalent linked checklist in
+the existing plan/owning work document. Start from the source inventory, not from the tasks
 already written. Each input obligation and supporting acceptance detail must
 reach the applicable requirement, design, work and planned verification, or
 have a justified disposition. Use existing IDs and section anchors; supporting
@@ -165,11 +207,11 @@ evidence is missing, plan the needed verification. A deferred/excluded label
 cannot silently remove required scope. Preserve the requested boundary and
 identify any decision needed to change it.
 
-For a new plan, use this working order unless the project's existing layout
-already presents the same information clearly:
+For a new detailed plan, use this working order unless the project's existing
+layout already presents the same information clearly:
 
 1. Objective, scope/exclusions, baseline and source/decision links.
-2. Input inventory, requirement/acceptance coverage and checklist applicability.
+2. Input inventory and requirement/acceptance coverage.
 3. Linked design and resolved implementation details, rationale and alternatives.
 4. Ordered work links or owned work steps, dependencies and integration.
 5. Verification scenarios, expected results, environment and coverage links.
@@ -182,8 +224,10 @@ boundaries. See the [worked example](EXAMPLE_WEB_PROJECT.md#detailed-planning-ex
 
 ### Planning completion checks
 
-Perform these distinct checks; rereading only the plan or asking generally
-whether anything is missing is insufficient. They may be done by one writer
+For detailed planning, perform these distinct checks; compact plans use the
+review under [choosing planning depth](#choosing-planning-depth). Rereading only
+the plan or asking generally whether anything is missing is insufficient.
+These checks may be done by one writer
 and do not require repeated approval or a fixed number of review rounds.
 
 | Check | Passing condition |
@@ -307,20 +351,43 @@ actual authorized scope; the table below describes the resulting workflow.
 
 ## Change cycle and propagation
 
+Record the impact assessment once in the owning plan/work document and reference
+it from affected items. Identify the change and baseline, affected item IDs and
+reasons, required updates/work/checks, and the basis for reusing existing content
+or evidence. Follow consumers, shared contracts and dependencies across
+requirements, designs, plans, tasks and verification, including effects on
+acceptance, data, authority, blockers and delivery commitments. An unchanged file
+is not proof of no impact. Broaden investigation when links, baseline coverage
+or effects are uncertain. Group unaffected content with a common reuse basis;
+do not require a separate impact report or an N/A row for every project document.
+
 1. Preserve the prior baseline and trace the request.
 2. Assess feasibility, alternatives, uncertainty and effects on behavior, data,
    dependencies, effort/schedule, verification and delivery.
-3. Update the necessary requirements, design and plan detail into a reviewable
-   proposal. Identify affected and unaffected work.
+3. Update affected owning definitions into a reviewable current version. Keep
+   requirements, design, plans, tasks and verification in their owning files;
+   implementers must not have to reconstruct current instructions from a chain
+   of change notes. Mark uncovered commitments as proposed until an actual
+   decision covers them. Preserve prior versions and identify affected and
+   reusable work.
 4. Reuse current authority for covered refinements; obtain one actual owner
    decision for a material delta. Do not ask again for the same scope under
    different record labels.
 5. Implement covered work when its real prerequisites are ready.
 6. Verify changed outputs and affected dependencies; retain applicable evidence
    and document the applicability assessment.
-7. Update progress, remaining obligations and handover information.
+7. Update progress, remaining obligations and handover information under the
+   [summary update rules](DATA_MODEL.md#summary-ownership-and-updates).
    Reassess affected [open items](WORKFLOW.md#open-item-lifecycle), propagate
    resolutions and reopen items whose basis no longer holds.
+
+Propagation is complete when affected definitions, references and summaries are
+current, required checks for the requested stage are accounted for, and remaining
+blockers/obligations have owners and next actions. Review actual results before
+claiming implementation complete; planned or failed checks are not passes.
+Do not revisit unaffected documents without a new impact, contradictory evidence
+or a required project check. Reuse follows
+[verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 A change section or log may carry this trace. A separate CHANGE/CR record is
 needed only when an agreed project or external process requires it.
