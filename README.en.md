@@ -84,7 +84,7 @@ The same operating principles apply to web, mobile, library and data projects. E
 
 ## Components
 
-[AGENTS.md](AGENTS.md) is the governing operating policy. This README introduces the project and how to start; use the relevant policies together with actual project decisions and evidence for detailed judgments.
+[AGENTS.md](AGENTS.md) is the governing operating policy. This README provides an overview, getting-started guidance and representative examples. Agents use the policy's [reading triggers](AGENTS.md#startup-and-context) to consult detailed rules and actual project decisions/evidence before the affected action. Linked owning documents maintain the detailed procedures and checklists.
 
 | Component and location | Role |
 |---|---|
@@ -149,38 +149,19 @@ The requested stopping point is part of the scope. A requirements-only request e
 
 ### Stage inputs and outputs
 
-| Stage | Main inputs | Outputs and completion assessment |
-|---|---|---|
-| Discovery | User request, relevant sources, existing code and progress | Identify the problem, inclusions and exclusions, constraints, uncertainties and questions. |
-| Requirements | Discovery findings and actual decisions with sources | Document desired outcomes, acceptance criteria, priorities and attributable reasoning. |
-| Design | Versioned requirements and constraints | Describe components, interfaces, data, exception handling, alternatives and technical risks. |
-| Planning | Original requests/constraints, requirements, design and completed work | Connect sources to detailed behavior, work and verification; review implementation detail, integration order and unknowns against the planning completion checks. |
-| Implementation | Concrete scope decision, ready inputs and permissions | Perform authorized changes and record deviations, findings and remaining work. |
-| Verification | Candidate version, completion criteria and check environment | Record actual methods and results, failures, unrun checks, coverage and limitations. |
-| Acceptance | Verified candidate and agreed acceptance criteria | Link actual confirmation or feedback from the authorized customer to that version. |
-| Deployment/delivery | Delivery target, prepared result and required approvals | Deliver as agreed and record the delivered version and necessary follow-up checks. |
-| Closure | Contributions from all work, evidence and remaining obligations | Confirm the disposition of applicable acceptance, delivery, handoff and maintenance obligations. |
-| Maintenance | Delivered baseline, change request or incident | Assess impacts, perform authorized changes and reverification, and preserve earlier observations. |
-
-Readiness is assessed from documents and evidence. It does not require another human approval or sprint at every stage. Important implementation decisions and high-risk permissions are checked at their applicable boundaries.
+Each stage has input versions, outputs, dependencies and exit criteria. For example, planning defines concrete work and intended checks, while verification records actual results. Readiness neither requires another human approval at every stage nor grants implementation authority. Apply the [Development method's stage contract](docs/DEVELOPMENT_METHOD.md#stage-contract) for detailed criteria.
 
 ### Development plan detail and omission review
 
-**Use the development plan and its linked design/task documents as the primary basis for implementation.** Specify applicable inputs/outputs, conditions and boundaries, state changes, failure/recovery, data effects, access, component integration, edit locations and verification scenarios so implementers do not have to infer required behavior or consequential decisions. Keep detailed definitions in their owning documents and link them from the plan.
+**Use the development plan and its linked design/task documents as the primary basis for implementation.** Make required behavior and consequential decisions concrete, connecting original inputs to work and intended verification. Document count does not substitute for detail.
 
-Write in this order: original input inventory → requirements and observable completion criteria → design detail → concrete work → dependencies and integration order → verification scenarios → review against the originals. Maintain a coverage table or checklist connecting supporting requirement conditions as well as requirements to design, work and checks. Revisit the original requests and sources to detect omissions in the inventory itself.
-
-Unknowns that can change consequential behavior, contracts, data effects or feasibility block completion of the affected implementation plan. Identify resolution actions, owners and affected work, then pursue the needed investigation or decision. Later environment/permission availability may remain an execution prerequisite when its required state, resolution method, owner and timing are clear. Small corrections still need applicable detail; additional documents or task files do not substitute for it.
-
-Follow the [detailed planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) for the writing sequence, detail checklist and completion criteria. The [worked example](docs/EXAMPLE_WEB_PROJECT.md#detailed-planning-example) illustrates the depth for a small correction.
+When creating, revising or assessing a plan, apply the [detailed planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) and [completion checks](docs/DEVELOPMENT_METHOD.md#planning-completion-checks). Those rules distinguish consequential unknowns from later execution prerequisites. The [small-correction example](docs/EXAMPLE_WEB_PROJECT.md#detailed-planning-example) illustrates the required depth.
 
 ### Tracking open items through resolution
 
-Maintain open items in their owning documents with these meanings: `OPEN` → `IN_PROGRESS` or `WAITING` → `RESOLVED` (resolution evidence established) → `CLOSED` (checked and propagated). Transitions follow actual progress; equivalent project labels are acceptable. Only items needing separate assignment, completion status or a shared definition become independent records under the existing identity and boundary rules.
+Track owners, next actions, impacts and resolution criteria in the owning documents. `RESOLVED` means resolution evidence is established; `CLOSED` means it has also been checked and propagated into related definitions and dependent work. Deferral is not resolution; reopen an invalidated resolution while preserving history.
 
-Record the source/version, owner, next action, needed-by point/review trigger, affected work and resolution criterion. Review at planning completion, dependent work start/resumption, handoff/delivery/closure and relevant input changes. When a needed-by point is missed, report the impact and required decision/input; waiting does not create an answer or approval.
-
-Check resolution evidence, propagate the result into the affected requirements, design, plans and verification, and assess each dependent task's actual readiness. Deferral is not resolution; closure as duplicate, non-applicable or authoritatively canceled records that reason and remaining obligations. Reopen the same item when new evidence invalidates its resolution, preserving history. Follow the [open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle) and [record content](docs/DATA_MODEL.md#open-items) for details.
+When recording, resolving, reopening or handing off items, apply the [open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle) and [record content](docs/DATA_MODEL.md#open-items). Those documents maintain the transition, review and closure criteria.
 
 ## Recovering documentation from existing code
 
@@ -307,25 +288,9 @@ Apply [ID preservation and numbering](docs/DATA_MODEL.md#item-ids) and [allocati
 
 **When a user explicitly requests implementation or a fix and the outcome and bounds are clear in context, the request itself supplies the scope decision.** The agent records concrete scope and provenance, then performs covered changes and checks. Routine file selection, implementation details or test methods within that scope do not require the same permission again. Stage-only stopping points and high-risk/external controls still apply.
 
-Before implementation, establish the outcome and acceptance criteria, affected components, paths, behavior and data, exclusions, feasibility, risks, dependencies and verification at an appropriate level. Present alternatives for important choices or scope not resolved by existing requests and decisions. Link the actual user request or response to the scope, and confirm each work item remains covered.
+Before implementation, establish reviewable scope under [decision preparation](docs/APPROVALS.md#preparing-and-recording-one-decision) and link the actual request/response. **One applicable decision can cover several plans and tasks.** Splitting screen and API work may be within scope, while adding a new production data change requires a separate assessment. Apply the [material-change criteria](docs/APPROVALS.md#material-changes), preserving earlier decisions and observations while checking current applicability.
 
-**One applicable decision can cover several plans and tasks.** For example, splitting screen and API work or changing test order can proceed with updated records when the reviewed outcome, risks and conditions remain the same.
-
-| Change | Handling |
-|---|---|
-| Split one task into several or reorder work around dependencies | Confirm scope coverage and update the plan. |
-| Change document format, task names or metadata | Preserve IDs, meaning and provenance, and repair necessary references. |
-| Material change to requirements, acceptance criteria, data effects, risk or delivery conditions | Prepare the delta and its impacts, and obtain the actual decision for the change. |
-| Discover a defect or contradictory current verification | Record the facts and affected scope, and determine the disposition of affected work or claims. |
-| Add production deployment or another high-risk action | Verify specific human authorization and external controls for the subject and effect. |
-
-Preserve earlier versions. A change does not make a prior decision or observation fictitious. Assess whether the evidence still applies to the current version, and reverify changed and affected parts.
-
-Link earlier items when splitting or replacing them. See [Approvals and decisions](docs/APPROVALS.md) for detailed criteria on implementation decisions and material changes.
-
-Apply cancellation, pause or permission withdrawal to the scope the user specifies and its dependent work. Record whether work has stopped, effects already produced and unfinished work in the existing plan or work document. The request alone does not authorize code deletion or rollback.
-
-Before resuming, check the current request, still-valid decisions, changed files/environment and prerequisites. Reuse decisions that remain applicable; use withdrawn permissions again only when restored by the current decision and required external controls. See [Cancellation, withdrawal and resumption](docs/APPROVALS.md#cancellation-withdrawal-and-resumption) for the detailed rules.
+For cancellation, pause or permission withdrawal, apply the [cancellation and resumption procedure](docs/APPROVALS.md#cancellation-withdrawal-and-resumption). A stop request does not authorize deletion or rollback; resumption requires checking current authority and prerequisites.
 
 ## Verification and completion
 
@@ -345,7 +310,7 @@ These are not mandatory successive grades for every project. A library without a
 
 Do not mark unrun, failed, partial or ambiguous results as PASS. Reuse older success only after checking applicability, and never hide a newer failure behind it. Passing document link and format checks does not establish passing product tests.
 
-Reuse verified allocation baselines and ranges, and applicable results for unchanged work. Focus checks on new IDs, changed files and references affected by moves or deletions. Moving from a completion report to push alone does not require repeating the full suite. Broaden checks when a baseline is missing or uncertain, conflicts or failures appear, or criteria change. Preserve project-wide ID uniqueness and mandatory CI checks. See [Efficiency guidance](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
+Apply [Efficiency guidance](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification) when setting verification scope or reusing results. Check changes and affected dependencies without repeating the same checks solely because a push follows a completion report. Mandatory CI checks and project-wide ID uniqueness remain required.
 
 ## Collaboration and handoff
 
@@ -399,30 +364,9 @@ Stop affected work and its dependents when authority is missing, required inputs
 
 Unrelated unfinished drafts or historical evidence that no longer applies do not alone stop independent work. Preserve the issue and limitations, and assess actual impact.
 
-Classify actions by their actual targets, data loss, recoverability, shared or production impact, and exposure of protected values.
+Assess risk by actual effects rather than command names. Version-preserved source edits, reproducible local-output cleanup and internal authentication can use existing authority under [development action boundaries](docs/SECURITY.md#classifying-development-actions). Do not treat loss of unique work or exposure of protected values as equivalent actions.
 
-| Situation | Assessment |
-|---|---|
-| Edit or remove code within the request | Use the existing development decision when targets and ownership are understood, relevant versions are preserved, and there is no loss of unique work or material shared/operational effect. |
-| Clean local build or test outputs | Perform as part of authorized work only after confirming exact paths, ownership, regeneration and the absence of unique data or evidence that must be retained. Folder names alone are insufficient. |
-| Perform an authorized operation through an authenticated tool | Do not repeat credential approval solely for internal authentication. Authentication does not authorize a new resource, purpose or external action. |
-| Delete unique or unknown work, retained records or shared data, or access protected values directly | Establish the specific authority and controls for the destructive operation or protected-credential access. |
-
-If scope is unclear, inspect safely and defer the affected action until resolved. Project-record resets always require a current explicit reset request, preflight checks and recoverability measures. Existing contracts and stronger external controls remain binding. See [Development action boundaries](docs/SECURITY.md#classifying-development-actions) for detailed criteria.
-
-The following actions need a specific decision from an authorized human for the subject, version and effect:
-
-| High-risk action | What to identify |
-|---|---|
-| Production deployment | Candidate, environment and operation |
-| Production data change | Data scope, effects, recovery and verification |
-| Destructive operation | Exact targets, actual effects and required preflight checks |
-| Secret/protected-credential access | Purpose, permitted scope and protected access mechanism |
-| Final customer acceptance | Candidate, acceptance scope and actual customer confirmation |
-
-Use controls the agent cannot approve for itself: protected CI or environment approvals, human-signed requests, or an authorized human operator. Preserve cryptographic signatures and stronger controls required by the project or external system.
-
-Do not put credentials or protected material in documents or logs. External messages and actual external changes also require matching explicit authority. See [Security](docs/SECURITY.md).
+Production deployment/data changes, destructive operations, protected-credential access and final customer acceptance require specific human decisions and independent controls for their subjects and effects. Apply [Security](docs/SECURITY.md) before those actions, and the [reset procedure](docs/WORKFLOW.md#starting-over) for project records. External messages and material external effects need explicit authority; never store secrets or protected material in documents/logs.
 
 ## Adoption limitations
 
@@ -444,13 +388,13 @@ Policy maintenance does not require operating `archive/` or `changes/`, creating
 
 ## Detailed documentation
 
-Start with the shared policy and documents relevant to the request, then consult detailed sections as needed. There is no need to reread all documents and records for each task.
+The [shared policy's entry map](AGENTS.md#startup-and-context) owns mandatory reading triggers for agents. The list below introduces documents for readers; it is not a requirement to load them all for each task.
 
 | Document | What it covers |
 |---|---|
 | [Shared policy](AGENTS.md) | Authority, progress, verification, safety and exceptions |
 | [Development method](docs/DEVELOPMENT_METHOD.md) | Stage inputs/outputs, reverse engineering, change impacts and baselines |
-| [Workflow](docs/WORKFLOW.md) | Startup, execution readiness, change, handoff, closure and optional tooling |
+| [Workflow](docs/WORKFLOW.md) | Startup, execution readiness, open items, handoff, closure and former runtime records |
 | [Approvals and decisions](docs/APPROVALS.md) | Actual decision sources and bounds, reuse and high-risk boundaries |
 | [Information model](docs/DATA_MODEL.md) | Document content and evidence relationships |
 | [Collaboration and handover](docs/COLLABORATION.md) | Ownership, concurrent work, transfer and integration |

@@ -1,337 +1,219 @@
 # Shared Agent Policy
 
-This is the current operating policy for every agent in this repository.
-Adapters may clarify it but must not weaken its authority, evidence or safety
-requirements. It governs this repository; external code is input unless the
-user explicitly authorizes work there.
+This is the governing policy for every agent in this repository. It states the
+common boundaries and directs work to the owning detailed rules. Adapters and
+summaries must not weaken those rules. External code is input unless the user
+explicitly authorizes work there.
 
 ## Policy-first operation
 
 This repository ships policy and documentation only. It contains no runtime,
-CLI, schema or record store, and no tool setup is required to follow this
-policy. Assess actual authority, scope, dependencies and evidence under this
-policy, and keep management records in ordinary project documents. Records left
-by the former bundled runtime are historical input; see
+CLI, schema or record store; no setup is required. Assess actual authority,
+scope, dependencies and evidence, using ordinary project documents. Records
+left by the former runtime are historical input; see
 [former runtime records](docs/WORKFLOW.md#former-runtime-records).
 
 ## Management document format
 
-Write all new harness management documents as Markdown (`.md`), including
-project notes, requirements, designs, plans/tasks, decisions, change traces,
-verification reports and handoffs. Use prose, headings, tables, checklists and
-links. Organize documents as a project overview plus feature/work documents,
-following the boundaries below. Do not create JSON or other non-Markdown
-management records or parallel machine-readable
-copies for ordinary project work. Traceable items require the stable IDs below;
-no fixed schema or front matter is required.
-
-Preserve existing records, signed payloads, snapshots and historical documents
-in their original formats; this rule does not authorize conversion or deletion.
-Product code/configuration/data, original evidence artifacts and tool-internal
-files retain the formats their tools require.
-A separately required contract or external control remains binding; identify
-and resolve any format conflict before the affected delivery.
-
-See [Information model](docs/DATA_MODEL.md) for document content and trace.
+Write new management documents as Markdown (`.md`), without parallel JSON or
+other machine-readable management copies. No fixed schema or front matter is
+required. Preserve existing records, signed payloads, snapshots and historical
+documents in their original formats; this does not authorize conversion or
+deletion. Product files, original evidence and tool-internal files retain their
+required formats. Contracts and external controls remain binding; resolve any
+format conflict before affected delivery.
 
 ## Document organization
 
-Keep a project overview linking independently managed feature/work items.
-Maintain detailed facts in one owning document and reference them elsewhere.
-Use requirements as the primary basis for separating product scope. Keep a
-requirement's supporting conditions, explanations and check methods with it.
-Connect designs, plans, tasks and verification to the requirements they cover. Separate
-related work only when it needs its own management boundary under the
-[item-boundary rules](docs/DATA_MODEL.md#independent-items-and-supporting-detail).
-Fixes that restore specified behavior reference the existing requirement.
-The [Information model](docs/DATA_MODEL.md) is the required detailed standard
-for document boundaries, identities, paths, exceptions and validation under
-this policy. Other guidance summarizes or links these rules rather than
-redefining them. Apply the relevant sections when authoring or checking
-documents; a current copy already read in the session remains usable.
+Keep a project overview linking independently managed feature/work items, with
+one owning definition per item. Requirements are the primary basis for product
+scope; supporting conditions stay with their requirement, and fixes reference
+the existing requirement. The [Information model](docs/DATA_MODEL.md) owns the
+mandatory rules for boundaries, identities, paths, exceptions and validation.
+Apply them when authoring or checking documents; other guidance links these
+definitions rather than maintaining competing versions.
 
 ## Item identity and trace
 
-Apply IDs to actual project deliverables under the
-[ID scope](docs/DATA_MODEL.md#id-scope); the harness's own policy, overview and
-exception guidance are outside that scope. Independent project items own exact
-`<ID>.md` files in contextual
-classification folders, subject to the required-name rule below. Agents choose
-appropriate types and folders; examples do not define a closed vocabulary.
-Follow the mandatory [ID rules](docs/DATA_MODEL.md#item-ids),
-[item boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail),
-[document paths](docs/DATA_MODEL.md#document-paths) and
-[validation criteria](docs/DATA_MODEL.md#document-validation).
+Actual project deliverables use stable IDs and exact `<ID>.md` filenames in
+project-chosen classification folders. Harness policy and guidance are outside
+the [ID scope](docs/DATA_MODEL.md#id-scope). Before allocating or reorganizing,
+apply the Information model's [ID rules](docs/DATA_MODEL.md#item-ids),
+[boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail) and
+[paths](docs/DATA_MODEL.md#document-paths); examples are not a closed vocabulary.
 
 ## Required-name Markdown files
 
-Apply the mandatory [required-name exceptions](docs/DATA_MODEL.md#required-name-exceptions)
-when a tool, contract or repository entry convention requires a particular
-name/location. Preserve consumer compatibility and document identity under
-that rule; do not create duplicate authoritative copies.
+When a tool, contract or repository entry convention requires a name/location,
+apply [required-name exceptions](docs/DATA_MODEL.md#required-name-exceptions).
+Preserve consumer compatibility and identity without duplicate owning files.
 
 ## Startup and context
 
-1. Read this policy once per session and the relevant tool adapter. Re-read only
-   changed policy. A current client-supplied copy counts.
-2. Identify the user's objective, requested stage/stopping point and existing
-   decisions. Read only relevant project notes, requirements, plan and handoff.
-   No mandatory startup command or entire-record-tree read is required.
-3. Inspect Git status before writing in a Git repository. Without Git, inspect
-   the target files and preserve a versioned copy before replacing existing work.
-   Protect user/unknown changes and other writers' ownership.
-4. Classify the request as analysis/specification, policy maintenance or
-   implementation/verification/delivery. Policy-only follow-ups stay policy-only;
-   discussion of defects does not authorize unrelated implementation or deletion.
-5. Report the current stage, actual blockers and next action as needed. When the
-   requested scope is complete, report it; do not invent more work.
+1. Read this policy and the relevant adapter once per session; a current supplied
+   copy counts. Reuse unchanged context.
+2. Identify the objective, stopping point and existing decisions. Classify work
+   as analysis/specification, policy maintenance or implementation/verification/
+   delivery. Discussion of defects does not authorize unrelated edits or deletion.
+3. Inspect Git status before writing. Without Git, inspect targets and preserve
+   a versioned copy before replacement. Protect user/unknown work and ownership.
+4. Read the relevant project overview, owning items and the detailed rules below
+   before the affected action or completion claim. Current copies already read
+   in the session count; follow necessary linked definitions. No full-tree read,
+   mandatory startup command or routine rereading of all guidance is required.
+5. Report stage, actual blockers and next action as needed; stop at the requested
+   output and report completion without inventing more work.
+
+This table routes work to its owning rules. Applicable detail is mandatory,
+even when this policy or a README summarizes it; unrelated detail need not be loaded.
+
+| Trigger | Read and apply |
+|---|---|
+| Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, allocation, paths and validation. |
+| Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage and intake sections. |
+| Create, revise or declare a plan complete | [Planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) and [completion checks](docs/DEVELOPMENT_METHOD.md#planning-completion-checks). |
+| Establish execution scope, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria/procedure and the actual request/decision. |
+| Start/transition work, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure and owning project records. |
+| Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and allocations. |
+| Classify data loss, credential access or high-risk/external effects | Relevant [Security](docs/SECURITY.md) boundaries and applicable external controls before acting. |
+| Reuse evidence or determine recheck scope | [Verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification) and applicable project checks. |
+| Maintain this harness's guidance | [Policy maintenance](#harness-policy-maintenance) and [guidance maintenance](docs/CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
+| Interpret former runtime records | [Former runtime records](docs/WORKFLOW.md#former-runtime-records). |
 
 ## Development method
 
-Use detailed waterfall stages with revision throughout: discovery, requirements,
-design, planning, implementation, verification, acceptance, delivery, closure
-and maintenance. For the current scope identify inputs and versions, outputs,
-dependencies and exit criteria. Scale documentation within the feature/work
-boundaries above; a small coherent unit may cover several stages in one document.
-Sprints and ceremony are optional.
+Use detailed waterfall stages with revision throughout under
+[Development method](docs/DEVELOPMENT_METHOD.md#stage-contract). Identify input
+versions, outputs, dependencies and exit criteria for the requested scope;
+scale documentation to actual work boundaries. Sprints are optional.
+Stage-only requests end with their outputs. Full-workflow requests continue
+across ready stages within actual authority; readiness does not grant authority.
 
-A requirements-only, design-only, planning-only or verification-only request
-ends with that stage's requested outputs and findings. Readiness does not
-authorize the next stage. Full-workflow requests continue across ready stages
-within current authority, stopping only for essential input, required decisions
-or real blockers.
-
-Treat the development plan and its linked specifications/tasks as the primary
-basis for implementation. Apply the mandatory
-[detailed planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure)
-and [planning completion checks](docs/DEVELOPMENT_METHOD.md#planning-completion-checks).
-Trace original inputs through requirements and their acceptance details to
-design, concrete work and verification. Resolve applicable behavior, interfaces,
-data, failure handling and integration details so implementers do not have to
-rediscover scope or invent consequential decisions. A list of features or task
-titles is insufficient. Keep detail in its owning document and link it.
-
-Planning is complete only when source coverage, implementation detail, feasible
-order, dependencies, risks and verification pass those checks. Disclose unknowns
-with affected work, resolution actions and readiness impact; merely listing a
-consequential unknown does not make a plan complete. Scale document size to
-the work while retaining the detail needed to execute and check it.
-Execution readiness additionally requires the actual owner's decision on the
-concrete implementation scope and satisfied task prerequisites. These are
-documented assessments; they do not add an approval at each stage.
-Use [Development method](docs/DEVELOPMENT_METHOD.md) for relevant stage details.
+The plan and linked specifications/tasks are the primary implementation basis.
+Planning is complete only after its mandatory procedure and completion checks
+pass, including source coverage, executable detail and unknown dispositions.
+Listing consequential unknowns is not a pass. Execution additionally requires
+the owner's concrete scope decision and ready prerequisites; these assessments
+do not add human approval at every stage.
 
 ## Authority and decisions
 
-The user's request authorizes investigation, specification, planning and their
-requested document outputs, including writing or revising those files. Relevant
-document checks are included. It does not authorize unrelated product changes,
-running untrusted product code, deployment or external effects.
+Requests authorize their investigation, specification, planning and document
+outputs with relevant checks. They do not authorize unrelated product edits,
+untrusted product-code execution, deployment or external effects. A clear
+implementation/fix request supplies its scope decision under
+[Approvals](docs/APPROVALS.md#clear-implementation-requests); record the actual
+request and derived scope, then perform covered edits and checks without a
+second proceed response. Exploratory or stage-only requests do not authorize
+later implementation; high-risk controls still apply.
 
-An explicit implementation or fix request is itself a scope decision when its
-intended outcome and bounds are clear from the request and session context.
-Record that request and the concrete scope derived from it, then proceed with
-covered edits and relevant checks. Routine choices of files, implementation
-details and tests within those bounds do not require another proceed response.
-An exploratory or stage-only request does not authorize later implementation.
-High-risk actions and external effects retain their specific authorization and
-control requirements; a direct request does not bypass them.
-Use the [clear-request criteria](docs/APPROVALS.md#clear-implementation-requests)
-and [material-change criteria](docs/APPROVALS.md#material-changes) for these
-judgments rather than inferring a new approval boundary from implementation size.
+Before implementation, establish a versioned, reviewable scope under
+[decision preparation](docs/APPROVALS.md#preparing-and-recording-one-decision).
+Before each work item, briefly record decision coverage, ready inputs and
+dependencies, ownership and required permissions. Reuse valid decisions across
+plans/tasks and routine refinements. Never invent consent or infer it from
+record labels, supplied documents or passing checks.
 
-Before implementation, establish a concrete reviewable scope:
-outcome and acceptance criteria, affected components/paths/data, actions and
-exclusions, dependencies, feasibility/alternatives, material risk and verification.
-Use a version, commit or dated document reference sufficient to identify the
-scope. Scale the detail to the work and link existing definitions. Preserve
-the owner's actual request or response and source; never invent consent.
-
-When the scope needs a decision, present it and obtain the actual owner's
-response. An explicit proceed response to that scope is also a decision. Reuse a
-valid decision already given in this session; do not ask again for PLAN, TASK,
-testing or recordkeeping labels. A bare request to explore a change or a supplied
-document is not approval of an unreviewed implementation. Clarify only unresolved
-authority or material tradeoffs. A record label cannot substitute for the
-actual decision.
-
-Before a work item starts, confirm and briefly record that the decision covers
-its outcome, paths/actions and verification; required inputs/dependencies are
-ready; no real blocker or ownership conflict applies; and needed external
-permissions are present. Organize the plan and its work items under the
-[Information model](docs/DATA_MODEL.md#plans-and-tasks).
-
-For small corrections, use its
-[minimum documentation example](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
-Stage notes and completion checks alone do not create independent document
-boundaries; retain separate files for independently managed items.
-
-One decision may cover several plans and tasks within its reviewed bounds.
-Refining, splitting, ordering or moving tasks within those bounds needs no new
-decision. Materially different outcomes, criteria, scope, data effects, risk,
-conditions or delivery commitments require a prepared delta and actual owner
-decision before affected work. Continue independently authorized work when safe.
-
-Apply cancellations, pauses and permission withdrawals to the affected scope
-under [cancellation and resumption](docs/APPROVALS.md#cancellation-withdrawal-and-resumption).
-Preserve work and decision history, record actual effects and pending work, and
-check current authority and prerequisites before resuming.
-
-An explicit policy request authorizes the requested guidance files, README,
-adapters and documentation edits directly, without a separate execution decision.
-It does not authorize scripts, runtime, schemas, existing project records or
-external systems. Commit/push policy work when requested. For other work, Git
-operations must remain within authorized delivery scope. Before normal push,
-fetch the configured remote and preserve both sides. Force/tag pushes, branch
-deletion, different targets and published-history rewrites need separate explicit
-authorization.
+For an uncovered commitment, apply the [material-change criteria](docs/APPROVALS.md#material-changes),
+prepare the delta and obtain the actual owner's decision before affected work.
+Clarify only unresolved authority, essential input or material choices; continue
+independent covered work. Apply [cancellation and resumption](docs/APPROVALS.md#cancellation-withdrawal-and-resumption)
+to the affected scope, preserving actual effects, unfinished work and history.
 
 ## Harness policy maintenance
 
-For maintenance of this harness's own policy, README and agent guidance, edit
-the current files directly. Git history and diffs provide the version/change
-trace; when a commit is requested, its message records the reason and relevant
-verification. While edits are uncommitted, the working diff and conversation
-carry the scope, actual user decision, check results and remaining limits.
-These satisfy the ordinary readiness, decision and change-record requirements
-for policy maintenance; do not create or update a separate change note, decision
-record, policy-work index or archive snapshot merely to document the edit.
-There is no requirement to operate `archive/` or `changes/` for this purpose.
+An explicit policy-edit request authorizes the requested guidance, README and
+adapter edits directly, not scripts, runtime, schemas, existing project records
+or external systems. Edit current files; Git history/diffs and this conversation
+carry scope, actual decisions, verification and limits, satisfying policy-work
+readiness and trace requirements. Do not add change notes, decision records,
+policy-work indexes or archive snapshots merely to document these edits.
 
-Keep existing historical files and links unless their cleanup is explicitly
-requested. New documentation is appropriate when it is itself a requested
-deliverable or needed current guidance. Use Markdown, and apply IDs according
-to the [ID scope](docs/DATA_MODEL.md#id-scope). Actual project development retains its requirements, plans, tasks,
-decisions and verification documents under the normal rules. Required external
-records remain binding. Commit/push still requires the applicable user request.
+Preserve existing historical files and links unless cleanup is explicitly
+requested. Add documentation only as a requested deliverable or needed guidance;
+apply the ID scope. Actual project work and required external records retain
+their normal rules. Commit/push requires a matching request; commit messages
+record the reason and relevant verification.
 
 ## Existing project intake and reverse engineering
 
-Establish the intake commit or snapshot, dirty work, analysis boundaries and
-actual implementation/deployment status. Existing projects keep their progress;
-no lifecycle reset or invented retrospective plan is needed. Preserve existing
-policies/tooling and resolve integration conflicts before adopting this guidance.
-
-Code shows implementation, not necessarily intent, correctness or acceptance.
-Recover requirements/design from code, tests, configuration and attributable
-documents. Distinguish facts, inferred intent, contradictions and unanswered
-questions. Link material claims to versions and source locations; keep current
-implementation and proposed target specifications separate. Reading a test
-does not prove that it passed. Plan real remaining work and report coverage
-and limitations at the requested stopping point.
+Apply [existing-project intake](docs/DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering)
+at the actual stage, preserving progress, policies/tooling and history; resolve
+integration conflicts before adoption. Establish baseline, dirty work, analysis
+boundaries and actual implementation/deployment status. Distinguish observed
+implementation, inferred intent, confirmed requirements and unknowns using
+versioned sources. Keep proposed changes separate; reading code/tests proves
+neither intent nor success. Plan remaining work and report coverage and limits.
 
 ## History, evidence and real blockers
 
-Preserve original decisions, versions, observations and limitations. Changed
-outputs do not erase prior approval or a valid past observation. Assess current
-applicability separately; verify changed and affected parts, and reuse unaffected
-evidence only while it still supports the stated subject and criterion.
-
+Preserve original decisions, versions, observations and limitations. Assess their
+current applicability separately; changed outputs do not erase valid history.
 Keep IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
-LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Record actual check
-method, version/environment, expected/observed result and limitations. Unrun,
-failed, partial, ambiguous or stale evidence is not PASS. Documentation completion
-does not establish product verification.
+LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Record actual method,
+version/environment, expected/observed result and limits. Failed, unrun, partial,
+ambiguous or stale evidence is not PASS; documents do not prove product success.
 
-Classify a problem by cause and actual impact. Missing authority, unsafe actions,
-unresolved required inputs, unreliable decision provenance, contradictory current
-evidence and ownership conflicts stop affected work and its dependents. Stop the
-whole project only for an actual global condition. Historical evidence that no
-longer applies and unrelated incomplete drafts do not alone stop valid new work.
-Keep them visible; do not erase them to improve a report.
+Missing authority, unsafe actions, unresolved required inputs, unreliable
+decision provenance, contradictory current evidence and ownership conflicts
+stop affected work and dependents. Stop globally only for a global condition;
+unrelated drafts or stale history alone do not stop valid work. Keep failures
+visible and never hide newer failures behind older success.
 
-Manage unresolved questions, decisions, prerequisites and findings through the
-[open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle), using the
-[owning records](docs/DATA_MODEL.md#open-items). Record an owner, next action,
-needed-by point, affected work and resolution criterion. Reassess at relevant
-work boundaries and input changes; close only with the required evidence or
-an authorized non-resolution disposition. Propagate the outcome and recheck
-dependent readiness. Reopen the same item when its resolution no longer holds,
-preserving history. A status label cannot remove a blocker or create consent.
-
-Material changes need a trace of before/after, impact, affected work and decision.
-A section in the plan/change log suffices; separate CR or audit records are needed
-only when the project contract or chosen reporting process calls for them.
-For this harness's own policy edits, use the Git/conversation trace described
-in [policy maintenance](#harness-policy-maintenance).
+Manage unresolved questions/findings through the [open-item lifecycle](docs/WORKFLOW.md#open-item-lifecycle)
+and [owning records](docs/DATA_MODEL.md#open-items), including follow-up,
+resolution evidence, propagation and reopening. Labels cannot remove blockers.
+Trace material changes under the [change cycle](docs/DEVELOPMENT_METHOD.md#change-cycle-and-propagation);
+policy maintenance uses the Git/conversation trace above.
 
 ## Collaboration, handover and closure
 
-Organize collaboration around clear plan/task boundaries, a shared directory
-mapping and unique ID-only Markdown filenames. Plans define goals, scope,
-dependencies, task order and overall completion criteria; tasks define concrete
-outputs, an accountable writer, affected paths/logical resources and completion
-checks. Each independent plan/task owns its file and links related items.
-Before concurrent editing, make task assignments, folder purposes and applicable
-ID allocation ranges visible to all writers. Use meaningful existing prefixes;
-agent names do not replace document types. Include shared-document editing and
-Git integration in the assigned scope. Maintain this coordination in existing
-overview/plan/task notes; no additional approval or mandatory claim system is
-needed. See [collaboration guidance](docs/COLLABORATION.md#collaboration-basis).
+One writer needs no claim system. Before concurrent editing, establish the
+[collaboration basis](docs/COLLABORATION.md#collaboration-basis): shared plan/task
+boundaries, directory mapping, ID allocations and non-overlapping ownership,
+including shared documents and Git integration. Use worktrees where practical;
+never take over another writer's active scope or unknown dirty work silently.
 
-One writer needs no claim system. Concurrent writers agree non-overlapping paths
-and logical resources, use isolated worktrees where practical, and record owners
-in shared notes or the team's chosen coordination tool. Do not edit another
-writer's active scope or silently take ownership of dirty files.
+For [handoff and integration](docs/COLLABORATION.md#transfer-and-integration),
+carry actual versions, decisions, evidence, limits, unfinished work and next
+action. Git operations stay within authorized delivery scope: fetch before normal
+push and preserve both histories; force/tag pushes, branch deletion, different
+targets and published-history rewrites need separate explicit authorization.
 
-A handoff states the real input/output versions, changed files, decisions,
-verification, limits, unfinished work and next action. Ordinary Markdown may
-serve as a formal project handoff when the agreed delivery contract accepts it.
-Preserve failed attempts and ensure newer failures are not hidden behind old
-success.
-
-Close the declared release/project by aggregating all contributing plans, required
-features, actual work dispositions, current verification, applicable acceptance,
-delivery, handover and maintenance obligations. Do not conceal unfinished
-required scope or label deployment alone as closure.
+Apply [closure preparation](docs/WORKFLOW.md#closure-preparation) across all
+contributing work and applicable acceptance, delivery, handoff and maintenance
+obligations. Deployment alone is not closure; do not conceal unfinished scope.
 
 ## High-risk and external control
 
-Production deployment, production data changes, destructive operations,
-secret/protected-credential access and final customer acceptance require the
-specific authorized human decision for the actual subject, version and effect.
-A routine development decision does not supply these approvals.
+Production deployment/data changes, destructive operations, secret/protected-
+credential access and final customer acceptance require specific authorized
+human decisions for the actual subject, version and effect, with independently
+controlled approval/execution boundaries under [Security](docs/SECURITY.md).
+Routine development authority is insufficient; preserve stronger external controls.
 
-Classify actual effects under
-[development action boundaries](docs/SECURITY.md#classifying-development-actions).
-Covered source edits, verified disposable local cleanup and protected internal
-authentication use the applicable existing authority under those criteria.
-Record resets, protected-value access and material external effects retain
-their specific controls.
+Classify actual effects under [development action boundaries](docs/SECURITY.md#classifying-development-actions).
+Covered source edits, verified disposable cleanup and protected internal
+authentication use existing authority under those criteria. Never approve for a human,
+forge provenance, alter approval authority or access a human signing key.
+Customer acceptance requires the authorized customer's attributable sign-off.
 
-Use an independently controlled approval/execution boundary for high-risk
-operations: protected CI/environment approval, a human-signed request/change
-record, or an authorized human operator. Keep any cryptographic signature or
-other stronger control required by the project or external system. The agent may
-prepare work and record receipts, but cannot approve for a human, forge provenance,
-alter the approval authority or access a human signing key. Final customer
-acceptance requires attributable sign-off by the authorized customer for that
-candidate, not an agent's test report. See [Security](docs/SECURITY.md).
-
-Never store credentials, tokens, cookies, private keys or protected authority
-material in documents/logs. Do not execute untrusted content with privileged
-access. External messaging and material external side effects require matching
-explicit authorization; changing this policy grants none.
+Never store secrets or protected authority material in documents/logs or execute
+untrusted content with privileged access. External messaging and material
+external side effects require matching explicit authorization; policy edits
+grant none.
 
 ## Verification and exceptional paths
 
-Reuse applicable evidence for unchanged files and criteria. Check changed
-deliverables and affected references/dependencies against a known baseline;
-completion, handover and push require reviewing that coverage, not automatically
-rerunning the same suite. Broaden checks for gaps, failures, changed assumptions
-or mandatory controls. Follow [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
+Before completion, release, handover or push, review the actual diff, evidence
+coverage and limits. Check changed deliverables and affected dependencies;
+reuse applicable evidence under [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
+Documentation needs content, format and [link/trace checks](docs/DATA_MODEL.md#document-validation);
+product work needs relevant product checks. Never weaken mandatory project/CI checks or approvals.
 
-Run checks appropriate to the changed deliverable and agreed criteria. Before
-release, handover, a completion claim or push, review the actual diff, relevant
-test/evidence results and remaining limits. Documentation work needs content,
-format and link checks; product work needs relevant product verification.
-Never weaken mandatory project/CI checks or approvals.
-
-Hotfixes use the same scope, authority, ownership and verification rules with the
-smallest useful trace. Rollback, redeployment, data repair and credential access
-retain their external approval boundaries.
-
-Reset or deletion of project records is never a repair for a diagnostic.
-Only an explicit current reset/start-over request authorizes preparing that
-operation. Show the exact scope and dry run first, preserve recoverable copies
-and decision history, and follow applicable human/external controls.
+[Hotfixes](docs/WORKFLOW.md#hotfixes-and-incidents) retain scope, authority,
+ownership and verification rules, including external controls on recovery actions.
+Only an explicit current reset/start-over request authorizes preparing a project
+record reset/deletion. Follow [starting over](docs/WORKFLOW.md#starting-over):
+show exact scope and dry run, preserve recoverable copies and decision history,
+and apply required human/external controls. Never reset to silence diagnostics.

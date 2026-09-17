@@ -6,30 +6,28 @@ failures, blockers or verification limits.
 
 ## Startup and routing
 
-Read the current policy and applicable adapter once per session. Identify the
-user's objective, stopping point and existing decisions, then inspect relevant
-project notes, input versions and dirty work. Read only the material needed
-for the current scope.
+Use the [startup and routing rules](../AGENTS.md#startup-and-context) as the
+single entry map. Find project scope through the overview, then the owning
+items and relevant shared specifications. Use targeted searches for linked
+detail; do not load all policies, records or the entire README for orientation.
+Reuse current supplied/read copies. A summary or link does not substitute for
+reading an applicable rule before its action or completion claim.
 
-| Need | Read next |
-|---|---|
-| Find current feature/work scope | Project overview index, then the relevant unit and linked shared specifications; see [document organization](DATA_MODEL.md#document-organization). |
-| Stage readiness or requirements/design recovery | Relevant section of [Development method](DEVELOPMENT_METHOD.md). |
-| Scope decision or material change | [Approvals](APPROVALS.md) and the actual proposal/decision. |
-| Work sequence, completion or transition | Relevant section of [Workflow](WORKFLOW.md). |
-| Unresolved question, prerequisite or finding | Its owning record and affected work, using the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle). |
-| Concurrent ownership or handover | [Collaboration](COLLABORATION.md) and current ownership notes. |
-| High-risk action | [Security](SECURITY.md) and applicable external requirements. |
-| Records left by the retired runtime | [Former runtime records](WORKFLOW.md#former-runtime-records). |
+## Maintaining policy guidance
 
-Use targeted searches for additional detail. Do not load all policies, records,
-schemas or the entire README for routine orientation.
+Keep always-needed boundaries and reading triggers in AGENTS.md. Maintain each
+detailed rule in its owning document, using the entry map to locate it. Adapters
+route to that policy and add only necessary tool-specific guidance. READMEs
+explain purpose, getting started and representative examples for readers;
+they do not maintain another detailed procedure or checklist.
 
-Keep entry prompts/adapters short: point to the governing policy and relevant
-sections, adding tool-specific instructions only where useful. A policy already
-read or supplied in the current session need not be reread through each link.
-The linked rules remain binding; shortening the entry text does not make them
-optional or require loading every linked document at startup.
+When changing guidance, inspect the affected summaries, examples and links in
+both README languages and relevant adapters. When shortening it, confirm that
+each removed obligation remains in its owning rule and can be reached before
+the affected action. Preserve incoming anchors or repair their references.
+Do not achieve a shorter entry by making required detail optional or adding
+another summary that readers must always load. Use the policy-maintenance
+Git/diff trace; no separate review record or numeric length target is required.
 
 ## Reuse and verification
 
@@ -57,14 +55,10 @@ impact, or project/CI controls require it. Unchanged files are reusable only to
 the extent the baseline still covers them. A scan of changed files alone does
 not prove project-wide uniqueness without a reliable allocation baseline.
 
-Run checks appropriate to the actual deliverable. For documents, review content,
-format and links. For product changes, run the relevant product checks and
-required project/CI validation. A compile pass or a skipped test does not
-establish the intended product behavior.
-
-Classify a failure by its real effect, retain the original result and report
-the limitation. Do not silence a required check or hide new failures to save
-time.
+Apply the [verification requirements](../AGENTS.md#verification-and-exceptional-paths)
+to the chosen scope. A compile pass or skipped test does not establish intended
+product behavior. Retain failures and their actual impact; efficiency cannot
+justify hiding results or silencing required checks.
 
 ## Progress and handoff notes
 
