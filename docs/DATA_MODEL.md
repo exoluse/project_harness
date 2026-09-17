@@ -53,8 +53,8 @@ binding.
 | Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
-| Plan | Goal, scope, dependencies, ordered task links, overall completion criteria and actual decision reference. |
-| Task/work item | Concrete output, owner, affected paths/logical resources, plan/input links, prerequisites, status and completion checks. |
+| Plan | Goal, scope, source-to-work/check coverage, linked implementation detail, dependencies, ordered task links, overall completion criteria, open-item dispositions and actual decision reference. |
+| Task/work item | Concrete output, owner, affected paths/logical resources, plan/input links, prerequisites, ordered actions, applicable implementation detail, status and concrete completion checks. |
 | Decision | Concrete scope/version, actual owner request or response/source, bounds and conditions. |
 | Change trace | Request, before/after, impact, affected work, decision and verification. |
 | Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
@@ -152,7 +152,10 @@ A task is a concrete output that the actual work assigns and completes as a
 separate unit. Implementation steps serving that output may remain in its file.
 Its owning `TASK-<AREA>` file records the expected output, accountable writer,
 affected paths and logical resources, parent plan/input links, prerequisites,
-current status and completion checks. Before assignment is known, state that
+current status, ordered actions and concrete completion checks. Supply or link
+the applicable implementation details and verification scenarios required by
+the [detailed planning procedure](DEVELOPMENT_METHOD.md#detailed-planning-procedure).
+Before assignment is known, state that
 it is unassigned; resolve ownership before concurrent execution. These are
 content requirements, not mandatory headings or front matter.
 
@@ -168,9 +171,17 @@ links, ordering and useful progress summaries; update those summaries from the
 tasks. A task shared by several plans retains one ID, owning file and writer.
 Completion of the planned outcome is assessed against its scope and criteria
 using task outcomes and applicable combined verification. Planning itself ends
-when the plan and task definitions are authored and checked against their inputs;
+when the plan and task definitions satisfy the
+[planning completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks);
 it does not require those tasks to have executed. Planning-only work records
 intended checks without claiming execution.
+
+Keep the source inventory and coverage links in the existing plan/work document,
+or reference their owning sections when already maintained. Supporting source
+entries, checklist dispositions and verification scenarios do not create new
+item identities solely to fill a table. Requirement details stay with their
+requirement; task instructions stay with their task. A plan's summary must lead
+to those concrete definitions rather than substitute for them.
 
 Directory ownership and task ownership complement each other. Record the chosen
 document root and type-to-folder mapping in the overview, and the actual edit
@@ -509,6 +520,7 @@ the affected scope and reusable evidence.
 | Ordinary paths | Each new file matches the recorded folder mapping and the filename/body identity specified in [Document paths](#document-paths). |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. |
+| Planning detail and omissions | For planning deliverables, apply the [planning completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks): original-source coverage, detailed executable work, scenario/integration coverage, concrete verification and honest unknown dispositions. Valid IDs and links alone do not establish an adequate plan. |
 | Scope and history | No unauthorized migration or historical relabeling; IDs and prior decision/evidence history are preserved, and unrun verification is not reported as success. |
 | Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
 

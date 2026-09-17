@@ -17,7 +17,11 @@ continues to apply to actual development and requested document deliverables.
 2. Establish the current input versions and preserve existing progress.
 3. Produce the requested discovery, requirements, design or planning outputs.
    Maintain a project overview and separate independently scoped feature/work
-   documents. Check their content and trace; stop there for a stage-only request.
+   documents. For planning, follow the
+   [detailed planning procedure](DEVELOPMENT_METHOD.md#detailed-planning-procedure)
+   and pass its [completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks),
+   including source coverage and executable detail. Check content and trace;
+   stop there for a stage-only request.
 4. For implementation, establish scope, feasibility, impact, risks, dependencies
    and verification at a useful level. A clear direct implementation request
    supplies its scope decision; record it or reference an applicable prior

@@ -154,7 +154,7 @@ The requested stopping point is part of the scope. A requirements-only request e
 | Discovery | User request, relevant sources, existing code and progress | Identify the problem, inclusions and exclusions, constraints, uncertainties and questions. |
 | Requirements | Discovery findings and actual decisions with sources | Document desired outcomes, acceptance criteria, priorities and attributable reasoning. |
 | Design | Versioned requirements and constraints | Describe components, interfaces, data, exception handling, alternatives and technical risks. |
-| Planning | Requirements, design and completed work | Author and review tasks, order, dependencies, edit scope, verification methods, risks and open items. |
+| Planning | Original requests/constraints, requirements, design and completed work | Connect sources to detailed behavior, work and verification; review implementation detail, integration order and unknowns against the planning completion checks. |
 | Implementation | Concrete scope decision, ready inputs and permissions | Perform authorized changes and record deviations, findings and remaining work. |
 | Verification | Candidate version, completion criteria and check environment | Record actual methods and results, failures, unrun checks, coverage and limitations. |
 | Acceptance | Verified candidate and agreed acceptance criteria | Link actual confirmation or feedback from the authorized customer to that version. |
@@ -163,6 +163,16 @@ The requested stopping point is part of the scope. A requirements-only request e
 | Maintenance | Delivered baseline, change request or incident | Assess impacts, perform authorized changes and reverification, and preserve earlier observations. |
 
 Readiness is assessed from documents and evidence. It does not require another human approval or sprint at every stage. Important implementation decisions and high-risk permissions are checked at their applicable boundaries.
+
+### Development plan detail and omission review
+
+**Use the development plan and its linked design/task documents as the primary basis for implementation.** Specify applicable inputs/outputs, conditions and boundaries, state changes, failure/recovery, data effects, access, component integration, edit locations and verification scenarios so implementers do not have to infer required behavior or consequential decisions. Keep detailed definitions in their owning documents and link them from the plan.
+
+Write in this order: original input inventory → requirements and observable completion criteria → design detail → concrete work → dependencies and integration order → verification scenarios → review against the originals. Maintain a coverage table or checklist connecting supporting requirement conditions as well as requirements to design, work and checks. Revisit the original requests and sources to detect omissions in the inventory itself.
+
+Unknowns that can change consequential behavior, contracts, data effects or feasibility block completion of the affected implementation plan. Identify resolution actions, owners and affected work, then pursue the needed investigation or decision. Later environment/permission availability may remain an execution prerequisite when its required state, resolution method, owner and timing are clear. Small corrections still need applicable detail; additional documents or task files do not substitute for it.
+
+Follow the [detailed planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) for the writing sequence, detail checklist and completion criteria. The [worked example](docs/EXAMPLE_WEB_PROJECT.md#detailed-planning-example) illustrates the depth for a small correction.
 
 ## Recovering documentation from existing code
 

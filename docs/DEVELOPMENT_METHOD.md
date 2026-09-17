@@ -24,7 +24,7 @@ Sprints are optional.
 | Discovery | User objective, sources, current project | Problem, boundaries, stakeholders, constraints and unresolved questions are identified. |
 | Requirements | Discovery and attributable evidence | Outcomes, acceptance criteria, priorities and trace are clear enough for the requested scope. |
 | Design | Versioned requirements and constraints | Components, interfaces, data, alternatives, risks and requirement coverage are described. |
-| Planning | Requirements, design and current progress | Feasible tasks, order, dependencies, verification and open items are authored and checked. |
+| Planning | Original scope sources, requirements, design and current progress | Source coverage, detailed work, integration order and verification pass the planning completion checks; unresolved prerequisites have an explicit disposition. |
 | Implementation | Concrete scope decision, ready inputs and permissions | Covered work is implemented; changes and deviations are recorded. |
 | Verification | Candidate version, criteria and check environment | Actual results, failures, applicability and limits are recorded for the declared verification level. |
 | Acceptance | Candidate and applicable verification | The authorized customer gives attributable acceptance or feedback for the stated candidate. |
@@ -53,28 +53,172 @@ Do not add a separate approval of planning completion.
 
 ## Planning complete and execution ready
 
-Planning is complete when the requested scope, work items, feasible order,
-dependencies, risks, uncertainties and verification are authored and reviewed
-against the inputs. Failed required planning checks mean the plan needs work;
-clearly disclosed execution prerequisites may remain open.
+The development plan and its linked specifications/tasks are the primary basis
+for implementation. Planning must make the intended work executable and
+checkable, including the details that would otherwise be discovered piecemeal
+during implementation. Follow the procedure and completion checks below.
+Failed required planning checks mean the plan needs work; classify remaining
+unknowns by their actual effect rather than treating their disclosure as a pass.
 
 Execution is ready when the owner has decided on the concrete implementation
 scope, the selected work is covered and its real dependencies, ownership,
 safety and external permissions are ready. Tool output cannot create consent
 or turn missing evidence into a pass.
 
-A useful plan includes:
+### Detailed planning procedure
 
-- The intended result, acceptance criteria and explicit exclusions.
-- Affected components, paths, actions and data effects.
-- Tasks, ordering and actual technical dependencies.
-- Feasibility, alternatives, material risks and unresolved assumptions.
-- Verification methods, environments and delivery obligations.
-- The actual scope decision, source and remaining prerequisites.
+Use this order when preparing or revising a development plan. Reuse current
+inputs and applicable checks; update affected parts when later work reveals
+a gap. Keep the requested stopping point and actual implementation authority.
 
-Before completing planning, review requirements/design/work coverage against
-the requested scope and apply [document validation](DATA_MODEL.md#document-validation).
-Identify planned verification without claiming evidence from an unrun stage.
+1. **Establish the inputs.** Identify the requested outcome, stopping point,
+   source versions, actual decisions, existing progress and analysis boundaries.
+   Read the relevant original requests, specifications and constraints. Extract
+   each obligation and its supporting conditions into a source-linked inventory
+   in the owning documents. Separate confirmed requirements, observed behavior,
+   inferred needs, proposals and unknowns. Include exclusions and unresolved
+   contradictions; do not infer that uninspected inputs are covered.
+2. **Define observable outcomes.** For each requirement, specify acceptance
+   details, normal behavior, applicable boundary/failure cases and constraints.
+   Walk through the affected user or system flow from trigger to final result.
+   Use the detail checklist below to find necessary supporting work that was
+   not explicitly named in the request. Record its rationale; newly proposed
+   commitments remain proposals until covered by an actual scope decision.
+3. **Resolve the approach.** Locate the affected components and existing
+   contracts. Specify behavior, interfaces, data changes and integration points
+   at the detail below, including feasibility, relevant alternatives and why
+   the selected approach fits. Investigate technical unknowns within current
+   authority. Do not invent file paths, API contracts, limits or owner decisions
+   to make the plan appear complete; label proposed elements and unresolved ones.
+4. **Define executable work.** For each work item, record its source/requirement
+   links, concrete output, accountable writer or unassigned status, affected
+   paths/logical resources, inputs and prerequisites. Describe ordered actions,
+   the applicable implementation details and completion checks. Include setup,
+   wiring, configuration, compatibility, documentation and delivery work when
+   needed by the scope. Titles such as "implement API" or "add tests" alone
+   do not define executable work. Use existing document boundaries; steps and
+   checklist entries do not automatically become separate tasks or files.
+5. **Order and connect the work.** Identify what each dependency supplies, its
+   provider and consumer, required version/contract and readiness condition.
+   Include shared changes and integration work across task boundaries. Check
+   for cycles, missing providers and incompatible assumptions. Separate work
+   that can proceed from work blocked on a specific input or decision.
+6. **Plan verification with the work.** For every acceptance detail and material
+   failure/risk, specify the scenario or input, expected observable result,
+   check method, environment/fixtures and responsible work item. Include
+   integration and affected regression checks. Use known commands/targets where
+   available; otherwise specify the check to create and how it will run. State
+   unrun checks as planned, including any unavailable environment or permission.
+7. **Audit from the sources and hand off.** Apply all completion checks below
+   against the original inputs, linked definitions and candidate plan. Repair
+   omissions and check their effects. Record the reviewed versions, coverage,
+   actual findings, dispositions and remaining execution prerequisites in the
+   plan/work note. Report completion only for the scope that passed; a narrower
+   completed subset does not complete the original request.
+
+### Required implementation detail
+
+Apply every row to the affected scope and record its coverage or a brief
+reason it does not apply in the existing plan/work note. Related inapplicable
+rows may share one explanation. This is an omission checklist, not authority
+to add features. Domain-specific obligations from the inputs remain required
+even when this checklist does not name them.
+
+| Area | Details to resolve in the plan or linked owning specification/task |
+|---|---|
+| Behavior and flow | Actors/triggers, preconditions, ordered flow, states/transitions, success result, alternate paths, cancellation and repeated actions where relevant. |
+| Inputs, outputs and interfaces | Producers/consumers, actual or proposed interface locations, fields/types, required/optional values, defaults, validation, bounds, response/error behavior and compatibility. |
+| Data and lifecycle | Reads/writes, relationships, invariants, transaction boundaries, ordering, concurrent updates, persistence and applicable migration, retention or cleanup effects. |
+| User-facing behavior | Loading, empty, success, validation and failure states; navigation, input preservation, accessibility and supported layouts/locales when applicable. |
+| Failure and recovery | Invalid or missing input, missing resources, dependency errors, timeouts, partial success, retry/duplicate behavior and recovery without inconsistent state. |
+| Access and protection | Relevant identity, permission and ownership checks; sensitive-data handling, trust boundaries and applicable abuse controls. Reference protected configuration without exposing values. |
+| Integration and environment | Callers, consumers and shared contracts; configuration/defaults, dependencies/versions, setup, feature activation and compatibility with existing behavior. |
+| Quality and operations | Applicable performance/resource budgets with sources, observability, diagnostics and operational failure handling; identify unknown targets instead of inventing numbers. |
+| Delivery and maintenance | Applicable build/package, rollout order, migration/recovery, documentation and handover work, with specific external permissions kept separate from planning. |
+| Verification | Normal, boundary, failure, access and regression scenarios as applicable; concrete inputs, expected results, method, environment and task coverage, including integrated behavior. |
+
+Detail is sufficient when another implementer can follow the linked plan
+without inventing required behavior, public contracts, data effects or material
+verification criteria. Resolve consequential algorithms and ordering rules;
+routine local coding choices may remain with the implementer. Do not prescribe
+every line of code or copy specifications into every task. Small corrections
+still need their applicable detail, but may keep it in one owning work document
+under the [minimum documentation example](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+
+### Coverage and working structure
+
+Keep an explicit coverage table or equivalent linked checklist in the existing
+plan/owning work document. Start from the source inventory, not from the tasks
+already written. Each input obligation and supporting acceptance detail must
+reach the applicable requirement, design, work and planned verification, or
+have a justified disposition. Use existing IDs and section anchors; supporting
+conditions do not need new IDs. Links point to authoritative definitions rather
+than duplicate them. Shared work may cover multiple rows.
+
+| Source/requirement and condition | Design/behavior definition | Work and dependencies | Verification scenario and expected result | Disposition/open item |
+|---|---|---|---|---|
+| Link to original input and owning requirement/condition | Link to the relevant contract or decision | Link to the implementing and integrating work | Link to the planned check details | Covered, existing with evidence, proposed, deferred, excluded or unresolved; include reason and authority where required |
+
+"Covered" here means planning coverage, not successful product verification.
+Existing implementation requires a baseline and applicable evidence; where
+evidence is missing, plan the needed verification. A deferred/excluded label
+cannot silently remove required scope. Preserve the requested boundary and
+identify any decision needed to change it.
+
+For a new plan, use this working order unless the project's existing layout
+already presents the same information clearly:
+
+1. Objective, scope/exclusions, baseline and source/decision links.
+2. Input inventory, requirement/acceptance coverage and checklist applicability.
+3. Linked design and resolved implementation details, rationale and alternatives.
+4. Ordered work links or owned work steps, dependencies and integration.
+5. Verification scenarios, expected results, environment and coverage links.
+6. Risks/unknowns, resolution work, owner and readiness impact.
+7. Planning review results, remaining prerequisites and next action.
+
+This is a writing aid, not a mandatory set of documents. The
+[Information model](DATA_MODEL.md#plans-and-tasks) governs ownership and file
+boundaries. See the [worked example](EXAMPLE_WEB_PROJECT.md#detailed-planning-example).
+
+### Planning completion checks
+
+Perform these distinct checks; rereading only the plan or asking generally
+whether anything is missing is insufficient. They may be done by one writer
+and do not require repeated approval or a fixed number of review rounds.
+
+| Check | Passing condition |
+|---|---|
+| Original inputs to inventory | Each relevant request, requirement, supporting condition, constraint and decision in the inspected sources is represented. Check the originals independently of the drafted inventory; report any unavailable source and its impact. |
+| Inventory to implementation and verification | Every included obligation/acceptance detail has concrete design, work and check coverage. Each work item traces back to scope or a justified supporting need; exclusions/deferments respect actual authority. No unexplained empty cells or umbrella task titles stand in for detail. |
+| Scenario walkthrough | Follow normal, alternate, boundary and failure flows through the affected components and task handoffs. Applicable checklist details have definitions, compatible contracts and expected results; include interactions between requirements. |
+| Executability and order | Each task states outputs, edit boundaries, actions, inputs, prerequisites and completion checks. Dependencies have providers and readiness conditions; order is feasible and integration work is assigned or explicitly unassigned pending execution. |
+| Unknowns and decisions | Apply the disposition rules below; consequential scope/design unknowns are resolved for any scope claimed complete. Remaining prerequisites have resolution actions, owners, timing and affected dependents. |
+| Document consistency | Apply [document validation](DATA_MODEL.md#document-validation), including links to owning definitions and consistency with source versions. Planning coverage is not reported as passed product testing. |
+
+Classify remaining unknowns explicitly:
+
+- An unknown that can change required behavior, acceptance, public contracts,
+  data effects, the chosen approach or task feasibility blocks completion of
+  the affected implementation plan. Record an investigation/decision action,
+  responsible owner (or needed assignment), expected output and affected work.
+  An investigation plan may be complete for its own requested scope; it does
+  not complete the dependent implementation plan. Do not hide this gap as
+  "TBD during implementation."
+- A later execution prerequisite, such as an environment becoming available
+  or a specific deployment permission, may remain open when its required
+  state, resolution owner/action, needed-by point and dependent work are clear
+  and it does not conceal an unresolved scope/design choice. Planning completion
+  does not mark that work execution-ready.
+- A routine local implementation choice may remain open when its constraints
+  and observable result are fixed and it cannot change the reviewed commitments.
+
+Collect findings from these checks in the current plan/work note, fix actual
+gaps and recheck affected coverage and dependencies. Reuse unaffected review
+evidence. Do not restart the entire plan for wording preferences, stop after
+an arbitrary retry count, or declare completion because a checklist was filled
+without checking its linked content. If essential input is unavailable, report
+the incomplete scope and needed input honestly. Subsequent source/scope changes
+reopen the affected coverage checks under the existing change rules.
 
 ## Existing project intake and reverse engineering
 

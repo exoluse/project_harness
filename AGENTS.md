@@ -101,8 +101,21 @@ authorize the next stage. Full-workflow requests continue across ready stages
 within current authority, stopping only for essential input, required decisions
 or real blockers.
 
-Planning is complete when scope, tasks, feasible order, dependencies, risks,
-uncertainties and verification are authored and checked against their inputs.
+Treat the development plan and its linked specifications/tasks as the primary
+basis for implementation. Apply the mandatory
+[detailed planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure)
+and [planning completion checks](docs/DEVELOPMENT_METHOD.md#planning-completion-checks).
+Trace original inputs through requirements and their acceptance details to
+design, concrete work and verification. Resolve applicable behavior, interfaces,
+data, failure handling and integration details so implementers do not have to
+rediscover scope or invent consequential decisions. A list of features or task
+titles is insufficient. Keep detail in its owning document and link it.
+
+Planning is complete only when source coverage, implementation detail, feasible
+order, dependencies, risks and verification pass those checks. Disclose unknowns
+with affected work, resolution actions and readiness impact; merely listing a
+consequential unknown does not make a plan complete. Scale document size to
+the work while retaining the detail needed to execute and check it.
 Execution readiness additionally requires the actual owner's decision on the
 concrete implementation scope and satisfied task prerequisites. These are
 documented assessments; they do not add an approval at each stage.
