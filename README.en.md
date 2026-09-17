@@ -397,8 +397,8 @@ The [shared policy's entry map](AGENTS.md#startup-and-context) owns mandatory re
 | [Workflow](docs/WORKFLOW.md) | Startup, execution readiness, open items, handoff, closure and former runtime records |
 | [Approvals and decisions](docs/APPROVALS.md) | Actual decision sources and bounds, reuse and high-risk boundaries |
 | [Information model](docs/DATA_MODEL.md) | Document content and evidence relationships |
-| [Collaboration and handover](docs/COLLABORATION.md) | Ownership, concurrent work, transfer and integration |
+| [Collaboration and handover](docs/COLLABORATION.md) | Ownership, concurrent work, subagent delegation, transfer and integration |
 | [Security](docs/SECURITY.md) | Human authorization, protected material and external controls |
 | [Architecture](docs/ARCHITECTURE.md) · [Constitution](docs/CONSTITUTION.md) | Roles of policy, documents and tools, and core principles |
-| [Context efficiency](docs/CONTEXT_EFFICIENCY.md) | Relevant context selection, evidence reuse and handoff context |
+| [Context efficiency](docs/CONTEXT_EFFICIENCY.md) | Relevant context selection, evidence reuse, model selection and handoff context |
 | [Existing web project example](docs/EXAMPLE_WEB_PROJECT.md) | From document recovery through implementation, verification and delivery |

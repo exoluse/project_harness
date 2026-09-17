@@ -397,8 +397,8 @@ project-docs/
 | [진행 절차](docs/WORKFLOW.md) | 시작, 실행 준비, 미결사항 처리, 인계·종료와 과거 런타임 기록 |
 | [승인과 결정](docs/APPROVALS.md) | 실제 결정의 출처·범위, 재사용과 고위험 경계 |
 | [정보 모델](docs/DATA_MODEL.md) | 문서에 남길 정보와 근거의 연결 |
-| [협업과 인계](docs/COLLABORATION.md) | 소유권, 동시 작업, 전달과 통합 |
+| [협업과 인계](docs/COLLABORATION.md) | 소유권, 동시 작업, 서브에이전트 위임, 전달과 통합 |
 | [보안 정책](docs/SECURITY.md) | 사람의 승인, 보호 자료와 외부 통제 |
 | [구조](docs/ARCHITECTURE.md) · [기본 원칙](docs/CONSTITUTION.md) | 정책·문서·도구의 역할과 핵심 원칙 |
-| [컨텍스트 효율](docs/CONTEXT_EFFICIENCY.md) | 필요한 자료 선택, 근거 재사용과 인계 맥락 |
+| [컨텍스트 효율](docs/CONTEXT_EFFICIENCY.md) | 필요한 자료 선택, 근거 재사용, 모델 선택과 인계 맥락 |
 | [기존 웹 프로젝트 예시](docs/EXAMPLE_WEB_PROJECT.md) | 문서 복원에서 구현·검증·전달까지의 예시 |

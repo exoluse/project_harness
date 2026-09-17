@@ -60,6 +60,33 @@ to the chosen scope. A compile pass or skipped test does not establish intended
 product behavior. Retain failures and their actual impact; efficiency cannot
 justify hiding results or silencing required checks.
 
+## Model selection and delegation
+
+Match model capability to the consequence of a wrong judgment, not to file
+count or task length. This policy defines capability tiers only; adapters map
+them to concrete models. The accountable agent is the session that received the
+request and reports its result.
+
+| Tier | Typical work | Handling |
+|---|---|---|
+| Strongest available | Classifying request clarity, material changes, high-risk effects and unknown dispositions; planning completion checks; inferring intent during reverse engineering; resolving open items; completion, handover and closure claims | Keep with the accountable agent. |
+| Standard | Bounded implementation or document drafting within a defined scope; code search and summaries | The accountable agent reviews the output against the scope and criteria before relying on it. |
+| Lightweight | Mechanical scans such as link/anchor, ID collision, filename and format checks; locating files | The accountable agent interprets the reported result and its impact. |
+
+For each delegation, the accountable agent selects the tier and model itself;
+the user need not choose or approve the model. The accountable agent keeps the
+strongest-tier judgments above. A delegated agent that meets an authority, scope,
+design or safety judgment returns it with its evidence instead of deciding.
+Whether and how to delegate follows [subagent delegation](COLLABORATION.md#subagent-delegation).
+
+Delegated output is evidence for what it actually checked; it creates no
+authority, completion or PASS. A lower tier never lowers required checks,
+completion criteria, decisions or security boundaries. The user or tool
+configuration selects the main session model; the agent may recommend a change
+when the judgment risk of the next stage changes, but does not stop covered work
+for it. Do not claim cost or token savings without the
+[measurement described below](#progress-and-handoff-notes).
+
 ## Progress and handoff notes
 
 Retain the objective/stopping point, input/output versions, actual decision

@@ -56,8 +56,17 @@ files, migrations and other logical collisions even if filenames differ.
 Resolve ownership and integration order explicitly. Each writer still needs
 applicable authority and real prerequisites for their own work.
 
-Use subagents only when the user or applicable higher-level instructions
-authorize delegation. This document does not itself request parallel agents.
+## Subagent delegation
+
+The accountable agent may start subagents without separate user authorization
+when delegation serves the current request, and chooses their capability under
+[model selection](CONTEXT_EFFICIENCY.md#model-selection-and-delegation).
+Delegation is a working method, not a default. It adds no authority: delegated
+work stays within the accountable agent's current scope, and edits, product-code
+execution, external effects and high-risk actions keep their own requirements.
+Writing subagents follow the [collaboration basis](#collaboration-basis) with
+non-overlapping ownership. User instructions or tool rules that limit or
+prohibit delegation remain binding.
 
 ## Formal records for a single writer
 
