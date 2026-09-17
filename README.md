@@ -251,6 +251,8 @@ project-docs/
 
 이 예시에서는 로그인 요구사항·설계·백엔드 계획·화면 계획·작업·검증을 링크로 연결합니다. 항목을 별도 파일로 나눌지는 [독립 항목과 부속 설명](docs/DATA_MODEL.md#independent-items-and-supporting-detail)에 따라 판단합니다.
 
+여러 팀·작업 흐름·하위 시스템이 하나의 개요를 함께 고치기 어려워지면 전체 개요 아래에 [영역별 개요](docs/DATA_MODEL.md#area-overviews)를 둡니다. 전체 개요는 공통 기준·영역 목록·ID 구간 위임을, 영역 개요는 그 영역의 문서 목록·진행 요약·위임받은 번호의 사용 내역을 관리합니다. 작업 상태나 미결사항을 GitHub Issues·Jira 같은 도구로 관리한다면 [외부 작업 도구](docs/DATA_MODEL.md#external-work-trackers)로 지정하고, 그 정보는 Markdown에 중복하지 않고 링크로 참조합니다.
+
 ### 문서와 항목의 ID
 
 `REQ-00001`, `API-00001`, `SCR-00001`, `TASK-API-00001`처럼 종류별 접두어와 5자리 번호를 사용합니다. 번호의 발급·유지·확장과 계획/작업의 연결은 [항목 ID](docs/DATA_MODEL.md#item-ids)를 따릅니다.

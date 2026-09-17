@@ -11,6 +11,7 @@ governs Markdown, existing records and tool-required formats.
 |---|---|
 | Harness guidance or project deliverable | [ID scope](#id-scope) |
 | Overview and relationships | [Document organization](#document-organization) |
+| Several teams, streams or subsystems | [Area overviews](#area-overviews) |
 | Plan/task responsibilities | [Plans and tasks](#plans-and-tasks) |
 | Identity, types and numbering | [Item IDs](#item-ids) |
 | Canonical filename and folder mapping | [Document paths](#document-paths) |
@@ -18,6 +19,7 @@ governs Markdown, existing records and tool-required formats.
 | Consumer-required name/location | [Required-name exceptions](#required-name-exceptions) |
 | Completion checks | [Document validation](#document-validation) |
 | Reuse of checked allocations | [Allocation reuse](#allocation-and-validation-reuse) |
+| Work status kept in an external tool | [External work trackers](#external-work-trackers) |
 
 Preserve existing non-Markdown records and reference them without automatic
 conversion or deletion. Product files such as `package.json`, original evidence
@@ -142,6 +144,39 @@ Do not automatically split, move or rewrite existing records merely to adopt
 the layout. Any authorized reorganization must preserve reviewed versions and
 repair links. A requested stage still ends at its own outputs.
 
+### Area overviews
+
+Split navigation into area overviews when one project overview no longer works
+as a readable index or shared edit point: for example, several teams or work
+streams edit it concurrently, its unit index obscures current scope, or
+subsystems, services or repositories progress independently. Size alone is not
+the criterion. Record the split and its reason in the project overview.
+
+The project overview remains the root. An area overview has its own document
+ID, links back to the root and follows the same organization rules for its area.
+
+| Content | Owning overview |
+|---|---|
+| Objective, shared constraints and specifications (or links), document root and shared folder mapping, area index, cross-area dependencies, allocation delegations | Project (root) overview |
+| Area unit index, area progress summary, area-specific folder extensions, consumption of delegated ID ranges | Area overview |
+| Detailed definitions, decisions and evidence | Owning item documents, as without areas |
+
+Each area index entry links the area overview and states its scope, accountable
+owner, stage/status summary and material dependencies. Area folder extensions
+must not redefine a shared mapping or prefix. A requirement or design used by
+several areas has one owning definition, kept at the root or in a designated
+owning area and linked from the others. Summaries flow upward from owning items
+to the area overview and from area overviews to the root; no level keeps a
+second detailed account. An area may nest further only when it meets the same
+split criterion.
+
+Root overview edits follow its assigned owner under the
+[collaboration basis](COLLABORATION.md#collaboration-basis); area writers route
+root changes through that owner or an agreed transfer. New areas can start with
+their own overview. Moving existing index entries or allocations out of an
+established overview is a reorganization: it needs a matching request,
+preserves IDs, history and reviewed versions, and repairs links.
+
 ## Plans and tasks
 
 A plan organizes an outcome across work items. It defines the goal, included
@@ -176,6 +211,15 @@ when the plan and task definitions satisfy the
 [planning completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks);
 it does not require those tasks to have executed. Planning-only work records
 intended checks without claiming execution.
+
+A parent plan may organize child plans, such as area or work-stream plans. The
+parent owns the cross-plan goal, scope split between children, integration work,
+ordering between children and overall completion criteria; each child owns its
+own scope, tasks and checks. The parent's planning completion checks cover that
+cross-plan content and reuse the children's passed planning checks for their
+stated scope and versions, rechecking a child whose inputs changed. Completing
+every child does not complete the parent outcome while integration work or
+parent criteria remain.
 
 Keep the source inventory and coverage links in the existing plan/work document,
 or reference their owning sections when already maintained. Supporting source
@@ -323,7 +367,15 @@ Use an `ID allocation` section (or its local-language equivalent) in the actual
 project overview as the default shared allocation record. If the team already
 uses another shared Markdown location, link its exact file/section from the
 overview and maintain the allocation there only. Folder names stay contextual;
-writers must be able to discover one authoritative allocation location.
+writers must be able to discover one authoritative location for each range.
+
+With [area overviews](#area-overviews), the root allocation section delegates
+non-overlapping serial ranges per complete prefix to areas and records each
+delegation's owner and verified basis. The area overview's allocation section
+records consumption within its delegated ranges; the root does not repeat it.
+Serials stay unique project-wide, and areas do not introduce their own prefixes
+for an existing type. When an area exhausts a range, obtain a new delegation
+from the root allocation owner before allocating further.
 
 Use a compact Markdown table with the following minimum information, reusing
 shared baseline notes for rows checked together:
@@ -361,6 +413,8 @@ highest-number search alone does not account for other writers or retired IDs.
 
 For subsequent document validation, compare newly defined IDs with that basis
 and other new definitions, and check changed files plus affected references.
+For delegated ranges, check new definitions against the area's range and check
+root delegations for overlap whenever they change.
 Broaden the scan when baseline coverage is missing or unreliable, allocation
 conflicts appear, or changes to conventions/validation rules affect prior
 results. Preserve project-wide uniqueness and never reuse retired IDs. This
@@ -517,7 +571,8 @@ the affected scope and reusable evidence.
 | Check | Evidence to verify |
 |---|---|
 | Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; requirement boundaries describe distinct commitments, supporting conditions remain with their requirement, and separately managed work references the REQs it covers. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
-| Identity and allocation | New definitions are unique project-wide and do not collide with retained/retired IDs or reservations; distinguish definitions, references and illustrative examples. |
+| Identity and allocation | New definitions are unique project-wide and do not collide with retained/retired IDs or reservations, and fall within any delegated area range; distinguish definitions, references and illustrative examples. |
+| Area overviews and trackers | Root and area overview entries resolve and hold only their owned content; designated tracker information has no parallel Markdown record; tracker references carry a resolvable key/link, and relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
 | Ordinary paths | Each new file matches the recorded folder mapping and the filename/body identity specified in [Document paths](#document-paths). |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. |
@@ -575,6 +630,50 @@ or blocking items where needed for navigation; detailed tracking has one owner.
 Do not create a parallel issue list, record for every checklist cell, or new
 file for each state transition. Follow the
 [open-item lifecycle](WORKFLOW.md#open-item-lifecycle) for handling and checks.
+When open items are designated to an [external tracker](#external-work-trackers),
+the tracker item holds this content and Markdown documents link it.
+
+## External work trackers
+
+A project may designate an existing tracker, such as GitHub Issues, Jira or
+Linear, as the authoritative record for selected kinds of management
+information, typically task assignment and status, open items and progress.
+Designation is an actual owner decision; a tracker link, existing integration or
+authenticated tool alone does not designate one. Record it in the project
+overview (or the relevant [area overview](#area-overviews)):
+
+| Designation | Required detail |
+|---|---|
+| Tracker and scope | Tool, project/space or repository, and the areas using it. |
+| Owned information | Kinds of information whose authoritative record is the tracker; everything else stays in Markdown. |
+| Identity and references | Key format and how Markdown documents reference items (key with a resolvable link). |
+| Agent operations | Operations the agent may perform as routine parts of covered work, such as creating in-scope items, updating status or assignment, and adding links or comments. |
+| Required content | Where the tracker holds content this model requires, such as an open item's resolution criterion, next action and history (fields, templates or comments). |
+
+For each designated kind, the tracker is the single authoritative record. Do not
+keep a parallel Markdown list or copy of its status, assignment or history;
+link the tracker item instead. The tracker key identifies an item the tracker
+owns and needs no harness ID or allocation. When such an item needs a detailed
+Markdown definition, such as task implementation detail, that document keeps its
+own document ID and records the key: the tracker owns status and assignment,
+the document owns the detailed definition.
+
+Requirements, acceptance criteria, design, decisions and verification evidence
+stay in versioned Markdown unless the project already keeps them in a system
+with attributable version history; then reference the item and its version.
+When a decision, readiness assessment, completion claim or handoff relies on
+tracker state, record the key and the observed state with its date or version in
+the owning Markdown record. That records what was relied on; it is not a mirror
+to maintain.
+
+Operations beyond the recorded agent operations, changes to tracker workflows,
+permissions or automation, and messages that reach people outside the designated
+use are external effects that need matching authorization under
+[Security](SECURITY.md#authenticated-tools-and-protected-values). If the tracker
+is unavailable, note pending updates in the current work note and apply them
+when access returns; that note is not the authoritative status. Changing or
+ending a designation is an owner decision; preserve existing items and links and
+record where each kind of information is owned from then on.
 
 ## Decisions and evidence
 

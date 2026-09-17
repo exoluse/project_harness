@@ -77,8 +77,9 @@ See [Approvals](APPROVALS.md).
 
 Apply this procedure to unresolved items from discovery through maintenance.
 Use the [open-item content and boundaries](DATA_MODEL.md#open-items) for where
-to record them. The lifecycle is maintained in ordinary project documents;
-it does not require a tracker, background monitor or additional approval stage.
+to record them. The lifecycle is maintained in ordinary project documents or a
+designated [external tracker](DATA_MODEL.md#external-work-trackers); it does
+not require a tracker, background monitor or additional approval stage.
 
 ### Capture and classify
 

@@ -30,7 +30,8 @@ their local copies. Do not introduce agent-specific prefixes for the same
 document type. Reserve ranges within the existing prefix instead. Keep IDs
 stable through reassignment, and never reuse retired IDs.
 
-Include the overview, shared specifications and Git integration in the ownership
+Include the overview (root and [area overviews](DATA_MODEL.md#area-overviews)
+when used), shared specifications and Git integration in the ownership
 agreement. Identify who edits shared files and who integrates changes; other
 writers hand their changes to that owner or agree a transfer before editing.
 When a checkout is shared, serialize Git index/branch operations through the
@@ -49,7 +50,8 @@ and what remains.
 
 Agree owners and non-overlapping paths and logical resources before concurrent
 editing. Prefer isolated worktrees when practical. Shared project notes or the
-team's coordination tool can record ownership, baseline, scope and status.
+team's coordination tool can record ownership, baseline, scope and status; a
+tool that owns assignment or status follows [external work trackers](DATA_MODEL.md#external-work-trackers).
 
 Do not edit another writer's active scope. Account for shared schemas, generated
 files, migrations and other logical collisions even if filenames differ.

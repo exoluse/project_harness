@@ -20,15 +20,19 @@ other machine-readable management copies. No fixed schema or front matter is
 required. Preserve existing records, signed payloads, snapshots and historical
 documents in their original formats; this does not authorize conversion or
 deletion. Product files, original evidence and tool-internal files retain their
-required formats. Contracts and external controls remain binding; resolve any
-format conflict before affected delivery.
+required formats. A designated [external work tracker](docs/DATA_MODEL.md#external-work-trackers)
+may own selected management information instead of Markdown; it is the owning
+record, not a parallel copy. Contracts and external controls remain binding;
+resolve any format conflict before affected delivery.
 
 ## Document organization
 
 Keep a project overview linking independently managed feature/work items, with
-one owning definition per item. Requirements are the primary basis for product
-scope; supporting conditions stay with their requirement, and fixes reference
-the existing requirement. The [Information model](docs/DATA_MODEL.md) owns the
+one owning definition per item. Projects with several teams, streams or
+subsystems may split navigation into
+[area overviews](docs/DATA_MODEL.md#area-overviews). Requirements are the
+primary basis for product scope; supporting conditions stay with their
+requirement, and fixes reference the existing requirement. The [Information model](docs/DATA_MODEL.md) owns the
 mandatory rules for boundaries, identities, paths, exceptions and validation.
 Apply them when authoring or checking documents; other guidance links these
 definitions rather than maintaining competing versions.
@@ -70,6 +74,7 @@ even when this policy or a README summarizes it; unrelated detail need not be lo
 | Trigger | Read and apply |
 |---|---|
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, allocation, paths and validation. |
+| Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage and intake sections. |
 | Create, revise or declare a plan complete | [Planning procedure](docs/DEVELOPMENT_METHOD.md#detailed-planning-procedure) and [completion checks](docs/DEVELOPMENT_METHOD.md#planning-completion-checks). |
 | Establish execution scope, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria/procedure and the actual request/decision. |

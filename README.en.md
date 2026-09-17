@@ -251,6 +251,8 @@ project-docs/
 
 This example connects the sign-in requirement, design, backend and screen plans, tasks and verification through links. Use [Independent items and supporting detail](docs/DATA_MODEL.md#independent-items-and-supporting-detail) to decide when an item needs a separate file.
 
+When several teams, work streams or subsystems can no longer share one overview, add [area overviews](docs/DATA_MODEL.md#area-overviews) under the project overview. The project overview keeps shared conventions, the area index and ID range delegations; each area overview keeps its document index, progress summary and use of its delegated serials. If task status or open items live in a tool such as GitHub Issues or Jira, designate it as an [external work tracker](docs/DATA_MODEL.md#external-work-trackers) and link that information instead of duplicating it in Markdown.
+
 ### Document and item IDs
 
 Use a type prefix and five-digit serial, such as `REQ-00001`, `API-00001`, `SCR-00001` or `TASK-API-00001`. Follow [Item IDs](docs/DATA_MODEL.md#item-ids) for allocation, preservation, extensions and plan/task relationships.
