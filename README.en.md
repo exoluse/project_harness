@@ -117,7 +117,7 @@ Agents such as Codex and Claude share three foundations: **clear plan/task bound
 |---|---|
 | Plans and tasks | Plans define goals, scope, dependencies, task order and overall completion criteria, and link individual task files. Tasks define concrete outputs, owners, affected paths and shared resources, and completion criteria. |
 | Directory structure | Choose a document root and classification folders for the project and record them in the overview. All agents share the mapping; several writers may use one folder when their files and resources do not overlap. |
-| Markdown filenames and numbering | Each independent item owns an ID file such as `REQ-00001.md`, `API-00001.md`, `SCR-00001.md` or `TASK-API-00001.md`. Allocate numbers uniquely across the project for each complete prefix. |
+| Markdown filenames and numbering | Follow the project format table with ID-based files such as `REQ-001.md`, `API-001.md`, `SCR-PC-001.md` or `TASK-API-001.md`, optionally with a descriptive slug. Allocate within each format's prefix/parent scope and preserve project-wide complete-ID uniqueness. |
 
 Share ownership boundaries and number ranges before concurrent work. Separate checkouts use the same shared allocations; do not invent agent-specific prefixes for the same document type. Extend folders and prefixes as needed, and use the chosen conventions consistently.
 
@@ -218,44 +218,52 @@ ID, allocation and verification rules, and contractually required separate deliv
 
 ### Overview and feature/work documents
 
-When several items need independent management, connect **one `<ID>.md` file per independent item in classification folders** through the project overview. Detailed rules are in [Document organization](docs/DATA_MODEL.md#document-organization) and [Document paths](docs/DATA_MODEL.md#document-paths).
+When several items need independent management, connect **one owning file per independent item in classification folders** through the project overview. Use `<ID>.md` or a descriptive `<ID>-<slug>.md` filename. Detailed rules are in [Document organization](docs/DATA_MODEL.md#document-organization) and [Document paths](docs/DATA_MODEL.md#document-paths).
 
 The following illustrates a project with several features and work items. Choose folder names and hierarchy for the project; these IDs are examples. Create documents needed for the requested stage and actual item boundaries.
 
 ```text
 project-docs/
   overview/
-    DOC-00001.md             Overview, feature index and ID/folder conventions
+    DOC-001.md              Overview, feature index and ID/folder conventions
   requirements/
-    REQ-00001.md             Sign-in requirement and acceptance criteria
-    REQ-00002.md             Search requirement and acceptance criteria
+    REQ-001.md              Sign-in requirement and acceptance criteria
+    REQ-002.md              Search requirement and acceptance criteria
   designs/
-    DES-00001.md             Shared architecture
-    DES-00002.md             Sign-in design
-  backend-plans/
-    API-00001.md             Backend plan and related task links
-  screen-plans/
-    SCR-00001.md             Screen plan and related task links
+    DES-001.md              Shared architecture
+    DES-002.md              Sign-in design
+  features/
+    FEATURE-001.md          Links sign-in requirements, screens, contracts and work
+  contracts/
+    API-001.md              Sign-in API contract
+  screens/
+    SCR-PC-001.md           Desktop sign-in screen specification
+  plans/
+    PLAN-001.md             Implementation order and related task links
   tasks/
-    TASK-API-00001.md        Backend task
-    TASK-SCR-00001.md        Screen task
+    TASK-API-001.md         Backend task
+    TASK-PC-001.md          Desktop screen task
   verifications/
-    VER-00001.md             Subject, method, execution status and actual results
+    VER-001.md              Subject, method, execution status and actual results
   decisions/
-    DEC-00001.md             Actual decision and source
+    DEC-001.md              Actual decision and source
   changes/
-    CHG-00001.md             Small change scope and related stage notes
+    CHG-001.md              Small change scope and related stage notes
   handoffs/
-    HANDOFF-00001.md         Handoff details and next action
+    HANDOFF-001.md          Handoff details and next action
 ```
 
-This example connects the sign-in requirement, design, backend and screen plans, tasks and verification through links. Use [Independent items and supporting detail](docs/DATA_MODEL.md#independent-items-and-supporting-detail) to decide when an item needs a separate file.
+This example connects the sign-in requirement, design, API contract, screen specification, plan, tasks and verification through links. Use [Independent items and supporting detail](docs/DATA_MODEL.md#independent-items-and-supporting-detail) to decide when an item needs a separate file.
 
 When several teams, work streams or subsystems can no longer share one overview, add [area overviews](docs/DATA_MODEL.md#area-overviews) under the project overview. The project overview keeps shared conventions, the area index and ID range delegations; each area overview keeps its document index, progress summary and use of its delegated serials. If task status or open items live in a tool such as GitHub Issues or Jira, designate it as an [external work tracker](docs/DATA_MODEL.md#external-work-trackers) and link that information instead of duplicating it in Markdown.
 
 ### Document and item IDs
 
-Use a type prefix and five-digit serial, such as `REQ-00001`, `API-00001`, `SCR-00001` or `TASK-API-00001`. Follow [Item IDs](docs/DATA_MODEL.md#item-ids) for allocation, preservation, extensions and plan/task relationships.
+Use a small project format table. IDs may be flat, such as `REQ-001`, or include a useful classification, such as `SCR-PC-001` for screens and `TASK-API-001` for tasks. The harness does not mandate token lengths, serial widths or a universal area segment. Follow [Item IDs](docs/DATA_MODEL.md#item-ids) for allocation, preservation and extensions.
+
+The [ID dictionary](docs/ID_DICTIONARY.md) provides starter formats and codes. Record only needed rows in the project overview; create and link a separate dictionary when independent management is useful. Register new kinds or classifications as needed while preserving existing IDs and meanings.
+
+A filename may include an optional description of exactly two lowercase ASCII words joined by one hyphen (`kebab-case`), such as `API-024-service-context.md`. Its ID remains `API-024`; do not create duplicate owning files with different descriptions for the same ID. Follow [Document paths](docs/DATA_MODEL.md#document-paths) for full syntax and rename/link handling.
 
 Apply [Required-name exceptions](docs/DATA_MODEL.md#required-name-exceptions) when a tool or contract requires a fixed filename. The Information model owns the detailed conditions.
 
@@ -265,22 +273,24 @@ The following hypothetical example connects a sign-in requirement to implementat
 
 | Item | Related items and meaning |
 |---|---|
-| `REQ-00001` sign-in requirement | `DES-00002` describes how to satisfy it. |
-| `API-00001` backend plan | References `REQ-00001` and `DES-00002`, and includes `TASK-API-00001`. |
-| `SCR-00001` sign-in screen plan | References the same requirement and design, and includes `TASK-SCR-00001`. |
-| `VER-00001` verification item | Links the requirements, tasks and candidate version being checked, and records execution status and actual results. |
+| `REQ-001` sign-in requirement | `DES-002` describes how to satisfy it. |
+| `FEATURE-001` sign-in feature | Links the related requirement, API contract, screen specification and work. |
+| `API-001` sign-in API contract | Specifies request/response data and behavior satisfying the requirement. |
+| `SCR-PC-001` sign-in screen specification | References the same requirement, design and API contract. |
+| `PLAN-001` implementation plan | References input specifications and orders `TASK-API-001` and `TASK-PC-001` with completion criteria. |
+| `VER-001` verification item | Links the requirements, tasks and candidate version being checked, and records execution status and actual results. |
 
 In actual documents, use the ID as a link to its owning item. An ID-only heading keeps the anchor stable when descriptive text changes:
 
 ```markdown
-### REQ-00001
+### REQ-001
 
 Users must be able to sign in with a valid account.
 
 Acceptance criterion: signing in with a valid account opens the user's page.
 ```
 
-For example, `designs/DES-00002.md` can reference `[REQ-00001](../requirements/REQ-00001.md#req-00001)` across classification folders. Several plans can implement one requirement, and multiple features can reference a shared design. Filenames and IDs do not establish approval or verification; retain actual decisions, reviewed versions and observations as well.
+For example, `designs/DES-002.md` can reference `[REQ-001](../requirements/REQ-001.md#req-001)` across classification folders. Several plans can implement one requirement, and multiple features can reference a shared design. Filenames and IDs do not establish approval or verification; retain actual decisions, reviewed versions and observations as well.
 
 ### Rules to apply when changing documents
 

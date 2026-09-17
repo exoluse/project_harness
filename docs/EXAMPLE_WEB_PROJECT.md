@@ -41,19 +41,25 @@ needs; stages alone do not require a file per requirement.
 
 Project deliverables normally use `<document-type>/<ID>.md` under that root,
 including the overview and shared specifications: for example
-`overview/DOC-00001.md`, `requirements/REQ-00001.md`,
-`backend-plans/API-00001.md`, `tasks/TASK-API-00001.md` and
-`changes/CHG-00001.md`. Each filename stem exactly matches its body document ID;
-feature names and descriptions belong in the body and overview, not filenames.
+`overview/DOC-001.md`, `requirements/REQ-001.md`,
+`plans/PLAN-001.md`, `contracts/API-001.md`, `tasks/TASK-API-001.md` and
+`changes/CHG-001.md`. A short optional description can follow the ID, for example
+`contracts/API-001-sign-in.md`; the body ID remains `API-001`. Keep one owning
+file per ID and link its actual filename. Full titles and context belong in
+the body and overview; apply [document paths](DATA_MODEL.md#document-paths)
+for slug syntax and renames.
 For a consumer-required name such as `README.md`, apply the
 [required-name exception](DATA_MODEL.md#required-name-exceptions): retain the
 required path and indexed identity instead of creating an ID-named duplicate.
 
-Illustrative item trace: requirement `REQ-00001` connects to design `DES-00001`,
-backend plan `API-00001` and screen plan `SCR-00001`; their work items might be
-`TASK-API-00001` and `TASK-SCR-00001`. Actual documents use resolvable links to
+Illustrative item trace: requirement `REQ-001` connects to design `DES-001`,
+API contract `API-001`, screen specification `SCR-PC-001` and implementation
+plan `PLAN-001`; work items might be `TASK-API-001` and `TASK-PC-001`.
+This example selects three-digit formats from the [ID dictionary](ID_DICTIONARY.md);
+retain the actual project's established IDs and meanings during intake.
+Actual documents use resolvable links to
 each item's anchor and record each task's real parent plan. A later search
-requirement gets the next available `REQ` serial, not another `REQ-00001` in a
+requirement gets the next available `REQ` serial, not another `REQ-001` in a
 different file. These syntax examples do not allocate IDs or establish evidence.
 
 At this planning-only stopping point, record intended checks in the plans;

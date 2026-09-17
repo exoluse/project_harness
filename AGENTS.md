@@ -39,8 +39,9 @@ definitions rather than maintaining competing versions.
 
 ## Item identity and trace
 
-Actual project deliverables use stable IDs and exact `<ID>.md` filenames in
-project-chosen classification folders. Harness policy and guidance are outside
+Actual project deliverables use stable IDs and `<ID>.md` or `<ID>-<slug>.md`
+filenames in project-chosen classification folders; the optional slug is a
+short description, not part of the ID. Harness policy and guidance are outside
 the [ID scope](docs/DATA_MODEL.md#id-scope). Before allocating or reorganizing,
 apply the Information model's [ID rules](docs/DATA_MODEL.md#item-ids),
 [boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail) and

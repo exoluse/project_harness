@@ -2,8 +2,9 @@
 
 This is the required detailed standard for project document organization,
 identity, paths, exceptions and validation, designated by
-[AGENTS.md](../AGENTS.md#document-organization). Keep definitions here; other
-guidance links them and may show brief summaries or examples.
+[AGENTS.md](../AGENTS.md#document-organization). Keep information-model rules
+here; the linked ID dictionary provides starter formats and selection guidance.
+Other guidance links these definitions and may show brief summaries or examples.
 The [management format policy](../AGENTS.md#management-document-format)
 governs Markdown, existing records and tool-required formats.
 
@@ -14,6 +15,7 @@ governs Markdown, existing records and tool-required formats.
 | Several teams, streams or subsystems | [Area overviews](#area-overviews) |
 | Plan/task responsibilities | [Plans and tasks](#plans-and-tasks) |
 | Identity, types and numbering | [Item IDs](#item-ids) |
+| Project ID formats and optional classification codes | [Document ID dictionary](ID_DICTIONARY.md) |
 | Canonical filename and folder mapping | [Document paths](#document-paths) |
 | Separate item or supporting detail | [Item boundaries](#independent-items-and-supporting-detail) |
 | Consumer-required name/location | [Required-name exceptions](#required-name-exceptions) |
@@ -103,28 +105,32 @@ Create only documents needed for the requested stage:
 ```text
 project-docs/
   overview/
-    DOC-00001.md                   # Shared context and feature/work index
+    DOC-001.md                  # Shared context and feature/work index
   requirements/
-    REQ-00001.md                   # Sign-in requirement
-    REQ-00002.md                   # Search requirement
+    REQ-001.md                  # Sign-in requirement
+    REQ-002.md                  # Search requirement
   designs/
-    DES-00001.md                   # Shared architecture
-    DES-00002.md                   # Sign-in design
-  backend-plans/
-    API-00001.md
-  screen-plans/
-    SCR-00001.md
+    DES-001.md                  # Shared architecture
+    DES-002.md                  # Sign-in design
+  features/
+    FEATURE-001.md              # Links sign-in requirement and related work
+  contracts/
+    API-001.md                  # Sign-in API contract
+  screens/
+    SCR-PC-001.md               # Desktop sign-in screen specification
+  plans/
+    PLAN-001.md                 # Implementation order and task links
   tasks/
-    TASK-API-00001.md
-    TASK-SCR-00001.md
+    TASK-API-001.md
+    TASK-PC-001.md
   verifications/
-    VER-00001.md
+    VER-001.md
   decisions/
-    DEC-00001.md
+    DEC-001.md
   changes/
-    CHG-00001.md                   # Small change with tightly coupled notes
+    CHG-001.md                  # Small change with tightly coupled notes
   handoffs/
-    HANDOFF-00001.md
+    HANDOFF-001.md
 ```
 
 Every unit links back to its overview and applicable shared specifications.
@@ -181,13 +187,16 @@ preserves IDs, history and reviewed versions, and repairs links.
 
 A plan organizes an outcome across work items. It defines the goal, included
 and excluded scope, input requirements/design, dependencies, feasible task order
-and overall completion criteria. Backend `API`, screen `SCR` and general `PLAN`
-documents are examples of plans; they link to the owning task files.
+and overall completion criteria. A project can use `PLAN` for general, backend
+or screen implementation plans; plans link to the owning task files. API
+contracts and screen specifications are inputs to plans, not automatically
+plans themselves. Preserve established project meanings when they differ.
 
 A task is a concrete output that the actual work assigns and completes as a
 separate unit. Implementation steps serving that output may remain in its file.
-Its owning `TASK-<AREA>` file records the expected output, accountable writer,
-affected paths and logical resources, parent plan/input links, prerequisites,
+Its owning task file, named under the project's ID convention, records the
+expected output, accountable writer, affected paths and logical resources,
+parent plan/input links, prerequisites,
 current status, ordered actions and concrete completion checks. Supply or link
 the applicable implementation details and verification scenarios required by
 the [detailed planning procedure](DEVELOPMENT_METHOD.md#detailed-planning-procedure).
@@ -242,7 +251,7 @@ Apply identity rules to every Markdown deliverable within the
 guides, meeting notes, reviews, reports, handoffs or kinds not listed here.
 Assign the document an ID appropriate to its purpose. A document representing
 one primary item uses that item's ID; a collection can use a document ID such
-as `DOC-00001`. Choose the identity before creating the file and use it in
+as `DOC-001`. Choose the identity before creating the file and use it in
 the index; [document paths](#document-paths) defines filename/body placement.
 An overview itself also has an identity. A document ID is not a substitute for
 the identities of its independently tracked contents.
@@ -253,72 +262,60 @@ added to existing Markdown as well. Requirements, acceptance criteria, designs,
 plans, tasks, decisions, findings, changes, risks, issues and verification are
 examples, not an exhaustive list.
 
-Use semantic uppercase type prefixes and five-digit serials, starting at
-`00001`. Reuse established project conventions and the applicable examples
-below. For an unlisted document or item kind, choose and document an appropriate
-prefix autonomously; user approval of each prefix or item boundary is not
-required. The table is a starting vocabulary, not a closed set of allowed types.
-These syntax examples do not allocate real project IDs.
+Use the project's recorded ID format table. There is no mandatory token
+length, serial width, universal AREA segment or fixed number of segments.
+Prefer simple semantic prefixes and add a classification or parent segment
+only when the project needs it. The [ID dictionary](ID_DICTIONARY.md) offers
+starter formats such as `REQ-001`, `SCR-PC-001` and `TASK-API-001`; its rows are
+examples, not a closed vocabulary or allocated IDs.
 
-| Item | ID example | Meaning |
-|---|---|---|
-| Document or overview collecting items | `DOC-00001` | A document identity when no primary item supplies it. |
-| Requirement | `REQ-00001` | Intended outcome or constraint. |
-| Independent acceptance criterion | `AC-00001` | A separately tracked checkable condition. |
-| Design item | `DES-00001` | A component, interface, data or other design specification. |
-| Backend plan | `API-00001` | A backend implementation/work plan, not an API endpoint identifier. |
-| Screen plan | `SCR-00001` | A plan for an individual screen. |
-| General or cross-cutting plan | `PLAN-00001` | Work not best classified as a backend or screen plan. |
-| Task/work item | `TASK-API-00001`, `TASK-SCR-00001` | A task in the named work area. |
-| Decision | `DEC-00001` | An attributable actual decision. |
-| Change | `CHG-00001` | A tracked change and its impact. |
-| Risk or open issue | `RISK-00001`, `ISSUE-00001` | An independently tracked uncertainty or unresolved issue. |
-| Verification item | `VER-00001` | A check with subject, criteria and explicit execution status/results. |
+The project overview owns the format table, or links its one owning dictionary
+when separate management is useful. Record each kind's meaning, exact format,
+allowed classification values, serial width/start, allocation scope and any
+parent-ID rule. A small project can use a few rows in the overview. Create or
+extend a dictionary when needed; no separate file or full catalog is required.
+A separately managed project dictionary follows the ordinary document-ID and
+path rules. Harness guidance remains outside the ID scope.
 
-For example, a research report can use an agent-selected `RES` document prefix
-and `FIND` for independently referenced findings; meeting notes can use `MTG`
-with existing `DEC` and `TASK` types for decisions and actions. A guide can use
-`GUIDE` and identify independently maintained procedures as appropriate. Choose
-these based on the actual content and existing conventions, not by creating
-all these record types in advance. Record each added prefix's meaning and
-allocation scope in the overview so subsequent work uses it consistently.
+Agents reuse established formats and add missing kinds or classifications
+within the authorized work without asking for each token. Register additions
+before allocation, preserve existing meanings, and avoid synonyms or overlapping
+formats that make an ID ambiguous. Different kinds can use different axes:
+screen platform and task work area need not share a code list. Technology,
+audience and feature metadata can stay in the body instead of the ID.
 
-In `TASK-<AREA>-00001`, replace `<AREA>` with a registered
-uppercase work-area token: `API`, `SCR`, `DOC` for documentation, or `GEN` for
-general work. Additional uppercase type/area tokens can be recorded in the
-overview when needed; do not invent a new spelling for an existing type.
-The serial is independent of the parent plan: `TASK-API-00003` may belong to
-`API-00002`. Record the actual parent plan ID and link, plus the requirements,
-design and dependencies it covers. Shared tasks may link to several plans.
+Interpret an ID using its whole registered format. In the starter dictionary,
+`API-001` identifies an API contract; its method/path, version and coverage are
+specified in the body. `PLAN-001` can plan its implementation, and
+`TASK-API-003` can implement it. Task numbers do not derive from plan numbers:
+record actual plan, requirement, design and contract links. Shared tasks may
+link to several plans. A `FEATURE` groups related items through links; it does
+not duplicate the requirements it groups or require one item of every type.
 
-Interpret an ID using its complete registered prefix and final five-digit
-serial; do not infer meaning from an isolated token. The following are syntax
-examples, not allocations:
+Allocate flat and classified serials project-wide per complete prefix, such
+as `REQ` or `TASK-API`. Two feature folders or parent plans cannot each restart
+`TASK-API-001`. Hierarchical formats allocate the child serial per child kind
+and identified parent, as recorded in the format table. For example, under
+`CT-API-NNN-NN`, `CT-API-012-01` is a contract test of `API-012`; a backend test
+`BT-API-012-01` has a separate counter. Every complete ID remains unique
+project-wide, regardless of folder or checkout.
 
-| ID | Complete prefix | Type and meaning |
-|---|---|---|
-| `DOC-00001` | `DOC` | Overview/collection document; `DOC` is the document-type prefix. |
-| `TASK-DOC-00001` | `TASK-DOC` | Task in the documentation area; `TASK` is the type and `DOC` is the area. |
-| `API-00001` | `API` | Backend plan, not an endpoint or route. |
-| `TASK-API-00001` | `TASK-API` | Backend task; its parent plan is identified by an explicit link. |
+Before allocating a child, verify its parent's owning definition and format
+mapping, and link the parent in the body. Matching numbers imply no other
+relationship. A parent segment records identity, not a mutable dependency:
+if current coverage changes, preserve the ID and record new links and history;
+an actual replacement/split follows the identity rules below. Parent detail
+that needs no independent management can remain a section without a new ID.
 
-An endpoint is identified in its specification by its actual method/path or
-the project's endpoint convention, for example `GET /orders`; it is not assigned
-an `API` plan ID merely because it is an API. Keep the established ID vocabulary
-and register a distinct meaningful type for a separately tracked endpoint
-specification if needed. Token reuse in different positions does not merge
-allocation counters or justify renaming existing IDs.
-
-Serial allocation is project-wide per complete prefix. Two feature files must
-not both define `REQ-00001`; two API plans must not each restart their tasks at
-`TASK-API-00001`. `TASK-API-00001` and `TASK-SCR-00001` are distinct IDs. Search
-existing definitions and retained/retired IDs before choosing the next unused
-serial, reusing a verified baseline under the rules below. Concurrent writers
-reserve non-overlapping ranges or prefixes in shared
-Markdown notes; no separate JSON registry is required.
+Search existing definitions, retained/retired IDs and reservations before
+choosing the next unused serial, reusing a verified allocation basis. Concurrent
+writers reserve non-overlapping ranges within the recorded allocation scope.
+If the available width is exhausted, record a compatible extension for new IDs
+and check consumers and collisions before allocation; do not wrap counters,
+reuse IDs or automatically pad/rename older records.
 
 Put the ID visibly in the owning heading or table row. Provide a stable anchor,
-for example an ID-only heading `### REQ-00001` with a descriptive title in the
+for example an ID-only heading `### REQ-001` with a descriptive title in the
 body, or an explicit anchor for an identified table row. References use the ID
 as link text and resolve to that item's anchor, even within one file.
 
@@ -329,27 +326,54 @@ decision or evidence history. Identity alone does not identify a reviewed
 version, prove approval or establish a passed check.
 
 Existing IDs and historical records remain valid; use links to older material
-without bulk retroactive relabeling. A requested migration has its own scope.
+without bulk retroactive relabeling. This includes five-digit IDs and existing
+`TYPE-AREA` conventions. Earlier harness examples used `API` for backend plans
+and `SCR` for screen plans; retain those meanings wherever already established.
+Do not treat a shorter serial as permission to reuse the same prefix for a
+different purpose in that project. Use its existing convention or register a
+distinct unambiguous prefix. A requested migration has its own scope.
 Externally required document formats remain binding; resolve a real conflict
 rather than silently omitting identity requirements.
 
 ## Document paths
 
 Except for [required-name files](#required-name-exceptions), every new project
-Markdown document uses `<document-root>/<classification-path>/<DOCUMENT-ID>.md`.
-The entire filename stem exactly matches the owning document ID, including
-uppercase type tokens and the five-digit serial. Show the document ID near the
-top of the body. Titles and descriptions belong in the body and overview;
-do not append a title, date or description to the filename.
-A body ID or ID-bearing directory alone does not satisfy this rule.
-Use `overview/DOC-00001.md`, not `overview.md` or `DOC-00001-overview.md`.
+Markdown document uses `<document-root>/<classification-path>/<ID>.md` or
+`<document-root>/<classification-path>/<ID>-<slug>.md`. The ID portion exactly
+matches the owning document ID, including the tokens, separators and number
+widths in the project's format table. The optional slug is a short description
+for readability, not part of identity, allocation or parent relationships.
+
+When present, the slug consists of exactly two lowercase ASCII words joined
+by one hyphen (`kebab-case`), matching `[a-z]+-[a-z]+`. Use a hyphen between
+the complete ID and the slug, for example `API-024-service-context.md`.
+Descriptions such as `service-context` or `admin-login` are optional; a single
+word, additional words, digits, spaces or underscores within the slug are invalid.
+Identify the complete ID from its registered format, including any parent/child
+segments, rather than treating the last hyphen or number as its boundary.
+Verify that the ID and slug have an unambiguous interpretation under the
+project's formats before creating the file.
+
+Show the ID without the slug near the top of the body and in stable ID anchors.
+Keep the full title and context in the body and overview. Reference links use
+the ID as their label and the actual owning filename/anchor as their target.
+An ID in the body or directory alone does not satisfy the filename rule.
+For example, `overview/DOC-001.md` and `overview/DOC-001-project-overview.md` are
+alternative names for the same identity; `overview.md` needs a required-name
+exception. Keep one current owning file per ID across all folders: a different
+slug, or adding/removing a slug, does not create another item. Do not keep both
+filename forms as duplicate owning files.
+
+Preserve the ID when changing a slug. Do not automatically rename files when
+titles change. When a filename changes within authorized work, update the
+overview/index path and all affected links, and retain version history.
 The rule covers all document kinds, including overviews, shared specifications,
 research, reports, changes and handoffs.
 
 The agent chooses and records the root and classification-to-folder mapping
 in the project overview, reusing project conventions. Examples include `REQ`
-to `requirements`, `API` to `backend-plans`, `SCR` to `screen-plans` and
-`TASK-<AREA>` to `tasks`. These are not reserved names: `specs/requirements`,
+to `requirements`, `API` to `contracts`, `SCR` to `screens`, `PLAN` to `plans`
+and `TASK` formats to `tasks`. These are not reserved names: `specs/requirements`,
 `plans/backend` or `work-items` are also possible. Select and record suitable
 folders for new kinds or changed context without asking the user to classify
 each one. Reuse mappings consistently within their stated scope.
@@ -358,8 +382,8 @@ Folder changes preserve IDs and repair overview/item links; they do not
 authorize historical-record migration. Do not create empty type folders or
 placeholder files before they are needed. Group feature relationships through
 the overview and owning documents, independently of the physical layout.
-For example, `backend-plans/API-00001.md` links to its owning task files at
-`tasks/TASK-API-00001.md` and other applicable paths.
+For example, `plans/PLAN-001.md` links to a task at `tasks/TASK-API-001.md`
+and an input contract at `contracts/API-001.md`.
 
 ## Allocation and validation reuse
 
@@ -370,10 +394,10 @@ overview and maintain the allocation there only. Folder names stay contextual;
 writers must be able to discover one authoritative location for each range.
 
 With [area overviews](#area-overviews), the root allocation section delegates
-non-overlapping serial ranges per complete prefix to areas and records each
+non-overlapping serial ranges per allocation scope to areas and records each
 delegation's owner and verified basis. The area overview's allocation section
 records consumption within its delegated ranges; the root does not repeat it.
-Serials stay unique project-wide, and areas do not introduce their own prefixes
+Complete IDs stay unique project-wide, and areas do not introduce their own prefixes
 for an existing type. When an area exhausts a range, obtain a new delegation
 from the root allocation owner before allocating further.
 
@@ -382,16 +406,16 @@ shared baseline notes for rows checked together:
 
 | Field | Required content |
 |---|---|
-| Complete prefix | Registered type/area meaning, such as `TASK-DOC`. |
+| Allocation scope | Registered complete prefix, such as `TASK-API`; for hierarchical formats, child kind and parent, such as `CT` for `API-012`. |
 | Verified basis | Commit/version and scope checked, including definitions, retained/retired IDs and outstanding reservations; actual check result and any limits. A version alone is not proof of verification. |
-| Allocated range | Inclusive serial bounds assigned within that prefix. |
+| Allocated range | Inclusive serial bounds assigned within that allocation scope, using its recorded width. |
 | Owner | Writer responsible for consuming the range; identify any agreed transfer. |
 | Disposition | Used serials or owning-document links, retired serials, and remaining reserved/available numbers. Record gaps explicitly rather than assuming everything below the largest number was used. |
 
 These are required contents, not fixed column spellings or a new machine schema.
-For example, a hypothetical `TASK-DOC` range `00001` through `00020` owned by
-writer A may state: used `00001` and `00003`, retired `00002`, remaining
-`00004` through `00020` reserved for A. Its row must also link the actual checked
+For example, a hypothetical `TASK-API` range `001` through `020` owned by
+writer A may state: used `001` and `003`, retired `002`, remaining
+`004` through `020` reserved for A. Its row must also link the actual checked
 basis. This example does not allocate IDs in this harness repository.
 
 Establish the basis by inspecting project-wide definitions, retained allocation
@@ -486,7 +510,7 @@ when separately managed; requirements do not replace every other identity.
 | One requirement has input examples, rationale and parent-specific acceptance details | Sections of that requirement; no new file or independent ID for each explanation. |
 | A fix restores the specified search count, or a regression test checks it | Reference the existing search REQ from the change/work and checks; no new REQ solely for the fix or test. |
 | An acceptance criterion is separately tracked with its own disposition | Its own `AC` file, linked to the parent requirement. |
-| A backend plan includes tasks managed as separate outputs | Each task has a `TASK-<AREA>` file; the plan contains links and sequence/dependency information. |
+| A backend plan includes tasks managed as separate outputs | Each task has its own file under the project ID convention; the plan contains links and sequence/dependency information. |
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
 | A small change records its source, scope rationale and observed check result | These may be metadata/stage notes of that change; independently managed requirements/tasks still get separate files. |
 
@@ -505,7 +529,7 @@ and other owning documents instead of
 redefining them. Apply any contractually required separate deliverables.
 
 For example, correcting the displayed count for an empty search result can
-use an existing project overview plus `changes/CHG-00001.md`. This is an
+use an existing project overview plus `changes/CHG-001.md`. This is an
 illustration, not an allocated ID, actual decision or verification result.
 Choose the real unused ID and folder using the project's existing conventions.
 The change document can contain the following sections:
@@ -542,7 +566,7 @@ The harness's own guidance is excluded there and needs no exception-ID mapping.
 Keep an exact filename/location when a consuming tool, project contract or
 repository entry convention requires it. Examples include a tool's `AGENTS.md`,
 `CLAUDE.md` or `SKILL.md`, and a repository landing `README.md`. These files are
-exceptions to the ID-only basename and classification-path requirements, not
+exceptions to the ID-based filename and classification-path requirements, not
 to identity, trace, scope or verification. The exception must have a concrete
 consumer/contract reason; personal filename preference is insufficient.
 
@@ -557,7 +581,7 @@ other item documents rather than duplicating them into an entry file.
 For example, when a consumer requires a root `AGENTS.md`, retain that path,
 record its document ID and the consumer requirement in the index, and add the
 ID to its body if compatible. A normal requirements document continues to use
-`requirements/REQ-00001.md` under the chosen document root. The agent assesses
+`requirements/REQ-001.md` under the chosen document root. The agent assesses
 and documents the exception within the already authorized task; preserving a
 required name does not need an additional approval ceremony.
 
@@ -571,9 +595,10 @@ the affected scope and reusable evidence.
 | Check | Evidence to verify |
 |---|---|
 | Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; requirement boundaries describe distinct commitments, supporting conditions remain with their requirement, and separately managed work references the REQs it covers. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
-| Identity and allocation | New definitions are unique project-wide and do not collide with retained/retired IDs or reservations, and fall within any delegated area range; distinguish definitions, references and illustrative examples. |
+| Identity and allocation | New definitions are unique project-wide and do not collide with retained/retired IDs or reservations, and fall within any delegated area range; compare IDs independently of descriptive slugs or folders, and distinguish definitions, references and illustrative examples. |
+| Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
 | Area overviews and trackers | Root and area overview entries resolve and hold only their owned content; designated tracker information has no parallel Markdown record; tracker references carry a resolvable key/link, and relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
-| Ordinary paths | Each new file matches the recorded folder mapping and the filename/body identity specified in [Document paths](#document-paths). |
+| Ordinary paths | Each new file matches the recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. |
 | Planning detail and omissions | For planning deliverables, apply the [planning completion checks](DEVELOPMENT_METHOD.md#planning-completion-checks): original-source coverage, detailed executable work, scenario/integration coverage, concrete verification and honest unknown dispositions. Valid IDs and links alone do not establish an adequate plan. |
