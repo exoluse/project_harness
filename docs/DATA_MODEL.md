@@ -239,7 +239,7 @@ these based on the actual content and existing conventions, not by creating
 all these record types in advance. Record each added prefix's meaning and
 allocation scope in the overview so subsequent work uses it consistently.
 
-In `TASK-<AREA>-00001`, replace `<AREA>` (the user's `XXX`) with a registered
+In `TASK-<AREA>-00001`, replace `<AREA>` with a registered
 uppercase work-area token: `API`, `SCR`, `DOC` for documentation, or `GEN` for
 general work. Additional uppercase type/area tokens can be recorded in the
 overview when needed; do not invent a new spelling for an existing type.

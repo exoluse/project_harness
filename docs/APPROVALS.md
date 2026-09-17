@@ -158,6 +158,7 @@ environment. Preserve original signed or recorded artifacts as history.
 
 Continue when real coverage, provenance and permissions are established.
 Resolve missing authority or material differences before dependent work.
+
 ## Protected authority
 
 The agent may prepare approval requests and record authentic receipts. It may
