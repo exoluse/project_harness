@@ -457,6 +457,15 @@ Before introducing concurrent writers or delegated ranges, use the shared range
 record below. Returning to a single writer requires reconciling those ranges
 and reservations first; the simple counter cannot silently supersede them.
 
+Two arrangements need no range or owner record. A registered format may take
+its serial from a designated [external work tracker](#external-work-trackers)
+key, such as `TASK-{area}-{issue}`; the tracker then allocates, and the
+overview records only the format and the tracker. Writers on separate branches
+may instead keep a per-scope next serial in the overview, fetch the integration
+branch before allocating, and, when two branches still allocated the same
+serial, renumber the later-merged item and repair its links before
+integration. Record either arrangement once in the allocation section.
+
 With [area overviews](#area-overviews), the root allocation section delegates
 non-overlapping serial ranges per allocation scope to areas and records each
 delegation's owner and verified basis. The area overview's allocation section
@@ -758,7 +767,9 @@ overview (or the relevant [area overview](#area-overviews)):
 For each designated kind, the tracker is the single authoritative record. Do not
 keep a parallel Markdown list or copy of its status, assignment or history;
 link the tracker item instead. The tracker key identifies an item the tracker
-owns and needs no harness ID or allocation. When such an item needs a detailed
+owns and needs no harness ID or allocation. A registered document-ID format
+may embed that key as its serial under [allocation reuse](#allocation-and-validation-reuse);
+the document then has one ID and the tracker supplies its number. When such an item needs a detailed
 Markdown definition, such as task implementation detail, that document keeps its
 own document ID and records the key: the tracker owns status and assignment,
 the document owns the detailed definition.

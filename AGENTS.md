@@ -182,7 +182,9 @@ policy maintenance uses the Git/conversation trace above.
 One writer needs no claim system. Before concurrent editing, establish the
 [collaboration basis](docs/COLLABORATION.md#collaboration-basis): shared plan/task
 boundaries, directory mapping, ID allocations and non-overlapping ownership,
-including shared documents and Git integration. Use worktrees where practical;
+including shared documents and Git integration; branch isolation with
+reviewed merges and tracker-owned assignment can supply it. Use worktrees
+where practical;
 never take over another writer's active scope or unknown dirty work silently.
 
 For [handoff and integration](docs/COLLABORATION.md#transfer-and-integration),

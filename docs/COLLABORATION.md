@@ -40,6 +40,16 @@ assigned integration owner. Record relevant ownership, mapping and allocation
 changes before affected work continues. Existing Markdown notes are sufficient;
 these principles add no separate approval or registry service.
 
+When each writer works in their own branch or worktree, integrates through
+reviewed merges, and a designated [external work tracker](DATA_MODEL.md#external-work-trackers)
+owns assignment, that arrangement satisfies the ownership agreement: the
+tracker assignee and the branch identify the writer, and whoever merges a
+change is its integration owner. Shared documents such as the overview and
+contracts may then change through the same reviewed merge; no separate owner
+table is needed in the overview. Record the arrangement once in the overview.
+Writers sharing one checkout or one allocation record still need the explicit
+assignments above.
+
 ## Single writer
 
 A single writer needs no claim system or placeholder handoff. Use the
@@ -59,7 +69,9 @@ tool that owns assignment or status follows [external work trackers](DATA_MODEL.
 Do not edit another writer's active scope. Account for shared schemas, generated
 files, migrations and other logical collisions even if filenames differ.
 Resolve ownership and integration order explicitly. Each writer still needs
-applicable authority and real prerequisites for their own work.
+applicable authority and real prerequisites for their own work. Under branch
+isolation this rule applies at merge: resolve conflicts preserving both sides
+and never overwrite the other change silently.
 
 ### Coordination waits
 

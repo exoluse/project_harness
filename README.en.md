@@ -107,9 +107,9 @@ Everything else has a default and is added only when you want something differen
 |---|---|---|
 | Stopping point | Continue through ready stages | `plan only`, `define the task only` |
 | Exclusions | Production deployment, production data, secrets and final acceptance need separate approval even if unstated | `propose changes to the shared API contract, do not edit it` |
-| Owned area | Derived from records after planning | `authentication area` |
+| Area | Derived from the item record after planning | `authentication area` |
 
-Name the area only during planning. Once planning is done, every task, requirement and contract records its owning area and the agent knows who is asking from the git user identity, so it derives the area and owner from the feature and checks them against the requester. When a feature spans several areas, the agent asks. If no allocation record exists and the agent sees traces of other writers, it does not create a new ID and asks for confirmation instead.
+Name the area only during planning. Once planning is done, every task, requirement and contract records the area it belongs to, so the agent derives the area from the feature. When a feature spans several areas, the agent asks. If it sees someone else's uncommitted work in the same area, it does not overwrite it and asks for confirmation instead.
 
 `〈 〉` marks a placeholder; delete lines you do not need.
 
@@ -123,11 +123,11 @@ Name the area only during planning. Once planning is done, every task, requireme
 
 **Join and check the current state**
 
-> I am joining this project as the owner of the 〈authentication area〉.
+> I am joining this project. The area I will work in is 〈authentication〉.
 > Read the overview and my area's items, and tell me the current stage, assigned tasks, open items and blockers.
 > Report only; do not edit documents.
 
-When the overview already records each git user's assignment, the first line can simply be "tell me the current state of my assigned items".
+In a small project with a single area, the first line can simply be "tell me the current state".
 
 **Plan a new feature**
 
@@ -150,7 +150,7 @@ If the behavior is not in any requirement, the agent reports that a requirement 
 > Work on the 〈lock the account after five failed sign-ins〉 task.
 > Follow the task document's actions and completion checks, and continue through verification.
 
-The agent first states which task it is and checks that the task's owner matches the requester. Documents owned by others are not edited; the agent leaves a proposal instead. The completion report lists the checks actually run and their results.
+The agent first states which task it is. Documents of other areas and shared contracts are not edited; the agent leaves a change proposal instead. The completion report lists the checks actually run and their results.
 
 **Fix a defect**
 
@@ -163,12 +163,12 @@ The agent finds the related requirement from the symptom and reuses that require
 
 > I want to change 〈the session timeout from 30 to 15 minutes〉.
 > Summarize the impact on related requirements, shared contracts, and other areas' tasks and verification.
-> Mark the parts that need another area owner's decision. Do not edit yet.
+> Mark the parts that need a decision in another area. Do not edit yet.
 
 **Request a change to a shared document**
 
 > The 〈sign-in API〉 response needs 〈a lock-status field〉.
-> Do not edit it; leave the owner a proposal with the change, reason and impact.
+> Do not edit it; leave a proposal with the change, reason and impact.
 > Mark work that depends on this input as waiting until the proposal is applied, and continue independent work.
 
 **Check progress and requirement trace**
@@ -204,42 +204,38 @@ When a material commitment changes, such as behavior, cost, data handling or use
 
 For a correction, the agent reuses applicable content and keeps affected documents current. Changes to shared functions or APIs also require checking other requirements that use them. The overview is updated when its summary changes, including major stages, blockers or dependencies.
 
-Concurrent agents agree owners and edit boundaries. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
+Concurrent agents keep separate edit scopes, usually separate branches. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
 
 ### What a team records in the overview before starting
 
-For several people to work concurrently, the overview needs the following recorded once. This is what lets post-planning requests omit the area and prevents two people from using the same number.
+For several people to work concurrently, the overview needs the following recorded once. This is what lets post-planning requests omit the area and prevents two people from using the same number. No table of owners or assignees is needed.
 
 ```markdown
-## Areas and owners
+## Areas
 
-| Area | Owner (git user) | Edit scope |
-|---|---|---|
-| AUTH (authentication) | jane@example.com | tasks/TASK-AUTH-*, src/auth/** |
-| API (backend API) | minsu@example.com | tasks/TASK-API-*, src/api/** |
-| UI (screens) | alex@example.com | tasks/TASK-UI-*, web/** |
-
-Owner of the overview, shared designs and API contracts: minsu@example.com. Git integration: minsu@example.com.
-Others leave change proposals on owned documents; the owner applies them.
+| Area | Scope |
+|---|---|
+| AUTH | Authentication. src/auth/** |
+| API | Backend API. src/api/** |
+| UI | Screens. web/** |
 
 ## ID formats
 
-| Kind | Format | Allocation |
+| Kind | Format | Number |
 |---|---|---|
-| Requirement | REQ-NNN | Project-wide, allocated by the overview owner |
-| Task | TASK-{area}-NNN | Counted per area, allocated by the area owner |
-
-## ID allocation
-
-Basis: full document scan at commit a1b2c3d, no collisions.
-REQ: next 007. TASK-AUTH: next 004. TASK-API: next 012. TASK-UI: next 002.
+| Requirement | REQ-NNN | Counted project-wide. Currently next 007 |
+| Task | TASK-{area}-{issue} | The GitHub issue number as is |
 
 ## Task status
 
 GitHub Issues owns task assignment and status. Documents link the issue number and do not copy its status.
+
+## How changes land
+
+Everyone works on their own branch and merges through pull requests. The overview, shared designs and API contracts are changed the same way; the merge is the integration.
 ```
 
-Using the area as the task ID's classification value means each person counts within their own area, so no range table is needed. Areas need not map one-to-one to people: the area is a work division and the owner is a separate column. IDs stay the same when people change.
+An area is a division of work, not an assignment of people. Who is doing what is visible from issue assignees and branches, and overlap with someone else's work surfaces at merge. Using the issue number as the task number makes it impossible for two people to create the same one. A team without issues records the next number per area in the overview and fetches before creating a new item. If numbers still collide, whoever merges second renumbers and repairs the links.
 
 ### When the agent stops and asks
 
@@ -248,7 +244,7 @@ In these situations the agent stops the affected work and asks for a decision or
 - **The request alone cannot fix the outcome.** "Improve this" with no target, where the agent would have to choose the result for you.
 - **A material commitment changes.** Behavior or acceptance criteria, interfaces other systems rely on, data collection, retention or deletion, security or permission boundaries, cost, external services or delivery promises, or the assumptions behind an earlier decision. The agent presents the before and after and asks for a decision.
 - **A high-risk boundary is reached.** Production deployment, production data changes, destructive operations, secret access and final customer acceptance. Ordinary implementation approval is not enough; a human decision naming the subject, version and effect is needed.
-- **Essential input is missing.** No allocation record but traces of other writers, a description that matches several items, or a decision the plan lacks that implementation now needs.
+- **Essential input is missing.** Someone else's uncommitted work in the same area, a description that matches several items, or a decision the plan lacks that implementation now needs.
 - **The basis is unreliable.** Uncertain authority provenance, an ownership conflict, or contradictory current evidence.
 
 The agent does not ask about the following. Unknown filenames or test commands, splitting or reordering tasks, starting the next task in the same scope, or approval of planning completion itself. A clear fix request is its own scope decision, so the agent does not ask "shall I proceed?" again.
@@ -290,7 +286,7 @@ After taking the "lock the account after five failed sign-ins" task through veri
 >
 > **Actually verified**: commit 9f3e21a, local Node 20 environment. `npm test`: 47 passed. Before-lock, at-lock and after-unlock scenarios confirmed by integration tests. State: INTEGRATION_VERIFIED. No browser check performed.
 >
-> **Remaining**: API-001 still lacks the lock-status response field, recorded as OI-003, owner minsu, needed before the next integration. Unlock notification is out of scope. Next action: run contract test CT-API-001-02 once API-001 is updated.
+> **Remaining**: API-001 still lacks the lock-status response field, recorded as OI-003, follow-up by minsu, needed before the next integration. Unlock notification is out of scope. Next action: run contract test CT-API-001-02 once API-001 is updated.
 
 Three things to check in such a report: whether what was checked is stated as a command and environment, whether any unrun check is hidden, and whether each blocker has an owner and a next action.
 
