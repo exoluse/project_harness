@@ -237,6 +237,64 @@ Required project/CI checks remain required. Report a check failure accurately
 even when unrelated authorized work can continue.
 No test run means no test-pass claim.
 
+## Status and trace reporting
+
+A status request such as "how far is this project" or "how much of the
+requirements are traced" is an analysis request. It authorizes reading the
+project records and producing the report; it does not authorize document
+edits, and it does not require the user to name IDs, paths or stages. Derive
+every statement from the owning records at a stated version; never estimate
+progress from titles, labels or file counts alone.
+
+### Scope and basis
+
+1. Identify the requested scope: the whole project, an area, one plan or one
+   requirement. Default to the whole project as indexed by the root overview.
+2. Inspect Git status and record the baseline commit/snapshot, dirty work and
+   the date. Treat unknown dirty files as someone else's work.
+3. Start from the [project overview](DATA_MODEL.md#document-organization) and
+   applicable [area overviews](DATA_MODEL.md#area-overviews), then read the
+   owning requirement, design, plan, task, verification and open-item records
+   for the scope. Read designated
+   [external tracker](DATA_MODEL.md#external-work-trackers) state where it
+   owns work status; if the tracker is unreachable, report that state as
+   unknown rather than reusing a Markdown copy.
+4. Under [summary ownership](DATA_MODEL.md#summary-ownership-and-updates),
+   owning records prevail over overview or plan summaries. Report the owning
+   fact and list the disagreement as a discrepancy.
+
+Mechanical scans (link resolution, ID and status collection) may be
+delegated under [model selection](CONTEXT_EFFICIENCY.md#model-selection-and-delegation);
+the accountable agent interprets the result and makes the stage and
+coverage judgments.
+
+### Report content
+
+| Section | Content |
+|---|---|
+| Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
+| Stage summary | Current stage per the overview, active plans, and the stage actually supported by the owning records where it differs. |
+| Requirement trace | One row per in-scope requirement: covering design/contract, plan, tasks with their statuses, verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
+| Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. |
+| Gaps and discrepancies | Requirements without covering design or work; work, contracts or verification not linked to any requirement; unresolved links or IDs; summaries that contradict owning records; evidence whose subject version predates later changes to that subject; open items past their needed-by point. |
+| Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
+
+Progress numbers describe record states, not effort or schedule. State what
+each count measures; a task-completion ratio is not a requirement-level
+completion ratio, and a plan marked complete does not establish verification
+or acceptance. Do not report a percentage without its definition and
+denominator.
+
+### After the report
+
+The report is conversation output. If the user asks to keep it, store it as
+a dated snapshot with its baseline version, for example in the project note or
+a handoff record; it is historical and not a parallel current status. Repairing
+links, updating summaries or recording discrepancies as open items is separate
+work that follows the usual [request authority](../AGENTS.md#authority-and-decisions);
+propose it with the report and perform it when requested. Handoff notes reuse
+the same basis under [progress and handoff notes](CONTEXT_EFFICIENCY.md#progress-and-handoff-notes).
+
 ## Closure preparation
 
 Aggregate the declared release/project across all contributing plans. Review

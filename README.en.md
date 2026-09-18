@@ -107,6 +107,14 @@ The agent reuses existing requirements and detailed documents and specifies the 
 
 Use this to understand affected scope and work before deciding on a change.
 
+### Check progress and requirement trace
+
+> Summarize the current project progress from the project documents.
+> For each requirement, show how far design, plan, tasks and verification are linked, and where links or work are missing or blocked.
+> Report only; do not edit the documents.
+
+Use this to see the current stage, the trace state and evidence level of each requirement, and inconsistencies between records, using only the project records. The agent reads the overview and each requirement's owning documents and reports the baseline version, a per-requirement trace table, counts with stated definitions, gaps and blockers. Where an overview summary and the owning record differ, the owning record is reported and the difference is flagged. You do not need to supply requirement IDs or file paths.
+
 ### Hand off to another session or contributor
 
 > Summarize the changes and actual verification results so far.
