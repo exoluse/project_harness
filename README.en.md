@@ -121,6 +121,15 @@ Name the area only during planning. Once planning is done, every task, requireme
 > Distinguish observed facts, inferred intent and confirmed customer requirements.
 > Stop after analysis and planning this time.
 
+**Set up team work**
+
+> This project has 〈3〉 people, each working on their own branch and merging through pull requests.
+> The areas are 〈authentication (src/auth), backend API (src/api), screens (web)〉.
+> Task numbers use 〈the GitHub issue number〉, and task assignment and status live in 〈GitHub Issues〉.
+> Record the areas, ID formats, where task status lives and how changes land in the overview.
+
+The agent records the area list, ID format table, tracker designation and change flow in the overview. Once that is recorded, later requests need not name the area and two people cannot create the same number. No table of owners or assignees is needed. Who is doing what is visible from issue assignees and branches, and overlap surfaces at merge. A team without issues says "task numbers continue per area", and the agent then fetches before creating a new item; if numbers still collide, whoever merges second renumbers.
+
 **Join and check the current state**
 
 > I am joining this project. The area I will work in is 〈authentication〉.
@@ -205,37 +214,6 @@ When a material commitment changes, such as behavior, cost, data handling or use
 For a correction, the agent reuses applicable content and keeps affected documents current. Changes to shared functions or APIs also require checking other requirements that use them. The overview is updated when its summary changes, including major stages, blockers or dependencies.
 
 Concurrent agents keep separate edit scopes, usually separate branches. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
-
-### What a team records in the overview before starting
-
-For several people to work concurrently, the overview needs the following recorded once. This is what lets post-planning requests omit the area and prevents two people from using the same number. No table of owners or assignees is needed.
-
-```markdown
-## Areas
-
-| Area | Scope |
-|---|---|
-| AUTH | Authentication. src/auth/** |
-| API | Backend API. src/api/** |
-| UI | Screens. web/** |
-
-## ID formats
-
-| Kind | Format | Number |
-|---|---|---|
-| Requirement | REQ-NNN | Counted project-wide. Currently next 007 |
-| Task | TASK-{area}-{issue} | The GitHub issue number as is |
-
-## Task status
-
-GitHub Issues owns task assignment and status. Documents link the issue number and do not copy its status.
-
-## How changes land
-
-Everyone works on their own branch and merges through pull requests. The overview, shared designs and API contracts are changed the same way; the merge is the integration.
-```
-
-An area is a division of work, not an assignment of people. Who is doing what is visible from issue assignees and branches, and overlap with someone else's work surfaces at merge. Using the issue number as the task number makes it impossible for two people to create the same one. A team without issues records the next number per area in the overview and fetches before creating a new item. If numbers still collide, whoever merges second renumbers and repairs the links.
 
 ### When the agent stops and asks
 
