@@ -6,6 +6,11 @@ once per session; a current supplied/read copy counts. Use its
 requested scope and read applicable detailed rules before acting. All shared
 authority, documentation, ownership, verification and safety requirements apply.
 
+The import below supplies the current policy with this adapter in every
+session, so it stays in context after compaction:
+
+@AGENTS.md
+
 ## Model tiers
 
 For each delegation, select the subagent model automatically from its
