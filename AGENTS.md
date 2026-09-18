@@ -8,8 +8,8 @@ explicitly authorizes work there.
 ## Policy-first operation
 
 This repository ships policy and documentation, plus one optional
-[document checker](tools/check-docs.mjs) for links, anchors and dated facts. It
-contains no workflow runtime, schema or record store; no setup is required and
+[document checker](tools/check-docs.mjs) for links, anchors, dated facts and
+ID-named files. It contains no workflow runtime, schema or record store; no setup is required and
 the checker is never a prerequisite for work. Assess actual authority,
 scope, dependencies and evidence, using ordinary project documents. Records
 left by the former runtime are historical input; see

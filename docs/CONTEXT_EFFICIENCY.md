@@ -36,9 +36,22 @@ Git/diff trace; no separate review record or numeric length target is required.
 that heading anchors resolve and that `Last checked:` dates are recent. It needs
 Node and no packages, reads Markdown and writes nothing; a governed project can
 point it at its own document root. Run it after changing guidance and before a
-completion claim that relies on links. A pass covers only those three checks:
-content, ID allocation, trace coverage and meaning still need their own review.
-Without Node, make the same checks by a lightweight scan and say so.
+completion claim that relies on links.
+
+For files named `<ID>.md` or `<ID>-<slug>.md` it also reports two files owning
+one ID (an error), an ID-only heading that repeats an ID defined elsewhere, a
+filename description that is not two lowercase hyphenated words, a filename ID
+absent from the body, and, when a directory is scanned, an ID-named file that
+no scanned document links to. It takes the unlinked document linking to the
+most items as the project overview. It reads the ID from the filename alone:
+it does not know the project's format table, folder mapping, allocation record,
+delegated ranges or retired IDs, and it skips files with other names, including
+harness guidance and [required-name files](DATA_MODEL.md#required-name-exceptions).
+Scope the scanned path when retained historical copies share an ID.
+
+A pass covers only these checks: content, ID format and allocation, trace
+coverage and meaning still need their own review. Without Node, make the same
+checks by a lightweight scan and say so.
 
 ### Dated tool facts
 

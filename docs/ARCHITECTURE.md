@@ -37,7 +37,7 @@ separate current implementation from proposed changes.
 | `AGENTS.md` | Canonical operating policy. |
 | `CLAUDE.md`, start prompts | Tool entry guidance consistent with the policy. |
 | `README.md`, `docs/` | Workflow, decisions, security, examples and reference material. |
-| `tools/check-docs.mjs` | Optional dependency-free Node check of relative links, heading anchors and `Last checked:` dates; see [guidance maintenance](CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
+| `tools/check-docs.mjs` | Optional dependency-free Node check of relative links, heading anchors, `Last checked:` dates and ID-named files; see [guidance maintenance](CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
 | Existing `.harness/` records in an adopted project | Records left by the retired runtime; see [former runtime records](WORKFLOW.md#former-runtime-records). |
 
 The repository ships no workflow runtime, schema or record store. Its policy

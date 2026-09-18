@@ -1,16 +1,21 @@
 #!/usr/bin/env node
-// Deterministic Markdown checks: relative link targets, heading anchors and
-// stale "Last checked" dates. No dependencies. Its output is evidence for what
-// it checked; it grants no authority and replaces no review.
+// Deterministic Markdown checks: relative link targets, heading anchors, stale
+// "Last checked" dates and ID-named documents (`<ID>.md`, `<ID>-<slug>.md`).
+// No dependencies. Its output is evidence for what it checked; it grants no
+// authority and replaces no review.
 //
 // Usage: node tools/check-docs.mjs [--max-age <days>] [path ...]
 //   path       Files or directories to scan (default: current directory).
 //   --max-age  Warn when a "Last checked: YYYY-MM-DD" date is older (default 90).
-// Exit code: 1 when a link or anchor does not resolve, otherwise 0.
-// Warnings never change the exit code.
+// Exit code: 1 when a link or anchor does not resolve or two scanned files own
+// the same ID, otherwise 0. Warnings never change the exit code.
+//
+// ID checks read the ID from the filename, so files with other names, such as
+// harness guidance and required-name files, are not examined. They know nothing
+// of a project's format table, allocation record or retired IDs.
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, extname, join, relative, resolve, sep } from 'node:path';
+import { basename, dirname, extname, join, relative, resolve, sep } from 'node:path';
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.venv', '.harness']);
 const LINK = /!?\[((?:[^\[\]]|\[[^\]]*\])*)\]\(\s*(<[^>]*>|[^()\s]+(?:\([^()]*\)[^()\s]*)*)(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g;
@@ -18,9 +23,14 @@ const REFERENCE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/gm;
 const HEADING = /^ {0,3}#{1,6}[ \t]+(.*?)[ \t]*#*[ \t]*$/;
 const EXPLICIT_ID = /<[a-zA-Z][^>]*\s(?:id|name)\s*=\s*["']([^"']+)["']/g;
 const LAST_CHECKED = /Last checked:\s*(\d{4})-(\d{2})-(\d{2})/g;
+// Uppercase/digit segments ending in a serial: REQ-001, TASK-API-001, OD-012-01.
+const ID = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\\d+';
+const ID_FILENAME = new RegExp(`^(${ID})(?:-(.+))?\\.md$`);
+const ID_ONLY = new RegExp(`^${ID}$`);
+const SLUG = /^[a-z]+-[a-z]+$/;
 
 function parseArgs(argv) {
-  const options = { maxAge: 90, paths: [] };
+  const options = { maxAge: 90, paths: [], scannedDirectory: false };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--max-age') {
       options.maxAge = Number(argv[i + 1]);
@@ -86,25 +96,32 @@ function slugify(heading, seen) {
   return count === 0 ? base : `${base}-${count}`;
 }
 
+// Heading text and 1-based line of every heading outside fenced blocks.
+function headingsOf(raw) {
+  const headings = [];
+  let fence = null;
+  raw.split('\n').forEach((line, index) => {
+    const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
+    if (fence) {
+      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length) fence = null;
+      return;
+    }
+    if (marker) {
+      fence = marker[1];
+      return;
+    }
+    const heading = line.match(HEADING);
+    if (heading) headings.push([heading[1], index + 1]);
+  });
+  return headings;
+}
+
 function anchorsOf(file, cache) {
   if (cache.has(file)) return cache.get(file);
   const raw = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
   const anchors = new Set();
   const seen = new Map();
-  let fence = null;
-  for (const line of raw.split('\n')) {
-    const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
-    if (fence) {
-      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length) fence = null;
-      continue;
-    }
-    if (marker) {
-      fence = marker[1];
-      continue;
-    }
-    const heading = line.match(HEADING);
-    if (heading) anchors.add(slugify(heading[1], seen));
-  }
+  for (const [heading] of headingsOf(raw)) anchors.add(slugify(heading, seen));
   for (const match of blankCode(raw).matchAll(EXPLICIT_ID)) anchors.add(match[1]);
   cache.set(file, anchors);
   return anchors;
@@ -124,8 +141,17 @@ function decode(value) {
   }
 }
 
+// Paths compare case-insensitively where the filesystem does.
+function pathKey(path) {
+  return process.platform === 'win32' ? path.toLowerCase() : path;
+}
+
+// Returns what the ID checks need: the file's ID, the Markdown files it links
+// to and its ID-only headings, which mark item definitions.
 function checkFile(file, cache, options, report) {
-  const text = blankCode(readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
+  const raw = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
+  const text = blankCode(raw);
+  const linked = new Set();
   const targets = [];
   for (const match of text.matchAll(LINK)) targets.push([match[2], match.index]);
   for (const match of text.matchAll(REFERENCE)) targets.push([match[1], match.index]);
@@ -142,8 +168,10 @@ function checkFile(file, cache, options, report) {
       report.errors.push([file, lineAt(text, index), `missing target: ${target}`]);
       continue;
     }
-    if (anchor === '' || extname(destination).toLowerCase() !== '.md') continue;
+    if (extname(destination).toLowerCase() !== '.md') continue;
     if (!statSync(destination).isFile()) continue;
+    linked.add(pathKey(destination));
+    if (anchor === '') continue;
     if (!anchorsOf(destination, cache).has(anchor.toLowerCase())) {
       report.errors.push([file, lineAt(text, index), `missing anchor: ${target}`]);
     }
@@ -160,6 +188,89 @@ function checkFile(file, cache, options, report) {
       ]);
     }
   }
+
+  const definitions = [];
+  for (const [heading, line] of headingsOf(raw)) {
+    const plain = heading.replace(/[`*]/g, '').trim();
+    if (ID_ONLY.test(plain)) definitions.push([plain, line]);
+  }
+
+  const named = basename(file).match(ID_FILENAME);
+  if (!named) return { id: null, linked, definitions };
+  const [, id, slug] = named;
+  if (slug !== undefined && !SLUG.test(slug)) {
+    report.warnings.push([
+      file,
+      1,
+      `filename description "${slug}" is not two lowercase words joined by a hyphen`,
+    ]);
+  }
+  if (!new RegExp(`(?<![A-Za-z0-9-])${id}(?!-?[A-Za-z0-9])`).test(raw)) {
+    report.warnings.push([file, 1, `ID ${id} from the filename does not appear in the body`]);
+  }
+  return { id, linked, definitions };
+}
+
+function showPath(file) {
+  return relative(process.cwd(), file).split(sep).join('/');
+}
+
+// One owning file and one definition per ID, and an incoming link for every
+// ID-named file.
+function checkIds(scanned, options, report) {
+  const owners = new Map();
+  const headings = new Map();
+  for (const [file, { id, definitions }] of scanned) {
+    if (id) owners.set(id, [...(owners.get(id) ?? []), file]);
+    for (const [defined, line] of definitions) {
+      if (defined === id) continue;
+      headings.set(defined, [...(headings.get(defined) ?? []), [file, line]]);
+    }
+  }
+  for (const [id, files] of owners) {
+    if (files.length < 2) continue;
+    for (const file of files) {
+      const others = files.filter((other) => other !== file).map(showPath).join(', ');
+      report.errors.push([file, 1, `ID ${id} has another owning file: ${others}`]);
+    }
+  }
+  for (const [id, sites] of headings) {
+    const all = [
+      ...(owners.get(id) ?? []).map(showPath),
+      ...sites.map(([file, line]) => `${showPath(file)}:${line}`),
+    ];
+    if (all.length < 2) continue;
+    for (const [file, line] of sites) {
+      const others = all.filter((site) => site !== `${showPath(file)}:${line}`).join(', ');
+      report.warnings.push([file, line, `ID-only heading ${id} is also defined at ${others}`]);
+    }
+  }
+
+  // Incoming links are only known when a directory was scanned. The unlinked
+  // document that links to the most items is taken as the project overview.
+  if (!options.scannedDirectory) return;
+  const idFiles = new Set();
+  const incoming = new Set();
+  for (const [file, { id, linked }] of scanned) {
+    if (id) idFiles.add(pathKey(file));
+    for (const target of linked) if (target !== pathKey(file)) incoming.add(target);
+  }
+  const unlinked = [];
+  for (const [file, { id, linked }] of scanned) {
+    if (!id || incoming.has(pathKey(file))) continue;
+    const items = [...linked].filter((target) => idFiles.has(target) && target !== pathKey(file));
+    unlinked.push([file, items.length]);
+  }
+  const most = Math.max(0, ...unlinked.map(([, count]) => count));
+  const overviews = unlinked.filter(([, count]) => most > 0 && count === most);
+  for (const [file] of unlinked) {
+    if (overviews.length === 1 && overviews[0][0] === file) continue;
+    report.warnings.push([
+      file,
+      1,
+      'no scanned document links here: link it from its overview or owning plan',
+    ]);
+  }
 }
 
 function main() {
@@ -168,15 +279,17 @@ function main() {
   const files = new Set();
   for (const path of options.paths) {
     if (!existsSync(path)) throw new Error(`path not found: ${path}`);
+    if (statSync(path).isDirectory()) options.scannedDirectory = true;
     collectMarkdown(path, files);
   }
 
   const report = { errors: [], warnings: [] };
   const cache = new Map();
-  for (const file of [...files].sort()) checkFile(file, cache, options, report);
+  const scanned = new Map();
+  for (const file of [...files].sort()) scanned.set(file, checkFile(file, cache, options, report));
+  checkIds(scanned, options, report);
 
-  const show = ([file, line, message]) =>
-    `${relative(process.cwd(), file).split(sep).join('/')}:${line}: ${message}`;
+  const show = ([file, line, message]) => `${showPath(file)}:${line}: ${message}`;
   for (const entry of report.warnings) console.log(`warning ${show(entry)}`);
   for (const entry of report.errors) console.log(`error   ${show(entry)}`);
   console.log(

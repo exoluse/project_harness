@@ -702,6 +702,12 @@ required by the documented consumer constraint; identity, links and other checks
 remain applicable. Do not treat every existing descriptive filename as a new
 exception. Existing records keep their names and applicable prior evidence.
 
+The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the
+filename-derived part of the identity and path checks: duplicate owning files,
+repeated ID-only headings, slug syntax, filename/body ID agreement and unlinked
+ID-named files. Registered formats, folder mapping, allocation and whether an
+ID names the intended item still need review.
+
 ## Trace and baselines
 
 Use commits, snapshots or document versions to identify the basis of important

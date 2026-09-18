@@ -240,7 +240,7 @@ Planning completion, implementation, verification, customer acceptance and proje
 
 If work is blocked, the report identifies the cause and affected scope. A handoff states what the next contributor should do and which inputs are needed.
 
-You can check for broken document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files. A pass covers links, anchors and check dates only; content and trace coverage are reviewed separately.
+You can check for broken document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files. For files named by ID, such as `REQ-001.md`, it also reports two files owning the same ID, a filename ID missing from the body, and an item that no document links to. A pass covers only these mechanical checks; content, ID allocation and trace coverage are reviewed separately.
 
 ### States and verification levels
 
