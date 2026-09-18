@@ -13,7 +13,11 @@ continues to apply to actual development and requested document deliverables.
 ## The path as it runs today
 
 1. Identify the requested outcome, stage/stopping point, existing decisions and
-   relevant project notes. Inspect dirty work before writing.
+   relevant project notes. Resolve a request stated in plain words to its
+   owning items through the overview and plans and state that resolution;
+   present candidates before editing when several items could match, and do
+   not create a new item merely because no description matched. Inspect dirty
+   work before writing.
 2. Establish the current input versions and preserve existing progress.
 3. Produce the requested discovery, requirements, design or planning outputs.
    Maintain a project overview and separate independently scoped feature/work

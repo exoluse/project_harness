@@ -78,49 +78,102 @@ IDs such as `REQ-001` and `PLAN-001` let you trace an item even when its title o
 
 ## Example requests
 
-### Analyze an existing project
+The only required input is which feature and what to do with it. You do not need IDs, file paths, folder names or new numbers. The agent finds the matching documents in the overview and plans and reports which items it resolved to, with their IDs. When several items could match, it presents the candidates before editing; when nothing matches, it says so instead of creating a new item.
+
+Everything else has a default and is added only when you want something different.
+
+| Optional line | Default | Example addition |
+|---|---|---|
+| Stopping point | Continue through ready stages | `plan only`, `define the task only` |
+| Exclusions | Production deployment, production data, secrets and final acceptance need separate approval even if unstated | `propose changes to the shared API contract, do not edit it` |
+| Owned area | Derived from records after planning | `authentication area` |
+
+Name the area only during planning. Once planning is done, every task, requirement and contract records its owning area and the agent knows who is asking from the git user identity, so it derives the area and owner from the feature and checks them against the requester. When a feature spans several areas, the agent asks. If no allocation record exists and the agent sees traces of other writers, it does not create a new ID and asks for confirmation instead.
+
+`〈 〉` marks a placeholder; delete lines you do not need.
+
+### Planning stage: name the area
+
+**Analyze an existing project**
 
 > Analyze the current code and documents and identify implemented features and remaining work.
 > Distinguish observed facts, inferred intent and confirmed customer requirements.
 > Stop after analysis and planning this time.
 
-Use this to understand the current project and the work ahead.
+**Join and check the current state**
 
-### Implement a prepared plan
+> I am joining this project as the owner of the 〈authentication area〉.
+> Read the overview and my area's items, and tell me the current stage, assigned tasks, open items and blockers.
+> Report only; do not edit documents.
 
-> Implement the presented scope using its verification methods.
-> Exclude production deployment this time.
+When the overview already records each git user's assignment, the first line can simply be "tell me the current state of my assigned items".
 
-Use this to execute a concrete plan you have reviewed.
+**Plan a new feature**
 
-### Fix a defect
+> Plan a 〈password reset link expiry〉 feature in the 〈authentication area〉.
+> Write the requirement, design and detailed plan only, and flag any impact on other areas.
 
-> Fix the search result count showing one when there are no matches.
-> Show zero, and check non-empty and paginated results too.
+**Define a new task**
 
-The agent reuses existing requirements and detailed documents and specifies the correction and its affected work.
+> Create a new task in the 〈authentication area〉.
+> Content: 〈notify an administrator when an unlock is requested〉. It belongs to the 〈account lockout〉 requirement.
+> Allocate the ID under the area's allocation rule and link it in that plan's task list.
+> Define the task only; do not implement it.
 
-### Review a proposed change
+If the behavior is not in any requirement, the agent reports that a requirement change comes first.
 
-> I want to add registration dates to the CSV export.
-> First assess the impact on requirements, APIs, tasks and verification.
+### After planning: name only the feature
 
-Use this to understand affected scope and work before deciding on a change.
+**Implement a defined task**
 
-### Check progress and requirement trace
+> Work on the 〈lock the account after five failed sign-ins〉 task.
+> Follow the task document's actions and completion checks, and continue through verification.
+
+The agent first states which task it is and checks that the task's owner matches the requester. Documents owned by others are not edited; the agent leaves a proposal instead. The completion report lists the checks actually run and their results.
+
+**Fix a defect**
+
+> Fix 〈the lock notice not appearing after failed sign-ins〉.
+> Report the cause and affected scope first, then after the fix check 〈before lock, at lock and after unlock〉.
+
+The agent finds the related requirement from the symptom and reuses that requirement and its existing verification. No new requirement is created.
+
+**Review a proposed change**
+
+> I want to change 〈the session timeout from 30 to 15 minutes〉.
+> Summarize the impact on related requirements, shared contracts, and other areas' tasks and verification.
+> Mark the parts that need another area owner's decision. Do not edit yet.
+
+**Request a change to a shared document**
+
+> The 〈sign-in API〉 response needs 〈a lock-status field〉.
+> Do not edit it; leave the owner a proposal with the change, reason and impact.
+> Mark work that depends on this input as waiting until the proposal is applied, and continue independent work.
+
+**Check progress and requirement trace**
 
 > Summarize the current project progress from the project documents.
 > For each requirement, show how far design, plan, tasks and verification are linked, and where links or work are missing or blocked.
 > Report only; do not edit the documents.
 
-Use this to see the current stage, the trace state and evidence level of each requirement, and inconsistencies between records, using only the project records. The agent reads the overview and each requirement's owning documents and reports the baseline version, a per-requirement trace table, counts with stated definitions, gaps and blockers. Where an overview summary and the owning record differ, the owning record is reported and the difference is flagged. You do not need to supply requirement IDs or file paths.
+Where an overview summary and the owning record differ, the owning record is reported and the difference is flagged.
 
-### Hand off to another session or contributor
+**Report a blocker and record an open item**
 
-> Summarize the changes and actual verification results so far.
-> Include unfinished work, blockers and what the next contributor should do first.
+> The 〈account lockout〉 task is blocked because 〈the sign-in API has no lock-status response definition〉.
+> Record it as an open item with affected work, resolution criterion, owner and needed-by point.
+> Continue the remaining unblocked work.
 
-The handoff lets work continue from the retained records.
+**Prepare for integration**
+
+> Prepare my changes for integration.
+> Summarize the diff of changed documents and code, the verification actually run, and checks that failed or did not run, and confirm new IDs and links follow the rules.
+> Fetch and tell me about conflicts with 〈main〉; push only after I confirm.
+
+**Hand off to another session or contributor**
+
+> Summarize the changes to my assigned items so far and the actual verification results.
+> Include unfinished work, blockers, pending shared-document changes and what the next contributor should do first.
 
 ## Implementation decisions and changes
 
@@ -130,7 +183,7 @@ When a material commitment changes, such as behavior, cost, data handling or use
 
 For a correction, the agent reuses applicable content and keeps affected documents current. Changes to shared functions or APIs also require checking other requirements that use them. The overview is updated when its summary changes, including major stages, blockers or dependencies.
 
-Concurrent agents agree owners and edit boundaries. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
+Concurrent agents agree owners and edit boundaries. For post-planning requests to work without naming an area, the overview must record once the area owners (by git user) and the ID allocation rule, the owners of the overview, shared documents and Git integration, and which tracker holds task status. Using the area as an ID classification value avoids number collisions without a range table. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
 
 ## Verification and completion
 
