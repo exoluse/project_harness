@@ -8,6 +8,23 @@ Other guidance links these definitions and may show brief summaries or examples.
 The [management format policy](../AGENTS.md#management-document-format)
 governs Markdown, existing records and tool-required formats.
 
+This file is long; do not load it whole. Pick the sections for the work from
+the two tables below and read only those, locating each by its heading text
+(for example, search for `## Item IDs` and read to the next `## ` heading).
+Follow a link into another section only when the rule being applied depends on
+it. Every section that applies to the work remains mandatory; a section that
+does not apply is not required reading.
+
+| Work | Sections to read |
+|---|---|
+| Create, name or rename a project document | [ID scope](#id-scope), [Item IDs](#item-ids), [Document paths](#document-paths), the single-writer paragraphs of [Allocation reuse](#allocation-and-validation-reuse), [Document validation](#document-validation) |
+| Decide whether something is a separate item | [Item boundaries](#independent-items-and-supporting-detail) |
+| Document a small correction | [Minimum documentation for a small change](#minimum-documentation-for-a-small-change) |
+| Write or update an overview, plan or task | [Document organization](#document-organization), [Plans and tasks](#plans-and-tasks), [Summary ownership and updates](#summary-ownership-and-updates) |
+| Record or follow up an unresolved question | [Open items](#open-items) |
+| Several teams, delegated ID ranges or an external tracker | [Area overviews](#area-overviews), the range record in [Allocation reuse](#allocation-and-validation-reuse), [External work trackers](#external-work-trackers) |
+| Check documents before a completion claim | [Document validation](#document-validation), then the sections its rows name for the changed content |
+
 | Need | Governing section |
 |---|---|
 | Harness guidance or project deliverable | [ID scope](#id-scope) |
@@ -674,7 +691,7 @@ the affected scope and reusable evidence.
 | Area overviews and trackers | Root and area overview entries resolve and hold only their owned content; designated tracker information has no parallel Markdown record; tracker references carry a resolvable key/link, and relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
 | Ordinary paths | Each new file matches the recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
-| Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. |
+| Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
 | Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
 | Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must retain evidence and update affected definitions and dependency status; a status change alone is insufficient. |
 | Scope and history | No unauthorized migration or historical relabeling; IDs and prior decision/evidence history are preserved, and unrun verification is not reported as success. |

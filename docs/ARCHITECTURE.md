@@ -37,10 +37,11 @@ separate current implementation from proposed changes.
 | `AGENTS.md` | Canonical operating policy. |
 | `CLAUDE.md`, start prompts | Tool entry guidance consistent with the policy. |
 | `README.md`, `docs/` | Workflow, decisions, security, examples and reference material. |
+| `tools/check-docs.mjs` | Optional dependency-free Node check of relative links, heading anchors and `Last checked:` dates; see [guidance maintenance](CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
 | Existing `.harness/` records in an adopted project | Records left by the retired runtime; see [former runtime records](WORKFLOW.md#former-runtime-records). |
 
-The repository ships no runtime, CLI, schema or record store. Its policy and
-guidance use Markdown. Former runtime records in adopted projects keep their
+The repository ships no workflow runtime, schema or record store. Its policy
+and guidance use Markdown; the document checker reads them and writes nothing. Former runtime records in adopted projects keep their
 original formats; a governed project supplies its own build and test tooling.
 
 See [Workflow](WORKFLOW.md), [Data model](DATA_MODEL.md) and

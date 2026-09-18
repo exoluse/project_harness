@@ -30,6 +30,27 @@ Do not achieve a shorter entry by making required detail optional or adding
 another summary that readers must always load. Use the policy-maintenance
 Git/diff trace; no separate review record or numeric length target is required.
 
+### Document checker
+
+`node tools/check-docs.mjs [path ...]` checks that relative link targets exist,
+that heading anchors resolve and that `Last checked:` dates are recent. It needs
+Node and no packages, reads Markdown and writes nothing; a governed project can
+point it at its own document root. Run it after changing guidance and before a
+completion claim that relies on links. A pass covers only those three checks:
+content, ID allocation, trace coverage and meaning still need their own review.
+Without Node, make the same checks by a lightweight scan and say so.
+
+### Dated tool facts
+
+Model names and tool configuration syntax change outside this repository. They
+live only in the adapter model mappings and the
+[tool-level control snippets](SECURITY.md#tool-level-supporting-controls). Mark
+each such passage with `Last checked: YYYY-MM-DD` and the official source it
+was checked against. Recheck against that source when the checker warns that
+the date is older than 90 days, when a model or tool release is known, or
+before recommending the passage to an adopter. Change the date only after
+actually checking; an unverified passage keeps its old date.
+
 ## Reuse and verification
 
 Reuse unchanged context and applicable evidence. Recheck when the subject,

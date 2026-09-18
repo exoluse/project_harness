@@ -240,6 +240,8 @@ Planning completion, implementation, verification, customer acceptance and proje
 
 If work is blocked, the report identifies the cause and affected scope. A handoff states what the next contributor should do and which inputs are needed.
 
+You can check for broken document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files. A pass covers links, anchors and check dates only; content and trace coverage are reviewed separately.
+
 ### States and verification levels
 
 The policy requires these states to be kept distinct. A verification record carries the actual method, environment, subject version, result and limits alongside the label, so the label alone is never the judgment.

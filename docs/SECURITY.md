@@ -111,6 +111,12 @@ environments, credentials kept off the agent's machine, and
 administrator-managed tool settings that project and user settings cannot
 override.
 
+Confirm that the hosting plan actually provides the control before relying on
+it. On 2026-09-18 GitHub's free plan refused both rulesets and branch
+protection for a private repository. When no such control is available, report
+that limit instead of presenting tool settings as the boundary; tool settings
+and recoverable history then reduce the risk without replacing the control.
+
 Derive the entries from the project's actual paths and commands:
 
 - **Block** reads of files that hold protected values.
@@ -123,9 +129,14 @@ Derive the entries from the project's actual paths and commands:
 - **Cover every shell the tool exposes.** A rule for one shell tool does not
   match another.
 
-The snippets below show shape only. They were checked against each tool's
-documentation on 2026-09-18; tool syntax changes, so confirm the current
+The snippets below show shape only; tool syntax changes, so confirm the current
 documentation before adopting them.
+
+Last checked: 2026-09-18 against the
+[Claude Code permissions](https://code.claude.com/docs/en/permissions),
+[Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
+and [Codex rules](https://learn.chatgpt.com/docs/agent-configuration/rules.md)
+documentation; syntax compared, not exercised in the tools.
 
 Claude Code, in `.claude/settings.json`. On Windows the agent also has a
 PowerShell tool, which Bash rules do not match:

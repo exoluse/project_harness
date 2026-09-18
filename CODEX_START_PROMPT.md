@@ -17,3 +17,6 @@ the explicit spawn model, without asking the user: lightweight to
 the delegated work's tier differs. Keep strongest-tier judgments in the main
 session; if its model is not suited to them, recommend a `/model` change to
 the user. Update this mapping when available models change.
+
+Last checked: 2026-09-18 against the [Codex models](https://learn.chatgpt.com/docs/models)
+and [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).

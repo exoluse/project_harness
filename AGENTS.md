@@ -7,8 +7,10 @@ explicitly authorizes work there.
 
 ## Policy-first operation
 
-This repository ships policy and documentation only. It contains no runtime,
-CLI, schema or record store; no setup is required. Assess actual authority,
+This repository ships policy and documentation, plus one optional
+[document checker](tools/check-docs.mjs) for links, anchors and dated facts. It
+contains no workflow runtime, schema or record store; no setup is required and
+the checker is never a prerequisite for work. Assess actual authority,
 scope, dependencies and evidence, using ordinary project documents. Records
 left by the former runtime are historical input; see
 [former runtime records](docs/WORKFLOW.md#former-runtime-records).
@@ -76,6 +78,10 @@ Preserve consumer compatibility and identity without duplicate owning files.
 
 This table routes work to its owning rules. Applicable detail is mandatory,
 even when this policy or a README summarizes it; unrelated detail need not be loaded.
+Open a detailed rule file by section, not whole: search for the linked heading
+and read from it to the next heading of the same level. For
+[DATA_MODEL.md](docs/DATA_MODEL.md), first read only its opening tables, which
+end at the first `## ` heading, to choose the sections for the work.
 
 | Trigger | Read and apply |
 |---|---|
@@ -210,8 +216,11 @@ controlled approval/execution boundaries under [Security](docs/SECURITY.md).
 Routine development authority is insufficient; preserve stronger external controls.
 
 Classify actual effects under [development action boundaries](docs/SECURITY.md#classifying-development-actions).
-Covered source edits, verified disposable cleanup and protected internal
-authentication use existing authority under those criteria. Never approve for a human,
+Covered source edits and verified disposable cleanup use existing authority
+under those criteria, and so does an already authenticated tool that uses its
+credential internally without exposing it. Opening a credential file, dumping
+environment variables or otherwise reading a raw token, cookie or key is
+protected-credential access and needs its own specific decision. Never approve for a human,
 forge provenance, alter approval authority or access a human signing key.
 Customer acceptance requires the authorized customer's attributable sign-off.
 
