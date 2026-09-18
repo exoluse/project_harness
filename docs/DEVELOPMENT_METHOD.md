@@ -146,9 +146,11 @@ a gap. Keep the requested stopping point and actual implementation authority.
 6. **Plan verification with the work.** For every acceptance detail and material
    failure/risk, specify the scenario or input, expected observable result,
    check method, environment/fixtures and responsible work item. Include
-   integration and affected regression checks. Use known commands/targets where
-   available; otherwise specify the check to create and how it will run. State
-   unrun checks as planned, including any unavailable environment or permission.
+   integration and affected regression checks. Use the
+   [recorded project conventions](DATA_MODEL.md#suggested-information) or known
+   commands/targets where available; otherwise specify the check to create and
+   how it will run. State unrun checks as planned, including any unavailable
+   environment or permission.
 7. **Audit from the sources and hand off.** Apply all completion checks below
    against the original inputs, linked definitions and candidate plan. Repair
    omissions and check their effects. Record the reviewed versions, coverage,
@@ -274,9 +276,11 @@ reopen the affected coverage checks under the existing change rules.
 ## Existing project intake and reverse engineering
 
 Preserve the intake commit or snapshot and identify dirty/unknown work before
-editing. Record analysis boundaries, available sources, actual progress and
-known verification/deployment status. Existing documents and tools remain
-inputs; resolve conflicting project rules explicitly.
+editing. Record analysis boundaries, available sources, actual progress,
+known verification/deployment status and the observed build, test and check
+conventions under [project conventions](DATA_MODEL.md#suggested-information).
+Existing documents and tools remain inputs; resolve conflicting project rules
+explicitly.
 
 Recover requirements and design from code, configuration, tests, interfaces and
 attributable product documents. Distinguish:

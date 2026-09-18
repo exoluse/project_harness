@@ -24,7 +24,7 @@ Detailed planning, separate documents for requirements and their related work, s
 ## Getting started
 
 1. Have the agent read this repository's [shared policy](AGENTS.md) and the entry guidance for its tool.
-2. Describe the intended result, source/code locations, constraints and how far to proceed this time.
+2. Describe the intended result, source/code locations, constraints and how far to proceed this time. Mention any build and test approach you have already chosen; otherwise it is decided during design and planning.
 3. The agent checks the current state and prepares the documents and work for that scope.
 
 Entry guidance is available for [Codex](CODEX_START_PROMPT.md) and [Claude](CLAUDE_START_PROMPT.md). When adopting the harness in another project, inspect its existing policies and documents before integrating the relevant guidance.
@@ -132,7 +132,7 @@ Look for three things in a result report:
 2. **Observed results:** what was checked, against which version and environment, and what passed or failed.
 3. **Remaining work:** unrun checks, unresolved issues, required decisions and next actions.
 
-Planning completion, implementation, verification, customer acceptance and project closure are distinct. Prepared documents or existing code do not by themselves establish working behavior or customer acceptance. Failed, unrun and partial checks are reported as such.
+Planning completion, implementation, verification, customer acceptance and project closure are distinct. Prepared documents or existing code do not by themselves establish working behavior or customer acceptance. Failed, unrun and partial checks are reported as such. The commands and environments used for checks are recorded in the project overview once decided, and verification records refer to them.
 
 If work is blocked, the report identifies the cause and affected scope. A handoff states what the next contributor should do and which inputs are needed.
 

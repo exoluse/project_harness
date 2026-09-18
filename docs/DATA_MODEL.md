@@ -55,6 +55,7 @@ binding.
 | Information | Minimum useful content |
 |---|---|
 | Project note | Objective, current stage, baseline, decisions, progress, blockers and next action. |
+| Project conventions | Build, test and static-check commands, verification environments, integration/branch model and quality criteria that are actually decided or observed, with their source/version. Record each when it is decided or found at intake, not as a placeholder; verification records reference them. |
 | Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
@@ -89,7 +90,11 @@ when their stage/output is needed, not as placeholders for future stages.
 The overview holds the objective, shared project context, links to shared
 requirements and architecture, baseline, current summary and an index of units.
 It also states the document/item-ID convention, including agent-selected
-extensions and any allocation ownership.
+extensions and any allocation ownership, and records the
+[project conventions](#suggested-information) for build, test and check
+commands, verification environments and integration once they exist. A new
+project adds them when its design or plan decides them; intake records those
+observed in an existing project. An undecided convention is stated as such.
 Each index entry links to the unit's documents and states its scope, stage/status
 and material dependencies. Keep detailed decisions and evidence in their owning
 documents and link to them instead of maintaining duplicate accounts.

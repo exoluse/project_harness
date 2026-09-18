@@ -218,6 +218,13 @@ completion when the requested scope is complete.
 
 Choose checks that establish the declared result. Document the subject version,
 method/environment, expected and observed result, relevant artifacts and limits.
+Name the actual command or check target and environment. Reference the
+[project conventions](DATA_MODEL.md#suggested-information) recorded in the
+overview where they exist; where none is recorded, record the command and
+environment actually used in the verification record and state that the
+convention is undecided. When a verification-level claim, dependent work or
+handoff relies on an undecided convention, track it under the
+[open-item lifecycle](#open-item-lifecycle) instead of inventing one.
 Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED; a document
 check does not establish either product integration or production success.
 

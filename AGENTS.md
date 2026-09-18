@@ -219,7 +219,9 @@ Before completion, release, handover or push, review the actual diff, evidence
 coverage and limits. Check changed deliverables and affected dependencies;
 reuse applicable evidence under [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 Documentation needs content, format and [link/trace checks](docs/DATA_MODEL.md#document-validation);
-product work needs relevant product checks. Never weaken mandatory project/CI checks or approvals.
+product work needs relevant product checks that name the actual command and
+environment under [verification](docs/WORKFLOW.md#verification-and-completion).
+Never weaken mandatory project/CI checks or approvals.
 
 [Hotfixes](docs/WORKFLOW.md#hotfixes-and-incidents) retain scope, authority,
 ownership and verification rules, including external controls on recovery actions.
