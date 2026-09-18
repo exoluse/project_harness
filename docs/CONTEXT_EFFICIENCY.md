@@ -71,6 +71,7 @@ request and reports its result.
 | Tier | Typical work | Handling |
 |---|---|---|
 | Strongest available | Classifying request clarity, material changes, high-risk effects and unknown dispositions; planning completion checks; inferring intent during reverse engineering; resolving open items; completion, handover and closure claims | Keep with the accountable agent. |
+| Advanced | Design-sensitive implementation across several files; root-cause analysis of unclear defects; gathering observations during reverse engineering; independent review of a plan or diff | The accountable agent reviews the output against the scope and criteria before relying on it. |
 | Standard | Bounded implementation or document drafting within a defined scope; code search and summaries | The accountable agent reviews the output against the scope and criteria before relying on it. |
 | Lightweight | Mechanical scans such as link/anchor, ID collision, filename and format checks; locating files | The accountable agent interprets the reported result and its impact. |
 
