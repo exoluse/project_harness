@@ -57,7 +57,10 @@ Preserve consumer compatibility and identity without duplicate owning files.
 
 ## Startup and context
 
-1. Read this policy and the relevant adapter once per session; a current supplied
+1. Read this policy and the adapter for your tool once per session:
+   [CLAUDE.md](CLAUDE.md) for Claude Code,
+   [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md) for Codex. A tool may load
+   only one of the two files by itself, so read the other. A current supplied
    copy counts. Reuse unchanged context.
 2. Identify the objective, stopping point and existing decisions. Classify work
    as analysis/specification, policy maintenance or implementation/verification/
