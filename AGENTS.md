@@ -85,6 +85,7 @@ even when this policy or a README summarizes it; unrelated detail need not be lo
 | Report project progress or requirement trace coverage | [Status and trace reporting](docs/WORKFLOW.md#status-and-trace-reporting) and the owning project records. |
 | Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and allocations. |
 | Classify data loss, credential access or high-risk/external effects | Relevant [Security](docs/SECURITY.md) boundaries and applicable external controls before acting. |
+| Configure agent tool permissions or sandboxing for a project | [Tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls). |
 | Reuse evidence or determine recheck scope | [Verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification) and applicable project checks. |
 | Delegate work or choose a model tier | [Subagent delegation](docs/COLLABORATION.md#subagent-delegation), [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation) and the relevant adapter mapping. |
 | Maintain this harness's guidance | [Policy maintenance](#harness-policy-maintenance) and [guidance maintenance](docs/CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |

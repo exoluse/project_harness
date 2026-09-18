@@ -93,6 +93,93 @@ When a required human or external control is unavailable, prepare the reviewable
 work and report the blocked action. Continue independent authorized work when
 safe. A passing check does not supply missing authority.
 
+## Tool-level supporting controls
+
+Policy text shapes what an agent attempts; it stops nothing. Agent tools can
+block or prompt for selected actions before they run, whether or not the agent
+still has the policy in context. A project that holds protected values,
+deploys, or shares branches should configure them when adopting the harness.
+
+These settings reduce mistakes. They are not the
+[independent control](#independently-controlled-approval-and-execution) above.
+Command rules match the command text the agent writes and miss the same
+program invoked another way, and project-level settings sit where the agent
+can write. An agent that relaxes them to proceed is editing an approval
+allowlist. The boundary comes from controls the agent cannot change: protected
+branches that refuse force pushes and deletion, protected CI and deployment
+environments, credentials kept off the agent's machine, and
+administrator-managed tool settings that project and user settings cannot
+override.
+
+Derive the entries from the project's actual paths and commands:
+
+- **Block** reads of files that hold protected values.
+- **Prompt** rather than block for commands whose effect depends on the
+  target: pushes including force and tag pushes, branch deletion, hard reset,
+  clean, recursive deletion, and the project's deploy and data commands. The
+  [classification rules](#classifying-development-actions) do not judge an
+  action by its command name, so a blanket block would also stop routine
+  covered cleanup; a prompt puts the actual command before the human.
+- **Cover every shell the tool exposes.** A rule for one shell tool does not
+  match another.
+
+The snippets below show shape only. They were checked against each tool's
+documentation on 2026-09-18; tool syntax changes, so confirm the current
+documentation before adopting them.
+
+Claude Code, in `.claude/settings.json`. On Windows the agent also has a
+PowerShell tool, which Bash rules do not match:
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(secrets/**)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean *)",
+      "Bash(git branch -D *)",
+      "Bash(rm *)",
+      "PowerShell(git push *)",
+      "PowerShell(git reset --hard *)",
+      "PowerShell(git clean *)",
+      "PowerShell(git branch -D *)",
+      "PowerShell(Remove-Item *)"
+    ]
+  }
+}
+```
+
+`Read` deny rules cover the built-in file tools and the file commands the tool
+recognizes in a shell. They do not cover a subprocess that opens the file
+itself; the tool's sandbox supplies that enforcement.
+
+Codex, as sandbox and approval settings in `config.toml` and command rules in
+a `rules/` folder next to it, such as `.codex/rules/project.rules`.
+Project-scoped `.codex/` files load only after the user trusts the project,
+rules govern commands that run outside the sandbox, and the rules format is
+marked experimental:
+
+```toml
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false
+```
+
+```python
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "A push needs a matching delivery request.",
+)
+```
+
 ## Protected material and untrusted inputs
 
 Never store credentials, tokens, cookies, private keys or protected authority
