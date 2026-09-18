@@ -38,6 +38,27 @@ A first request can look like this. You do not need to specify every document ID
 
 If the goal is still unclear, start with discovery and requirements. The agent prepares evidence and options for decisions that need your input.
 
+### Applying it to another project
+
+1. **Bring in the policy files.** Copy [AGENTS.md](AGENTS.md) and [docs/](docs/) into the project, or keep this repository alongside and reference it by path. Copying keeps the policy versioned with the project, which helps tracing. Put the tool entry file ([CLAUDE.md](CLAUDE.md) or [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md)) at the project root. If the project already has a CLAUDE.md or AGENTS.md, compare the two sets of rules, resolve conflicts and integrate them. The harness policy never weakens the project's contracts or CI rules.
+2. **Choose a document root.** Decide where project documents live, for example `project-docs/`. The project chooses folder names and records them in the overview.
+3. **The first session creates the overview.** On the first request the agent creates the project overview and records the objective and scope, the document root and type-to-folder mapping, the ID format table (only the kinds needed, from the [starter table](docs/ID_DICTIONARY.md)), the ID allocation section, and any build, test and check commands and environments already decided. An undecided convention is recorded as undecided and settled during design and planning.
+4. **An existing project starts from its actual state.** Record the intake commit, analysis scope, what is already implemented and the known verification and deployment status in the overview. Requirements recovered from code are marked as observed or inferred; only what the customer confirmed counts as a confirmed requirement. Existing documents and IDs stay as they are and are referenced.
+
+The document folder ends up roughly like this. Folder names and IDs are illustrative, and only the files needed for the requested stage are created.
+
+```text
+project-docs/
+  overview/DOC-001.md            # overview: objective, folder mapping, ID formats and allocation, conventions, item index
+  requirements/REQ-001.md        # one file per requirement
+  designs/DES-001.md             # shared design
+  contracts/API-001.md           # API contract
+  plans/PLAN-001.md              # implementation order and task links
+  tasks/TASK-AUTH-001.md         # tasks per area
+  verifications/VER-001.md       # verification records
+  open-items/OI-001.md           # open items
+```
+
 ## Development flow
 
 ```mermaid
@@ -183,7 +204,54 @@ When a material commitment changes, such as behavior, cost, data handling or use
 
 For a correction, the agent reuses applicable content and keeps affected documents current. Changes to shared functions or APIs also require checking other requirements that use them. The overview is updated when its summary changes, including major stages, blockers or dependencies.
 
-Concurrent agents agree owners and edit boundaries. For post-planning requests to work without naming an area, the overview must record once the area owners (by git user) and the ID allocation rule, the owners of the overview, shared documents and Git integration, and which tracker holds task status. Using the area as an ID classification value avoids number collisions without a range table. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
+Concurrent agents agree owners and edit boundaries. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
+
+### What a team records in the overview before starting
+
+For several people to work concurrently, the overview needs the following recorded once. This is what lets post-planning requests omit the area and prevents two people from using the same number.
+
+```markdown
+## Areas and owners
+
+| Area | Owner (git user) | Edit scope |
+|---|---|---|
+| AUTH (authentication) | jane@example.com | tasks/TASK-AUTH-*, src/auth/** |
+| API (backend API) | minsu@example.com | tasks/TASK-API-*, src/api/** |
+| UI (screens) | alex@example.com | tasks/TASK-UI-*, web/** |
+
+Owner of the overview, shared designs and API contracts: minsu@example.com. Git integration: minsu@example.com.
+Others leave change proposals on owned documents; the owner applies them.
+
+## ID formats
+
+| Kind | Format | Allocation |
+|---|---|---|
+| Requirement | REQ-NNN | Project-wide, allocated by the overview owner |
+| Task | TASK-{area}-NNN | Counted per area, allocated by the area owner |
+
+## ID allocation
+
+Basis: full document scan at commit a1b2c3d, no collisions.
+REQ: next 007. TASK-AUTH: next 004. TASK-API: next 012. TASK-UI: next 002.
+
+## Task status
+
+GitHub Issues owns task assignment and status. Documents link the issue number and do not copy its status.
+```
+
+Using the area as the task ID's classification value means each person counts within their own area, so no range table is needed. Areas need not map one-to-one to people: the area is a work division and the owner is a separate column. IDs stay the same when people change.
+
+### When the agent stops and asks
+
+In these situations the agent stops the affected work and asks for a decision or input. Unaffected work continues.
+
+- **The request alone cannot fix the outcome.** "Improve this" with no target, where the agent would have to choose the result for you.
+- **A material commitment changes.** Behavior or acceptance criteria, interfaces other systems rely on, data collection, retention or deletion, security or permission boundaries, cost, external services or delivery promises, or the assumptions behind an earlier decision. The agent presents the before and after and asks for a decision.
+- **A high-risk boundary is reached.** Production deployment, production data changes, destructive operations, secret access and final customer acceptance. Ordinary implementation approval is not enough; a human decision naming the subject, version and effect is needed.
+- **Essential input is missing.** No allocation record but traces of other writers, a description that matches several items, or a decision the plan lacks that implementation now needs.
+- **The basis is unreliable.** Uncertain authority provenance, an ownership conflict, or contradictory current evidence.
+
+The agent does not ask about the following. Unknown filenames or test commands, splitting or reordering tasks, starting the next task in the same scope, or approval of planning completion itself. A clear fix request is its own scope decision, so the agent does not ask "shall I proceed?" again.
 
 ## Verification and completion
 
@@ -196,6 +264,35 @@ Look for three things in a result report:
 Planning completion, implementation, verification, customer acceptance and project closure are distinct. Prepared documents or existing code do not by themselves establish working behavior or customer acceptance. Failed, unrun and partial checks are reported as such. The commands and environments used for checks are recorded in the project overview once decided, and verification records refer to them.
 
 If work is blocked, the report identifies the cause and affected scope. A handoff states what the next contributor should do and which inputs are needed.
+
+### States and verification levels
+
+The policy requires these states to be kept distinct. A verification record carries the actual method, environment, subject version, result and limits alongside the label, so the label alone is never the judgment.
+
+| State | Meaning | What it does not prove |
+|---|---|---|
+| Planning complete | The planning completion checks passed: source coverage, executable detail and dispositions for unknowns. | Authority to execute. A scope decision and ready prerequisites are still needed. |
+| IMPLEMENTED | The code or document change is done. | Any check may still be unrun. |
+| STATIC_VERIFIED | Checks that need no execution passed, such as compilation, static analysis and document or link checks. | Actual behavior or integration. |
+| INTEGRATION_VERIFIED | Connected components were run together in a check environment. | Real screen behavior or the live environment. |
+| BROWSER_VERIFIED | Confirmed through a real browser or user interface. | Live-environment data and configuration. |
+| LIVE_ENV_VERIFIED | Confirmed in the live environment or one equivalent to it. | Customer acceptance. |
+| CUSTOMER_ACCEPTED | The authorized customer explicitly accepted a specific candidate version. | Completion of handover and maintenance obligations. |
+| CLOSED | All contributing work and the acceptance, delivery, handover and maintenance obligations are settled. | Nothing. This is closure. |
+
+Failed, unrun, partial or stale checks are not a pass at any level. If the subject changed after the checked version, the verification is stale and is not reported as a pass until rerun.
+
+### Example result report
+
+After taking the "lock the account after five failed sign-ins" task through verification, the report looks roughly like this.
+
+> **Scope completed**: TASK-AUTH-003 under REQ-005 (account lockout). Lock counter, lock response and lock notice text. Other tasks in PLAN-002 untouched.
+>
+> **Actually verified**: commit 9f3e21a, local Node 20 environment. `npm test`: 47 passed. Before-lock, at-lock and after-unlock scenarios confirmed by integration tests. State: INTEGRATION_VERIFIED. No browser check performed.
+>
+> **Remaining**: API-001 still lacks the lock-status response field, recorded as OI-003, owner minsu, needed before the next integration. Unlock notification is out of scope. Next action: run contract test CT-API-001-02 once API-001 is updated.
+
+Three things to check in such a report: whether what was checked is stated as a command and environment, whether any unrun check is hidden, and whether each blocker has an owner and a next action.
 
 The policy does not guarantee development speed or token savings. Results depend on planning quality, the project and how the guidance is applied.
 
