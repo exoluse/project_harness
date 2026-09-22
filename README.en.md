@@ -42,7 +42,7 @@ If the goal is still unclear, start with discovery and requirements. The agent p
 
 1. **Bring in the policy files.** Copy [AGENTS.md](AGENTS.md) and [docs/](docs/) into the project, or keep this repository alongside and reference it by path. Copying keeps the policy versioned with the project, which helps tracing. Put the tool entry file ([CLAUDE.md](CLAUDE.md) or [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md)) at the project root. If the project already has a CLAUDE.md or AGENTS.md, compare the two sets of rules, resolve conflicts and integrate them. The harness policy never weakens the project's contracts or CI rules.
 2. **Choose a document root.** Decide where project documents live, for example `project-docs/`. The project chooses folder names and records them in the overview.
-3. **The first session creates the overview.** On the first request the agent creates the project overview and records the objective and scope, the document root and type-to-folder mapping, the ID format table (only the kinds needed, from the [starter table](docs/ID_DICTIONARY.md)), the ID allocation section, and any build, test and check commands and environments already decided. An undecided convention is recorded as undecided and settled during design and planning.
+3. **Establish the overview when document work starts.** Reuse an existing overview; if none exists, create the one needed for the requested documentation or implementation. A report-only request creates no files. Record the objective and scope, the document root and type-to-folder mapping, the ID format table (only the kinds needed, from the [starter table](docs/ID_DICTIONARY.md)), the ID allocation section, and any build, test and check commands and environments already decided. An undecided convention is recorded as undecided and settled during design and planning.
 4. **An existing project starts from its actual state.** Record the intake commit, analysis scope, what is already implemented and the known verification and deployment status in the overview. Requirements recovered from code are marked as observed or inferred; only what the customer confirmed counts as a confirmed requirement. Existing documents and IDs stay as they are and are referenced.
 5. **Add tool settings when the project has secrets, deployments or shared branches.** Policy text changes what the agent attempts; it does not stop execution. Configure blocked secret-file reads and prompts for risky commands from the [tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls), and keep the actual boundary, such as refusing force pushes, in controls the agent cannot change, like branch protection.
 
@@ -80,7 +80,7 @@ Existing projects start from their actual progress. The agent distinguishes impl
 
 ## What documents record
 
-**Start with the project overview.** It shows progress and blockers by requirement and links to the details you want to inspect.
+**Start with the overview for the whole project, or the task document for work already identified.** The task's opening points to its current outcome, governing requirements, design and decisions, completion checks and next action. Follow links to the owning details without reconstructing all documents or earlier conversations each time.
 
 | Document | What you can learn |
 |---|---|
@@ -92,7 +92,7 @@ Existing projects start from their actual progress. The agent distinguishes impl
 | Verification | Which version was checked, the method, actual results and limitations |
 | Open items and decisions | Questions still to settle, their impact and next action, and actual decisions |
 
-Requirements, designs, plans, tasks and verification have separate linked files. Files are prepared for the relevant stage; a design or contract shared by several requirements has one owning document.
+Requirements, designs, plans, tasks and verification normally have separate linked files. For one bounded correction with one writer, the [small-change exception](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change) allows missing definitions in distinct sections of the work document. Existing owners remain linked in place; a design or contract shared by several requirements has one independent owning document.
 
 For example, **user search** and **CSV export** are separate requirements. “Display zero when no results match” is a condition within the search requirement. Fixing a search defect continues to reference that requirement.
 
@@ -106,7 +106,7 @@ Everything else has a default and is added only when you want something differen
 
 | Optional line | Default | Example addition |
 |---|---|---|
-| Stopping point | Continue through ready stages | `plan only`, `define the task only` |
+| Stopping point | Continue through ready stages within the request's authority and stopping point | `plan only`, `define the task only` |
 | Exclusions | Production deployment, production data, secrets and final acceptance need separate approval even if unstated | `propose changes to the shared API contract, do not edit it` |
 | Area | Derived from the item record after planning | `authentication area` |
 
@@ -160,6 +160,7 @@ If the behavior is not in any requirement, the agent reports that a requirement 
 **Implement a defined task**
 
 > Work on the 〈lock the account after five failed sign-ins〉 task.
+> Start from its task document and check the currently applicable requirements, design and decisions.
 > Follow the task document's actions and completion checks, and continue through verification.
 
 The agent first states which task it is. Documents of other areas and shared contracts can be edited when covered by the authorized scope and ownership/integration rules. Uncovered changes remain proposals; changes to another writer's files go through that owner or the agreed merge process. The completion report lists the checks actually run and their results.
@@ -169,7 +170,15 @@ The agent first states which task it is. Documents of other areas and shared con
 > Fix 〈the lock notice not appearing after failed sign-ins〉.
 > Report the cause and affected scope first, then after the fix check 〈before lock, at lock and after unlock〉.
 
-The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. If management documents are missing, establish only the definitions needed for the correction from the request and available sources. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
+The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. With no management documents and an eligible small correction, an overview and one work document can suffice. Distinguish expected behavior, design, planning and actual verification within the work document, and reuse existing definitions where available. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
+
+**Revise the plan during development**
+
+> The observed 〈library response format〉 differs from the plan's assumption.
+> Investigate while preserving the existing requirements and contracts, then update the affected design, work instructions and planned checks from the findings.
+> Tell me where a new behavior or scope decision is needed, and continue ready work.
+
+Resolve technical questions through authorized investigation or a bounded experiment. Use the findings to revise the affected plan and reuse applicable planning and verification evidence. Planning an experiment or revising a document does not establish passed product verification.
 
 **Review a proposed change**
 
@@ -215,6 +224,8 @@ You decide the goals, priorities, constraints and execution scope. Within that s
 When a material commitment changes, such as behavior, cost, data handling or use of an external service, the agent presents the reason and impact and obtains any needed decision. Production deployment, production data changes, destructive actions, protected-credential access and final customer acceptance need specific authorization and safeguards for the subject and effect. Sending external messages also needs explicit authority. See [decisions](docs/APPROVALS.md) and [security](docs/SECURITY.md) for the boundaries.
 
 For a correction, the agent reuses applicable content and keeps affected documents current. Changes to shared functions or APIs also require checking other requirements that use them. The overview is updated when its summary changes, including major stages, blockers or dependencies.
+
+When a decision is settled in conversation, retain its source and what it supersedes, then update the current owning instructions before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
 Concurrent agents keep separate edit scopes, usually separate branches. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
 

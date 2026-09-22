@@ -107,6 +107,10 @@ they are not format limits and need no duplicate tally in the dictionary.
 | `BT-API-024-01.md` | Backend test for `API-024`; this is independent of the CT counter. |
 | `TASK-API-060.md` | Backend task; its actual parent plan and requirements are explicit body links, not derived from `060`. |
 
+For a task using the [small-change exception](DATA_MODEL.md#minimum-documentation-for-a-small-change),
+its plan/requirement links may target the permitted sections and expected-behavior
+source; do not allocate unnecessary plan or requirement records to fill a link.
+
 OI records follow the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle).
 OD or ADR documents retain actual decision sources, scope and outcomes; their
 existence does not mean an issue is resolved or implementation is authorized.

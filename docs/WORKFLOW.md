@@ -14,7 +14,9 @@ continues to apply to actual development and requested document deliverables.
 
 1. Identify the requested outcome, stage/stopping point, existing decisions and
    relevant project notes. Resolve a request stated in plain words to its
-   owning items through the overview and plans and state that resolution;
+   owning items through the overview and plans and state that resolution. Start
+   from the selected item's [current basis](DATA_MODEL.md#plans-and-tasks)
+   when its owning document is already known;
    present candidates before editing when several items could match, and do
    not create a new item merely because no description matched. Inspect dirty
    work before writing.
@@ -196,6 +198,11 @@ Preserve the reviewed version, actual decision and observations. Refine tasks,
 ordering and document structure within that scope without another decision.
 For material changes, prepare the delta and its impact, obtain the applicable
 owner decision once, then implement and reverify affected parts.
+Apply [conversation decisions](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions)
+to current owning instructions before dependent work uses them. For unexpected
+implementation behavior, follow
+[discoveries during implementation](DEVELOPMENT_METHOD.md#discoveries-during-implementation)
+to investigate, revise the affected plan or obtain the missing outcome decision.
 
 A sibling task edit or stale historical observation does not automatically
 invalidate unrelated work. Explain actual dependency or scope impacts. Do not
@@ -280,8 +287,14 @@ coverage judgments.
 | Stage summary | Current stage per the overview, active plans, and the stage actually supported by the owning records where it differs. |
 | Requirement trace | One row per in-scope requirement: covering design/contract, plan, tasks with their statuses, verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
 | Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. |
-| Gaps and discrepancies | Requirements without covering design or work; work, contracts or verification not linked to any requirement; unresolved links or IDs; summaries that contradict owning records; evidence whose subject version predates later changes to that subject; open items past their needed-by point. |
+| Gaps and discrepancies | Requirements without covering design or work; work, contracts or verification missing their requirement/source trace under the item-boundary rules; unresolved links or IDs; summaries that contradict owning records; evidence whose subject version predates later changes to that subject; open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
+
+For a [small-change document](DATA_MODEL.md#minimum-documentation-for-a-small-change),
+trace its owning sections and linked sources. Missing separate role files are
+not a gap when the exception applies. If no independent REQ was established,
+report the bounded correction and its evidence without counting it as full
+feature/requirement coverage or inventing a requirement to fill the report.
 
 Progress numbers describe record states, not effort or schedule. State what
 each count measures; a task-completion ratio is not a requirement-level

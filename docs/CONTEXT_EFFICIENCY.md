@@ -7,10 +7,14 @@ failures, blockers or verification limits.
 ## Startup and routing
 
 Use the [startup and routing rules](../AGENTS.md#startup-and-context) as the
-single entry map. Find project scope through the project overview and the
-relevant area overview, if any, then the owning items, designated tracker items
-and relevant shared specifications. Do not load unrelated areas. Use targeted searches for linked
-detail; do not load all policies, records or the entire README for orientation.
+single entry map. Find a requested item through the project/area overview when
+its owner is unknown; when its owning document is already identified, start
+there and follow its [current basis](DATA_MODEL.md#plans-and-tasks). Read the
+linked requirements, design, decisions and checks that govern the selected work,
+including relevant shared constraints and tracker items. Do not reconstruct
+current instructions from old conversations or load unrelated areas. Use
+targeted searches for linked detail; do not load all policies, records or the
+entire README for orientation.
 Reuse current supplied/read copies. A summary or link does not substitute for
 reading an applicable rule before its action or completion claim.
 

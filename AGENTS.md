@@ -36,7 +36,10 @@ subsystems may split navigation into
 primary basis for product scope; supporting conditions stay with their
 requirement, and fixes reference the existing requirement. Keep requirements,
 designs, plans, tasks and verification in their owning files, linking shared
-definitions instead of duplicating them. The [Information model](docs/DATA_MODEL.md) owns the
+definitions instead of duplicating them. A bounded correction may keep missing
+definitions in one work document under the
+[small-change exception](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
+The [Information model](docs/DATA_MODEL.md) owns the
 mandatory rules for boundaries, identities, paths, exceptions and validation.
 Apply them when authoring or checking documents; other guidance links these
 definitions rather than maintaining competing versions.
@@ -185,7 +188,9 @@ Manage unresolved questions/findings through the [open-item lifecycle](docs/WORK
 and [owning records](docs/DATA_MODEL.md#open-items), including follow-up,
 resolution evidence, propagation and reopening. Labels cannot remove blockers.
 Trace material changes under the [change cycle](docs/DEVELOPMENT_METHOD.md#change-cycle-and-propagation);
-policy maintenance uses the Git/conversation trace above.
+incorporate decisions from conversation into current owning instructions before
+dependent work relies on them. Policy maintenance uses the Git/conversation
+trace above.
 
 ## Collaboration, handover and closure
 

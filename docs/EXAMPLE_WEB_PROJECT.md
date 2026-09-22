@@ -133,31 +133,49 @@ planning under the [small-change rule](DATA_MODEL.md#minimum-documentation-for-a
 If the API's count semantics remain uncertain, resolve that uncertainty before
 declaring the implementation plan complete.
 
-Prepare short owning files for this correction using the project's chosen
-folders and checked IDs. The names below are illustrative, not allocations:
+Assume one writer owns this correction, the inspected sources establish its
+expected behavior, and no shared definition or additional independently managed
+output needs introducing. No project or delivery rule requires separate files.
+Prepare an overview and one work document using the chosen folders and checked
+IDs. The names below are illustrative, not allocations:
 
 | Owning file | Bounded content |
 |---|---|
-| `overview/DOC-001.md` | Intake revision and analysis limits, objective, folder/ID conventions and initial allocation basis/counters, observed check commands/environment, and links to the correction's items. Other features remain outside this analysis. |
-| `requirements/REQ-001.md` | The confirmed search outcome in this scope, with zero/nonzero count conditions and the request/source links. The count correction is a condition of search, not a separate defect requirement; broader search coverage is not claimed. |
-| `designs/DES-001.md` | Relevant response-to-display flow, versioned API source reference, current incorrect fallback, and the chosen zero-preserving correction. Reference the existing contract instead of copying it into a new API document. |
-| `plans/PLAN-001.md` | Actual request and source/version, affected scope and exclusions, impact/readiness assessment, ordered task link, planned scenarios and compact review findings. |
-| `tasks/TASK-001.md` | Writer, concrete formatter/caller paths, edit and check steps, completion criteria and status; links to design, plan and later verification. |
-| `verifications/VER-001.md` | Written when checks run: actual candidate, command/environment, expected/observed results, artifacts, failures, unrun checks and limits. Before execution the checks stay planned in PLAN/TASK. |
+| `overview/DOC-001.md` | Intake revision and analysis limits, objective, folder/ID conventions and initial allocation basis/counters, observed check commands/environment, and a link to the correction. Other features remain outside this analysis. |
+| `tasks/TASK-001.md` | Current basis and writer, source/expected behavior, approach, plan/execution and actual verification sections as described below. Record why the small-change exception applies; no other document owns these definitions. |
 
-For the inspected contract, plan zero, nonzero and applicable loading/error
-regression checks as in the compact example. Use the actual test command found
-in the repository; finding a test is not evidence that it passed. Complete the
-compact review before covered implementation, then record actual results and
-update the affected task and overview summary.
+The work document is the next session's entry point:
 
-These short files establish the missing basis only for the requested correction.
-No source inventory matrix, separate approval log, CHANGE record, handoff file
-or open-item file is needed solely to populate the layout. Keep the request
-and readiness assessment in the plan, and add another record only when actual
-follow-up, an independent work boundary or the project contract requires it.
-Do not reconstruct the whole application or invent historical approvals and
-verification. This example demonstrates documentation scope, not product success.
+- **Current basis and expected behavior:** link the actual request, source
+  revision and inspected API definition. State the bounded zero/nonzero count
+  expectation and the existing loading/error behavior; do not claim confirmed
+  requirements for all search behavior. Link the other sections and overview.
+- **Approach:** identify the response-to-display flow and incorrect fallback;
+  preserve valid zero while keeping the API contract. Reference the existing
+  contract rather than copying it or creating another API record.
+- **Plan and execution:** state the writer, affected formatter/caller paths,
+  exclusions, impact/readiness assessment, ordered edit/check steps and status.
+  Plan the compact example's zero, nonzero, paginated-total and applicable
+  loading/error checks with the actual runner/environment found in the project.
+- **Planning review:** compare the plan with the actual request and contract,
+  walk affected states and record findings and remaining prerequisites before
+  implementation. A missing/null total calls for investigation, not an invented
+  fallback to make the plan appear complete.
+- **Actual verification:** add the candidate, actual commands/environment,
+  expected/observed results, artifacts and limits only when checks run. Keep
+  failures and unrun checks visible, separate from planned checks and old results.
+
+If a later conversation changes a governing decision, preserve its source and
+update the affected current section before dependent work continues. A change
+note alone must not leave conflicting instructions for the next session.
+
+This needs no additional REQ, DES, PLAN or VER file just to fill those roles.
+Where any such owner already exists, reuse it instead of moving or copying its
+definition here. If scope expands to a new export requirement or work assigned
+to several writers, create the necessary independent owning items before that
+work starts and retain the correction's ID and history. No whole-application
+reconstruction or invented historical approval is needed. This example
+demonstrates documentation scope, not product success.
 
 ### Detailed planning example
 

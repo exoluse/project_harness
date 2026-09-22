@@ -12,7 +12,8 @@ dependencies, verification and exit criteria. Organize deliverables by feature
 or work unit under a project overview, following the
 [document boundaries](DATA_MODEL.md#document-organization). Keep supporting
 detail in sections of its owning file and preserve the requirement, design,
-plan, task and verification file boundaries.
+plan, task and verification file boundaries, subject to the
+[small-change exception](DATA_MODEL.md#minimum-documentation-for-a-small-change).
 Use the [item-boundary criteria](DATA_MODEL.md#independent-items-and-supporting-detail)
 to distinguish parent-specific explanation from independently managed work.
 For a bounded correction, the
@@ -82,8 +83,10 @@ Identify the reviewed baseline and assess the change under the
 [change cycle](#change-cycle-and-propagation). Reuse definitions, decisions and
 review evidence only where they remain applicable; specify changed behavior,
 implementation steps and checks to the same executable detail as other planned
-work. File separation alone does not require the detailed procedure, and compact
-planning does not authorize merging files or reducing required detail.
+work. File separation alone does not require the detailed procedure. Compact
+planning does not authorize merging existing files or reducing required detail;
+missing definitions may share one work document only under the small-change
+exception. References here to the plan include its section in that document.
 Before implementation, connect the source/version and expected result to the
 affected scope, chosen correction, ordered steps and planned checks. Link the
 existing readiness assessment; record only changes or unresolved prerequisites.
@@ -369,7 +372,8 @@ do not require a separate impact report or an N/A row for every project document
 2. Assess feasibility, alternatives, uncertainty and effects on behavior, data,
    dependencies, effort/schedule, verification and delivery.
 3. Update affected owning definitions into a reviewable current version. Keep
-   requirements, design, plans, tasks and verification in their owning files;
+   requirements, design, plans, tasks and verification in their owning files
+   or the sections allowed by the small-change exception;
    implementers must not have to reconstruct current instructions from a chain
    of change notes. Mark uncovered commitments as proposed until an actual
    decision covers them. Preserve prior versions and identify affected and
@@ -395,6 +399,45 @@ or a required project check. Reuse follows
 
 A change section or log may carry this trace. A separate CHANGE/CR record is
 needed only when an agreed project or external process requires it.
+
+### Conversation decisions and current instructions
+
+When the owner settles a question or changes a prior decision in conversation,
+record the actual source and covered change under
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision). Identify which
+earlier instruction is superseded; retain its history without presenting it as
+current. Update the affected owning definitions and the work item's current
+basis before the next action that relies on the decision, and before handoff
+or completion. A transcript excerpt in a change log alone is insufficient when
+the current requirement, design or work instructions still say something else.
+Unaccepted suggestions remain proposals.
+
+Update only affected owners and summaries, following their ownership and the
+actual editing scope. In a report-only request, describe the needed amendments
+and current discrepancy without editing files. If another writer must apply an
+update, record the pending change and follow
+[coordination waits](COLLABORATION.md#coordination-waits); do not present the old
+definition as current or claim propagation complete. Harness policy maintenance
+uses its Git/conversation trace without adding decision records.
+
+### Discoveries during implementation
+
+Implementation can reveal that a planned approach or assumption is wrong. Apply
+the change cycle to the affected work, preserve the observation and reopen its
+planning/readiness assessment when needed. Use the
+[unknown dispositions](#planning-completion-checks) to distinguish these cases:
+
+| Discovery | Next action |
+|---|---|
+| A library or existing component may behave differently from the plan | Inspect the relevant version or perform an authorized, suitably isolated experiment with a stated question, boundaries and expected evidence. A bounded investigation may proceed while the dependent implementation plan remains incomplete. Record observations, then revise the approach and affected checks before resuming that implementation. |
+| Observed behavior leaves a material outcome undecided, such as whether a missing API total means zero or an error | Show the source conflict, alternatives and affected work to the decision owner. Do not invent the contract to finish the plan. Continue independent covered work. |
+| A local coding choice changes while behavior, contracts and checks remain valid | Choose within the established constraints without another approval. Update instructions only where the choice changes their facts or dependent work. |
+
+Plan only the experiment needed to answer the question; it does not require a
+finished design for the dependent feature. Its execution still needs matching
+authority and applicable security controls. An experiment's result establishes
+only what it exercised, not product acceptance. Reuse unaffected planning and
+verification instead of restarting the whole project for a local discovery.
 
 ## When to ask again
 
