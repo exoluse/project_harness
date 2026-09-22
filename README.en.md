@@ -110,7 +110,7 @@ Everything else has a default and is added only when you want something differen
 | Exclusions | Production deployment, production data, secrets and final acceptance need separate approval even if unstated | `propose changes to the shared API contract, do not edit it` |
 | Area | Derived from the item record after planning | `authentication area` |
 
-Name the area only during planning. Once planning is done, every task, requirement and contract records the area it belongs to, so the agent derives the area from the feature. When a feature spans several areas, the agent asks. If it sees someone else's uncommitted work in the same area, it does not overwrite it and asks for confirmation instead.
+Name the area during planning; later requests can use the item records. A feature spanning several areas can proceed when the requested scope and ownership are clear. The agent preserves others' uncommitted work and clarifies actual edit overlap or uncertain ownership. Being in the same area does not alone stop independent work.
 
 `〈 〉` marks a placeholder; delete lines you do not need.
 
@@ -129,7 +129,9 @@ Name the area only during planning. Once planning is done, every task, requireme
 > Task numbers use 〈the GitHub issue number〉, and task assignment and status live in 〈GitHub Issues〉.
 > Record the areas, ID formats, where task status lives and how changes land in the overview.
 
-The agent records the area list, ID format table, tracker designation and change flow in the overview. Once that is recorded, later requests need not name the area and two people cannot create the same number. No table of owners or assignees is needed. Who is doing what is visible from issue assignees and branches, and overlap surfaces at merge. A team without issues says "task numbers continue per area", and the agent then fetches before creating a new item; if numbers still collide, whoever merges second renumbers.
+The agent records the area list, ID format table, tracker designation and change flow in the overview. Later requests use the recorded area, and the designated tracker allocates numbers. With separate branches, issue assignees and reviewed pull-request merges as in this example, no separate owner table is needed. Shared documents can change within authorized scope through the same merge process.
+
+If the team chooses allocation on separate branches without a tracker, new IDs are provisional until first integration. Fetch cannot prevent simultaneous allocations, so the later-integrated item's provisional ID and references are repaired if they collide, retaining a mapping to earlier records. Established IDs stay unchanged. See the conditions for [branch allocation](docs/DATA_MODEL.md#branch-allocation-and-collision-repair).
 
 **Join and check the current state**
 
@@ -160,14 +162,14 @@ If the behavior is not in any requirement, the agent reports that a requirement 
 > Work on the 〈lock the account after five failed sign-ins〉 task.
 > Follow the task document's actions and completion checks, and continue through verification.
 
-The agent first states which task it is. Documents of other areas and shared contracts are not edited; the agent leaves a change proposal instead. The completion report lists the checks actually run and their results.
+The agent first states which task it is. Documents of other areas and shared contracts can be edited when covered by the authorized scope and ownership/integration rules. Uncovered changes remain proposals; changes to another writer's files go through that owner or the agreed merge process. The completion report lists the checks actually run and their results.
 
 **Fix a defect**
 
 > Fix 〈the lock notice not appearing after failed sign-ins〉.
 > Report the cause and affected scope first, then after the fix check 〈before lock, at lock and after unlock〉.
 
-The agent finds the related requirement from the symptom and reuses that requirement and its existing verification. No new requirement is created.
+The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. If management documents are missing, establish only the definitions needed for the correction from the request and available sources. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
 
 **Review a proposed change**
 
@@ -223,7 +225,7 @@ In these situations the agent stops the affected work and asks for a decision or
 - **The request alone cannot fix the outcome.** "Improve this" with no target, where the agent would have to choose the result for you.
 - **A material commitment changes.** Behavior or acceptance criteria, interfaces other systems rely on, data collection, retention or deletion, security or permission boundaries, cost, external services or delivery promises, or the assumptions behind an earlier decision. The agent presents the before and after and asks for a decision.
 - **A high-risk boundary is reached.** Production deployment, production data changes, destructive operations, secret access and final customer acceptance. Ordinary implementation approval is not enough; a human decision naming the subject, version and effect is needed.
-- **Essential input is missing.** Someone else's uncommitted work in the same area, a description that matches several items, or a decision the plan lacks that implementation now needs.
+- **Essential input is missing.** Actual edit overlap with another writer needs coordination, the intended item is unclear among several candidates, or a scope/behavior choice cannot be resolved from available sources.
 - **The basis is unreliable.** Uncertain authority provenance, an ownership conflict, or contradictory current evidence.
 
 The agent does not ask about the following. Unknown filenames or test commands, splitting or reordering tasks, starting the next task in the same scope, or approval of planning completion itself. A clear fix request is its own scope decision, so the agent does not ask "shall I proceed?" again.
@@ -257,7 +259,7 @@ The policy requires these states to be kept distinct. A verification record carr
 | CUSTOMER_ACCEPTED | The authorized customer explicitly accepted a specific candidate version. | Completion of handover and maintenance obligations. |
 | CLOSED | All contributing work and the acceptance, delivery, handover and maintenance obligations are settled. | Nothing. This is closure. |
 
-Failed, unrun, partial or stale checks are not a pass at any level. If the subject changed after the checked version, the verification is stale and is not reported as a pass until rerun.
+Failed, unrun, partial or stale checks are not a pass at any level. After a change, assess existing evidence for applicability and recheck the affected scope. Unaffected results can be reused with their original version/environment and the reuse basis. Metadata changes alone do not require repeating product checks; required project/CI checks remain required. See [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 ### Example result report
 

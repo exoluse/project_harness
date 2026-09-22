@@ -13,7 +13,7 @@ in the existing overview and linked plan/task documents before concurrent work:
 |---|---|
 | Plans and tasks | Plans organize goals, scope, dependencies, task order and overall completion criteria. Each task states its concrete output, writer, affected paths/logical resources and completion checks, and links its plan and required inputs. |
 | Directory structure | The overview records the document root and type-to-folder mapping. Choose names and nesting for the project, reuse them consistently and identify each writer's actual edit scope. |
-| Markdown filenames and serials | Each independent item owns one `<ID>.md` or `<ID>-<slug>.md` file in its mapped folder, subject to documented required-name exceptions. Follow the shared project format table and its prefix/parent allocation scopes; complete IDs remain unique project-wide regardless of descriptive slug. |
+| Markdown filenames and serials | Each independent item owns one `<ID>.md` or `<ID>-<slug>.md` file in its mapped folder, subject to documented required-name exceptions. Follow the shared format table, allocation arrangement and [ID rules](DATA_MODEL.md#item-ids), including the limited exception for provisional branch IDs. |
 
 Use the [requirement boundaries](DATA_MODEL.md#requirement-boundaries) as the
 shared basis for product scope. Writers working on the same requirement link
@@ -23,12 +23,14 @@ See [plans and tasks](DATA_MODEL.md#plans-and-tasks) and the
 choices; agents extend the shared mapping for actual needs. One directory can
 contain several writers' files when their edit scopes do not overlap.
 
-Before allocating concurrently, record non-overlapping ranges or meaningful
-allocation-scope ownership where all writers can see them, including the parent
-for child counters. Separate checkouts must use
-that shared allocation, not independently choose the same next number from
-their local copies. Do not introduce agent-specific prefixes for the same
-document type. Reserve ranges within the existing prefix instead. Keep IDs
+Before allocating concurrently, record the shared arrangement under
+[allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse). Use
+non-overlapping ranges or allocation-scope ownership, including the parent for
+child counters, unless the tracker or isolated-branch exception applies.
+Separate checkouts follow that arrangement; only the
+[branch exception](DATA_MODEL.md#branch-allocation-and-collision-repair) permits
+temporary collisions of new provisional IDs and repair before integration.
+Do not introduce agent-specific prefixes for the same document type. Keep IDs
 stable through reassignment, and never reuse retired IDs.
 
 Include the overview (root and [area overviews](DATA_MODEL.md#area-overviews)

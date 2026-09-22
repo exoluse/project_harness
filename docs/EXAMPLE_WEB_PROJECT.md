@@ -117,6 +117,48 @@ assessment to that requirement's design, work and verification. A newly blocking
 failure must reach affected summaries; apply the
 [summary update rules](DATA_MODEL.md#summary-ownership-and-updates).
 
+### Small correction without existing management documents
+
+Consider the same count defect in a repository with code and tests but no
+requirement, design or work documents. The user explicitly requests: "Fix the
+search count showing one for zero results; preserve the existing search API
+and verify zero and nonzero results." This fictional request supplies the
+bounded correction's scope; it does not confirm every existing search behavior.
+
+Inspect the relevant source revision, dirty work, API definition, formatter
+callers and test setup. Establish the intended count behavior from the request
+and attributable contract sources, distinguishing it from observed code. When
+that resolves consequential unknowns, the correction qualifies for compact
+planning under the [small-change rule](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+If the API's count semantics remain uncertain, resolve that uncertainty before
+declaring the implementation plan complete.
+
+Prepare short owning files for this correction using the project's chosen
+folders and checked IDs. The names below are illustrative, not allocations:
+
+| Owning file | Bounded content |
+|---|---|
+| `overview/DOC-001.md` | Intake revision and analysis limits, objective, folder/ID conventions and initial allocation basis/counters, observed check commands/environment, and links to the correction's items. Other features remain outside this analysis. |
+| `requirements/REQ-001.md` | The confirmed search outcome in this scope, with zero/nonzero count conditions and the request/source links. The count correction is a condition of search, not a separate defect requirement; broader search coverage is not claimed. |
+| `designs/DES-001.md` | Relevant response-to-display flow, versioned API source reference, current incorrect fallback, and the chosen zero-preserving correction. Reference the existing contract instead of copying it into a new API document. |
+| `plans/PLAN-001.md` | Actual request and source/version, affected scope and exclusions, impact/readiness assessment, ordered task link, planned scenarios and compact review findings. |
+| `tasks/TASK-001.md` | Writer, concrete formatter/caller paths, edit and check steps, completion criteria and status; links to design, plan and later verification. |
+| `verifications/VER-001.md` | Written when checks run: actual candidate, command/environment, expected/observed results, artifacts, failures, unrun checks and limits. Before execution the checks stay planned in PLAN/TASK. |
+
+For the inspected contract, plan zero, nonzero and applicable loading/error
+regression checks as in the compact example. Use the actual test command found
+in the repository; finding a test is not evidence that it passed. Complete the
+compact review before covered implementation, then record actual results and
+update the affected task and overview summary.
+
+These short files establish the missing basis only for the requested correction.
+No source inventory matrix, separate approval log, CHANGE record, handoff file
+or open-item file is needed solely to populate the layout. Keep the request
+and readiness assessment in the plan, and add another record only when actual
+follow-up, an independent work boundary or the project contract requires it.
+Do not reconstruct the whole application or invent historical approvals and
+verification. This example demonstrates documentation scope, not product success.
+
 ### Detailed planning example
 
 If the requested work instead changes the public count contract and requires

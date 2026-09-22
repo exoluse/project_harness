@@ -357,8 +357,9 @@ as `REQ` or `TASK-API`. Two feature folders or parent plans cannot each restart
 `TASK-API-001`. Hierarchical formats allocate the child serial per child kind
 and identified parent, as recorded in the format table. For example, under
 `CT-API-NNN-NN`, `CT-API-012-01` is a contract test of `API-012`; a backend test
-`BT-API-012-01` has a separate counter. Every complete ID remains unique
-project-wide, regardless of folder or checkout.
+`BT-API-012-01` has a separate counter. Complete IDs are unique project-wide,
+regardless of folder or checkout, subject only to the temporary collisions of
+new provisional IDs under [branch allocation](#branch-allocation-and-collision-repair).
 
 Before allocating a child, verify its parent's owning definition and format
 mapping, and link the parent in the body. Matching numbers imply no other
@@ -369,7 +370,8 @@ that needs no independent management can remain a section without a new ID.
 
 Search existing definitions, retained/retired IDs and reservations before
 choosing the next unused serial, reusing a verified allocation basis. Concurrent
-writers reserve non-overlapping ranges within the recorded allocation scope.
+writers use non-overlapping ranges unless the recorded arrangement uses the
+tracker or isolated-branch exceptions under [allocation reuse](#allocation-and-validation-reuse).
 If the available width is exhausted, record a compatible extension for new IDs
 and check consumers and collisions before allocation; do not wrap counters,
 reuse IDs or automatically pad/rename older records.
@@ -380,7 +382,9 @@ body, or an explicit anchor for an identified table row. References use the ID
 as link text and resolve to that item's anchor, even within one file.
 
 Keep IDs unchanged when content is revised, renamed, reordered or moved; update
-links after moves. Never reuse deleted/retired IDs. For a split or merge, record
+links after moves. Only new provisional branch IDs may be renumbered for an
+allocation collision under [branch allocation](#branch-allocation-and-collision-repair).
+Never reuse deleted/retired IDs. For a split or merge, record
 the old item's disposition and links to the new items without overwriting its
 decision or evidence history. Identity alone does not identify a reviewed
 version, prove approval or establish a passed check.
@@ -470,18 +474,19 @@ or gap-disposition table is required. For example, `TASK-API: next 004` means
 Preserve their actual history without inventing a disposition for unused gaps.
 If prior allocations are uncertain, reconcile them before choosing the serial.
 
-Before introducing concurrent writers or delegated ranges, use the shared range
-record below. Returning to a single writer requires reconciling those ranges
-and reservations first; the simple counter cannot silently supersede them.
+Before introducing concurrent writers, record the allocation arrangement once
+in the allocation section. Use the shared range record below unless one of the
+two exceptions applies. Returning to a single writer requires reconciling prior
+ranges, reservations and pending branch allocations first; the simple counter
+cannot silently supersede them.
 
 Two arrangements need no range or owner record. A registered format may take
 its serial from a designated [external work tracker](#external-work-trackers)
 key, such as `TASK-{area}-{issue}`; the tracker then allocates, and the
-overview records only the format and the tracker. Writers on separate branches
-may instead keep a per-scope next serial in the overview, fetch the integration
-branch before allocating, and, when two branches still allocated the same
-serial, renumber the later-merged item and repair its links before
-integration. Record either arrangement once in the allocation section.
+overview records the format and tracker. Writers on separate branches may
+instead use a per-scope next serial with provisional IDs and collision repair
+under [branch allocation](#branch-allocation-and-collision-repair). These exceptions
+replace the range table, not the checked allocation basis or history rules.
 
 With [area overviews](#area-overviews), the root allocation section delegates
 non-overlapping serial ranges per allocation scope to areas and records each
@@ -491,9 +496,9 @@ Complete IDs stay unique project-wide, and areas do not introduce their own pref
 for an existing type. When an area exhausts a range, obtain a new delegation
 from the root allocation owner before allocating further.
 
-For concurrent or delegated allocation, use a compact Markdown table with the
-following minimum information, reusing
-shared baseline notes for rows checked together:
+For allocation using reserved or delegated ranges, use a compact Markdown table
+with the following minimum information, reusing shared baseline notes for rows
+checked together:
 
 | Field | Required content |
 |---|---|
@@ -530,6 +535,37 @@ conflicts appear, or changes to conventions/validation rules affect prior
 results. Preserve project-wide uniqueness and never reuse retired IDs. This
 changes how evidence is obtained, not the identity or filename requirements.
 See [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
+
+### Branch allocation and collision repair
+
+This exception applies only when the recorded arrangement uses isolated
+branches and reviewed integration. New IDs allocated on those branches are
+provisional until their first integration into the designated integration
+branch. Existing IDs and IDs issued by a tracker or shared reservation remain
+fixed; they do not become provisional when copied to a branch.
+
+Fetch and inspect the integration branch's allocation basis before allocating.
+Choose an unused serial beyond its recorded allocations and the branch's own
+allocations, and advance the local counter. Fetch cannot reveal all concurrent
+unmerged work, so a provisional ID may collide with one on another branch.
+Identify provisional items in decisions, evidence and handoffs by their source
+commit/version and owning path as well as their ID; a bare ID is insufficient.
+
+Before integration, compare new IDs against the current integration branch,
+retained/retired IDs and reservations. The first integrated item keeps its ID;
+renumber only the later item's provisional ID if it collides. Repair its
+filename, body, anchors, current references and any provisional child IDs derived
+from it, update the counter and check the resulting links and uniqueness.
+Resolve collisions before integration; integration fixes the resulting IDs.
+
+Record the old ID with its source version/path and the new ID in the owning
+plan/work note. Preserve original decisions, signed payloads and verification
+artifacts with their original references; link them through that mapping and
+assess their applicability rather than rewriting them or inventing a new PASS.
+Repair known external references through their authorized owner; unresolved
+ambiguous references block affected integration. Use forward edits, preserving
+published history. This exception does not permit renumbering established items
+or reusing retired IDs.
 
 ## Independent items and supporting detail
 
@@ -615,6 +651,14 @@ work boundaries require it. Preserve completed work and old evidence rather
 than rewriting them as the new correction. If required definitions are missing,
 prepare them for the affected scope; do not claim an unreviewed baseline is reusable.
 
+When adopting a project without these documents, establish only the definitions
+needed for the correction and its affected dependencies. Missing documentation
+alone does not require detailed planning if the expected behavior and contracts
+can be established from attributable inputs and consequential unknowns resolved.
+Keep the separate document roles, but avoid reconstructing unrelated features
+or creating optional records without independent work to manage. See the
+[example without existing management documents](EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
+
 For example, an empty search count correction keeps the existing search REQ.
 The following describes content ownership, not a mandatory set of headings,
 new IDs or a new copy of each document for every correction:
@@ -686,7 +730,7 @@ the affected scope and reusable evidence.
 | Check | Evidence to verify |
 |---|---|
 | Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; requirement boundaries describe distinct commitments, supporting conditions remain with their requirement, and separately managed work references the REQs it covers. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
-| Identity and allocation | New definitions are unique project-wide and do not collide with retained/retired IDs or reservations, and fall within any delegated area range; compare IDs independently of descriptive slugs or folders, and distinguish definitions, references and illustrative examples. |
+| Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis, do not collide with retained/retired IDs or reservations, and fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
 | Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
 | Area overviews and trackers | Root and area overview entries resolve and hold only their owned content; designated tracker information has no parallel Markdown record; tracker references carry a resolvable key/link, and relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
 | Ordinary paths | Each new file matches the recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
