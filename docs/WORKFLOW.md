@@ -387,11 +387,51 @@ work that follows the usual [request authority](../AGENTS.md#authority-and-decis
 propose it with the report and perform it when requested. Handoff notes reuse
 the same basis under [progress and handoff notes](CONTEXT_EFFICIENCY.md#progress-and-handoff-notes).
 
+### Recurring reports
+
+Some projects owe a report on a schedule rather than on request — weekly to a
+customer, at each milestone or before a gate. That report is a deliverable with
+an owner, a cadence, a storage location and a form its readers expect; record
+those where the obligation is owned. Its basis is the one above: owning records
+at a stated version, never titles or estimates. Two things differ.
+
+First, it is written at one moment and delivered at another, and its reader
+acts on it. Report what the writing point actually established as established;
+report work expected between writing and delivery as expected; report what
+could not be confirmed as unconfirmed, naming what would confirm it. Closing
+that gap with an estimate misinforms the reader who acts on it.
+
+Second, its numbers reach people who cannot check them. Name one source for
+each progress figure and take every issue from that same source at its current
+version — a designated [external tracker](DATA_MODEL.md#external-work-trackers)
+where one owns work status, otherwise the owning records. Where nothing owns a
+figure, say so instead of deriving one for the occasion.
+
+Track the report's own state, such as drafted, ready and delivered, so an
+unfinished issue is not submitted and a delivered one is not quietly changed:
+a correction after delivery is a new statement to its reader. Keep each issue
+as a dated record with its basis version and leave it as history; a past issue
+is not rewritten to match later facts, and the current position stays in the
+owning records and the [resumption state](DATA_MODEL.md#resumption-state), not
+in the latest report. Where readers expect a fixed form, keep one template with
+those records; the form serves the reader and does not change what counts as
+established.
+
+A report prepared for people outside the work is communication, not a source of
+requirements, scope or status for the work itself; apply
+[non-authoritative inputs](DEVELOPMENT_METHOD.md#non-authoritative-inputs). A
+figure does not become a commitment by appearing in it, and a disagreement
+between an issued report and the owning records is resolved in the records and
+corrected in the next issue. Outstanding report obligations are part of
+[closure preparation](#closure-preparation).
+
 ## Closure preparation
 
 Aggregate the declared release/project across all contributing plans. Review
 required outcomes, work dispositions, decisions, applicable evidence, actual
-customer acceptance, delivery status, handover and maintenance obligations.
+customer acceptance, delivery status, outstanding
+[reporting obligations](#recurring-reports), handover and maintenance
+obligations.
 Use a release inventory or existing project document.
 
 Every required item must be complete or have an explicit disposition consistent

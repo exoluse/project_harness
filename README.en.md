@@ -200,6 +200,14 @@ Resolve technical questions through authorized investigation or a bounded experi
 
 Where an overview summary and the owning record differ, the owning record is reported and the difference is flagged.
 
+**Prepare a scheduled report** (a weekly or milestone report the project owes)
+
+> Prepare the report due 〈Wednesday〉. Take every progress figure from 〈the current WBS〉 only.
+> Report what is confirmed as of today as done, and what is planned before the due date as planned.
+> Leave anything unconfirmed as unconfirmed instead of filling it in.
+
+A scheduled report is a deliverable, not a status summary produced on request. Its cadence, writing and delivery points, per-issue records and the single source for each figure are fixed in advance, and what is confirmed at the writing point is not mixed with what is merely expected before delivery. An issued report is not rewritten to match later facts; it is corrected in the next issue, and the current position stays in the owning records rather than in the report. A report written for a customer is communication, not a source of requirements or status.
+
 **Report a blocker and record an open item**
 
 > The 〈account lockout〉 task is blocked because 〈the sign-in API has no lock-status response definition〉.
