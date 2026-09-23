@@ -137,7 +137,14 @@ work only when it remains authorized and outside the requested stop boundary.
 3. Cancellation, pause or withdrawal alone does not authorize deletion, rollback
    or data repair. Those actions retain their own scope and applicable
    [external controls](SECURITY.md).
-4. Before resuming, check the current request, still-valid decisions, changed
+4. Withdrawing a granted verification or acceptance result is a separate act
+   from withdrawing a permission, and follows
+   [verification and completion](WORKFLOW.md#verification-and-completion): the
+   overturned result is named, dependent work returns to its prior state, and
+   the condition for restoring it is recorded. A decision that rested on the
+   withdrawn result loses its basis and is reassessed under
+   [coverage and currentness](#coverage-and-currentness).
+5. Before resuming, check the current request, still-valid decisions, changed
    files/environment, dependencies and ownership. Reuse decisions that still
    cover the work. A clear resume request can itself supply the scope decision;
    clarify only uncovered scope or material changes. A withdrawn permission is

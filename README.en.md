@@ -80,15 +80,15 @@ Existing projects start from their actual progress. The agent distinguishes impl
 
 ## What documents record
 
-**Start with the overview for the whole project, or the task document for work already identified.** The task's opening points to its current outcome, governing requirements, design and decisions, completion checks and next action. Follow links to the owning details without reconstructing all documents or earlier conversations each time. The task also records what the work may currently produce — investigation and documents only, or implementation and its checks — and the conditions that stop it, so the next session can resume from the document instead of the conversation.
+**Start with the overview for the whole project, or the task document for work already identified.** The task's opening points to its current outcome, governing requirements, design and decisions, completion checks and next action. Follow links to the owning details without reconstructing all documents or earlier conversations each time. The task also records what the work may currently produce — investigation and documents only, or implementation and its checks — and the conditions that stop it, so the next session can resume from the document instead of the conversation. Work spanning several sessions keeps its current position in one place: the item in progress and the one after it, the last checkpoint and the evidence behind it, the current blocker and where work resumes once it clears, and the few documents to read first. That record holds the present position only and sends superseded ones back to the documents that own them — a pointer that accumulates updates stops answering the question it exists for.
 
 | Document | What you can learn |
 |---|---|
 | Project overview | Overall goals, progress by requirement, major blockers and document links |
 | Requirements | Customer outcomes and the conditions for satisfying them |
 | Design | How screens, APIs and data behave and connect |
-| Plan | Implementation order, dependencies, verification methods and completion criteria |
-| Task | Owner, what the work may currently produce, concrete execution steps, declared stop conditions and progress |
+| Plan | Implementation order, dependencies, verification methods, completion criteria and the current resumption point for work spanning sessions |
+| Task | Owner, what the work may currently produce, the inputs it reads and the paths it shares with other work, concrete execution steps, declared stop conditions, completion checks written as actual commands, and progress |
 | Verification | Which version was checked, the method, actual results and limitations |
 | Open items and decisions | Questions still to settle, their impact and next action, and actual decisions |
 
@@ -273,6 +273,10 @@ The policy requires these states to be kept distinct. A verification record carr
 | LIVE_ENV_VERIFIED | Confirmed in the live environment or one equivalent to it. | Customer acceptance. |
 | CUSTOMER_ACCEPTED | The authorized customer explicitly accepted a specific candidate version. | Completion of handover and maintenance obligations. |
 | CLOSED | All contributing work and the acceptance, delivery, handover and maintenance obligations are settled. | Nothing. This is closure. |
+
+A subject examined without passing, one that cannot be checked because a required input is missing — a permission state, data set, environment, policy or source version — one needing rework, and one the criteria do not apply to each carry their own disposition and stay out of pass counts. A missing required input is raised as an open item so it has an owner and a next action.
+
+When a later check overturns an earlier pass, that pass is withdrawn explicitly: the record names which subjects lost their pass, keeps both the original evidence and the finding that overturned it, and states what must pass to restore it. Work that proceeded on the withdrawn basis returns to its prior state. Withdrawal preserves the history rather than erasing it.
 
 Failed, unrun, partial or stale checks are not a pass at any level. After a change, assess existing evidence for applicability and recheck the affected scope. Unaffected results can be reused with their original version/environment and the reuse basis. Metadata changes alone do not require repeating product checks; required project/CI checks remain required. See [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 

@@ -22,6 +22,7 @@ does not apply is not required reading.
 | Document a small correction | [Minimum documentation for a small change](#minimum-documentation-for-a-small-change) |
 | Write or update an overview, plan or task | [Document organization](#document-organization), [Plans and tasks](#plans-and-tasks), [Summary ownership and updates](#summary-ownership-and-updates) |
 | Record or follow up an unresolved question | [Open items](#open-items) |
+| Resume work that spans sessions, or record where it stands | [Resumption state](#resumption-state) |
 | Several teams, delegated ID ranges or an external tracker | [Area overviews](#area-overviews), the range record in [Allocation reuse](#allocation-and-validation-reuse), [External work trackers](#external-work-trackers) |
 | Check documents before a completion claim | [Document validation](#document-validation), then the sections its rows name for the changed content |
 
@@ -32,6 +33,7 @@ does not apply is not required reading.
 | Progress summaries and update scope | [Summary ownership and updates](#summary-ownership-and-updates) |
 | Several teams, streams or subsystems | [Area overviews](#area-overviews) |
 | Plan/task responsibilities | [Plans and tasks](#plans-and-tasks) |
+| Current position of long-running work | [Resumption state](#resumption-state) |
 | Identity, types and numbering | [Item IDs](#item-ids) |
 | Project ID formats and optional classification codes | [Document ID dictionary](ID_DICTIONARY.md) |
 | Canonical filename and folder mapping | [Document paths](#document-paths) |
@@ -77,8 +79,8 @@ binding.
 | Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
-| Plan | Goal, scope, source-to-work/check coverage, linked implementation detail, dependencies, ordered task links, overall completion criteria, open-item dispositions and actual decision reference. |
-| Task/work item | Concrete output, owner, affected paths/logical resources, current execution mode, plan/input links, prerequisites, ordered actions, applicable implementation detail, declared stop conditions, status and concrete completion checks. |
+| Plan | Goal, scope, source-to-work/check coverage, linked implementation detail, dependencies, ordered task links, overall completion criteria, open-item dispositions, [resumption state](#resumption-state) for work spanning sessions and actual decision reference. |
+| Task/work item | Concrete output, owner, affected paths/logical resources, declared inputs and shared paths, current execution mode, plan/input links, prerequisites, ordered actions, applicable implementation detail, declared stop conditions, status and concrete completion checks with their actual commands. |
 | Decision | Concrete scope/version, actual owner request or response/source, bounds and conditions. |
 | Change trace | Request, before/after, impact, affected work, decision and verification. |
 | Open item | Question/finding and evidence; continued follow-up adds state, responsibility, impact, next action and resolution history under [Open items](#open-items). |
@@ -290,6 +292,35 @@ that extension needs a decision the work does not have. Inputs a task reads are
 not writable by virtue of being read; keep the sources the work consumes
 distinct from the targets it may change.
 
+Declare the inputs the item reads as deliberately as the targets it writes.
+Name the governing instructions, requirement/design sections, contracts, source
+files and prior outputs the result actually depends on, with the versions read.
+A declared input set tells a resuming session which basis to re-establish
+instead of rediscovering it, and makes a missing, unreadable or changed input
+recognizable as a stop condition rather than a surprise mid-execution. Reading
+something outside that set is not a violation; add it to the declaration when it
+turns out to carry the result, and reassess the item when it contradicts an
+input already declared.
+
+Where a declared path or resource is also owned or consumed by another item,
+record it as shared and state how this item may touch it: normally consume-only,
+with any unavoidable registration or integration edit named as such. A defect
+found in a shared component belongs to the item that owns it. Return it there
+under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle) instead of
+repairing it inside the consuming item, whose declared scope, review and
+evidence do not cover that component. Where two items must both write a shared
+path, order them or assign one writer under the
+[collaboration basis](COLLABORATION.md#collaboration-basis) before either
+starts.
+
+Record the item's completion checks as the actual commands or check targets and
+the environment they run in, referencing the
+[project conventions](#suggested-information) where they exist. A resuming
+writer or a separate auditor then runs the same check instead of inventing an
+equivalent one, and a check that cannot be named concretely is not yet a
+completion criterion. Naming a check does not run it; see
+[verification and completion](WORKFLOW.md#verification-and-completion).
+
 Record the item's current execution mode alongside that scope: what the work
 may presently produce, such as analysis and specification only, review output
 only, or implementation and its checks. The mode states the consequence of the
@@ -353,6 +384,38 @@ scope in tasks. Two tasks may work in one directory if their file/resource
 boundaries are clear. A folder name or document ID alone does not assign work.
 Use the [collaboration basis](COLLABORATION.md#collaboration-basis) to make these
 boundaries and ID allocations visible to concurrent writers.
+
+### Resumption state
+
+Work that spans sessions is re-entered repeatedly, often by a different session
+or writer. Keep one record stating where it currently stands, so re-entry starts
+from the recorded position instead of a reconstruction of an earlier
+conversation. Name there:
+
+- the item or step in progress, and the one that comes next;
+- the last completed checkpoint and the evidence that established it;
+- the current blocker, if any, and the point work resumes from once it clears;
+- the conditions still standing between the work and its release, acceptance or
+  closure;
+- the short ordered set of documents a session reads first to re-establish the
+  basis.
+
+The owning plan holds this for a single plan; a program spanning several plans
+or [areas](#area-overviews) keeps one such record in the overview that owns its
+navigation. It points at owning records rather than copying them, and where it
+disagrees with one, the owning record governs under
+[summary ownership](#summary-ownership-and-updates) and the pointer is corrected.
+
+State the present position and let history live where it belongs. A pointer that
+accumulates successive updates stops answering the question it exists for: move
+superseded positions into the decision, verification or change records that own
+them, and keep the entry list short enough to be read on every re-entry.
+
+A pointer records position, not permission. It establishes no execution mode,
+decision or pass; those stay with the actual decision under
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision) and the evidence
+under [verification](WORKFLOW.md#verification-and-completion). Naming the next
+item does not authorize starting it.
 
 ## Item IDs
 

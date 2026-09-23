@@ -77,7 +77,10 @@ Preserve consumer compatibility and identity without duplicate owning files.
    before a work item's first edit. Without Git, inspect targets and preserve
    a versioned copy before replacement. Protect user/unknown work and ownership.
 4. Read the relevant project overview, owning items and the detailed rules below
-   before the affected action or completion claim. Current copies already read
+   before the affected action or completion claim. Where the work records a
+   [resumption state](docs/DATA_MODEL.md#resumption-state), enter from it
+   instead of reconstructing an earlier session, and confirm it against the
+   owning records. Current copies already read
    in the session count; follow necessary linked definitions. No full-tree read,
    mandatory startup command or routine rereading of all guidance is required.
 5. Report stage, actual blockers and next action as needed; stop at the requested
@@ -100,6 +103,8 @@ end at the first `## ` heading, to choose the sections for the work.
 | Create, revise or declare a plan complete | [Planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and the applicable procedure and completion checks. |
 | Establish execution scope, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria/procedure and the actual request/decision. |
 | Start/transition work, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure and owning project records. |
+| Resume work across sessions or move its position | [Resumption state](docs/DATA_MODEL.md#resumption-state) and [work-item readiness](docs/WORKFLOW.md#scope-decisions-and-work-item-readiness). |
+| Record a disposition short of PASS, or withdraw an overturned pass | [Verification and completion](docs/WORKFLOW.md#verification-and-completion) and the owning verification records. |
 | Report project progress or requirement trace coverage | [Status and trace reporting](docs/WORKFLOW.md#status-and-trace-reporting) and the owning project records. |
 | Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and allocations. |
 | Classify data loss, credential access or high-risk/external effects | Relevant [Security](docs/SECURITY.md) boundaries and applicable external controls before acting. |
@@ -137,6 +142,8 @@ request and derived scope, then perform covered edits and checks without a
 second proceed response. Carry that scope onto the work item as its
 [execution mode and stop conditions](docs/DATA_MODEL.md#plans-and-tasks), so a
 later session reads them there rather than reconstructing the conversation.
+Declare the item's inputs and shared paths with that scope, and keep its
+completion checks named as actual commands.
 Exploratory or stage-only requests do not authorize later implementation;
 high-risk controls still apply.
 
@@ -187,6 +194,11 @@ LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Record actual method,
 version/environment, expected/observed result and limits. Failed, unrun, partial,
 ambiguous or stale evidence is not PASS; documents do not prove product success,
 and a result obtained against a stand-in subject proves only that stand-in.
+A subject examined without a pass, blocked on a missing input or not applicable
+carries its own disposition and never joins a pass count. A pass that a later
+check overturns is withdrawn explicitly, with the affected records corrected and
+the condition for restoring it recorded, under
+[verification](docs/WORKFLOW.md#verification-and-completion).
 
 Missing authority, unsafe actions, unresolved required inputs, unreliable
 decision provenance, contradictory current evidence and ownership conflicts

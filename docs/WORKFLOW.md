@@ -64,7 +64,11 @@ work; do not invent earlier approvals or force a lifecycle reset. See
 [Approvals](APPROVALS.md#coverage-and-currentness) owns readiness criteria,
 recording and reuse. When selecting or resuming work, use that assessment and
 review the [open items](#open-item-lifecycle) affecting the selected scope,
-including unresolved owner or provider responsibilities. Update the owning
+including unresolved owner or provider responsibilities. Where the work records
+a [resumption state](DATA_MODEL.md#resumption-state), enter from it: it names
+the position, last checkpoint, blocker and first documents to read, and spares
+the session a reconstruction. Confirm it against the owning records before
+relying on it, and correct it where it has fallen behind. Update the owning
 assessment for changed facts; do not maintain another readiness checklist here
 or require a new approval solely because the work item changes.
 
@@ -246,7 +250,11 @@ splitting plans does not by itself require approval.
 
 Carry forward unfinished work explicitly. Verify the next work item's coverage
 and dependencies. Keep actual assignments and status accurate, and report
-completion when the requested scope is complete.
+completion when the requested scope is complete. Where the program keeps a
+[resumption state](DATA_MODEL.md#resumption-state), move it to the new position
+as part of the switch — the item now in progress, the next one, the last
+checkpoint and any blocker — so the next session does not resume the work that
+was just left.
 
 ## Verification and completion
 
@@ -289,6 +297,32 @@ their own evidence. What matters is the separation and the identified subject,
 not a particular record format; apply
 [baselines](DEVELOPMENT_METHOD.md#baselines-and-review-boundaries).
 
+Give a subject that did not earn a pass its own disposition rather than an
+absent or an optimistic one. Distinguish at least: examined with evidence
+recorded but not passed; failing the stated criteria and needing rework; not
+checkable because a required input is missing, naming which one — an actor,
+permission state, data set, environment, policy state or source version; and
+not applicable, with the reason it does not apply. Equivalent project labels are
+fine where their mapping is stated. None of these is a pass. Keep them out of
+pass counts and totals, report each subject under its own disposition, and
+raise a missing required input as an open item so it is owned rather than
+carried as a silent gap. A disposition records the subject's current standing;
+it neither grants nor withholds the authority to continue.
+
+A later check can overturn an earlier pass. When an independent check, an audit
+or a discovered defect shows that a granted pass or acceptance did not hold,
+withdraw it explicitly: name the subjects whose pass is withdrawn, keep both the
+original evidence and the finding that overturned it, and correct every record
+and summary that still reports the withdrawn result. Work that was allowed to
+start or to close on that basis returns to its state before it, under
+[cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption)
+where a decision rested on it. Record what would restore it — which check, at
+what scope, by whom — as the condition dependent work waits behind, and treat
+that condition as a real blocker rather than a preference. A withdrawal is not
+an erasure: the original observation stays as history with its limits, and
+unaffected evidence keeps its standing under
+[verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
+
 ## Status and trace reporting
 
 A status request such as "how far is this project" or "how much of the
@@ -327,7 +361,7 @@ coverage judgments.
 | Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
 | Stage summary | Current stage per the overview, active plans, and the stage actually supported by the owning records where it differs. |
 | Requirement trace | One row per in-scope requirement: covering design/contract, plan, tasks with their statuses, verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
-| Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. |
+| Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion) and never added to a pass count; a withdrawn pass is reported as withdrawn, with the condition for restoring it. |
 | Gaps and discrepancies | Requirements without covering design or work; work, contracts or verification missing their requirement/source trace under the item-boundary rules; unresolved links or IDs; summaries that contradict owning records; evidence whose subject version predates later changes to that subject; open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
