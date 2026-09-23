@@ -15,6 +15,10 @@ including relevant shared constraints and tracker items. Do not reconstruct
 current instructions from old conversations or load unrelated areas. Use
 targeted searches for linked detail; do not load all policies, records or the
 entire README for orientation.
+Where the project keeps its own
+[entry instruction file](DATA_MODEL.md#project-instruction-files), its stage
+pointer is the cheapest way in; confirm the position against the owning records
+before relying on it.
 Reuse current supplied/read copies. A summary or link does not substitute for
 reading an applicable rule before its action or completion claim.
 

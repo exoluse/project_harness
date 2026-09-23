@@ -96,6 +96,7 @@ end at the first `## ` heading, to choose the sections for the work.
 | Trigger | Read and apply |
 |---|---|
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, allocation, paths and validation. |
+| Set up or maintain a project's own entry instruction file | [Project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
 | Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage and intake sections. |
 | Resolve conflicting inputs or rank competing sources | [Input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence) and any precedence the owning project records. |
@@ -144,7 +145,9 @@ second proceed response. Carry that scope onto the work item as its
 [execution mode and stop conditions](docs/DATA_MODEL.md#plans-and-tasks), so a
 later session reads them there rather than reconstructing the conversation.
 Declare the item's inputs and shared paths with that scope, and keep its
-completion checks named as actual commands.
+completion checks named as actual commands. Where an item accumulates parts
+authorized at different times, keep each part's scope with the decision that
+authorized it.
 Exploratory or stage-only requests do not authorize later implementation;
 high-risk controls still apply.
 

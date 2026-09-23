@@ -331,6 +331,16 @@ separate decision. A session resuming the item reads the mode there instead of
 re-deriving authority from an earlier conversation. Where the item and the
 actual decision disagree, the decision governs and the item is corrected.
 
+A long-running item can hold several scopes authorized at different times. Keep
+the item's own mode at the narrowest current standing and record each
+authorized sub-scope separately: what it covers, the decision and date that
+authorized it, its own write scope and exclusions, and its completion checks. A
+later authorization does not widen the ones before it or lift the item's own
+mode, and a finished sub-scope stays recorded rather than being folded into the
+item's general text. A resuming session then reads which part of a partly
+authorized item it may act on, instead of inferring that the whole item became
+implementable when one part did.
+
 Record the conditions that stop the item before they occur: the inputs,
 contracts, fixtures, authority and scope boundaries whose absence or change
 makes continuing unsafe or meaningless. Declared stop conditions make a stop
@@ -856,6 +866,36 @@ ID to its body if compatible. A normal requirements document continues to use
 `requirements/REQ-001.md` under the chosen document root. The agent assesses
 and documents the exception within the already authorized task; preserving a
 required name does not need an additional approval ceremony.
+
+### Project instruction files
+
+A project's own root instruction file — the `AGENTS.md`, `CLAUDE.md` or tool
+adapter a session loads before it reads anything else — is the one document
+whose cost is paid in every session. Use it for what the work cannot start
+without and what rarely changes: the stack and runtime versions actually in
+use, the real build/test/static-check commands and the environments they run
+in, the top-level code and document layout, the conventions a writer would
+otherwise violate, and any material the project has designated
+[non-authoritative](DEVELOPMENT_METHOD.md#non-authoritative-inputs). These are
+the [project conventions](#suggested-information) placed where they are needed;
+record each when it is decided or found at intake, not as a placeholder.
+
+Add a short entry pointer for work in progress: the current stage and the few
+documents a session reads first, in order, to re-establish the basis. Keep
+separate pointers for separate streams or [areas](#area-overviews) instead of
+merging them into one list. The pointer names owning documents and the present
+position; it does not restate their content, and the
+[resumption state](#resumption-state) stays the owning record where the two
+disagree.
+
+Keep owning content out of it. An entry file that accumulates requirement
+decisions, item-level instructions or verification gates becomes a second
+owning definition that drifts from the first, and every session loads it in
+full, including the sessions it has nothing to do with. Move such content to
+the item that owns it and link it, under
+[summary ownership](#summary-ownership-and-updates). The entry file carries no
+authority of its own: an execution mode, a decision and a pass stay with the
+records that own them.
 
 ### Path-scoped instruction files
 

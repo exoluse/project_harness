@@ -37,7 +37,10 @@ a decision log. Use available message references or an accurate attributed excer
 invent message IDs, dates, signatures or assent. Ordinary language suffices.
 
 An explicit proceed response covers the unchanged presented implementation and
-verification. One decision can cover multiple plans/tasks. A supplied document,
+verification. One decision can cover multiple plans/tasks. One item can equally
+carry several decisions taken at different times; record each against the
+sub-scope it covers under [plans and tasks](DATA_MODEL.md#plans-and-tasks)
+rather than restating the item's overall mode. A supplied document,
 issue or exploratory request alone is not approval of an unreviewed change.
 Clarify only what remains ambiguous or materially undecided.
 

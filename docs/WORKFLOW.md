@@ -89,6 +89,13 @@ checkout you are about to write in.
    hand the item back with it recorded. Existing work outside the declared
    scope does not block the item.
 
+Record what the inspection established where the work is owned: the revision
+the work starts from, the uncommitted paths that were already there, and the
+outcome for any overlap with the declared write scope. Without it, a later
+session cannot separate this item's diff from work it inherited, and the next
+writer re-derives those facts from a tree that has since moved. A few lines in
+the item or its progress note are enough; this needs no separate document.
+
 This establishes the starting state and its limits. It grants no authority and
 does not replace [work-item readiness](#scope-decisions-and-work-item-readiness)
 or the [collaboration basis](COLLABORATION.md#collaboration-basis).
@@ -322,6 +329,17 @@ that condition as a real blocker rather than a preference. A withdrawal is not
 an erasure: the original observation stays as history with its limits, and
 unaffected evidence keeps its standing under
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
+
+A closed record is extended, not rewritten. Where work already recorded as
+complete must take in something it did not cover — a dependent path the frozen
+scope missed, a file the check turned out to require — append a dated amendment
+to that record: what is added, why it belongs to the closed work, and what did
+not change, naming the subject, criteria and evidence already recorded. Editing
+the original body instead leaves a record that no longer describes what was
+done and checked at the time, and it hides the extension from the review that
+would have examined it. An amendment that moves the subject, the criteria or
+the result is not an amendment; it is a new check, or a withdrawal under the
+paragraph above.
 
 ## Status and trace reporting
 
