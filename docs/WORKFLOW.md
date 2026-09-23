@@ -35,8 +35,10 @@ continues to apply to actual development and requested document deliverables.
    choices or uncovered scope under [Approvals](APPROVALS.md).
 5. Apply [work-item readiness](#scope-decisions-and-work-item-readiness), reusing
    the owning assessment and recording changed facts and real blockers.
-6. Execute covered work and verify the changed deliverables against the agreed
-   criteria. Preserve observations, failures and limits.
+6. Apply [starting execution in a working tree](#starting-execution-in-a-working-tree)
+   before the first edit. Execute covered work and verify the changed
+   deliverables against the agreed criteria. Preserve observations, failures
+   and limits.
 7. Deliver the requested result. For releases or project closure, include all
    contributing work, acceptance and operational obligations as applicable.
 
@@ -65,6 +67,27 @@ review the [open items](#open-item-lifecycle) affecting the selected scope,
 including unresolved owner or provider responsibilities. Update the owning
 assessment for changed facts; do not maintain another readiness checklist here
 or require a new approval solely because the work item changes.
+
+## Starting execution in a working tree
+
+Before the first edit of a work item, establish the actual state of the
+checkout you are about to write in.
+
+1. Confirm the checkout contains the governing instructions this work must
+   follow, including the policy, adapter and owning-document changes decided
+   for it. Work started from an earlier revision follows superseded
+   instructions; update the checkout or state the gap before editing.
+2. Inspect uncommitted and staged changes and record what was already there,
+   so your own diff stays separable from work you did not do.
+3. Compare that existing work against the item's declared write scope under
+   [plans and tasks](DATA_MODEL.md#plans-and-tasks). Where they overlap, do not
+   edit the overlapping paths: identify the owner and resolve the overlap, or
+   hand the item back with it recorded. Existing work outside the declared
+   scope does not block the item.
+
+This establishes the starting state and its limits. It grants no authority and
+does not replace [work-item readiness](#scope-decisions-and-work-item-readiness)
+or the [collaboration basis](COLLABORATION.md#collaboration-basis).
 
 ## Open-item lifecycle
 
@@ -247,6 +270,24 @@ a transition from completion to push alone does not require a fresh full scan.
 Required project/CI checks remain required. Report a check failure accurately
 even when unrelated authorized work can continue.
 No test run means no test-pass claim.
+
+Check the actual subject of the claim. A result produced against a stand-in —
+a synthetic fixture, a copied sample, a mock of the component under test or a
+hand-built approximation — is evidence about that stand-in, not about the
+route, build, data or environment the claim names. Where the claim is about
+real behavior, run the check against the real artifact and record which one.
+State what the check covered: for a subject with repeated or multiple
+instances, name the instances actually examined, and do not present a spot
+check as a whole-subject result.
+
+Inspection is not a pass. Reading, rendering or capturing a subject establishes
+a pass only against the stated criteria with no unresolved item left in its
+scope. Where a whole-item or acceptance-level pass carries high consequence,
+confirm it through a check separate from the writer that produced the work,
+against identified artifact versions, and keep the writer's own results as
+their own evidence. What matters is the separation and the identified subject,
+not a particular record format; apply
+[baselines](DEVELOPMENT_METHOD.md#baselines-and-review-boundaries).
 
 ## Status and trace reporting
 

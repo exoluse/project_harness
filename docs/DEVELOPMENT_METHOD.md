@@ -283,7 +283,10 @@ editing. Record analysis boundaries, available sources, actual progress,
 known verification/deployment status and the observed build, test and check
 conventions under [project conventions](DATA_MODEL.md#suggested-information).
 Existing documents and tools remain inputs; resolve conflicting project rules
-explicitly.
+explicitly. Material kept for communication, superseded by a later decision or
+scheduled for replacement is designated under
+[non-authoritative inputs](#non-authoritative-inputs) rather than treated as a
+source of requirements.
 
 Recover requirements and design from code, configuration, tests, interfaces and
 attributable product documents. Distinguish:
@@ -342,6 +345,28 @@ and evidence. Preserve past observations as history, including their original
 limits. Reuse unaffected evidence only when it still supports the stated
 criterion, subject and environment. Reverify changed outputs and affected
 dependencies.
+
+## Non-authoritative inputs
+
+A project can designate an input as non-authoritative for development: material
+kept for communication, reporting or reference, a source that a later decision
+has superseded, or an implementation the current work replaces. Record the
+designation, the material it covers and its owner once in the owning overview
+or plan, and keep the material itself in place.
+
+A non-authoritative input is not a requirement, scope boundary, acceptance
+criterion or verification evidence. Do not derive work from it, synchronize
+project documents to it, or raise its divergence from the product as a defect,
+conflict or blocker. It becomes a work subject only when the user explicitly
+requests work on that material, in its own context.
+
+The designation is bounded. It does not apply to an input the project still
+depends on: a contract, an external control, an authorized customer statement
+and a current owning instruction stay binding wherever they are kept, and
+history keeps its value as history under
+[baselines](#baselines-and-review-boundaries). Where actual reliance is
+unclear, resolve it as an [open item](WORKFLOW.md#open-item-lifecycle) instead
+of assuming either reading.
 
 ## Change classification
 

@@ -75,6 +75,14 @@ applicable authority and real prerequisites for their own work. Under branch
 isolation this rule applies at merge: resolve conflicts preserving both sides
 and never overwrite the other change silently.
 
+Concurrency is bounded by the checkout, not only by the writer. In one working
+tree, keep one writing participant active at a time: their edits, and any
+command that rewrites files, merge into a single uncommitted state that no one
+can attribute afterwards. Read-only work — review, analysis, search and checks
+that write nothing into the tree — may run alongside it. Separate worktrees,
+clones or branches remove this constraint; the ownership agreement above still
+applies at merge.
+
 ### Coordination waits
 
 Identify the awaited input, responsible owner and affected dependent work in
@@ -105,8 +113,11 @@ Delegation is a working method, not a default. It adds no authority: delegated
 work stays within the accountable agent's current scope, and edits, product-code
 execution, external effects and high-risk actions keep their own requirements.
 Writing subagents follow the [collaboration basis](#collaboration-basis) with
-non-overlapping ownership. User instructions or tool rules that limit or
-prohibit delegation remain binding.
+non-overlapping ownership, including the one-writer limit per working tree in
+[concurrent writers](#concurrent-writers): where subagents share a checkout,
+run one writing subagent at a time and use read-only subagents for parallel
+work. User instructions or tool rules that limit or prohibit delegation remain
+binding.
 
 ## Formal records for a single writer
 

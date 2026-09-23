@@ -15,7 +15,8 @@ These principles explain its intent.
 5. **Material changes stay visible.** Preserve the prior baseline, assess the
    delta and obtain the applicable decision before affected implementation.
 6. **Honest evidence.** Distinguish implementation, verification, acceptance
-   and closure. Failed, unrun, partial or stale checks are not PASS.
+   and closure. Failed, unrun, partial or stale checks are not PASS, and a
+   check run against a stand-in proves only that stand-in.
 7. **History and currentness differ.** Preserve original observations and
    decisions while assessing their applicability to changed work.
 8. **Real blockers have an impact boundary.** Stop affected work for missing

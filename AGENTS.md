@@ -70,7 +70,9 @@ Preserve consumer compatibility and identity without duplicate owning files.
 2. Identify the objective, stopping point and existing decisions. Classify work
    as analysis/specification, policy maintenance or implementation/verification/
    delivery. Discussion of defects does not authorize unrelated edits or deletion.
-3. Inspect Git status before writing. Without Git, inspect targets and preserve
+3. Inspect Git status before writing, and apply
+   [starting execution](docs/WORKFLOW.md#starting-execution-in-a-working-tree)
+   before a work item's first edit. Without Git, inspect targets and preserve
    a versioned copy before replacement. Protect user/unknown work and ownership.
 4. Read the relevant project overview, owning items and the detailed rules below
    before the affected action or completion claim. Current copies already read
@@ -91,6 +93,7 @@ end at the first `## ` heading, to choose the sections for the work.
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, allocation, paths and validation. |
 | Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage and intake sections. |
+| Treat material as communication-only, superseded or to be replaced | [Non-authoritative inputs](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs) and the designation recorded in the owning overview or plan. |
 | Create, revise or declare a plan complete | [Planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and the applicable procedure and completion checks. |
 | Establish execution scope, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria/procedure and the actual request/decision. |
 | Start/transition work, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure and owning project records. |
@@ -176,7 +179,8 @@ current applicability separately; changed outputs do not erase valid history.
 Keep IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
 LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Record actual method,
 version/environment, expected/observed result and limits. Failed, unrun, partial,
-ambiguous or stale evidence is not PASS; documents do not prove product success.
+ambiguous or stale evidence is not PASS; documents do not prove product success,
+and a result obtained against a stand-in subject proves only that stand-in.
 
 Missing authority, unsafe actions, unresolved required inputs, unreliable
 decision provenance, contradictory current evidence and ownership conflicts
@@ -199,8 +203,9 @@ One writer needs no claim system. Before concurrent editing, establish the
 boundaries, directory mapping, ID allocations and non-overlapping ownership,
 including shared documents and Git integration; branch isolation with
 reviewed merges and tracker-owned assignment can supply it. Use worktrees
-where practical;
-never take over another writer's active scope or unknown dirty work silently.
+where practical; in one working tree keep a single writing participant active
+while read-only review runs alongside. Never take over another writer's active
+scope or unknown dirty work silently.
 
 For [handoff and integration](docs/COLLABORATION.md#transfer-and-integration),
 carry actual versions, decisions, evidence, limits, unfinished work and next

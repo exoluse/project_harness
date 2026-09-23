@@ -278,6 +278,17 @@ is needed yet; do not create a placeholder task. Resolve conflicting inputs
 under the [change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation)
 before relying on them, and follow links to affected shared constraints.
 
+During execution, a task's recorded paths and logical resources also bound its
+writes. Edit what the task declares, and declare a newly required path, shared
+file or generated artifact in the task before editing it. Name excluded targets
+where an adjacent path would otherwise look in scope. An edit outside the
+declared scope stays out of scope even when it appears necessary: extend the
+declaration first under the
+[change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation), or stop when
+that extension needs a decision the work does not have. Inputs a task reads are
+not writable by virtue of being read; keep the sources the work consumes
+distinct from the targets it may change.
+
 Plans and tasks reference the requirements they cover. One requirement can
 need several tasks, and one task can serve several requirements. Keep plan and
 task definitions in their respective files, except for the
