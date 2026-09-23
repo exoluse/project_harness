@@ -66,7 +66,9 @@ Preserve consumer compatibility and identity without duplicate owning files.
    [CLAUDE.md](CLAUDE.md) for Claude Code,
    [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md) for Codex. A tool may load
    only one of the two files by itself, so read the other. A current supplied
-   copy counts. Reuse unchanged context.
+   copy counts. Reuse unchanged context. Where the project keeps
+   [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files),
+   read those covering the paths this work touches.
 2. Identify the objective, stopping point and existing decisions. Classify work
    as analysis/specification, policy maintenance or implementation/verification/
    delivery. Discussion of defects does not authorize unrelated edits or deletion.
@@ -93,6 +95,7 @@ end at the first `## ` heading, to choose the sections for the work.
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, allocation, paths and validation. |
 | Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage and intake sections. |
+| Resolve conflicting inputs or rank competing sources | [Input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence) and any precedence the owning project records. |
 | Treat material as communication-only, superseded or to be replaced | [Non-authoritative inputs](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs) and the designation recorded in the owning overview or plan. |
 | Create, revise or declare a plan complete | [Planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and the applicable procedure and completion checks. |
 | Establish execution scope, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria/procedure and the actual request/decision. |
@@ -131,8 +134,11 @@ untrusted product-code execution, deployment or external effects. A clear
 implementation/fix request supplies its scope decision under
 [Approvals](docs/APPROVALS.md#clear-implementation-requests); record the actual
 request and derived scope, then perform covered edits and checks without a
-second proceed response. Exploratory or stage-only requests do not authorize
-later implementation; high-risk controls still apply.
+second proceed response. Carry that scope onto the work item as its
+[execution mode and stop conditions](docs/DATA_MODEL.md#plans-and-tasks), so a
+later session reads them there rather than reconstructing the conversation.
+Exploratory or stage-only requests do not authorize later implementation;
+high-risk controls still apply.
 
 Before implementation, establish a versioned, reviewable scope under
 [decision preparation](docs/APPROVALS.md#preparing-and-recording-one-decision).
@@ -209,9 +215,10 @@ scope or unknown dirty work silently.
 
 For [handoff and integration](docs/COLLABORATION.md#transfer-and-integration),
 carry actual versions, decisions, evidence, limits, unfinished work and next
-action. Git operations stay within authorized delivery scope: fetch before normal
-push and preserve both histories; force/tag pushes, branch deletion, different
-targets and published-history rewrites need separate explicit authorization.
+action. Git operations stay within authorized delivery scope: stage by explicit
+path so a commit carries only the item's changes, fetch before normal push and
+preserve both histories; force/tag pushes, branch deletion, different targets
+and published-history rewrites need separate explicit authorization.
 
 Apply [closure preparation](docs/WORKFLOW.md#closure-preparation) across all
 contributing work and applicable acceptance, delivery, handoff and maintenance

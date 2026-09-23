@@ -40,7 +40,7 @@ If the goal is still unclear, start with discovery and requirements. The agent p
 
 ### Applying it to another project
 
-1. **Bring in the policy files.** Copy [AGENTS.md](AGENTS.md) and [docs/](docs/) into the project, or keep this repository alongside and reference it by path. Copying keeps the policy versioned with the project, which helps tracing. Put the tool entry file ([CLAUDE.md](CLAUDE.md) or [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md)) at the project root. If the project already has a CLAUDE.md or AGENTS.md, compare the two sets of rules, resolve conflicts and integrate them. The harness policy never weakens the project's contracts or CI rules.
+1. **Bring in the policy files.** Copy [AGENTS.md](AGENTS.md) and [docs/](docs/) into the project, or keep this repository alongside and reference it by path. Copying keeps the policy versioned with the project, which helps tracing. Put the tool entry file ([CLAUDE.md](CLAUDE.md) or [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md)) at the project root. If the project already has a CLAUDE.md or AGENTS.md, compare the two sets of rules, resolve conflicts and integrate them. The harness policy never weakens the project's contracts or CI rules. In a large repository, rules for one area can live in a [path-scoped instruction file](docs/DATA_MODEL.md#path-scoped-instruction-files) inside that subtree, read together with the root policy by work that touches those paths. A path-scoped file adds detail; it cannot weaken the root policy or a contract.
 2. **Choose a document root.** Decide where project documents live, for example `project-docs/`. The project chooses folder names and records them in the overview.
 3. **Establish the overview when document work starts.** Reuse an existing overview; if none exists, create the one needed for the requested documentation or implementation. A report-only request creates no files. Record the objective and scope, the document root and type-to-folder mapping, the ID format table (only the kinds needed, from the [starter table](docs/ID_DICTIONARY.md)), the ID allocation section, and any build, test and check commands and environments already decided. An undecided convention is recorded as undecided and settled during design and planning. Material that is not a development basis — customer communication documents, a superseded source, a legacy implementation being replaced — is designated in the overview as a [non-authoritative input](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs): it is not used as requirement, scope or evidence, and its divergence from the product is not raised as a defect or blocker.
 4. **An existing project starts from its actual state.** Record the intake commit, analysis scope, what is already implemented and the known verification and deployment status in the overview. Requirements recovered from code are marked as observed or inferred; only what the customer confirmed counts as a confirmed requirement. Existing documents and IDs stay as they are and are referenced.
@@ -80,7 +80,7 @@ Existing projects start from their actual progress. The agent distinguishes impl
 
 ## What documents record
 
-**Start with the overview for the whole project, or the task document for work already identified.** The task's opening points to its current outcome, governing requirements, design and decisions, completion checks and next action. Follow links to the owning details without reconstructing all documents or earlier conversations each time.
+**Start with the overview for the whole project, or the task document for work already identified.** The task's opening points to its current outcome, governing requirements, design and decisions, completion checks and next action. Follow links to the owning details without reconstructing all documents or earlier conversations each time. The task also records what the work may currently produce — investigation and documents only, or implementation and its checks — and the conditions that stop it, so the next session can resume from the document instead of the conversation.
 
 | Document | What you can learn |
 |---|---|
@@ -88,7 +88,7 @@ Existing projects start from their actual progress. The agent distinguishes impl
 | Requirements | Customer outcomes and the conditions for satisfying them |
 | Design | How screens, APIs and data behave and connect |
 | Plan | Implementation order, dependencies, verification methods and completion criteria |
-| Task | Owner, concrete execution steps and progress |
+| Task | Owner, what the work may currently produce, concrete execution steps, declared stop conditions and progress |
 | Verification | Which version was checked, the method, actual results and limitations |
 | Open items and decisions | Questions still to settle, their impact and next action, and actual decisions |
 
@@ -221,13 +221,15 @@ Where an overview summary and the owning record differ, the owning record is rep
 
 You decide the goals, priorities, constraints and execution scope. Within that scope, the agent investigates technical details and performs detailed planning, implementation and verification.
 
+When an instruction, a specification, a contract, the running code and provisional material disagree, the agent follows a fixed [input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence): your current instruction, then received specifications and their approved changes, then approved requirements, design and contracts, then current code and tests, then provisional material such as mock-ups and samples, and last the agent's own proposal. A lower basis does not win by being newer or more detailed. Detail found only in a mock-up does not become a requirement, and current behavior that contradicts an approved contract is reported as a defect. The order exists so a conflict does not halt bounded work; the conflict itself is recorded where it belongs, and a changed commitment goes through the change procedure.
+
 When a material commitment changes, such as behavior, cost, data handling or use of an external service, the agent presents the reason and impact and obtains any needed decision. Production deployment, production data changes, destructive actions, protected-credential access and final customer acceptance need specific authorization and safeguards for the subject and effect. Sending external messages also needs explicit authority. See [decisions](docs/APPROVALS.md) and [security](docs/SECURITY.md) for the boundaries.
 
 For a correction, the agent reuses applicable content and keeps affected documents current. Changes to shared functions or APIs also require checking other requirements that use them. The overview is updated when its summary changes, including major stages, blockers or dependencies.
 
 When a decision is settled in conversation, retain its source and what it supersedes, then update the current owning instructions before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
-Concurrent agents keep separate edit scopes, usually separate branches. In a single working tree, run one writing agent at a time; review and analysis that write nothing can run alongside it. Two writers in one tree merge into a single uncommitted state that no one can attribute afterwards. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
+Concurrent agents keep separate edit scopes, usually separate branches. In a single working tree, run one writing agent at a time; review and analysis that write nothing can run alongside it. Two writers in one tree merge into a single uncommitted state that no one can attribute afterwards. Commits stage the paths the work actually changed; staging a whole directory or working tree sweeps in whatever else was already there. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
 
 ### When the agent stops and asks
 

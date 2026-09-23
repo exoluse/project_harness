@@ -346,6 +346,39 @@ limits. Reuse unaffected evidence only when it still supports the stated
 criterion, subject and environment. Reverify changed outputs and affected
 dependencies.
 
+## Input precedence
+
+Work inputs conflict routinely: a current instruction, a received
+specification, an approved contract, the code as it runs, provisional material
+and the agent's own proposal rarely agree. Where the owning project records no
+precedence of its own, rank them:
+
+1. The user's current instruction and the scope and constraints it records.
+2. Received specifications and the approved changes to them.
+3. Approved requirements, design decisions and interface contracts.
+4. Current code, configuration and tests, as evidence of present behavior.
+5. Provisional material such as mock-ups, samples and drafts, as reference for
+   what nothing above specifies.
+6. The agent's own proposal, which is the weakest basis and stays marked as
+   proposed until it is decided.
+
+The ladder decides which input to follow so bounded work continues; it does not
+hide the conflict. Record the divergence where the losing input is owned, and
+apply the [change cycle](#change-cycle-and-propagation) when the correct
+reading changes a commitment. A lower rank does not overtake a higher one by
+being newer, more detailed or easier to implement: detail found only in
+provisional material does not become a requirement, and current behavior that
+contradicts an approved contract is a defect to report, not a specification to
+preserve.
+
+The ladder ranks inputs, not authority, and it ranks what to follow rather than
+what is true. It does not settle a
+[material change](APPROVALS.md#material-changes), a high-risk action, a missing
+required input, or contradictory evidence about whether something actually
+works; those remain [real blockers](../AGENTS.md#history-evidence-and-real-blockers)
+for the scope they affect. Where applying the ladder would decide one of them,
+stop and resolve it as an [open item](WORKFLOW.md#open-item-lifecycle) instead.
+
 ## Non-authoritative inputs
 
 A project can designate an input as non-authoritative for development: material

@@ -37,6 +37,7 @@ does not apply is not required reading.
 | Canonical filename and folder mapping | [Document paths](#document-paths) |
 | Separate item or supporting detail | [Item boundaries](#independent-items-and-supporting-detail) |
 | Consumer-required name/location | [Required-name exceptions](#required-name-exceptions) |
+| Instructions scoped to a subtree | [Path-scoped instruction files](#path-scoped-instruction-files) |
 | Completion checks | [Document validation](#document-validation) |
 | Reuse of checked allocations | [Allocation reuse](#allocation-and-validation-reuse) |
 | Work status kept in an external tool | [External work trackers](#external-work-trackers) |
@@ -77,7 +78,7 @@ binding.
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
 | Plan | Goal, scope, source-to-work/check coverage, linked implementation detail, dependencies, ordered task links, overall completion criteria, open-item dispositions and actual decision reference. |
-| Task/work item | Concrete output, owner, affected paths/logical resources, plan/input links, prerequisites, ordered actions, applicable implementation detail, status and concrete completion checks. |
+| Task/work item | Concrete output, owner, affected paths/logical resources, current execution mode, plan/input links, prerequisites, ordered actions, applicable implementation detail, declared stop conditions, status and concrete completion checks. |
 | Decision | Concrete scope/version, actual owner request or response/source, bounds and conditions. |
 | Change trace | Request, before/after, impact, affected work, decision and verification. |
 | Open item | Question/finding and evidence; continued follow-up adds state, responsibility, impact, next action and resolution history under [Open items](#open-items). |
@@ -288,6 +289,24 @@ declaration first under the
 that extension needs a decision the work does not have. Inputs a task reads are
 not writable by virtue of being read; keep the sources the work consumes
 distinct from the targets it may change.
+
+Record the item's current execution mode alongside that scope: what the work
+may presently produce, such as analysis and specification only, review output
+only, or implementation and its checks. The mode states the consequence of the
+actual decision recorded under
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision) and names that
+decision; it is not a permission the item grants itself, and widening it is a
+separate decision. A session resuming the item reads the mode there instead of
+re-deriving authority from an earlier conversation. Where the item and the
+actual decision disagree, the decision governs and the item is corrected.
+
+Record the conditions that stop the item before they occur: the inputs,
+contracts, fixtures, authority and scope boundaries whose absence or change
+makes continuing unsafe or meaningless. Declared stop conditions make a stop
+recognizable while the work runs rather than only in hindsight. They do not
+replace the [real blockers](../AGENTS.md#history-evidence-and-real-blockers),
+which stop affected work whether or not the item listed them, and an unlisted
+condition is not permission to continue past it.
 
 Plans and tasks reference the requirements they cover. One requirement can
 need several tasks, and one task can serve several requirements. Keep plan and
@@ -774,6 +793,23 @@ ID to its body if compatible. A normal requirements document continues to use
 `requirements/REQ-001.md` under the chosen document root. The agent assesses
 and documents the exception within the already authorized task; preserving a
 required name does not need an additional approval ceremony.
+
+### Path-scoped instruction files
+
+A project may keep an instruction file next to the area it governs, such as a
+subtree's own `AGENTS.md` or tool adapter, so that rules for one part of a
+repository do not have to sit in the root file every session loads. Where they
+exist, read the ones covering the paths the current work touches, closest path
+first, in addition to the root policy and adapter, and name the applicable ones
+among a work item's inputs.
+
+A path-scoped file adds detail for its subtree. It cannot weaken the root
+policy, a contract or an external control; where it appears to, the root
+governs and the conflict is resolved rather than followed. Keep each rule in
+one file at the narrowest path covering its subject instead of copying it into
+several, and record these paths and their scope in the overview so a session
+can tell which apply without scanning the tree. They keep the name their
+consumer requires under the [exceptions above](#required-name-exceptions).
 
 ## Document validation
 

@@ -144,6 +144,15 @@ drop failed attempts or hide a newer failure behind an older success.
 Verification should address the actual integration impact, rather than rerunning
 unaffected checks solely because ownership or document layout changed.
 
+Stage by explicit path. A whole-tree or whole-directory stage takes whatever
+else the checkout holds, including work that was already there and files
+outside the item's declared scope, and the resulting commit no longer shows who
+changed what. Stage the paths the work actually changed, confirm the staged set
+before committing, and leave another writer's uncommitted files unstaged,
+uncommitted and unreverted, handing them back under
+[concurrent writers](#concurrent-writers). Where a tool stages automatically,
+inspect the staged set and unstage what the item did not change.
+
 Before a normal authorized push, fetch the configured remote and preserve both
 histories. Force/tag pushes, branch deletion, different targets and published
 history rewrites need separate explicit authorization.
