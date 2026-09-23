@@ -72,11 +72,30 @@ flowchart LR
     E -->|Change or issue| C
 ```
 
-Plans cover normal behavior, errors and boundary cases, data and interfaces, work order and verification methods. They should be concrete enough that the implementer does not have to guess consequential behavior.
+Each stage has defined inputs and outputs. You do not approve every stage — only the decisions in the last column.
 
-Work stops at the requested stage. A planning-only request ends with the plan; a request to implement a concrete scope continues through ready implementation and verification work. The same scope does not require approval again at every step.
+| Stage | Inputs | Outputs | What you decide |
+|---|---|---|---|
+| Discovery | Goals, sources, existing code | Problem boundaries, stakeholders, constraints, unresolved questions | How far to investigate |
+| Requirements | Discovery results and supporting evidence | Intended outcomes, acceptance criteria, priorities, source trace | Whether these are the right requirements |
+| Design | Requirements at a fixed version, and constraints | Components, interfaces, data, alternatives, risks, requirement coverage | Which alternative to take |
+| Detailed plan | Original scope sources, requirements, design, current progress | Work breakdown and order, exception handling, verification methods, disposition of every unknown | Only where a choice is left open |
+| Implementation | A concrete scope decision, ready inputs and permissions | Code and document changes, with deviations from the plan recorded | What to implement this time |
+| Verification | Candidate version, criteria, check environment | Actual results, failures, limits of applicability | How far to verify |
+| Acceptance | The candidate and its verification | The authorized customer's acceptance or feedback | Whether to accept — never done on your behalf |
+| Delivery | Release scope, operational prerequisites, permissions | The deployed version and post-delivery checks | Approval to go to production |
+| Closure | All contributing work, evidence, outstanding obligations | An honest disposition per item, and acceptance, delivery, handover and maintenance obligations settled | When to declare closure |
+| Maintenance | The released baseline, new requests and incidents | Traced changes and recheck results, with earlier observations preserved | The next request |
 
-Existing projects start from their actual progress. The agent distinguishes implemented behavior from remaining work and uses existing documents, IDs and history. Behavior observed in code is also distinguished from requirements confirmed by the customer.
+**Moving between stages.** Work stops at the requested stage. A planning-only request ends with the plan; a request to implement a concrete scope continues through ready implementation and verification work, and the same scope does not require approval again at every step. Planning is finished when it passes its completion checks, not when a document exists: the original sources are reflected in the plan, the detail is concrete enough that the implementer does not have to guess consequential behavior, and every unknown has a disposition. Listing open questions is not a pass. Starting implementation additionally needs a scope decision and ready prerequisites.
+
+Planning depth follows the work. A bounded correction whose behavior and existing contracts are settled takes a compact plan; new or changed public contracts, data lifecycle or access-policy changes, coordination across independently managed outputs, and high-risk external effects take the detailed procedure. File or line count does not decide it.
+
+**Going back.** When implementation behaves unexpectedly, the cause is investigated first, then the affected plan is revised or the missing decision requested. Where that change touches what was already agreed, the related requirements, design, tasks and verification are updated with it. A failed check or a withdrawn pass is reported as it stands, and dependent work waits until the condition for restoring it is met.
+
+**What needs its own approval.** Production deployment, production data changes, destructive operations, access to secrets and protected credentials, and final customer acceptance are never covered by development authority. These five are confirmed separately even when you do not mention them, and acceptance requires the authorized customer's own sign-off.
+
+**Existing projects** start from their actual progress. The agent distinguishes implemented behavior from remaining work and uses existing documents, IDs and history, keeping behavior observed in code, inferred intent, requirements confirmed by the customer and open unknowns apart from each other.
 
 ## What documents record
 
