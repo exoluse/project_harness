@@ -33,16 +33,19 @@ Keep a project overview linking independently managed feature/work items, with
 one owning definition per item. Projects with several teams, streams or
 subsystems may split navigation into
 [area overviews](docs/DATA_MODEL.md#area-overviews). Requirements are the
-primary basis for product scope; supporting conditions stay with their
-requirement, and fixes reference the existing requirement. Keep requirements,
-designs, plans, tasks and verification in their owning files, linking shared
-definitions instead of duplicating them. A bounded correction may keep missing
-definitions in one work document under the
-[small-change exception](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
-The [Information model](docs/DATA_MODEL.md) owns the
-mandatory rules for boundaries, identities, paths, exceptions and validation.
-Apply them when authoring or checking documents; other guidance links these
-definitions rather than maintaining competing versions.
+primary basis for product scope.
+
+- Supporting conditions stay with their requirement, and a fix references the
+  existing requirement.
+- Keep requirements, designs, plans, tasks and verification in their owning
+  files. Link shared definitions instead of duplicating them.
+- A bounded correction may keep missing definitions in one work document, under
+  the [small-change exception](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
+
+The [Information model](docs/DATA_MODEL.md) owns the mandatory rules for
+boundaries, identities, paths, exceptions and validation. Apply them when
+authoring or checking documents. Other guidance links these definitions rather
+than maintaining competing versions.
 
 ## Item identity and trace
 

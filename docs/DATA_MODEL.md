@@ -117,10 +117,10 @@ definitions.
 
 The overview holds the objective, shared project context, links to shared
 requirements and architecture, baseline, current summary and an index of units.
-It also states the document/item-ID convention, including agent-selected
-extensions and any allocation ownership, and records the
+It also states the document and item-ID convention, including agent-selected
+extensions and any allocation ownership. Once they exist, it records the
 [project conventions](#suggested-information) for build, test and check
-commands, verification environments and integration once they exist. A new
+commands, verification environments and integration. A new
 project adds them when its design or plan decides them; intake records those
 observed in an existing project. An undecided convention is stated as such.
 Each index entry links to the unit's documents and states its scope, stage/status
@@ -172,7 +172,7 @@ project-docs/
 
 Every unit links back to its overview and applicable shared specifications.
 Connect requirements and acceptance criteria to the covering design, planned
-work and actual verification using item IDs with file/anchor links, optionally
+work and actual verification. Use item IDs with file or anchor links, optionally
 in a compact trace table.
 Links may be many-to-many: several plans can implement one requirement, and a
 shared design can support several features. State cross-unit dependencies and
@@ -189,11 +189,16 @@ repair links. A requested stage still ends at its own outputs.
 
 ### Summary ownership and updates
 
-Detailed facts have one owner: requirements own expected outcomes and acceptance
-criteria; designs/contracts own behavior and structure; plans own order,
-dependencies and overall completion criteria; tasks own execution and task
-status; verification documents own actual check results. Designated tracker
-ownership follows [external work trackers](#external-work-trackers).
+Detailed facts have one owner:
+
+- requirements own expected outcomes and acceptance criteria;
+- designs and contracts own behavior and structure;
+- plans own order, dependencies and overall completion criteria;
+- tasks own execution and task status;
+- verification documents own actual check results.
+
+Designated tracker ownership follows
+[external work trackers](#external-work-trackers).
 
 Plans and overviews summarize their own scope's progress, major stage, blockers
 and material dependencies, linking the owning facts and evidence. Select summary
@@ -211,19 +216,23 @@ an unchanged high-level label cannot justify retaining a false detailed claim.
 Route shared-summary updates through their owner under
 [collaboration](COLLABORATION.md#coordination-waits). Pending reflection in a
 shared summary must not hide a known blocker or supply readiness. Check current
-owning records before dependent work starts/resumes and before relying on a
-summary for a decision, handoff or completion claim; reconcile relevant summaries
-before that use. Stop propagation at levels whose facts and judgments remain
+owning records before dependent work starts or resumes, and before relying on a
+summary for a decision, handoff or completion claim. Reconcile relevant
+summaries before that use. Stop propagation at levels whose facts and judgments remain
 valid. Preserve historical snapshots with their dates/versions rather than
 maintaining them as parallel current status.
 
 ### Area overviews
 
 Split navigation into area overviews when one project overview no longer works
-as a readable index or shared edit point: for example, several teams or work
-streams edit it concurrently, its unit index obscures current scope, or
-subsystems, services or repositories progress independently. Size alone is not
-the criterion. Record the split and its reason in the project overview.
+as a readable index or shared edit point. For example:
+
+- several teams or work streams edit it concurrently;
+- its unit index obscures current scope;
+- subsystems, services or repositories progress independently.
+
+Size alone is not the criterion. Record the split and its reason in the project
+overview.
 
 The project overview remains the root. An area overview has its own document
 ID, links back to the root and follows the same organization rules for its area.
@@ -237,8 +246,8 @@ ID, links back to the root and follows the same organization rules for its area.
 Each area index entry links the area overview and states its scope, accountable
 owner, stage/status summary and material dependencies. Area folder extensions
 must not redefine a shared mapping or prefix. A requirement or design used by
-several areas has one owning definition, kept at the root or in a designated
-owning area and linked from the others. Summaries flow upward from owning items
+several areas has one owning definition. Keep it at the root or in a designated
+owning area, and link it from the others. Summaries flow upward from owning items
 to the area overview and from area overviews to the root; no level keeps a
 second detailed account. An area may nest further only when it meets the same
 split criterion.
@@ -247,152 +256,187 @@ Root overview edits follow its assigned owner under the
 [collaboration basis](COLLABORATION.md#collaboration-basis); area writers route
 root changes through that owner or an agreed transfer. New areas can start with
 their own overview. Moving existing index entries or allocations out of an
-established overview is a reorganization: it needs a matching request,
-preserves IDs, history and reviewed versions, and repairs links.
+established overview is a reorganization. It needs a matching request, preserves
+IDs, history and reviewed versions, and repairs links.
 
 ## Plans and tasks
 
-A plan organizes an outcome across work items. It defines the goal, included
-and excluded scope, input requirements/design, dependencies, feasible task order
-and overall completion criteria. A project can use `PLAN` for general, backend
-or screen implementation plans; plans link to the owning task files. API
-contracts and screen specifications are inputs to plans, not automatically
-plans themselves. Preserve established project meanings when they differ.
+A plan organizes an outcome across work items. It defines:
+
+- the goal, and the scope it includes and excludes;
+- the input requirements and design;
+- dependencies and a feasible task order;
+- overall completion criteria.
+
+A project can use `PLAN` for general, backend or screen implementation plans.
+Plans link to the owning task files. API contracts and screen specifications
+are inputs to plans, not plans themselves. Preserve established project
+meanings where they differ.
 
 A task is a concrete output that the actual work assigns and completes as a
-separate unit. Implementation steps serving that output may remain in its file.
-Its owning task file, named under the project's ID convention, records the
-expected output, accountable writer, affected paths and logical resources,
-parent plan/input links, prerequisites,
-current status, ordered actions and concrete completion checks. Supply or link
-the applicable implementation details and verification scenarios required by
-the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth).
-Before assignment is known, state that
-it is unassigned; resolve ownership before concurrent execution. These are
-content requirements, not mandatory headings or front matter.
+separate unit. Implementation steps serving that output may stay in its file.
+Its owning task file is named under the project's ID convention and records:
 
-Use the task document as the entry for starting or resuming that work. Its
-opening description must make the current basis easy to find: the scoped
-outcome, relevant requirement/design sections, governing decision and input
-versions, completion checks, and next action or blocker. Link existing owners
-and sections instead of copying their content or creating another index.
-The selected plan or stage-output document supplies this entry when no task
-is needed yet; do not create a placeholder task. Resolve conflicting inputs
-under the [change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation)
+- the expected output, and the accountable writer or that it is unassigned;
+- the affected paths and logical resources, and the inputs the work reads;
+- parent plan and input links, and prerequisites;
+- current status, ordered actions and concrete completion checks;
+- the current execution mode and the declared stop conditions.
+
+Supply or link the implementation details and verification scenarios required
+by the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth).
+Resolve ownership before concurrent execution. These are content requirements,
+not mandatory headings or front matter.
+
+### Starting or resuming from the task
+
+Use the task document as the entry point. Its opening description makes the
+current basis easy to find: the scoped outcome, the relevant requirement and
+design sections, the governing decision and input versions, the completion
+checks, and the next action or blocker.
+
+Link existing owners and sections. Do not copy their content or build another
+index. Where no task is needed yet, the selected plan or stage-output document
+supplies this entry; do not create a placeholder task. Resolve conflicting
+inputs under the [change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation)
 before relying on them, and follow links to affected shared constraints.
 
-During execution, a task's recorded paths and logical resources also bound its
-writes. Edit what the task declares, and declare a newly required path, shared
-file or generated artifact in the task before editing it. Name excluded targets
-where an adjacent path would otherwise look in scope. An edit outside the
-declared scope stays out of scope even when it appears necessary: extend the
-declaration first under the
+### What the task declares
+
+A resuming session reads each of these from the item instead of reconstructing
+it from an earlier conversation.
+
+**Write scope.** Write only the paths and logical resources the task declares.
+
+- Declare a newly required path, shared file or generated artifact before
+  editing it.
+- Name excluded targets where an adjacent path would otherwise look in scope.
+- Reading an input does not make it writable. Keep the sources the work
+  consumes distinct from the targets it may change.
+
+Necessity does not widen the scope. Extend the declaration under the
 [change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation), or stop when
-that extension needs a decision the work does not have. Inputs a task reads are
-not writable by virtue of being read; keep the sources the work consumes
-distinct from the targets it may change.
+that extension needs a decision the work does not have.
 
-Declare the inputs the item reads as deliberately as the targets it writes.
-Name the governing instructions, requirement/design sections, contracts, source
-files and prior outputs the result actually depends on, with the versions read.
-A declared input set tells a resuming session which basis to re-establish
-instead of rediscovering it, and makes a missing, unreadable or changed input
-recognizable as a stop condition rather than a surprise mid-execution. Reading
-something outside that set is not a violation; add it to the declaration when it
-turns out to carry the result, and reassess the item when it contradicts an
-input already declared.
+**Declared inputs.** Declare the inputs the item reads as deliberately as the
+targets it writes. Name the governing instructions, requirement and design
+sections, contracts, source files and prior outputs the result depends on, with
+the versions read. A missing, unreadable or changed input is then recognizable
+as a stop condition rather than a surprise mid-execution.
 
-Where a declared path or resource is also owned or consumed by another item,
-record it as shared and state how this item may touch it: normally consume-only,
-with any unavoidable registration or integration edit named as such. A defect
-found in a shared component belongs to the item that owns it. Return it there
-under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle) instead of
-repairing it inside the consuming item, whose declared scope, review and
-evidence do not cover that component. Where two items must both write a shared
-path, order them or assign one writer under the
-[collaboration basis](COLLABORATION.md#collaboration-basis) before either
-starts.
+Reading something outside that set is not a violation. Add it to the
+declaration when it turns out to carry the result, and reassess the item when
+it contradicts an input already declared.
 
-Record the item's completion checks as the actual commands or check targets and
-the environment they run in, referencing the
+**Shared paths.** Where another item also owns or consumes a declared path,
+record it as shared and state how this item may touch it: normally
+consume-only, with any unavoidable registration or integration edit named as
+such.
+
+A defect in a shared component belongs to the item that owns it. Return it
+there under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle); the
+consuming item's declared scope, review and evidence do not cover that
+component. Where two items must both write a shared path, order them or assign
+one writer under the [collaboration basis](COLLABORATION.md#collaboration-basis)
+before either starts.
+
+**Completion checks.** Record the actual commands or check targets and the
+environment they run in, referencing the
 [project conventions](#suggested-information) where they exist. A resuming
 writer or a separate auditor then runs the same check instead of inventing an
-equivalent one, and a check that cannot be named concretely is not yet a
-completion criterion. Naming a check does not run it; see
+equivalent one.
+
+A check that cannot be named concretely is not yet a completion criterion.
+Naming a check does not run it; see
 [verification and completion](WORKFLOW.md#verification-and-completion).
 
-Record the item's current execution mode alongside that scope: what the work
-may presently produce, such as analysis and specification only, review output
-only, or implementation and its checks. The mode states the consequence of the
-actual decision recorded under
-[Approvals](APPROVALS.md#preparing-and-recording-one-decision) and names that
-decision; it is not a permission the item grants itself, and widening it is a
-separate decision. A session resuming the item reads the mode there instead of
-re-deriving authority from an earlier conversation. Where the item and the
-actual decision disagree, the decision governs and the item is corrected.
+**Execution mode.** Record what the work may presently produce: analysis and
+specification only, review output only, or implementation and its checks.
 
-A long-running item can hold several scopes authorized at different times. Keep
-the item's own mode at the narrowest current standing and record each
-authorized sub-scope separately: what it covers, the decision and date that
-authorized it, its own write scope and exclusions, and its completion checks. A
-later authorization does not widen the ones before it or lift the item's own
-mode, and a finished sub-scope stays recorded rather than being folded into the
-item's general text. A resuming session then reads which part of a partly
-authorized item it may act on, instead of inferring that the whole item became
-implementable when one part did.
+The mode states the consequence of the actual decision recorded under
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision), and names that
+decision. It is not a permission the item grants itself, and widening it is a
+separate decision. Where the item and the actual decision disagree, the
+decision governs and the item is corrected.
 
-Record the conditions that stop the item before they occur: the inputs,
-contracts, fixtures, authority and scope boundaries whose absence or change
-makes continuing unsafe or meaningless. Declared stop conditions make a stop
-recognizable while the work runs rather than only in hindsight. They do not
-replace the [real blockers](../AGENTS.md#history-evidence-and-real-blockers),
-which stop affected work whether or not the item listed them, and an unlisted
-condition is not permission to continue past it.
+**Authorized sub-scopes.** A long-running item can hold several scopes
+authorized at different times. Keep the item's own mode at the narrowest
+current standing, and record each authorized sub-scope separately:
 
-Plans and tasks reference the requirements they cover. One requirement can
-need several tasks, and one task can serve several requirements. Keep plan and
-task definitions in their respective files, except for the
-[small-change exception](#minimum-documentation-for-a-small-change), and use
-actual output, assignment and completion boundaries to split further. Reuse
-shared files across requirements; do not create duplicate definitions or
-placeholders for unrequested stages.
-Use the [boundary criteria](#independent-items-and-supporting-detail) for small
-changes, supporting detail and work before requirements are established.
+- what it covers;
+- the decision and date that authorized it;
+- its own write scope and exclusions;
+- its completion checks.
 
-Keep task definitions and execution status in their owning files, linking actual
-check results from verification documents. Plans contain
-links, ordering and useful progress summaries; update those summaries from the
-tasks. A task shared by several plans retains one ID, owning file and writer.
-Apply [summary ownership and updates](#summary-ownership-and-updates) rather
-than copying detailed task states into each parent. Completion of the planned
-outcome is assessed against its scope and criteria using task outcomes and
-applicable combined verification. Planning itself ends
-when the plan and task definitions satisfy the
-completion checks for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth);
-it does not require those tasks to have executed. Planning-only work records
-intended checks without claiming execution.
+A later authorization does not widen the earlier ones or lift the item's own
+mode. A finished sub-scope stays recorded rather than being folded into the
+item's general text. One authorized part does not make the whole item
+implementable.
 
-A parent plan may organize child plans, such as area or work-stream plans. The
-parent owns the cross-plan goal, scope split between children, integration work,
-ordering between children and overall completion criteria; each child owns its
-own scope, tasks and checks. The parent's planning completion checks cover that
-cross-plan content and reuse the children's passed planning checks for their
-stated scope and versions, rechecking a child whose inputs changed. Completing
-every child does not complete the parent outcome while integration work or
-parent criteria remain.
+**Stop conditions.** Record the conditions that stop the item before they
+occur — the inputs, contracts, fixtures, authority and scope boundaries whose
+absence or change makes continuing unsafe or meaningless. Declared stop
+conditions make a stop recognizable while the work runs rather than only in
+hindsight.
 
-Keep the source inventory and coverage links in the existing plan/work document,
-or reference their owning sections when already maintained. Supporting source
-entries, checklist dispositions and verification scenarios do not create new
-item identities solely to fill a table. Requirement details stay with their
-requirement; task instructions stay with their task. A plan's summary must lead
-to those concrete definitions rather than substitute for them.
+They do not replace the
+[real blockers](../AGENTS.md#history-evidence-and-real-blockers), which stop
+affected work whether or not the item listed them. An unlisted condition is not
+permission to continue past it.
 
-Directory ownership and task ownership complement each other. Record the chosen
-document root and type-to-folder mapping in the overview, and the actual edit
-scope in tasks. Two tasks may work in one directory if their file/resource
-boundaries are clear. A folder name or document ID alone does not assign work.
-Use the [collaboration basis](COLLABORATION.md#collaboration-basis) to make these
+### Plans, tasks and their files
+
+**Requirements and boundaries.** Plans and tasks reference the requirements
+they cover. One requirement can need several tasks, and one task can serve
+several requirements.
+
+Keep plan and task definitions in their respective files, except under the
+[small-change exception](#minimum-documentation-for-a-small-change). Split
+further on actual output, assignment and completion boundaries. Reuse shared
+files across requirements; do not create duplicate definitions or placeholders
+for unrequested stages. Use the
+[boundary criteria](#independent-items-and-supporting-detail) for small changes,
+supporting detail and work that precedes requirements.
+
+**Where status lives.** Keep task definitions and execution status in their
+owning files, and link the actual check results from the verification
+documents. Plans hold links, ordering and useful progress summaries; update
+those summaries from the tasks. Apply
+[summary ownership and updates](#summary-ownership-and-updates) instead of
+copying detailed task states into each parent. A task shared by several plans
+retains one ID, one owning file and one writer.
+
+Assess completion of the planned outcome against its scope and criteria, using
+task outcomes and applicable combined verification. Planning itself ends when
+the plan and task definitions satisfy the completion checks for the selected
+[planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth); it does not
+require those tasks to have executed. Planning-only work records intended
+checks without claiming execution.
+
+**Parent and child plans.** A parent plan may organize child plans, such as
+area or work-stream plans. The parent owns the cross-plan goal, the scope split
+between children, integration work, ordering between children and overall
+completion criteria. Each child owns its own scope, tasks and checks.
+
+The parent's planning completion checks cover that cross-plan content. They
+reuse a child's passed planning checks for its stated scope and versions, and
+recheck a child whose inputs changed. Completing every child does not complete
+the parent outcome while integration work or parent criteria remain.
+
+**Coverage links.** Keep the source inventory and coverage links in the
+existing plan or work document, or reference their owning sections where those
+are already maintained. Supporting source entries, checklist dispositions and
+verification scenarios do not create new item identities solely to fill a
+table. Requirement details stay with their requirement, and task instructions
+stay with their task. A plan's summary leads to those concrete definitions
+rather than substituting for them.
+
+**Directories and ownership.** Directory ownership and task ownership
+complement each other. Record the document root and type-to-folder mapping in
+the overview, and the actual edit scope in the task. Two tasks may work in one
+directory when their file and resource boundaries are clear. A folder name or
+document ID alone does not assign work. Use the
+[collaboration basis](COLLABORATION.md#collaboration-basis) to make these
 boundaries and ID allocations visible to concurrent writers.
 
 ### Resumption state
@@ -429,98 +473,110 @@ item does not authorize starting it.
 
 ## Item IDs
 
-Apply identity rules to every Markdown deliverable within the
-[ID scope](#id-scope), whatever its subject: specifications, research,
-guides, meeting notes, reviews, reports, handoffs or kinds not listed here.
-Assign the document an ID appropriate to its purpose. A document representing
-one primary item uses that item's ID; a collection can use a document ID such
-as `DOC-001`. Choose the identity before creating the file and use it in
-the index; [document paths](#document-paths) defines filename/body placement.
-An overview itself also has an identity. A document ID is not a substitute for
-the identities of its independently tracked contents.
+**Which documents get an ID.** Apply identity rules to every Markdown
+deliverable within the [ID scope](#id-scope), whatever its subject:
+specifications, research, guides, meeting notes, reviews, reports, handoffs or
+kinds not listed here.
 
-Use the [item-boundary rules](#independent-items-and-supporting-detail) to
-identify independently tracked contents. Apply IDs to new traceable items
-added to existing Markdown as well. Requirements, acceptance criteria, designs,
-plans, tasks, decisions, findings, changes, risks, issues and verification are
-examples, not an exhaustive list.
+- A document representing one primary item uses that item's ID.
+- A collection can use a document ID such as `DOC-001`.
+- An overview itself also has an identity.
 
-Use the project's recorded ID format table. There is no mandatory token
-length, serial width, universal AREA segment or fixed number of segments.
-Prefer simple semantic prefixes and add a classification or parent segment
-only when the project needs it. The [ID dictionary](ID_DICTIONARY.md) offers
-starter formats such as `REQ-001`, `SCR-PC-001` and `TASK-API-001`; its rows are
-examples, not a closed vocabulary or allocated IDs.
+Choose the identity before creating the file and use it in the index;
+[document paths](#document-paths) defines filename and body placement. A
+document ID is not a substitute for the identities of its independently tracked
+contents. Use the [item-boundary rules](#independent-items-and-supporting-detail)
+to identify those, and apply IDs to new traceable items added to existing
+Markdown. Requirements, acceptance criteria, designs, plans, tasks, decisions,
+findings, changes, risks, issues and verification are examples, not an
+exhaustive list.
 
-The project overview owns the format table, or links its one owning dictionary
-when separate management is useful. Record each kind's meaning, exact format,
-allowed classification values, serial width/start, allocation scope and any
+**The format table.** Use the project's recorded ID format table. There is no
+mandatory token length, serial width, universal AREA segment or fixed number of
+segments. Prefer simple semantic prefixes, and add a classification or parent
+segment only when the project needs it. The [ID dictionary](ID_DICTIONARY.md)
+offers starter formats such as `REQ-001`, `SCR-PC-001` and `TASK-API-001`; its
+rows are examples, not a closed vocabulary or allocated IDs.
+
+The project overview owns the table, or links its one owning dictionary where
+separate management is useful. Record each kind's meaning, exact format, allowed
+classification values, serial width and start, allocation scope and any
 parent-ID rule. A small project can use a few rows in the overview. Create or
-extend a dictionary when needed; no separate file or full catalog is required.
-A separately managed project dictionary follows the ordinary document-ID and
-path rules. Harness guidance remains outside the ID scope.
+extend a dictionary when needed; no separate file or full catalog is required. A
+separately managed project dictionary follows the ordinary document-ID and path
+rules. Harness guidance remains outside the ID scope.
 
-Agents reuse established formats and add missing kinds or classifications
-within the authorized work without asking for each token. Register additions
-before allocation, preserve existing meanings, and avoid synonyms or overlapping
-formats that make an ID ambiguous. Different kinds can use different axes:
-screen platform and task work area need not share a code list. Technology,
+Agents reuse established formats, and add missing kinds or classifications
+within the authorized work without asking for each token. Register an addition
+before allocating against it. Preserve existing meanings, and avoid synonyms or
+overlapping formats that make an ID ambiguous. Different kinds can use different
+axes: screen platform and task work area need not share a code list. Technology,
 audience and feature metadata can stay in the body instead of the ID.
 
-Interpret an ID using its whole registered format. In the starter dictionary,
-`API-001` identifies an API contract; its method/path, version and coverage are
-specified in the body. `PLAN-001` can plan its implementation, and
-`TASK-API-003` can implement it. Task numbers do not derive from plan numbers:
-record actual plan, requirement, design and contract links. Shared tasks may
-link to several plans. A `FEATURE` groups related items through links; it does
-not duplicate the requirements it groups or require one item of every type.
+**Reading an ID.** Interpret an ID using its whole registered format. In the
+starter dictionary, `API-001` identifies an API contract, and its method, path,
+version and coverage are specified in the body. `PLAN-001` can plan its
+implementation, and `TASK-API-003` can implement it.
 
-Allocate flat and classified serials project-wide per complete prefix, such
-as `REQ` or `TASK-API`. Two feature folders or parent plans cannot each restart
-`TASK-API-001`. Hierarchical formats allocate the child serial per child kind
-and identified parent, as recorded in the format table. For example, under
-`CT-API-NNN-NN`, `CT-API-012-01` is a contract test of `API-012`; a backend test
-`BT-API-012-01` has a separate counter. Complete IDs are unique project-wide,
-regardless of folder or checkout, subject only to the temporary collisions of
-new provisional IDs under [branch allocation](#branch-allocation-and-collision-repair).
+Task numbers do not derive from plan numbers; record the actual plan,
+requirement, design and contract links. Shared tasks may link to several plans.
+A `FEATURE` groups related items through links. It does not duplicate the
+requirements it groups, and it does not require one item of every type.
+
+**Allocating a serial.** Allocate flat and classified serials project-wide per
+complete prefix, such as `REQ` or `TASK-API`. Two feature folders or parent
+plans cannot each restart `TASK-API-001`. Hierarchical formats allocate the
+child serial per child kind and identified parent, as recorded in the format
+table. Under `CT-API-NNN-NN`, for example, `CT-API-012-01` is a contract test of
+`API-012`, and a backend test `BT-API-012-01` has a separate counter.
+
+Complete IDs are unique project-wide, regardless of folder or checkout. Only new
+provisional IDs may collide temporarily, under
+[branch allocation](#branch-allocation-and-collision-repair).
 
 Before allocating a child, verify its parent's owning definition and format
 mapping, and link the parent in the body. Matching numbers imply no other
-relationship. A parent segment records identity, not a mutable dependency:
-if current coverage changes, preserve the ID and record new links and history;
-an actual replacement/split follows the identity rules below. Parent detail
+relationship. A parent segment records identity, not a mutable dependency: where
+current coverage changes, preserve the ID and record the new links and history.
+An actual replacement or split follows the identity rules below. Parent detail
 that needs no independent management can remain a section without a new ID.
 
-Search existing definitions, retained/retired IDs and reservations before
+Search existing definitions, retained and retired IDs and reservations before
 choosing the next unused serial, reusing a verified allocation basis. Concurrent
-writers use non-overlapping ranges unless the recorded arrangement uses the
-tracker or isolated-branch exceptions under [allocation reuse](#allocation-and-validation-reuse).
-If the available width is exhausted, record a compatible extension for new IDs
-and check consumers and collisions before allocation; do not wrap counters,
-reuse IDs or automatically pad/rename older records.
+writers use non-overlapping ranges, unless the recorded arrangement uses the
+tracker or isolated-branch exceptions under
+[allocation reuse](#allocation-and-validation-reuse). Where the available width
+is exhausted, record a compatible extension for new IDs and check consumers and
+collisions before allocating. Do not wrap counters, reuse IDs or automatically
+pad or rename older records.
 
-Put the ID visibly in the owning heading or table row. Provide a stable anchor,
-for example an ID-only heading `### REQ-001` with a descriptive title in the
-body, or an explicit anchor for an identified table row. References use the ID
-as link text and resolve to that item's anchor, even within one file.
+**Placing the ID.** Put the ID visibly in the owning heading or table row, and
+provide a stable anchor. An ID-only heading such as `### REQ-001` with a
+descriptive title in the body works, as does an explicit anchor for an
+identified table row. References use the ID as link text and resolve to that
+item's anchor, even within one file.
 
-Keep IDs unchanged when content is revised, renamed, reordered or moved; update
-links after moves. Only new provisional branch IDs may be renumbered for an
-allocation collision under [branch allocation](#branch-allocation-and-collision-repair).
-Never reuse deleted/retired IDs. For a split or merge, record
-the old item's disposition and links to the new items without overwriting its
-decision or evidence history. Identity alone does not identify a reviewed
-version, prove approval or establish a passed check.
+**Keeping an ID stable.** Keep IDs unchanged when content is revised, renamed,
+reordered or moved, and update links after moves. Only new provisional branch
+IDs may be renumbered for an allocation collision, under
+[branch allocation](#branch-allocation-and-collision-repair). Never reuse
+deleted or retired IDs.
 
-Existing IDs and historical records remain valid; use links to older material
-without bulk retroactive relabeling. This includes five-digit IDs and existing
-`TYPE-AREA` conventions. Earlier harness examples used `API` for backend plans
-and `SCR` for screen plans; retain those meanings wherever already established.
-Do not treat a shorter serial as permission to reuse the same prefix for a
-different purpose in that project. Use its existing convention or register a
-distinct unambiguous prefix. A requested migration has its own scope.
-Externally required document formats remain binding; resolve a real conflict
-rather than silently omitting identity requirements.
+For a split or merge, record the old item's disposition and the links to the new
+items, without overwriting its decision or evidence history. Identity alone does
+not identify a reviewed version, prove approval or establish a passed check.
+
+**Existing and historical IDs.** Existing IDs and historical records remain
+valid; link to older material without bulk retroactive relabeling. This includes
+five-digit IDs and existing `TYPE-AREA` conventions. Earlier harness examples
+used `API` for backend plans and `SCR` for screen plans; retain those meanings
+wherever they are already established.
+
+A shorter serial is not permission to reuse the same prefix for a different
+purpose in that project. Use the existing convention, or register a distinct
+unambiguous prefix. A requested migration has its own scope. Externally required
+document formats remain binding; resolve a real conflict rather than silently
+omitting identity requirements.
 
 ## Document paths
 
@@ -574,54 +630,68 @@ and an input contract at `contracts/API-001.md`.
 
 ## Allocation and validation reuse
 
-Use an `ID allocation` section (or its local-language equivalent) in the actual
-project overview as the default shared allocation record. If the team already
-uses another shared Markdown location, link its exact file/section from the
-overview and maintain the allocation there only. Folder names stay contextual;
-writers must be able to discover one authoritative location for each scope.
+**Where the record lives.** Use an `ID allocation` section, or its
+local-language equivalent, in the actual project overview. That is the default
+shared allocation record. Where the team already uses another shared Markdown
+location, link its exact file and section from the overview and maintain the
+allocation there only. Folder names stay contextual; writers must be able to
+discover one authoritative location for each scope.
 
-Establish an initial basis by checking project-wide definitions, retained and
-retired IDs, allocation history and outstanding reservations. Record the checked
-version/scope, result and any limits once; reuse it with subsequent allocation
-changes. When creating the first overview, include its own ID in this check and
-record the basis there. No pre-existing registry is necessary.
+**The checked basis.** Establish an initial basis by checking project-wide
+definitions, retained and retired IDs, allocation history and outstanding
+reservations. Record the checked version and scope, the result and any limits
+once, then reuse that record with subsequent allocation changes. When creating
+the first overview, include its own ID in this check and record the basis there.
+No pre-existing registry is necessary.
 
-For a single writer without delegated ranges or outstanding reservations, the
-allocation section needs only each allocation scope and its next serial, plus
-a link to that shared checked basis. Advance the serial when allocating; never
-move it backward or fill earlier gaps. The initial serial must exceed every
-used, retired or previously allocated serial in that scope. Existing owning
-document links identify issued items; no per-allocation owner, range reservation
-or gap-disposition table is required. For example, `TASK-API: next 004` means
-`001` through `003` cannot be newly allocated, whether used, retired or skipped.
-Preserve their actual history without inventing a disposition for unused gaps.
-If prior allocations are uncertain, reconcile them before choosing the serial.
+**One writer.** For a single writer without delegated ranges or outstanding
+reservations, the allocation section needs only each allocation scope, its next
+serial, and a link to that shared checked basis.
 
-Before introducing concurrent writers, record the allocation arrangement once
-in the allocation section. Use the shared range record below unless one of the
-two exceptions applies. Returning to a single writer requires reconciling prior
-ranges, reservations and pending branch allocations first; the simple counter
-cannot silently supersede them.
+- Advance the serial when allocating. Never move it backward or fill earlier
+  gaps.
+- The initial serial must exceed every used, retired or previously allocated
+  serial in that scope.
+- Existing owning document links identify issued items. No per-allocation owner,
+  range reservation or gap-disposition table is required.
 
-Two arrangements need no range or owner record. A registered format may take
-its serial from a designated [external work tracker](#external-work-trackers)
-key, such as `TASK-{area}-{issue}`; the tracker then allocates, and the
-overview records the format and tracker. Writers on separate branches may
-instead use a per-scope next serial with provisional IDs and collision repair
-under [branch allocation](#branch-allocation-and-collision-repair). These exceptions
-replace the range table, not the checked allocation basis or history rules.
+For example, `TASK-API: next 004` means `001` through `003` cannot be newly
+allocated, whether used, retired or skipped. Preserve their actual history
+without inventing a disposition for unused gaps. Where prior allocations are
+uncertain, reconcile them before choosing the serial.
 
-With [area overviews](#area-overviews), the root allocation section delegates
-non-overlapping serial ranges per allocation scope to areas and records each
-delegation's owner and verified basis. The area overview's allocation section
-records consumption within its delegated ranges; the root does not repeat it.
-Complete IDs stay unique project-wide, and areas do not introduce their own prefixes
-for an existing type. When an area exhausts a range, obtain a new delegation
-from the root allocation owner before allocating further.
+**Concurrent writers.** Record the allocation arrangement once in the allocation
+section before introducing them. Use the shared range record below unless one of
+the two exceptions applies. Returning to a single writer requires reconciling
+prior ranges, reservations and pending branch allocations first; the simple
+counter cannot silently supersede them.
 
-For allocation using reserved or delegated ranges, use a compact Markdown table
-with the following minimum information, reusing shared baseline notes for rows
-checked together:
+Two arrangements need no range or owner record:
+
+- A registered format may take its serial from a designated
+  [external work tracker](#external-work-trackers) key, such as
+  `TASK-{area}-{issue}`. The tracker then allocates, and the overview records
+  the format and tracker.
+- Writers on separate branches may use a per-scope next serial with provisional
+  IDs and collision repair, under
+  [branch allocation](#branch-allocation-and-collision-repair).
+
+These exceptions replace the range table. They do not replace the checked
+allocation basis or the history rules.
+
+**Areas and delegated ranges.** With [area overviews](#area-overviews), the root
+allocation section delegates non-overlapping serial ranges per allocation scope
+to areas, and records each delegation's owner and verified basis. The area
+overview's allocation section records consumption within its delegated ranges;
+the root does not repeat it.
+
+Complete IDs stay unique project-wide, and areas do not introduce their own
+prefixes for an existing type. When an area exhausts a range, obtain a new
+delegation from the root allocation owner before allocating further.
+
+**The range record.** For allocation using reserved or delegated ranges, use a
+compact Markdown table with the following minimum information, reusing shared
+baseline notes for rows checked together:
 
 | Field | Required content |
 |---|---|
@@ -632,32 +702,36 @@ checked together:
 | Disposition | Used serials or owning-document links, retired serials, and remaining reserved/available numbers. Record gaps explicitly rather than assuming everything below the largest number was used. |
 
 These are required contents, not fixed column spellings or a new machine schema.
-For example, a hypothetical `TASK-API` range `001` through `020` owned by
-writer A may state: used `001` and `003`, retired `002`, remaining
-`004` through `020` reserved for A. Its row must also link the actual checked
-basis. This example does not allocate IDs in this harness repository.
+For example, a hypothetical `TASK-API` range `001` through `020` owned by writer
+A may state: used `001` and `003`, retired `002`, remaining `004` through `020`
+reserved for A. Its row must also link the actual checked basis. This example
+does not allocate IDs in this harness repository.
 
-Harness guidance outside the [ID scope](#id-scope) needs no
-allocation table simply to maintain policy. Do not create a second registry or
-a new document per allocation.
+Harness guidance outside the [ID scope](#id-scope) needs no allocation table
+simply to maintain policy. Do not create a second registry or a new document per
+allocation.
 
-Within an assigned range, consume unused serials and record their disposition.
-Reuse the verified basis plus subsequent allocation changes instead of reading
-every document for each new ID. Folder, feature or checkout boundaries do not
-reset the sequence. Exhausted ranges need a new non-overlapping allocation.
-Check shared allocation changes before extending or transferring a range;
-uncertain, conflicting or stale reservations must be reconciled first. A local
-highest-number search alone does not account for other writers or retired IDs.
+**Consuming a range.** Within an assigned range, consume unused serials and
+record their disposition. Reuse the verified basis plus subsequent allocation
+changes instead of reading every document for each new ID. Folder, feature or
+checkout boundaries do not reset the sequence.
 
-For subsequent document validation, compare newly defined IDs with that basis
-and other new definitions, and check changed files plus affected references.
-For delegated ranges, check new definitions against the area's range and check
-root delegations for overlap whenever they change.
-Broaden the scan when baseline coverage is missing or unreliable, allocation
-conflicts appear, or changes to conventions/validation rules affect prior
-results. Preserve project-wide uniqueness and never reuse retired IDs. This
-changes how evidence is obtained, not the identity or filename requirements.
-See [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
+Exhausted ranges need a new non-overlapping allocation. Check shared allocation
+changes before extending or transferring a range; uncertain, conflicting or
+stale reservations must be reconciled first. A local highest-number search alone
+does not account for other writers or retired IDs.
+
+**Validating later definitions.** Compare newly defined IDs with that basis and
+with other new definitions, and check changed files plus affected references. For
+delegated ranges, check new definitions against the area's range, and check root
+delegations for overlap whenever they change.
+
+Broaden the scan when baseline coverage is missing or unreliable, when
+allocation conflicts appear, or when changes to conventions or validation rules
+affect prior results. Preserve project-wide uniqueness and never reuse retired
+IDs. This changes how evidence is obtained, not the identity or filename
+requirements. See
+[verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 ### Branch allocation and collision repair
 
@@ -1010,12 +1084,13 @@ the tracker item holds this content and Markdown documents link it.
 
 ## External work trackers
 
-A project may designate an existing tracker, such as GitHub Issues, Jira or
-Linear, as the authoritative record for selected kinds of management
-information, typically task assignment and status, open items and progress.
-Designation is an actual owner decision; a tracker link, existing integration or
-authenticated tool alone does not designate one. Record it in the project
-overview (or the relevant [area overview](#area-overviews)):
+A project may designate an existing tracker — GitHub Issues, Jira, Linear — as
+the authoritative record for selected kinds of management information. Task
+assignment and status, open items and progress are the usual ones.
+
+Designation is an actual owner decision. A tracker link, an existing integration
+or an authenticated tool does not designate one. Record the designation in the
+project overview, or in the relevant [area overview](#area-overviews):
 
 | Designation | Required detail |
 |---|---|
@@ -1026,31 +1101,40 @@ overview (or the relevant [area overview](#area-overviews)):
 | Required content | Where the tracker holds content this model requires, such as an open item's resolution criterion, next action and history (fields, templates or comments). |
 
 For each designated kind, the tracker is the single authoritative record. Do not
-keep a parallel Markdown list or copy of its status, assignment or history;
-link the tracker item instead. The tracker key identifies an item the tracker
-owns and needs no harness ID or allocation. A registered document-ID format
-may embed that key as its serial under [allocation reuse](#allocation-and-validation-reuse);
-the document then has one ID and the tracker supplies its number. When such an item needs a detailed
-Markdown definition, such as task implementation detail, that document keeps its
-own document ID and records the key: the tracker owns status and assignment,
-the document owns the detailed definition.
+keep a parallel Markdown list or a copy of its status, assignment or history;
+link the tracker item instead.
+
+The tracker key identifies an item the tracker owns. It needs no harness ID or
+allocation. A registered document-ID format may embed that key as its serial
+under [allocation reuse](#allocation-and-validation-reuse); the document then
+has one ID, and the tracker supplies its number.
+
+Some such items need a detailed Markdown definition, such as task implementation
+detail. That document keeps its own document ID and records the key. The tracker
+owns status and assignment; the document owns the detailed definition.
 
 Requirements, acceptance criteria, design, decisions and verification evidence
-stay in versioned Markdown unless the project already keeps them in a system
-with attributable version history; then reference the item and its version.
-When a decision, readiness assessment, completion claim or handoff relies on
-tracker state, record the key and the observed state with its date or version in
-the owning Markdown record. That records what was relied on; it is not a mirror
-to maintain.
+stay in versioned Markdown. Where the project already keeps them in a system
+with attributable version history, reference the item and its version there
+instead.
 
-Operations beyond the recorded agent operations, changes to tracker workflows,
-permissions or automation, and messages that reach people outside the designated
-use are external effects that need matching authorization under
-[Security](SECURITY.md#authenticated-tools-and-protected-values). If the tracker
-is unavailable, note pending updates in the current work note and apply them
-when access returns; that note is not the authoritative status. Changing or
-ending a designation is an owner decision; preserve existing items and links and
-record where each kind of information is owned from then on.
+Where a decision, readiness assessment, completion claim or handoff relies on
+tracker state, record the key and the observed state in the owning Markdown
+record, with its date or version. That records what was relied on. It is not a
+mirror to maintain.
+
+These are external effects, and they need matching authorization under
+[Security](SECURITY.md#authenticated-tools-and-protected-values):
+
+- operations beyond the recorded agent operations;
+- changes to tracker workflows, permissions or automation;
+- messages that reach people outside the designated use.
+
+Where the tracker is unavailable, note pending updates in the current work note
+and apply them when access returns. That note is not the authoritative status.
+
+Changing or ending a designation is an owner decision. Preserve existing items
+and links, and record where each kind of information is owned from then on.
 
 ## Decisions and evidence
 

@@ -38,6 +38,32 @@ Do not achieve a shorter entry by making required detail optional or adding
 another summary that readers must always load. Use the policy-maintenance
 Git/diff trace; no separate review record or numeric length target is required.
 
+### How guidance is written
+
+An agent reads a rule immediately before the action it governs. Write guidance
+to be scanned, not parsed.
+
+- **One rule per sentence.** Split the sentence when a condition is attached.
+- **Use verbs, not nominalizations.** "Check whether it still applies" carries
+  more than "perform an applicability assessment" and costs less.
+- **Keep the abstraction in the defined terms.** Terms such as material change
+  or open item carry their definition; the sentences around them stay plain.
+- **Break three or more conditions into a list.** This covers stacked clauses,
+  not a single enumeration of items.
+- **Keep a sentence under about 25 words.** A longer one usually holds two
+  rules.
+
+Lead each section with the rule it carries, then give its exceptions and the
+reason. Split a section with subheadings or a table once it accumulates more
+than about five rules. The number of rules decides this, not the length.
+
+A spine rule that [AGENTS.md](../AGENTS.md) already carries needs no
+restatement in a detailed document: that file is loaded in every session, so
+the obligation is always reachable before the affected action. Restate it only
+where the owning section changes what it means. This is a way to say the same
+thing in less text, not permission to drop an obligation whose only statement
+is here.
+
 ### Document checker
 
 `node tools/check-docs.mjs [path ...]` checks that relative link targets exist,

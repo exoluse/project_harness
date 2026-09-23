@@ -265,80 +265,107 @@ was just left.
 
 ## Verification and completion
 
-Choose checks that establish the declared result. Document the subject version,
-method/environment, expected and observed result, relevant artifacts and limits.
-Name the actual command or check target and environment. Reference the
-[project conventions](DATA_MODEL.md#suggested-information) recorded in the
-overview where they exist; where none is recorded, record the command and
-environment actually used in the verification record and state that the
-convention is undecided. When a verification-level claim, dependent work or
-handoff relies on an undecided convention, track it under the
-[open-item lifecycle](#open-item-lifecycle) instead of inventing one.
-Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED; a document
-check does not establish either product integration or production success.
+Choose checks that establish the declared result. Record the subject version,
+the method and environment, the expected and observed result, the relevant
+artifacts and the limits.
 
-Before completion, release, handover or push, review the diff and relevant
-verification. Apply [document validation](DATA_MODEL.md#document-validation)
-for document deliverables at the requested stage. Reuse applicable baseline
-results under [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification);
-a transition from completion to push alone does not require a fresh full scan.
-Required project/CI checks remain required. Report a check failure accurately
-even when unrelated authorized work can continue.
+**Name the check concretely.** Give the actual command or check target and the
+environment it runs in. Reference the
+[project conventions](DATA_MODEL.md#suggested-information) recorded in the
+overview where they exist.
+
+Where no convention is recorded, record the command and environment actually
+used, and state that the convention is undecided. Track it under the
+[open-item lifecycle](#open-item-lifecycle) once a verification-level claim,
+dependent work or handoff relies on it. Do not invent one.
+
+Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED. A
+document check establishes neither product integration nor production success.
+
+**Before completion, release, handover or push.** Review the diff and the
+relevant verification.
+
+- Apply [document validation](DATA_MODEL.md#document-validation) for document
+  deliverables at the requested stage.
+- Reuse applicable baseline results under
+  [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification). Moving
+  from completion to push alone needs no fresh full scan.
+- Required project and CI checks remain required.
+- Report a check failure accurately, even when unrelated authorized work can
+  continue.
+
 No test run means no test-pass claim.
 
-Check the actual subject of the claim. A result produced against a stand-in —
-a synthetic fixture, a copied sample, a mock of the component under test or a
-hand-built approximation — is evidence about that stand-in, not about the
-route, build, data or environment the claim names. Where the claim is about
-real behavior, run the check against the real artifact and record which one.
-State what the check covered: for a subject with repeated or multiple
-instances, name the instances actually examined, and do not present a spot
-check as a whole-subject result.
+**Check the actual subject of the claim.** A stand-in — a synthetic fixture, a
+copied sample, a mock of the component under test, a hand-built approximation —
+is evidence about that stand-in. It says nothing about the route, build, data
+or environment the claim names.
 
-Inspection is not a pass. Reading, rendering or capturing a subject establishes
-a pass only against the stated criteria with no unresolved item left in its
-scope. Where a whole-item or acceptance-level pass carries high consequence,
-confirm it through a check separate from the writer that produced the work,
-against identified artifact versions, and keep the writer's own results as
-their own evidence. What matters is the separation and the identified subject,
-not a particular record format; apply
+Where the claim is about real behavior, run the check against the real artifact
+and record which one. State what the check covered. Where a subject has
+repeated or multiple instances, name the instances actually examined; a spot
+check is not a whole-subject result.
+
+**Inspection is not a pass.** Reading, rendering or capturing a subject
+establishes a pass only against the stated criteria, and only with no
+unresolved item left in its scope.
+
+Where a whole-item or acceptance-level pass carries high consequence, confirm it
+through a check separate from the writer who produced the work. Run that check
+against identified artifact versions, and keep the writer's own results as their
+own evidence. The separation and the identified subject are what matter, not a
+particular record format; apply
 [baselines](DEVELOPMENT_METHOD.md#baselines-and-review-boundaries).
 
-Give a subject that did not earn a pass its own disposition rather than an
-absent or an optimistic one. Distinguish at least: examined with evidence
-recorded but not passed; failing the stated criteria and needing rework; not
-checkable because a required input is missing, naming which one — an actor,
-permission state, data set, environment, policy state or source version; and
-not applicable, with the reason it does not apply. Equivalent project labels are
-fine where their mapping is stated. None of these is a pass. Keep them out of
-pass counts and totals, report each subject under its own disposition, and
-raise a missing required input as an open item so it is owned rather than
-carried as a silent gap. A disposition records the subject's current standing;
-it neither grants nor withholds the authority to continue.
+**Give a subject that did not pass its own disposition.** An absent or
+optimistic disposition hides it. Distinguish at least:
 
-A later check can overturn an earlier pass. When an independent check, an audit
-or a discovered defect shows that a granted pass or acceptance did not hold,
-withdraw it explicitly: name the subjects whose pass is withdrawn, keep both the
-original evidence and the finding that overturned it, and correct every record
-and summary that still reports the withdrawn result. Work that was allowed to
-start or to close on that basis returns to its state before it, under
-[cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption)
-where a decision rested on it. Record what would restore it — which check, at
-what scope, by whom — as the condition dependent work waits behind, and treat
-that condition as a real blocker rather than a preference. A withdrawal is not
-an erasure: the original observation stays as history with its limits, and
-unaffected evidence keeps its standing under
+- examined, with evidence recorded, but not passed;
+- failing the stated criteria and needing rework;
+- not checkable because a required input is missing — name which one: an actor,
+  permission state, data set, environment, policy state or source version;
+- not applicable, with the reason it does not apply.
+
+Equivalent project labels are fine where their mapping is stated. None of these
+is a pass. Keep them out of pass counts and totals, and report each subject
+under its own disposition. Raise a missing required input as an open item so it
+is owned rather than carried as a silent gap. A disposition records the
+subject's current standing. It neither grants nor withholds the authority to
+continue.
+
+**A later check can overturn an earlier pass.** Withdraw it explicitly once an
+independent check, an audit or a discovered defect shows that a granted pass or
+acceptance did not hold.
+
+- Name the subjects whose pass is withdrawn.
+- Keep both the original evidence and the finding that overturned it.
+- Correct every record and summary that still reports the withdrawn result.
+- Return work that was allowed to start or close on that basis to its state
+  before it, under
+  [cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption)
+  where a decision rested on it.
+- Record what would restore it: which check, at what scope, by whom.
+
+Dependent work waits behind that condition, and the condition is a real blocker
+rather than a preference. A withdrawal is not an erasure. The original
+observation stays as history with its limits, and unaffected evidence keeps its
+standing under
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
-A closed record is extended, not rewritten. Where work already recorded as
-complete must take in something it did not cover — a dependent path the frozen
-scope missed, a file the check turned out to require — append a dated amendment
-to that record: what is added, why it belongs to the closed work, and what did
-not change, naming the subject, criteria and evidence already recorded. Editing
-the original body instead leaves a record that no longer describes what was
-done and checked at the time, and it hides the extension from the review that
-would have examined it. An amendment that moves the subject, the criteria or
-the result is not an amendment; it is a new check, or a withdrawal under the
+**A closed record is extended, not rewritten.** Work already recorded as
+complete sometimes must take in something it did not cover — a dependent path
+the frozen scope missed, a file the check turned out to require. Append a dated
+amendment stating:
+
+- what is added;
+- why it belongs to the closed work;
+- what did not change, naming the subject, criteria and evidence already
+  recorded.
+
+Editing the original body instead leaves a record that no longer describes what
+was done and checked at the time. It also hides the extension from the review
+that would have examined it. An amendment that moves the subject, the criteria
+or the result is not an amendment. It is a new check, or a withdrawal under the
 paragraph above.
 
 ## Status and trace reporting
@@ -408,39 +435,45 @@ the same basis under [progress and handoff notes](CONTEXT_EFFICIENCY.md#progress
 ### Recurring reports
 
 Some projects owe a report on a schedule rather than on request — weekly to a
-customer, at each milestone or before a gate. That report is a deliverable with
-an owner, a cadence, a storage location and a form its readers expect; record
-those where the obligation is owned. Its basis is the one above: owning records
-at a stated version, never titles or estimates. Two things differ.
+customer, at each milestone or before a gate. That report is a deliverable. It
+has an owner, a cadence, a storage location and a form its readers expect;
+record those where the obligation is owned. Its basis is the one above: owning
+records at a stated version, never titles or estimates. Two things differ.
 
-First, it is written at one moment and delivered at another, and its reader
-acts on it. Report what the writing point actually established as established;
-report work expected between writing and delivery as expected; report what
-could not be confirmed as unconfirmed, naming what would confirm it. Closing
-that gap with an estimate misinforms the reader who acts on it.
+**It is written at one moment and delivered at another,** and its reader acts
+on it.
 
-Second, its numbers reach people who cannot check them. Name one source for
-each progress figure and take every issue from that same source at its current
-version — a designated [external tracker](DATA_MODEL.md#external-work-trackers)
-where one owns work status, otherwise the owning records. Where nothing owns a
-figure, say so instead of deriving one for the occasion.
+- Report what the writing point actually established as established.
+- Report work expected between writing and delivery as expected.
+- Report what could not be confirmed as unconfirmed, naming what would confirm
+  it.
 
-Track the report's own state, such as drafted, ready and delivered, so an
-unfinished issue is not submitted and a delivered one is not quietly changed:
-a correction after delivery is a new statement to its reader. Keep each issue
-as a dated record with its basis version and leave it as history; a past issue
-is not rewritten to match later facts, and the current position stays in the
-owning records and the [resumption state](DATA_MODEL.md#resumption-state), not
-in the latest report. Where readers expect a fixed form, keep one template with
-those records; the form serves the reader and does not change what counts as
-established.
+Closing that gap with an estimate misinforms the reader who acts on it.
 
-A report prepared for people outside the work is communication, not a source of
-requirements, scope or status for the work itself; apply
+**Its numbers reach people who cannot check them.** Name one source for each
+progress figure, and take every issue from that same source at its current
+version. That source is a designated
+[external tracker](DATA_MODEL.md#external-work-trackers) where one owns work
+status, and otherwise the owning records. Where nothing owns a figure, say so
+instead of deriving one for the occasion.
+
+Track the report's own state, such as drafted, ready and delivered. An
+unfinished issue is then not submitted, and a delivered one is not quietly
+changed; a correction after delivery is a new statement to its reader.
+
+Keep each issue as a dated record with its basis version, and leave it as
+history. A past issue is not rewritten to match later facts. The current
+position stays in the owning records and the
+[resumption state](DATA_MODEL.md#resumption-state), not in the latest report.
+Where readers expect a fixed form, keep one template with those records; the
+form serves the reader and does not change what counts as established.
+
+A report prepared for people outside the work is communication. It is not a
+source of requirements, scope or status for the work itself; apply
 [non-authoritative inputs](DEVELOPMENT_METHOD.md#non-authoritative-inputs). A
-figure does not become a commitment by appearing in it, and a disagreement
-between an issued report and the owning records is resolved in the records and
-corrected in the next issue. Outstanding report obligations are part of
+figure does not become a commitment by appearing in it. Where an issued report
+and the owning records disagree, the records settle it and the next issue
+carries the correction. Outstanding report obligations are part of
 [closure preparation](#closure-preparation).
 
 ## Closure preparation

@@ -102,19 +102,22 @@ deploys, or shares branches should configure them when adopting the harness.
 
 These settings reduce mistakes. They are not the
 [independent control](#independently-controlled-approval-and-execution) above.
-Command rules match the command text the agent writes and miss the same
-program invoked another way, and project-level settings sit where the agent
-can write. An agent that relaxes them to proceed is editing an approval
-allowlist. The boundary comes from controls the agent cannot change: protected
-branches that refuse force pushes and deletion, protected CI and deployment
-environments, credentials kept off the agent's machine, and
-administrator-managed tool settings that project and user settings cannot
-override.
+Command rules match the command text the agent writes, so they miss the same
+program invoked another way. Project-level settings sit where the agent can
+write. An agent that relaxes them to proceed is editing an approval allowlist.
+
+The boundary comes from controls the agent cannot change:
+
+- protected branches that refuse force pushes and deletion;
+- protected CI and deployment environments;
+- credentials kept off the agent's machine;
+- administrator-managed tool settings that project and user settings cannot
+  override.
 
 Confirm that the hosting plan actually provides the control before relying on
 it. On 2026-09-18 GitHub's free plan refused both rulesets and branch
-protection for a private repository. When no such control is available, report
-that limit instead of presenting tool settings as the boundary; tool settings
+protection for a private repository. Where no such control is available, report
+that limit instead of presenting tool settings as the boundary. Tool settings
 and recoverable history then reduce the risk without replacing the control.
 
 Derive the entries from the project's actual paths and commands:
@@ -170,10 +173,10 @@ recognizes in a shell. They do not cover a subprocess that opens the file
 itself; the tool's sandbox supplies that enforcement.
 
 Codex, as sandbox and approval settings in `config.toml` and command rules in
-a `rules/` folder next to it, such as `.codex/rules/project.rules`.
-Project-scoped `.codex/` files load only after the user trusts the project,
-rules govern commands that run outside the sandbox, and the rules format is
-marked experimental:
+a `rules/` folder next to it, such as `.codex/rules/project.rules`. Three limits
+apply: project-scoped `.codex/` files load only after the user trusts the
+project, rules govern commands that run outside the sandbox, and the rules
+format is marked experimental.
 
 ```toml
 approval_policy = "on-request"
