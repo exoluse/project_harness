@@ -71,6 +71,8 @@ the session a reconstruction. Confirm it against the owning records before
 relying on it, and correct it where it has fallen behind. Update the owning
 assessment for changed facts; do not maintain another readiness checklist here
 or require a new approval solely because the work item changes.
+Use [current-state updates](#updating-current-work-state) to reconcile the
+selected item's instructions and navigation.
 
 ## Starting execution in a working tree
 
@@ -249,6 +251,55 @@ For a cancellation, pause or withdrawn permission, follow
 Keep the actual stopping state and remaining work in the owning plan/work note;
 use those facts when checking authority and readiness to resume.
 
+## Updating current work state
+
+When advancing to another task or plan, resuming work, or handing it off, align
+the current instructions before the next action relies on them.
+
+1. Confirm the work item's actual state and link its results, unfinished work and
+   applicable evidence. A plan's next-item pointer cannot establish task completion.
+2. Compare its execution mode, prerequisites, next action and blockers with the
+   latest governing decisions and owning records. Resolve stale instructions,
+   such as "awaiting implementation approval" after the covered implementation
+   request, under [conversation decisions](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions).
+3. Update the owning [resumption state](DATA_MODEL.md#resumption-state) to the
+   current item, next item and last established checkpoint. Keep unresolved
+   discrepancies visible; do not invent a state to make the records agree.
+4. Correct directly affected plan/overview summaries and entry links under
+   [summary ownership](DATA_MODEL.md#summary-ownership-and-updates). Review both
+   changed statements and remaining instructions that the new decision supersedes.
+
+Check the affected records and their direct summaries; an unchanged ancestor
+needs no edit or full document review. Preserve superseded statements as dated
+history, distinguishable from current instructions. This is part of the work
+transition, with no separate status report or approval step.
+
+## Fixes across work-item boundaries
+
+When changing a shared contract, data format or component, check its affected
+consumers, tests and fixtures. Follow the [change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation)
+and identify the owning work for each required correction.
+
+Keep corrections in their owning tasks. A single writer responsible for the
+affected tasks may revise their allocations within already authorized scope.
+Declare changed write paths before editing; task boundaries alone require no
+new owner approval. This does not override explicit exclusions or another
+writer's assignment. Coordinate shared writes under the
+[collaboration basis](COLLABORATION.md#collaboration-basis).
+
+If a required correction is deferred, record the following in its owning item
+or an existing [open item](#open-item-lifecycle):
+
+- The defect, affected consumers and observed failure or missing evidence.
+- The responsible task and writer, or the assignment that is still missing.
+- The next action and the checkpoint before which the correction is needed.
+
+"Outside this task" identifies a boundary but does not dispose of the defect.
+Keep dependent work blocked where the correction is a prerequisite; independent
+covered work can continue. Report missing assignments under the open-item
+lifecycle. Extend closed records under [verification and completion](#verification-and-completion)
+and preserve their original scope and results.
+
 ## Switching to the next plan
 
 Plans are an organizational choice, not a single active slot. Several plans
@@ -256,18 +307,16 @@ may share an owner decision or reference their own decisions. Switching or
 splitting plans does not by itself require approval.
 
 Carry forward unfinished work explicitly. Verify the next work item's coverage
-and dependencies. Keep actual assignments and status accurate, and report
-completion when the requested scope is complete. Where the program keeps a
-[resumption state](DATA_MODEL.md#resumption-state), move it to the new position
-as part of the switch — the item now in progress, the next one, the last
-checkpoint and any blocker — so the next session does not resume the work that
-was just left.
+and dependencies, then apply [current-state updates](#updating-current-work-state).
+Keep actual assignments accurate and report completion when the requested scope
+is complete.
 
 ## Verification and completion
 
 Choose checks that establish the declared result. Record the subject version,
 the method and environment, the expected and observed result, the relevant
-artifacts and the limits.
+artifacts and the limits. Apply [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling)
+to their execution scope, timing and resource use.
 
 **Name the check concretely.** Give the actual command or check target and the
 environment it runs in. Reference the
@@ -278,6 +327,21 @@ Where no convention is recorded, record the command and environment actually
 used, and state that the convention is undecided. Track it under the
 [open-item lifecycle](#open-item-lifecycle) once a verification-level claim,
 dependent work or handoff relies on it. Do not invent one.
+
+**Keep completion evidence reproducible.** Identify the actual tested output,
+including uncommitted changes. Without Git, reference a preserved tested snapshot
+or equivalent versioned artifact; a pre-edit backup identifies only the earlier baseline.
+
+For automated checks, retain or link the command, custom check code and relevant
+inputs/configuration. Include random seeds when they determine the case sequence.
+Use existing test files or retained evidence; no duplicate management copy is needed.
+For human or exploratory observation, retain the method, conditions, sample and
+results so another reviewer can assess the claim. Exact replay of human behavior
+is not required.
+
+An unavailable one-off script or unidentified tested output limits what later
+work can establish. Preserve the observation, state the missing evidence and
+obtain the required check before relying on it for completion or reuse.
 
 Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED. A
 document check establishes neither product integration nor production success.
@@ -305,6 +369,22 @@ Where the claim is about real behavior, run the check against the real artifact
 and record which one. State what the check covered. Where a subject has
 repeated or multiple instances, name the instances actually examined; a spot
 check is not a whole-subject result.
+
+**Check visible and interactive results early.** For product changes affecting
+appearance or interaction, inspect the actual product rendering and exercise
+the affected interaction against its requirements.
+
+During implementation, check a representative result before extending a shared
+UI pattern or repeated asset treatment to the remaining instances. Select
+representative normal and edge states for the changed mechanism, such as
+layering, small viewports or long labels. Check applicable visibility, clipping,
+readability, content meaning and interaction criteria.
+
+Inspect the rendered result; element existence or capture generation alone
+does not establish its visual quality. Record the artifact version, states and
+instances examined, findings and limits in the owning verification record.
+An agent's visual review remains distinct from required human review or customer
+acceptance. Use the dispositions below when a required check cannot run.
 
 **Inspection is not a pass.** Reading, rendering or capturing a subject
 establishes a pass only against the stated criteria, and only with no
@@ -501,8 +581,9 @@ dirty files as someone else's work until ownership is understood.
 
 For a handoff, state baseline/output versions, changed paths, applicable
 decisions, verification, failures, limits, unfinished work and next action.
-Markdown is sufficient when accepted by the delivery contract. See
-[Collaboration](COLLABORATION.md).
+Apply [current-state updates](#updating-current-work-state) before the receiver
+relies on the entry pointers. Markdown is sufficient when accepted by the delivery
+contract. See [Collaboration](COLLABORATION.md).
 
 ## Hotfixes and incidents
 

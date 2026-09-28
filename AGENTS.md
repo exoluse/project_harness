@@ -50,8 +50,10 @@ than maintaining competing versions.
 ## Item identity and trace
 
 Actual project deliverables use stable IDs and `<ID>.md` or `<ID>-<slug>.md`
-filenames in project-chosen classification folders; the optional slug is a
-short description, not part of the ID. Harness policy and guidance are outside
+filenames in folders grouped by document kind under the project's document root.
+Use the [folder mapping](docs/DATA_MODEL.md#folders-by-document-kind), preserving
+established project conventions. The optional slug is a short description, not
+part of the ID. Harness policy and guidance are outside
 the [ID scope](docs/DATA_MODEL.md#id-scope). Before allocating or reorganizing,
 apply the Information model's [ID rules](docs/DATA_MODEL.md#item-ids),
 [boundaries](docs/DATA_MODEL.md#independent-items-and-supporting-detail) and
@@ -99,22 +101,22 @@ end at the first `## ` heading, to choose the sections for the work.
 | Trigger | Read and apply |
 |---|---|
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, allocation, paths and validation. |
-| Set up or maintain a project's own entry instruction file | [Project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
+| Apply the harness to a project or maintain its entry instructions | [Project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
 | Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage and intake sections. |
 | Resolve conflicting inputs or rank competing sources | [Input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence) and any precedence the owning project records. |
 | Treat material as communication-only, superseded or to be replaced | [Non-authoritative inputs](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs) and the designation recorded in the owning overview or plan. |
 | Create, revise or declare a plan complete | [Planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and the applicable procedure and completion checks. |
-| Establish execution scope, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria/procedure and the actual request/decision. |
+| Establish scope, interpret delegation, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria, including [delegated judgment](docs/APPROVALS.md#decision-requests-and-delegated-judgment), and the actual request/decision. |
 | Start/transition work, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure and owning project records. |
-| Resume work across sessions or move its position | [Resumption state](docs/DATA_MODEL.md#resumption-state) and [work-item readiness](docs/WORKFLOW.md#scope-decisions-and-work-item-readiness). |
+| Resume work, move its position or hand it off | [Resumption state](docs/DATA_MODEL.md#resumption-state), [current work state](docs/WORKFLOW.md#updating-current-work-state) and [work-item readiness](docs/WORKFLOW.md#scope-decisions-and-work-item-readiness). |
 | Record a disposition short of PASS, or withdraw an overturned pass | [Verification and completion](docs/WORKFLOW.md#verification-and-completion) and the owning verification records. |
 | Report project progress or requirement trace coverage | [Status and trace reporting](docs/WORKFLOW.md#status-and-trace-reporting) and the owning project records. |
 | Produce a report the project owes on a schedule | [Recurring reports](docs/WORKFLOW.md#recurring-reports) and the source that owns each figure. |
 | Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and allocations. |
 | Classify data loss, credential access or high-risk/external effects | Relevant [Security](docs/SECURITY.md) boundaries and applicable external controls before acting. |
 | Configure agent tool permissions or sandboxing for a project | [Tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls). |
-| Reuse evidence or determine recheck scope | [Verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification) and applicable project checks. |
+| Plan checks, reuse evidence or determine recheck scope | [Verification reuse and scheduling](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification), [verification methods](docs/WORKFLOW.md#verification-and-completion) and applicable project checks. |
 | Delegate work or choose a model tier | [Subagent delegation](docs/COLLABORATION.md#subagent-delegation), [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation) and the relevant adapter mapping. |
 | Maintain this harness's guidance | [Policy maintenance](#harness-policy-maintenance) and [guidance maintenance](docs/CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
 | Interpret former runtime records | [Former runtime records](docs/WORKFLOW.md#former-runtime-records). |

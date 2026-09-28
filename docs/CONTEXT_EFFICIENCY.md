@@ -106,6 +106,8 @@ Task splitting, ownership transfer or metadata edits alone do not justify
 repeating unaffected product checks.
 
 Use a known checked baseline with the recorded scope, criteria and results.
+Confirm that its tested output and check evidence can be identified under
+[verification and completion](WORKFLOW.md#verification-and-completion).
 Inspect changes since that baseline, then check changed deliverables and their
 affected references/dependencies. For Markdown, include modified text/links,
 new IDs, mapping changes and references to moved, renamed or removed targets.
@@ -128,6 +130,39 @@ Apply the [verification requirements](../AGENTS.md#verification-and-exceptional-
 to the chosen scope. A compile pass or skipped test does not establish intended
 product behavior. Retain failures and their actual impact; efficiency cannot
 justify hiding results or silencing required checks.
+
+### Check scope and scheduling
+
+Assign checks to the point where their evidence is needed, using the plan or
+task that already owns verification. Reuse the baseline under the rules above.
+
+| Execution point | Default scope |
+|---|---|
+| Individual task | Changed behavior and affected dependencies, with targeted regression checks. |
+| Integration of related tasks | Combined flows and shared regression checks on the integrated candidate. |
+| Release or acceptance | The coverage and supported environments required by the delivery contract and project controls. |
+
+Record the actual commands or planned check targets, environments, execution
+point and reusable evidence. For costly checks, also state the concurrency limit
+and known runtime/resource constraints. Use measured durations where available;
+leave unknown cost explicit instead of inventing a budget. Do not copy a full
+suite into every task solely because it appears in the project's command list.
+
+Schedule checks before the completion claim or dependent action that requires
+their result. Deferring an integrated check does not establish that result for
+an individual task. Mandatory project, contract and CI checks retain their
+required scope and timing.
+
+Run resource-heavy suites one at a time unless adequate capacity for overlap
+has been established. For repeated timeouts, investigate product behavior,
+test reliability and resource contention before choosing the rerun scope.
+A focused rerun can test the diagnosis; preserve the original failures and
+state what the later execution actually establishes.
+
+Once the relevant required checks pass, proceed with the work. Repeat or broaden
+checks only when changed inputs, unresolved failures, uncertain evidence or
+project controls justify it. A note recording a result or a handoff alone does
+not justify another full run.
 
 ## Model selection and delegation
 

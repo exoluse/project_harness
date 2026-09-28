@@ -8,13 +8,34 @@ tool check cannot create them.
 
 The owner decides the implementation scope through a sufficiently concrete
 direct request or a response to a proposal. The agent records the actual source
-and checks that each work item remains covered. The agent does not decide for
-the owner.
+and checks that each work item remains covered. It makes choices within that
+authority, including explicitly delegated judgment, without inventing an owner decision.
 
 The user's request authorizes the requested investigation, specification,
 planning and document outputs. An explicit policy-edit request authorizes those
 guidance edits directly. Product implementation needs the actual decision on
 a concrete scope; reuse one already given rather than asking again.
+
+### Decision requests and delegated judgment
+
+Before asking the owner, distinguish the choice from the authority needed to make it.
+
+| Choice | Action |
+|---|---|
+| A commitment outside existing authority under the [material-change criteria](#material-changes) | Present the uncovered effect and obtain the owner's decision. |
+| Judgment explicitly delegated for a stated subject and limits | Choose within those limits and record the choice and rationale where it belongs. |
+| Routine implementation or work ordering within established commitments | Choose and proceed; update affected instructions without another approval. |
+
+Keep the actual delegation source with the owning scope decision. State the
+subject, allowed choices or constraints, exclusions and conditions for asking
+again. Use the request and its context; do not invent broader authority from
+phrases such as "use your judgment."
+
+A new specification version or plan does not alone renew or end a delegation.
+Check whether its subject and conditions still cover the proposed choice under
+[coverage and currentness](#coverage-and-currentness). Ask only about an
+uncovered or genuinely ambiguous effect. Delegation does not replace the specific
+human decisions required by [high-risk controls](../AGENTS.md#high-risk-and-external-control).
 
 ## Preparing and recording one decision
 
@@ -22,7 +43,7 @@ An explicit fix/implementation request can supply the decision without a prior
 agent proposal when its outcome and bounds are clear in context. Record that
 request and the derived scope; choose routine implementation details and relevant
 checks within it and proceed. Missing exact filenames or test names alone is
-not a reason to ask again. Clarify essential ambiguity or material tradeoffs;
+not a reason to ask again. Clarify essential ambiguity or uncovered material tradeoffs;
 do not expand scope or bypass high-risk/external controls.
 
 Establish the outcome and acceptance criteria, affected components/paths/actions,
@@ -53,7 +74,8 @@ Treat a direct implementation/fix request as clear when all of these hold:
 - The intended result and a useful completion check can be stated without
   choosing a materially different outcome for the user.
 - The necessary work fits the stated boundaries and existing decisions without
-  requiring the agent to choose an unresolved material commitment for the user.
+  requiring a material choice outside the agent's established authority or
+  [delegated judgment](#decision-requests-and-delegated-judgment).
 
 Clarity establishes intent and scope, not execution readiness. Check real
 dependencies, ownership and required external permissions separately.

@@ -22,9 +22,10 @@ and product documents, then writes:
 These are information types, not a limit of one file per type. For a project
 with sign-in and search features, maintain an overview grouping each feature's
 requirements, designs, plans, tasks and verification links. Store the actual
-documents in suitable classification folders, for example under `project-docs/`.
-The root, folder names and hierarchy are chosen for the project, not mandated
-by this example. A small search empty-state correction reuses its requirement's
+documents in folders by document kind, for example under `project-docs/`.
+Use the [default folder mapping](DATA_MODEL.md#folders-by-document-kind) where
+the project has no established layout, and record the mapping in its overview.
+A small search empty-state correction reuses its requirement's
 separate design, plan, task and verification files, updating affected content.
 Record the boundaries and
 link dependencies. See
@@ -246,11 +247,13 @@ exclusions, dependencies, feasible approach, risks and checks, then proceed
 when prerequisites are ready under the [clear-request criteria](APPROVALS.md#clear-implementation-requests).
 The request supplies the scope decision; no second proceed response is needed.
 
-When the request leaves a material choice or uncovered scope, present the
+When the request leaves an uncovered material choice or scope, present the
 concrete proposal and its version for the owner's decision. Record the actual
 response, such as “Proceed with this scope,” and its source. Do not copy these
 examples as real decisions. Reuse applicable decisions across plans/tasks;
 high-risk actions retain their specific authority and external controls.
+For explicitly delegated choices, apply the recorded limits under
+[delegated judgment](APPROVALS.md#decision-requests-and-delegated-judgment).
 
 ## 3. Implement across several plans
 
@@ -267,11 +270,27 @@ A new production data migration or changed acceptance criterion is a material
 delta with its own applicable authority. Concurrent writers agree non-overlapping
 ownership; a single writer needs no claim record.
 
+When an API task finishes and its UI task comes next, the API task owns its
+execution status and links the actual verification. The plan's resumption
+record points to the UI task. Update the overview only if its phase, blocker
+or other stated facts changed. Apply [current-state updates](WORKFLOW.md#updating-current-work-state)
+so an old "awaiting implementation approval" instruction cannot survive as the
+current basis after a covered implementation request. Keep the original
+planning-only decision in dated history.
+
 ## 4. Verify and handle feedback
 
 Run the agreed relevant checks on the candidate and report the actual version,
 environment and result. Static review, integration tests and browser verification
 are distinct. An unavailable environment is a limit, not a pass.
+
+Schedule a task's changed API checks with that task and the combined browser
+flow after API and UI integration. Run required release coverage at its required
+checkpoint, reusing applicable evidence under [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling).
+For a shared dialog change, inspect one real product dialog in representative
+states before migrating all dialogs. A narrow viewport and long error message
+can expose clipping that an element-existence assertion misses. Record the
+states actually examined; other dialogs still need their applicable checks.
 
 For feedback, preserve the previous candidate and observations. Assess the
 change, obtain a decision for a material delta when needed, and reverify affected

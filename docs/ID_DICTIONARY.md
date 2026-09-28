@@ -18,6 +18,8 @@ is not part of the ID. In this example, `NNN` is a three-digit serial starting
 at `001`; a final `NN` is a child serial starting
 at `01`. In a child format, `NNN` copies the referenced parent's serial.
 Projects can retain or choose other widths under their recorded convention.
+For placement by document purpose, use the Information model's
+[folder mapping](DATA_MODEL.md#folders-by-document-kind).
 
 | Kind | Format | Meaning | Allocation scope |
 |---|---|---|---|
@@ -86,7 +88,9 @@ or enumerate every possible service component in advance.
    when they need no ID segment.
 3. If a kind or classification is missing, register its meaning, exact format,
    allowed values, serial width/start and allocation scope before first use.
-   Define a child format's parent mapping explicitly. Follow the Information
+   Define a child format's parent mapping explicitly. Record a new kind's
+   [folder mapping](DATA_MODEL.md#folders-by-document-kind) before creating its files.
+   Follow the Information
    model's extension rules; routine additions need no separate approval.
 4. Allocate against existing definitions, retired IDs and shared reservations
    using [allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse),

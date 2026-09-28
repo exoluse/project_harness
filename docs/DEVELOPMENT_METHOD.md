@@ -127,6 +127,8 @@ a gap. Keep the requested stopping point and actual implementation authority.
    Use the detail checklist below to find necessary supporting work that was
    not explicitly named in the request. Record its rationale; newly proposed
    commitments remain proposals until covered by an actual scope decision.
+   Plan [product-assumption checks](#testing-product-assumptions) where the
+   intended outcome depends on use that has not yet been observed.
 3. **Resolve the approach.** Locate the affected components and existing
    contracts. Specify behavior, interfaces, data changes and integration points
    at the detail below, including feasibility, relevant alternatives and why
@@ -153,7 +155,11 @@ a gap. Keep the requested stopping point and actual implementation authority.
    [recorded project conventions](DATA_MODEL.md#suggested-information) or known
    commands/targets where available; otherwise specify the check to create and
    how it will run. State unrun checks as planned, including any unavailable
-   environment or permission.
+   environment or permission. Apply [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling)
+   to separate task, integration and release checks, including resource limits
+   for costly runs. For shared UI patterns or repeated assets, schedule the
+   [representative product inspection](WORKFLOW.md#verification-and-completion)
+   before extending the treatment to the remaining instances.
 7. **Audit from the sources and hand off.** Apply all completion checks below
    against the original inputs, linked definitions and candidate plan. Repair
    omissions and check their effects. Record the reviewed versions, coverage,
@@ -240,7 +246,7 @@ and do not require repeated approval or a fixed number of review rounds.
 | Original inputs to inventory | Each relevant request, requirement, supporting condition, constraint and decision in the inspected sources is represented. Check the originals independently of the drafted inventory; report any unavailable source and its impact. |
 | Inventory to implementation and verification | Every included obligation/acceptance detail has concrete design, work and check coverage. Each work item traces back to scope or a justified supporting need; exclusions/deferments respect actual authority. No unexplained empty cells or umbrella task titles stand in for detail. |
 | Scenario walkthrough | Follow normal, alternate, boundary and failure flows through the affected components and task handoffs. Applicable checklist details have definitions, compatible contracts and expected results; include interactions between requirements. |
-| Executability and order | Each task states outputs, edit boundaries, actions, inputs, prerequisites and completion checks. Dependencies have providers and readiness conditions; order is feasible and integration work is assigned or explicitly unassigned pending execution. |
+| Executability and order | Each task states outputs, edit boundaries, actions, inputs, prerequisites and completion checks. Dependencies have providers and readiness conditions; order is feasible and integration work is assigned or explicitly unassigned pending execution. Check scheduling identifies where task, integration and release evidence is obtained, with resource limits for costly checks and representative product inspection where applicable. |
 | Unknowns and decisions | Apply the disposition rules below; consequential scope/design unknowns are resolved for any scope claimed complete. Remaining prerequisites have resolution actions, owners, timing and affected dependents. |
 | Document consistency | Apply [document validation](DATA_MODEL.md#document-validation), including links to owning definitions and consistency with source versions. Planning coverage is not reported as passed product testing. |
 
@@ -275,6 +281,33 @@ an arbitrary retry count, or declare completion because a checklist was filled
 without checking its linked content. If essential input is unavailable, report
 the incomplete scope and needed input honestly. Subsequent source/scope changes
 reopen the affected coverage checks under the existing change rules.
+
+### Testing product assumptions
+
+Separate specified behavior from assumptions about its usefulness, usability
+or balance. Implementing the specified values does not establish the intended
+experience. Keep each consequential assumption with its owning requirement,
+design or open item; no separate hypothesis register is required.
+
+Plan the smallest authorized experiment or representative flow that can inform
+the affected decision. Record the following in the owning plan or task:
+
+- The assumption and the decision or dependent work it affects.
+- The method, representative inputs or participants, and observations needed.
+- The decision criteria and their source, or the unresolved criteria and owner.
+- The responsible work and when the evidence is needed.
+
+Schedule the check before expanding work that depends on the unconfirmed
+assumption. An actual decision may defer it; preserve that decision, the risk
+and the later checkpoint. Do not present an estimate or agent preference as
+observed user experience.
+
+Apply the [unknown dispositions](#planning-completion-checks) when the assumption
+can change required behavior, acceptance or the approach. Calling it a hypothesis
+does not make an incomplete implementation plan complete. Bounded investigation
+may proceed within its own authority. Record what the experiment establishes
+and its limits; [verification](WORKFLOW.md#verification-and-completion) still
+distinguishes agent review, observed use and customer acceptance.
 
 ## Existing project intake and reverse engineering
 
@@ -425,6 +458,7 @@ acceptance, data, authority, blockers and delivery commitments. An unchanged fil
 is not proof of no impact. Broaden investigation when links, baseline coverage
 or effects are uncertain. Group unaffected content with a common reuse basis;
 do not require a separate impact report or an N/A row for every project document.
+Assign required corrections under [fixes across work-item boundaries](WORKFLOW.md#fixes-across-work-item-boundaries).
 
 1. Preserve the prior baseline and trace the request.
 2. Assess feasibility, alternatives, uncertainty and effects on behavior, data,
@@ -502,6 +536,8 @@ verification instead of restarting the whole project for a local discovery.
 Ask again when a material commitment, assumption, impact, condition or authority
 has changed beyond the authorized scope. Explain the delta. Missing essential
 input also requires clarification; a simple task split does not.
+Apply [delegated judgment](APPROVALS.md#decision-requests-and-delegated-judgment)
+before treating an undecided choice as a question for the owner.
 
 Do not renew approval merely because a plan ID or file layout differs. Do not widen an old decision to cover work
 that was never reviewed. Continue independent covered work when safe.

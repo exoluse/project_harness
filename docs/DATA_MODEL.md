@@ -36,7 +36,7 @@ does not apply is not required reading.
 | Current position of long-running work | [Resumption state](#resumption-state) |
 | Identity, types and numbering | [Item IDs](#item-ids) |
 | Project ID formats and optional classification codes | [Document ID dictionary](ID_DICTIONARY.md) |
-| Canonical filename and folder mapping | [Document paths](#document-paths) |
+| Canonical filename and folder mapping | [Document paths](#document-paths), [Folders by document kind](#folders-by-document-kind) |
 | Separate item or supporting detail | [Item boundaries](#independent-items-and-supporting-detail) |
 | Consumer-required name/location | [Required-name exceptions](#required-name-exceptions) |
 | Instructions scoped to a subtree | [Path-scoped instruction files](#path-scoped-instruction-files) |
@@ -96,10 +96,10 @@ single-active-plan field is required.
 
 ## Document organization
 
-Use a project overview for shared context and navigation, with documents for
-independently scoped items stored in suitable classification folders. The agent
-chooses folder names, nesting and the document root for the project's content,
-workflow and existing conventions. Feature/work units remain logical groups
+Use a project overview for shared context and navigation, with independently
+scoped documents grouped in [folders by document kind](#folders-by-document-kind).
+The agent records the document root and folder mapping, reusing established
+project conventions. Feature/work units remain logical groups
 in the overview and relationships between items regardless of physical layout.
 A project with several such units must not default to a single accumulating
 file for each document type.
@@ -135,8 +135,8 @@ Length alone does not create a new item; use sections and navigation
 when accumulated supporting detail obscures scope, decisions or evidence.
 Record the chosen boundaries and rationale briefly in the overview or work note.
 
-The following example applies [document paths](#document-paths). Folder names
-and nesting are illustrative; the IDs are not allocations in this repository.
+The following example uses the [default folder mapping](#folders-by-document-kind).
+The IDs are illustrative, not allocations in this repository.
 Create only documents needed for the requested stage:
 
 ```text
@@ -162,8 +162,18 @@ project-docs/
     TASK-PC-001.md
   verifications/
     VER-001.md
+    contracts/
+      CT-API-001-01.md          # Separately managed contract check
+    backend/
+      BT-API-001-01.md          # Separately managed backend check
+  open-items/
+    OI-001.md
   decisions/
     DEC-001.md
+    architecture/
+      ADR-001.md
+    open-items/
+      OD-001-01.md              # Separately managed resolution of OI-001
   changes/
     CHG-001.md                  # Change trace when separately required
   handoffs/
@@ -200,11 +210,18 @@ Detailed facts have one owner:
 Designated tracker ownership follows
 [external work trackers](#external-work-trackers).
 
-Plans and overviews summarize their own scope's progress, major stage, blockers
-and material dependencies, linking the owning facts and evidence. Select summary
-detail needed for those judgments; do not duplicate task-by-task status or test
-logs at every level. A task's completion does not establish requirement-level
-verification, customer acceptance or overall completion.
+Plans keep ordered task links, dependencies, overall criteria and, for work
+spanning sessions, their [resumption state](#resumption-state). Overviews link active plans and summarize
+major stages, blockers and material dependencies. Keep detailed task status in
+the tasks and check results in verification records; use links from those summaries.
+Do not maintain a second task-status table or copy test logs merely for navigation.
+A task's completion does not establish requirement-level verification, customer
+acceptance or overall completion.
+
+Current summaries state the present position. Keep past decisions and observations
+in dated history with their original scope and evidence. Replace superseded
+current instructions when the governing decision changes; preserve their history
+under the [conversation decision rules](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions).
 
 Use the owning [impact assessment](DEVELOPMENT_METHOD.md#change-cycle-and-propagation)
 to update summaries when their stated scope, stage, blockers, dependencies,
@@ -219,8 +236,9 @@ shared summary must not hide a known blocker or supply readiness. Check current
 owning records before dependent work starts or resumes, and before relying on a
 summary for a decision, handoff or completion claim. Reconcile relevant
 summaries before that use. Stop propagation at levels whose facts and judgments remain
-valid. Preserve historical snapshots with their dates/versions rather than
-maintaining them as parallel current status.
+valid. Use [current-state updates](WORKFLOW.md#updating-current-work-state) at work
+transitions and handoff. Preserve historical snapshots with their dates/versions
+rather than maintaining them as parallel current status.
 
 ### Area overviews
 
@@ -334,7 +352,7 @@ consume-only, with any unavoidable registration or integration edit named as
 such.
 
 A defect in a shared component belongs to the item that owns it. Return it
-there under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle); the
+there under [fixes across work-item boundaries](WORKFLOW.md#fixes-across-work-item-boundaries); the
 consuming item's declared scope, review and evidence do not cover that
 component. Where two items must both write a shared path, order them or assign
 one writer under the [collaboration basis](COLLABORATION.md#collaboration-basis)
@@ -444,7 +462,8 @@ boundaries and ID allocations visible to concurrent writers.
 Work that spans sessions is re-entered repeatedly, often by a different session
 or writer. Keep one record stating where it currently stands, so re-entry starts
 from the recorded position instead of a reconstruction of an earlier
-conversation. Name there:
+conversation. Place it near the start of its owning document or link it from
+that document's opening. Name there:
 
 - the item or step in progress, and the one that comes next;
 - the last completed checkpoint and the evidence that established it;
@@ -601,6 +620,9 @@ Show the ID without the slug near the top of the body and in stable ID anchors.
 Keep the full title and context in the body and overview. Reference links use
 the ID as their label and the actual owning filename/anchor as their target.
 An ID in the body or directory alone does not satisfy the filename rule.
+When IDs alone make new files hard to distinguish, prefer a descriptive slug,
+such as `TASK-UI-025-popup-migration.md`. Apply the syntax above and preserve
+established filenames unless their reorganization is authorized.
 For example, `overview/DOC-001.md` and `overview/DOC-001-project-overview.md` are
 alternative names for the same identity; `overview.md` needs a required-name
 exception. Keep one current owning file per ID across all folders: a different
@@ -613,13 +635,61 @@ overview/index path and all affected links, and retain version history.
 The rule covers all document kinds, including overviews, shared specifications,
 research, reports, changes and handoffs.
 
-The agent chooses and records the root and classification-to-folder mapping
-in the project overview, reusing project conventions. Examples include `REQ`
-to `requirements`, `API` to `contracts`, `SCR` to `screens`, `PLAN` to `plans`
-and `TASK` formats to `tasks`. These are not reserved names: `specs/requirements`,
-`plans/backend` or `work-items` are also possible. Select and record suitable
-folders for new kinds or changed context without asking the user to classify
-each one. Reuse mappings consistently within their stated scope.
+### Folders by document kind
+
+Group new documents by kind beneath the chosen document root, such as
+`project-docs/`. Use the following default mapping where the project has no
+established mapping. Each folder holds the separate files for that kind;
+it is not one combined file per kind.
+
+| Document kind | Example ID or format | Default folder beneath the document root |
+|---|---|---|
+| Project or area overview | `DOC-001` | `overview/` |
+| Requirements | `REQ-NNN` | `requirements/` |
+| Separately managed acceptance criteria | Project-registered `AC` format | `requirements/acceptance/` |
+| Feature navigation | `FEATURE-NNN` | `features/` |
+| Design and shared architecture | `DES-NNN` | `designs/` |
+| API contracts | `API-NNN` | `contracts/` |
+| Screen specifications | `SCR-{surface}-NNN` | `screens/` |
+| Plans | `PLAN-NNN` | `plans/` |
+| Tasks | `TASK-{work}-NNN` | `tasks/` |
+| Open items | `OI-NNN` | `open-items/` |
+| Standalone decisions | `DEC-NNN` | `decisions/` |
+| Architecture decisions | `ADR-NNN` | `decisions/architecture/` |
+| Separately managed open-item resolutions | `OD-NNN-NN` | `decisions/open-items/` |
+| Verification records | `VER-NNN` | `verifications/` |
+| Separately managed contract checks | `CT-API-NNN-NN` | `verifications/contracts/` |
+| Separately managed backend checks | `BT-API-NNN-NN` | `verifications/backend/` |
+| Changes | `CHG-NNN` | `changes/` |
+| Handoffs | `HANDOFF-NNN` | `handoffs/` |
+| Research | Project-registered format | `research/` |
+| Guides | Project-registered format | `guides/` |
+| Meeting notes | Project-registered format | `meetings/` |
+| Reviews | Project-registered format | `reviews/` |
+| Progress and recurring reports | Project-registered format | `reports/` |
+| Separately managed dictionaries | `DOC-002` | `dictionaries/` |
+
+Choose the folder by the document's purpose, not its ID prefix alone.
+For example, a `DOC` overview and a `DOC` dictionary belong in different folders;
+a deployment guide belongs in `guides/`, even when its ID also uses `DOC`.
+These are placement defaults, not required deliverables or new ID allocations.
+Use the [ID dictionary](ID_DICTIONARY.md#starter-format-table) for starter formats
+and [item boundaries](#independent-items-and-supporting-detail) to decide whether
+content needs its own file. A folder row does not require splitting supporting
+detail out of its owner or the [small-change exception](#minimum-documentation-for-a-small-change).
+
+Record the chosen root and kind-to-folder mapping in the project overview.
+Reuse established names and hierarchy, including [area extensions](#area-overviews).
+When no convention exists, start with kind folders directly beneath the root.
+Add subfolders for a surface, subsystem or work area when navigation needs them,
+such as `screens/pc/` or `tasks/backend/`. A feature spanning several kinds links
+their owning files; it does not collect copies in a second folder.
+
+Before creating a document of an unmapped kind, select and record its folder
+within the authorized work. Do not use the root or a miscellaneous folder as
+the fallback for unrelated kinds. The agent makes routine mapping choices
+without asking the user to classify each document. Apply each mapping
+consistently within its recorded scope.
 
 Folder changes preserve IDs and repair overview/item links; they do not
 authorize historical-record migration. Do not create empty type folders or
@@ -954,13 +1024,26 @@ otherwise violate, and any material the project has designated
 the [project conventions](#suggested-information) placed where they are needed;
 record each when it is decided or found at intake, not as a placeholder.
 
-Add a short entry pointer for work in progress: the current stage and the few
-documents a session reads first, in order, to re-establish the basis. Keep
-separate pointers for separate streams or [areas](#area-overviews) instead of
-merging them into one list. The pointer names owning documents and the present
-position; it does not restate their content, and the
-[resumption state](#resumption-state) stays the owning record where the two
-disagree.
+Add a short entry pointer to the project overview and the owning
+[resumption state](#resumption-state) for work in progress. Keep separate pointers
+for separate streams or [areas](#area-overviews) instead of merging them into
+one list. Link the current position and ordered reading list there without
+maintaining another copy of task status in the entry file.
+
+Before reporting project instruction setup or harness adoption complete, check
+the entry route against the project's actual state:
+
+- The root instruction file reaches the project overview and, where work is
+  active, its current resumption record.
+- The stack, actual check commands and code/document paths are available here
+  or through precise links to their owning project conventions. Mark undecided
+  conventions honestly; do not invent commands to complete setup.
+- The project's landing README introduces the project and links its overview.
+  Link the harness usage guide separately, preserving existing guidance and
+  required entry names when integrating it.
+
+These checks apply to authorized adoption or instruction maintenance. A read-only
+review reports missing entry information without creating files.
 
 Keep owning content out of it. An entry file that accumulates requirement
 decisions, item-level instructions or verification gates becomes a second
@@ -1001,9 +1084,10 @@ the affected scope and reusable evidence.
 | Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis, do not collide with retained/retired IDs or reservations, and fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
 | Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
 | Area overviews and trackers | Root and area overview entries resolve and hold only their owned content; designated tracker information has no parallel Markdown record; tracker references carry a resolvable key/link, and relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
-| Ordinary paths | Each new file matches the recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
+| Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
+| Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. Distinguish dated history from current instructions. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
 | Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
 | Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must retain evidence and update affected definitions and dependency status; a status change alone is insufficient. |
 | Scope and history | No unauthorized migration or historical relabeling; IDs and prior decision/evidence history are preserved, and unrun verification is not reported as success. |
@@ -1017,8 +1101,8 @@ exception. Existing records keep their names and applicable prior evidence.
 The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the
 filename-derived part of the identity and path checks: duplicate owning files,
 repeated ID-only headings, slug syntax, filename/body ID agreement and unlinked
-ID-named files. Registered formats, folder mapping, allocation and whether an
-ID names the intended item still need review.
+ID-named files. Registered formats, folder mapping, allocation, current-state
+consistency and whether an ID names the intended item still need review.
 
 ## Trace and baselines
 
