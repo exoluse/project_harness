@@ -19,7 +19,7 @@ does not apply is not required reading.
 |---|---|
 | Create, name or rename a project document | [ID scope](#id-scope), [Item IDs](#item-ids), [Document paths](#document-paths), the single-writer paragraphs of [Allocation reuse](#allocation-and-validation-reuse), [Document validation](#document-validation) |
 | Decide whether something is a separate item | [Item boundaries](#independent-items-and-supporting-detail) |
-| Document a small correction | [Minimum documentation for a small change](#minimum-documentation-for-a-small-change) |
+| Document bounded low-risk work | [Minimum documentation for a small change](#minimum-documentation-for-a-small-change) |
 | Write or update an overview, plan or task | [Document organization](#document-organization), [Plans and tasks](#plans-and-tasks), [Summary ownership and updates](#summary-ownership-and-updates) |
 | Record or follow up an unresolved question | [Open items](#open-items) |
 | Resume work that spans sessions, or record where it stands | [Resumption state](#resumption-state) |
@@ -74,7 +74,7 @@ binding.
 
 | Information | Minimum useful content |
 |---|---|
-| Project note | Objective, current stage, baseline, decisions, progress, blockers and next action. |
+| Project note | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
 | Project conventions | Build, test and static-check commands, verification environments, integration/branch model and quality criteria that are actually decided or observed, with their source/version. Record each when it is decided or found at intake, not as a placeholder; verification records reference them. |
 | Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
@@ -90,7 +90,7 @@ binding.
 Keep supporting conditions and implementation steps in their owning files.
 Requirements and their design, plan, task and verification definitions use
 separate files under [document organization](#document-organization), with the
-bounded [small-change exception](#minimum-documentation-for-a-small-change).
+[compact documentation rules](#minimum-documentation-for-a-small-change).
 A plan may organize nested task links or reference several plans; no
 single-active-plan field is required.
 
@@ -108,24 +108,22 @@ task and verification files needed at the requested stage. Shared definitions
 or work keep one owning file linked by all covered requirements. Create files
 when their stage/output is needed, not as placeholders for future stages.
 
-The [small-change exception](#minimum-documentation-for-a-small-change) permits
-otherwise missing definitions for one correction to share a work document.
-For that exception, references to owning requirement, design, plan and
-verification documents mean the corresponding sections or linked existing
-owners. It does not combine independently managed items or relocate existing
-definitions.
+For bounded low-risk work, [compact documentation](#minimum-documentation-for-a-small-change)
+keeps missing local definitions in the work document. References to design,
+plan and verification owners then include those sections. Independently managed
+items and existing definitions keep their own files.
 
 The overview holds the objective, shared project context, links to shared
-requirements and architecture, baseline, current summary and an index of units.
+requirements and architecture, baseline, resumption links and an index of units.
 It also states the document and item-ID convention, including agent-selected
 extensions and any allocation ownership. Once they exist, it records the
 [project conventions](#suggested-information) for build, test and check
 commands, verification environments and integration. A new
 project adds them when its design or plan decides them; intake records those
 observed in an existing project. An undecided convention is stated as such.
-Each index entry links to the unit's documents and states its scope, stage/status
-and material dependencies. Keep detailed decisions and evidence in their owning
-documents and link to them instead of maintaining duplicate accounts.
+Each index entry states its scope and material dependencies and links the unit's
+owning documents. Follow those links for current status under
+[summary ownership](#summary-ownership-and-updates).
 
 Use requirements as the primary basis for separating product scope under the
 [item-boundary rules](#independent-items-and-supporting-detail). Connect design,
@@ -199,46 +197,42 @@ repair links. A requested stage still ends at its own outputs.
 
 ### Summary ownership and updates
 
-Detailed facts have one owner:
+Keep each current fact in one owning location, within a file as well as across files:
 
-- requirements own expected outcomes and acceptance criteria;
-- designs and contracts own behavior and structure;
-- plans own order, dependencies and overall completion criteria;
-- tasks own execution and task status;
-- verification documents own actual check results.
+- Requirements own expected outcomes and acceptance criteria.
+- Designs and contracts own behavior and structure.
+- Plans own order, dependencies and overall completion criteria.
+- Work items own execution state, execution mode, immediate next action and
+  dependency links. Shared decisions may be inherited by reference.
+- Verification records own actual check results; open items own unresolved
+  findings, their follow-up and resolution.
 
-Designated tracker ownership follows
-[external work trackers](#external-work-trackers).
+Designated tracker ownership follows [external work trackers](#external-work-trackers).
+[Compact work](#minimum-documentation-for-a-small-change) may keep otherwise
+missing definitions in separate sections of one work document.
 
-Plans keep ordered task links, dependencies, overall criteria and, for work
-spanning sessions, their [resumption state](#resumption-state). Overviews link active plans and summarize
-major stages, blockers and material dependencies. Keep detailed task status in
-the tasks and check results in verification records; use links from those summaries.
-Do not maintain a second task-status table or copy test logs merely for navigation.
-A task's completion does not establish requirement-level verification, customer
-acceptance or overall completion.
+Use links for current navigation. Overviews and parent plans link work and its
+[resumption position](#resumption-state); they do not repeat child statuses,
+execution modes, blocker explanations, next actions or pass counts.
+A parent's own integration condition remains its responsibility, linked to its
+providers. Completing a child does not establish that condition.
 
-Current summaries state the present position. Keep past decisions and observations
-in dated history with their original scope and evidence. Replace superseded
-current instructions when the governing decision changes; preserve their history
-under the [conversation decision rules](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions).
+For a progress request, read the owners and derive the answer at that time under
+[status reporting](WORKFLOW.md#status-and-trace-reporting).
+Retained reports are dated snapshots with their source versions.
+A required current view must be derived from owning records when refreshed;
+an old snapshot cannot supply current readiness.
 
-Use the owning [impact assessment](DEVELOPMENT_METHOD.md#change-cycle-and-propagation)
-to update summaries when their stated scope, stage, blockers, dependencies,
-commitments or evidence applicability changes, or a referenced path changes.
-An edit to a child does not alone require edits at every parent level. If a
-summary includes exact counts or individual statuses, keep those accurate too;
-an unchanged high-level label cannot justify retaining a false detailed claim.
+Update an overview or parent when its own scope, dependency, navigation or
+decision changes. A child status change alone requires no parent edit.
+When affected work exposes an old duplicate current claim, replace it with an
+owner link and preserve its history. Do not rewrite dated historical reports
+to match later events or launch an unrelated document migration.
 
-Route shared-summary updates through their owner under
-[collaboration](COLLABORATION.md#coordination-waits). Pending reflection in a
-shared summary must not hide a known blocker or supply readiness. Check current
-owning records before dependent work starts or resumes, and before relying on a
-summary for a decision, handoff or completion claim. Reconcile relevant
-summaries before that use. Stop propagation at levels whose facts and judgments remain
-valid. Use [current-state updates](WORKFLOW.md#updating-current-work-state) at work
-transitions and handoff. Preserve historical snapshots with their dates/versions
-rather than maintaining them as parallel current status.
+Before relying on a current fact, follow its owner link. Resolve discrepancies
+under [current-state updates](WORKFLOW.md#updating-current-work-state).
+Coordinate edits to shared navigation through its owner under
+[collaboration](COLLABORATION.md#coordination-waits).
 
 ### Area overviews
 
@@ -258,17 +252,16 @@ ID, links back to the root and follows the same organization rules for its area.
 | Content | Owning overview |
 |---|---|
 | Objective, shared constraints and specifications (or links), document root and shared folder mapping, area index, cross-area dependencies, allocation delegations | Project (root) overview |
-| Area unit index, area progress summary, area-specific folder extensions, consumption of delegated ID ranges | Area overview |
+| Area unit index, resumption links, area-specific folder extensions, consumption of delegated ID ranges | Area overview |
 | Detailed definitions, decisions and evidence | Owning item documents, as without areas |
 
 Each area index entry links the area overview and states its scope, accountable
-owner, stage/status summary and material dependencies. Area folder extensions
+owner and material dependencies. Area folder extensions
 must not redefine a shared mapping or prefix. A requirement or design used by
 several areas has one owning definition. Keep it at the root or in a designated
-owning area, and link it from the others. Summaries flow upward from owning items
-to the area overview and from area overviews to the root; no level keeps a
-second detailed account. An area may nest further only when it meets the same
-split criterion.
+owning area, and link it from the others. Current-state links lead downward to
+their owners; apply [summary ownership](#summary-ownership-and-updates).
+An area may nest further only when it meets the same split criterion.
 
 Root overview edits follow its assigned owner under the
 [collaboration basis](COLLABORATION.md#collaboration-basis); area writers route
@@ -408,8 +401,8 @@ permission to continue past it.
 they cover. One requirement can need several tasks, and one task can serve
 several requirements.
 
-Keep plan and task definitions in their respective files, except under the
-[small-change exception](#minimum-documentation-for-a-small-change). Split
+Keep plan and task definitions in their respective files, with local sections
+allowed under [compact documentation](#minimum-documentation-for-a-small-change). Split
 further on actual output, assignment and completion boundaries. Reuse shared
 files across requirements; do not create duplicate definitions or placeholders
 for unrequested stages. Use the
@@ -418,8 +411,7 @@ supporting detail and work that precedes requirements.
 
 **Where status lives.** Keep task definitions and execution status in their
 owning files, and link the actual check results from the verification
-documents. Plans hold links, ordering and useful progress summaries; update
-those summaries from the tasks. Apply
+documents. Plans hold order, dependencies and navigation links. Apply
 [summary ownership and updates](#summary-ownership-and-updates) instead of
 copying detailed task states into each parent. A task shared by several plans
 retains one ID, one owning file and one writer.
@@ -459,36 +451,28 @@ boundaries and ID allocations visible to concurrent writers.
 
 ### Resumption state
 
-Work that spans sessions is re-entered repeatedly, often by a different session
-or writer. Keep one record stating where it currently stands, so re-entry starts
-from the recorded position instead of a reconstruction of an earlier
-conversation. Place it near the start of its owning document or link it from
-that document's opening. Name there:
+Work spanning sessions keeps one navigation record naming its current item,
+the next item in the sequence, and the first owning sections to read.
+Place it near the start of its owning document or link it from the opening.
 
-- the item or step in progress, and the one that comes next;
-- the last completed checkpoint and the evidence that established it;
-- the current blocker, if any, and the point work resumes from once it clears;
-- the conditions still standing between the work and its release, acceptance or
-  closure;
-- the short ordered set of documents a session reads first to re-establish the
-  basis.
+The plan owns this position for a single plan. An overview may own navigation
+across plans or [areas](#area-overviews); it links each plan's position.
+A standalone work item may hold its own position without a separate plan.
 
-The owning plan holds this for a single plan; a program spanning several plans
-or [areas](#area-overviews) keeps one such record in the overview that owns its
-navigation. It points at owning records rather than copying them, and where it
-disagrees with one, the owning record governs under
-[summary ownership](#summary-ownership-and-updates) and the pointer is corrected.
+Link the current item's execution mode, immediate next action, prerequisites
+and blockers instead of restating them. Link the last established checkpoint's
+evidence and any release, acceptance or closure conditions in their owning records.
+If this document owns one of those facts, keep it once and link its section.
+A short ordered reading list is enough; no second status table is needed.
 
-State the present position and let history live where it belongs. A pointer that
-accumulates successive updates stops answering the question it exists for: move
-superseded positions into the decision, verification or change records that own
-them, and keep the entry list short enough to be read on every re-entry.
+Move the position when work actually moves. A changed task result requires an
+update to its owner, not a rewrite of every entry pointer.
+Preserve past positions through version history or clearly dated history.
+Current navigation must remain distinguishable from that history.
 
-A pointer records position, not permission. It establishes no execution mode,
-decision or pass; those stay with the actual decision under
-[Approvals](APPROVALS.md#preparing-and-recording-one-decision) and the evidence
-under [verification](WORKFLOW.md#verification-and-completion). Naming the next
-item does not authorize starting it.
+A pointer establishes no permission, readiness or pass. The actual decision
+and evidence govern under [Approvals](APPROVALS.md#preparing-and-recording-one-decision)
+and [verification](WORKFLOW.md#verification-and-completion).
 
 ## Item IDs
 
@@ -676,7 +660,7 @@ These are placement defaults, not required deliverables or new ID allocations.
 Use the [ID dictionary](ID_DICTIONARY.md#starter-format-table) for starter formats
 and [item boundaries](#independent-items-and-supporting-detail) to decide whether
 content needs its own file. A folder row does not require splitting supporting
-detail out of its owner or the [small-change exception](#minimum-documentation-for-a-small-change).
+detail out of its owner or the [compact documentation rules](#minimum-documentation-for-a-small-change).
 
 Record the chosen root and kind-to-folder mapping in the project overview.
 Reuse established names and hierarchy, including [area extensions](#area-overviews).
@@ -912,77 +896,40 @@ separately managed items inside a single growing document.
 
 ### Minimum documentation for a small change
 
-For a correction eligible for [compact planning](DEVELOPMENT_METHOD.md#choosing-planning-depth),
-reuse the requirement's existing design, plan, task and verification files.
-Keep their IDs and document roles; create a new item only when identity and
-work boundaries require it. Preserve completed work and old evidence rather
-than rewriting them as the new correction. Do not claim an unreviewed baseline
-is reusable.
+For [compact work](DEVELOPMENT_METHOD.md#choosing-planning-depth), use the
+existing owning work document and link applicable requirements and contracts.
+Update another owning definition only when its facts or instructions change.
 
-Missing definitions may share one ID-named work document when all of these hold:
+Missing local approach, plan and verification definitions may live in sections
+of that work document. Keep planned checks separate from actual results.
+Do not create separate DES, PLAN or VER files solely to fill those roles.
+An independently managed requirement or shared definition still has its own
+owner under [item boundaries](#independent-items-and-supporting-detail).
+Existing owners and required contractual files retain their roles and history.
 
-- The work qualifies for compact planning, has one accountable writer at a time
-  and one correction outcome with one completion boundary.
-- The expected result and existing contracts are established from attributable
-  sources. No new independently managed requirement, shared design/contract or
-  additional output needing separate assignment/completion is being introduced.
-- Existing owning definitions remain in place and are linked. Only otherwise
-  missing content goes in the work document; there is no parallel definition or
-  evidence copy, including information owned by a designated tracker.
-- No applicable project or delivery requirement mandates separate files.
+The work note needs only the concrete basis and result of the compact procedure:
 
-State the basis briefly in the work document and use its normal work-item ID,
-such as `TASK-001`. Keep source/expected behavior, approach, plan/execution and
-actual verification distinguishable in sections. These supporting sections
-need no separate REQ, DES, PLAN or VER IDs or files solely to fill document
-roles; a parent-plan link may point to the plan section. Link an existing REQ
-when available; otherwise attribute the bounded expected behavior to its source
-without reconstructing the feature's full requirements. New commitments still
-follow the requirement-boundary rules. Applying this exception within covered
-work requires no additional approval.
+- Before work: request/source and baseline, expected outcome, affected paths,
+  approach and ordered checks, with actual commands/targets and environment.
+- During work: consequential findings, changed instructions and any unresolved
+  prerequisite, with its owner or needed assignment.
+- After checks: tested version, observed results, evidence and limits.
+  Link existing verification records instead of copying them.
 
-Keep the project overview and its normal ID/path/allocation conventions. With
-no existing management documents, this means an overview and one work document
-for the correction. Reuse an existing overview; do not create another entry
-document. The [worked example](EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents)
-shows this arrangement. Neither missing documents nor the number of source
-files alone decides planning depth.
+Reuse the actual scope decision and readiness assessment. No separate exception
+justification, planning-review record or repeated unchanged assessment is needed.
+Task declarations still apply; references to existing instructions satisfy them.
 
-The following content remains required, in existing owners or the allowed
-sections. It is not a mandatory set of headings or new files:
+Reuse the overview and its folder/ID conventions. If no management documents
+exist, create a small overview linking this work and one ID-named work document.
+Keep the overview's role to scope, conventions and navigation; it need not repeat
+the task's live state. Allocate an ID only for an actual new item.
 
-| Owning content | Content for this correction |
-|---|---|
-| Requirement/source and expected behavior | Reference the established outcome and acceptance conditions. If no requirement is recorded, establish the bounded expectation from its actual source; do not invent a new commitment. |
-| Design/contract | Reuse applicable behavior and contracts; update the correction's approach and affected interactions where the design changes. |
-| Plan | Link the actual request and baseline, record the impact assessment and reuse basis once, and specify affected scope, order, dependencies and planned checks. Reuse readiness under [Approvals](APPROVALS.md#coverage-and-currentness); record the compact planning review and remaining prerequisites here. |
-| Task | Identify the writer, cause, chosen correction, affected paths, ordered execution, status and completion checks. Link the owning plan, design and verification files or sections instead of copying them. |
-| Verification | Record the candidate version, method/environment, expected and observed results, evidence, failures, unrun checks and limits after execution. Keep planned checks distinct from actual results even when both are in one file. |
-| Overview | Keep links and the relevant summary current under [summary updates](#summary-ownership-and-updates). Update ID allocation only when an item is actually allocated. |
-
-The files or sections must provide the same executable detail as any
-implementation plan. Complete the [compact review](DEVELOPMENT_METHOD.md#choosing-planning-depth)
-before implementation and record actual results only after the checks run.
-No separate coverage matrix, per-area N/A table or duplicate review log is required.
-
-Use a change section in the owning plan/work document for the request, impact
-and history. A separate CHANGE/CR record is needed only when the agreed project
-or external process requires it, under the
-[change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation); it links
-the owning definitions and evidence. Keep each affected owner current so an
-implementer need not reconstruct its instructions from successive change notes.
-Preserve history and do not consolidate existing records into the work document.
-
-If the work grows beyond the exception, establish the necessary independent
-owning items and repair current links before the affected work starts. For
-example, a new export commitment needs its own requirement; a design now shared
-by several requirements needs its own owner; concurrent writers need separately
-assigned work. Retain the original correction ID, decisions and evidence, link
-extracted content to its new owner and avoid duplicate current definitions.
-Use detailed planning when its triggers apply. A regression scenario alone
-does not need another ID, and unrelated corrections must not accumulate in the
-same work document. Allocation, filenames and required external deliverables
-retain their normal rules.
+Preserve existing definitions, completed work and evidence. Extend closed work
+under [verification and completion](WORKFLOW.md#verification-and-completion).
+If scope grows, establish only the new independent owners or detailed planning
+that the change requires before affected work starts. Retain the original ID
+and history; unrelated outcomes must not accumulate in the same work document.
 
 ## Required-name exceptions
 
@@ -1080,7 +1027,7 @@ the affected scope and reusable evidence.
 
 | Check | Evidence to verify |
 |---|---|
-| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; requirement boundaries describe distinct commitments, supporting conditions remain with their requirement, and separately managed work references the REQs it covers. For a small-change document, check the exception's conditions, linked existing owners, distinct planned/actual results and any required split. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
+| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; requirement boundaries describe distinct commitments, supporting conditions remain with their requirement, and separately managed work references the REQs it covers. For compact work, check linked existing owners, distinct planned/actual results and any required split. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
 | Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis, do not collide with retained/retired IDs or reservations, and fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
 | Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
 | Area overviews and trackers | Root and area overview entries resolve and hold only their owned content; designated tracker information has no parallel Markdown record; tracker references carry a resolvable key/link, and relied-on tracker state is recorded where a decision, completion or handoff depends on it. |

@@ -1,6 +1,6 @@
 # Development Method
 
-This repository uses detailed waterfall stages with revision throughout.
+This repository uses waterfall stages with planning depth matched to the work.
 [AGENTS.md](../AGENTS.md) is the governing policy. Stages describe work and
 evidence. Existing projects enter at their actual stage without recreating
 an invented history.
@@ -13,7 +13,7 @@ or work unit under a project overview, following the
 [document boundaries](DATA_MODEL.md#document-organization). Keep supporting
 detail in sections of its owning file and preserve the requirement, design,
 plan, task and verification file boundaries, subject to the
-[small-change exception](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+[compact documentation rules](DATA_MODEL.md#minimum-documentation-for-a-small-change).
 Use the [item-boundary criteria](DATA_MODEL.md#independent-items-and-supporting-detail)
 to distinguish parent-specific explanation from independently managed work.
 For a bounded correction, the
@@ -57,9 +57,9 @@ Do not add a separate approval of planning completion.
 
 The development plan and its linked specifications/tasks are the primary basis
 for implementation. Planning must make the intended work executable and
-checkable, including the details that would otherwise be discovered piecemeal
-during implementation. Select the planning depth below and apply its completion
-checks; the compact path replaces the detailed procedure for eligible work.
+checkable, resolving details that affect the outcome. Select the planning depth
+below and apply its completion checks; compact planning is the default for
+bounded low-risk work.
 Failed required planning checks mean the plan needs work; classify remaining
 unknowns by their actual effect rather than treating their disclosure as a pass.
 
@@ -69,44 +69,38 @@ completion alone cannot create consent or turn missing evidence into a pass.
 
 ### Choosing planning depth
 
-Use a compact plan for one bounded correction when the expected behavior and
-existing contracts are established, one coherent set of work and checks covers
-the outcome, and no consequential scope/design unknown remains. File count or
-line count alone does not determine eligibility. New or changed public contracts,
-data lifecycle or access-policy changes, coordination of independently managed
-outputs, and high-risk external effects require the detailed procedure for
-their affected scope. Required project/contract checks still apply on either path.
+Use compact planning by default for bounded, reversible work with a clear
+outcome and no consequential scope/design unknown. This includes corrections
+and small additions using established contracts. File count and a new requirement
+ID alone do not require detailed planning.
 
-For eligible work, reuse the requirement's linked owning files under the
-[small-change guidance](DATA_MODEL.md#minimum-documentation-for-a-small-change).
-Identify the reviewed baseline and assess the change under the
-[change cycle](#change-cycle-and-propagation). Reuse definitions, decisions and
-review evidence only where they remain applicable; specify changed behavior,
-implementation steps and checks to the same executable detail as other planned
-work. File separation alone does not require the detailed procedure. Compact
-planning does not authorize merging existing files or reducing required detail;
-missing definitions may share one work document only under the small-change
-exception. References here to the plan include its section in that document.
-Before implementation, connect the source/version and expected result to the
-affected scope, chosen correction, ordered steps and planned checks. Link the
-existing readiness assessment; record only changes or unresolved prerequisites.
-No separate source inventory, coverage matrix, per-row N/A explanations or
-seven-step review log is required when these connections are clear in the plan
-and its linked definitions.
+Use the detailed procedure for the affected scope when it introduces:
 
-Complete compact planning by comparing the plan and affected definitions with
-the original relevant inputs, walking the affected behavior and checking that
-the steps and planned checks cover the expected result and applicable regression
-risks. Confirm that consequential unknowns are resolved and links/versions are
-consistent. Record
-the reviewed inputs, actual findings or no gaps found, and any remaining
-execution prerequisites in a brief review note. This establishes planning
-coverage; product checks remain planned until performed. The unknown-disposition
-rules under [completion checks](#planning-completion-checks) apply to both paths.
+- New or changed public contracts, data lifecycle or access policies.
+- Independently managed outputs needing coordinated delivery or ownership.
+- High-risk external effects or an applicable contract requiring detailed planning.
 
-If investigation reveals work outside these bounds, expand the affected plan
-using the detailed procedure and reuse valid sources, decisions and checks.
-Changing planning depth does not itself require another human approval.
+For compact work, use the existing work document and linked definitions under
+[compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change):
+
+1. Before editing, state the request/source and baseline, expected result,
+   affected paths, chosen approach and ordered edit/check steps. Name actual
+   check commands or targets and their environment; reference existing details.
+2. Compare that short plan with the governing inputs and affected consumers.
+   Confirm that the checks can detect the relevant wrong result under
+   [claim-based verification](WORKFLOW.md#verification-and-completion).
+   Keep findings and unresolved prerequisites in the same work note.
+3. Perform covered work when ready. Record actual results and limits there or
+   in the existing verification owner. A planning-only request stops before execution.
+
+Use existing authority and readiness under [Approvals](APPROVALS.md#coverage-and-currentness).
+Do not add an eligibility report, separate planning-review log, coverage matrix
+or another proceed request. Unchanged linked definitions need no ceremonial edit.
+The first two steps establish compact planning completion; product checks remain
+planned until run. The [unknown dispositions](#planning-completion-checks) still apply.
+
+If a detailed trigger appears, expand only affected planning before that work
+starts. Preserve useful analysis and evidence. Changing depth alone needs no approval.
 
 ### Detailed planning procedure
 
@@ -151,7 +145,9 @@ a gap. Keep the requested stopping point and actual implementation authority.
 6. **Plan verification with the work.** For every acceptance detail and material
    failure/risk, specify the scenario or input, expected observable result,
    check method, environment/fixtures and responsible work item. Include
-   integration and affected regression checks. Use the
+   integration and affected regression checks. Apply
+   [claim-based verification](WORKFLOW.md#verification-and-completion) to ensure
+   the checks can distinguish a correct result from the relevant failure. Use the
    [recorded project conventions](DATA_MODEL.md#suggested-information) or known
    commands/targets where available; otherwise specify the check to create and
    how it will run. State unrun checks as planned, including any unavailable
@@ -193,10 +189,9 @@ Detail is sufficient when another implementer can follow the linked plan
 without inventing required behavior, public contracts, data effects or material
 verification criteria. Resolve consequential algorithms and ordering rules;
 routine local coding choices may remain with the implementer. Do not prescribe
-every line of code or copy specifications into every task. Small corrections
-retain this level of detail through reused definitions and updates to the
-affected owning files under the
-[minimum documentation example](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+every line of code or copy specifications into every task. Compact work uses
+the short procedure above and linked definitions under
+[minimum documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change).
 
 ### Coverage and working structure
 
@@ -465,7 +460,7 @@ Assign required corrections under [fixes across work-item boundaries](WORKFLOW.m
    dependencies, effort/schedule, verification and delivery.
 3. Update affected owning definitions into a reviewable current version. Keep
    requirements, design, plans, tasks and verification in their owning files
-   or the sections allowed by the small-change exception;
+   or the sections allowed by compact documentation;
    implementers must not have to reconstruct current instructions from a chain
    of change notes. Mark uncovered commitments as proposed until an actual
    decision covers them. Preserve prior versions and identify affected and

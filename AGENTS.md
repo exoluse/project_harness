@@ -39,8 +39,8 @@ primary basis for product scope.
   existing requirement.
 - Keep requirements, designs, plans, tasks and verification in their owning
   files. Link shared definitions instead of duplicating them.
-- A bounded correction may keep missing definitions in one work document, under
-  the [small-change exception](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
+- Bounded low-risk work uses [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change),
+  reusing existing owners and keeping missing local definitions in its work document.
 
 The [Information model](docs/DATA_MODEL.md) owns the mandatory rules for
 boundaries, identities, paths, exceptions and validation. Apply them when
@@ -123,10 +123,12 @@ end at the first `## ` heading, to choose the sections for the work.
 
 ## Development method
 
-Use detailed waterfall stages with revision throughout under
+Use waterfall stages with revision throughout under
 [Development method](docs/DEVELOPMENT_METHOD.md#stage-contract). Identify input
 versions, outputs, dependencies and exit criteria for the requested scope;
-scale documentation to actual work boundaries. Sprints are optional.
+use compact planning by default for bounded, reversible work with a clear outcome.
+Apply [detailed planning triggers](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)
+to affected scope. Sprints are optional.
 Stage-only requests end with their outputs. Full-workflow requests continue
 across ready stages within actual authority; readiness does not grant authority.
 

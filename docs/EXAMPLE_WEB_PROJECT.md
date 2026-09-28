@@ -76,47 +76,42 @@ Report document coverage and open items at this stopping point.
 
 ### Compact planning example
 
-For the empty search count correction, a useful plan goes beyond "fix count;
-add tests." The following is a fictional, bounded example, not a claim about
-code, requirements, decisions or test results in this repository. In a real
-project, replace the described source locations with versioned file/anchor
-links and preserve the owning requirement's actual behavior.
+A user requests: "Fix the search count showing one for zero results; preserve
+the search API and check zero and nonzero results." This fictional example
+illustrates the procedure; it is not an actual decision or test result.
 
-Assume the inspected requirement specifies that a successful search displays
-the API's total matching count, including zero; pagination does not change that
-total. Its existing states distinguish loading, success and failure. Assume
-the inspected API contract defines `total` as a required non-negative integer,
-and the display currently substitutes `1` when `total` is zero. These example
-inputs establish a display correction, with no API or persistent-data change.
+Assume the inspected contract defines a required non-negative `total`.
+The requirement says to display that total even when pagination returns fewer
+rows. The formatter currently substitutes one for zero.
+These inputs define a bounded display correction using established contracts.
 
-These established inputs qualify for
-[compact planning](DEVELOPMENT_METHOD.md#choosing-planning-depth). Reuse the
-linked owning files and their existing IDs; the following rows identify content
-ownership, not new documents to allocate for every correction:
+Use the existing task and linked definitions. If its local approach or check
+record has no owner yet, keep that content in the task under
+[compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+A short work note can contain:
 
-| Owning content | Concrete example detail |
+| Content | Example |
 |---|---|
-| Existing requirement and contract | Reference their inspected versions and the actual request. Reuse the total-count, loading and failure definitions after confirming applicability. |
-| Display design | Update the formatter approach if necessary: preserve valid zero instead of substituting one. Reference the contract and retain the existing state definitions. |
-| Plan and impact assessment | Record the baseline, affected display/callers and linked work/checks, the reuse basis and any unavailable prerequisite. Check shared formatter consumers before limiting impact to search. Reference existing readiness and define the correction order. |
-| Task | Identify actual display/formatter and check paths, inspect callers, replace the incorrect fallback and run affected checks. Link design and check definitions, and record execution status. |
-| Planned checks | In the plan/task or linked check definition, specify the actual component runner/environment. Render successful responses with total 0 and no rows, total 1 and one row, and total 17 with ten rows; expect counts 0, 1 and 17. Exercise existing loading/error states and affected response-to-display integration. |
-| Planning review | In the plan, compare affected definitions with the original request/requirement and contract, walk affected states, and record findings and remaining prerequisites. A missing/null total outside the established contract requires investigation, not an invented zero fallback. |
-| Verification after execution | Record the actual candidate, checks, expected/observed results and limits in the owning verification file; link it from the task and plan. Retain prior results with their original versions. |
+| Basis and outcome | Link the actual request, source revision, requirement and API contract. Preserve valid zero; keep established loading/error behavior. |
+| Steps and boundary | Identify formatter/caller paths, inspect affected consumers, remove the incorrect fallback and run the relevant component checks. The API and persistent data remain outside the change. |
+| Planned checks | Name the actual runner and environment. Render totals 0, 1 and 17, including 17 with only ten returned rows; expect the displayed total to remain 0, 1 and 17. Reuse existing cases and add missing regression coverage only. |
+| Results after execution | Record the tested candidate, commands, observed results and limits here or link the existing verification owner. |
 
-The linked definitions provide detailed executable instructions without another
-coverage matrix or unrelated-area N/A table. They retain their current content;
-the implementer need not reconstruct it from change notes. Product checks remain
-planned until performed; this example supplies no real approval or passing result.
+Before editing, compare those steps and checks with the source contract and
+affected consumers. A missing/null total outside that contract needs
+investigation; do not invent a zero fallback.
+Keep findings in this note without an eligibility report or separate review log.
+Unchanged requirement, design and overview files need no edit.
 
-If the display task completes while other API work in the wider search plan
-remains, its task status changes.
-Reassess dependent work in the plan. An overview saying "search implementation
-in progress" can remain valid, while an exact completed-task count must be
-updated. If a shared formatter change also affects export, extend the impact
-assessment to that requirement's design, work and verification. A newly blocking
-failure must reach affected summaries; apply the
-[summary update rules](DATA_MODEL.md#summary-ownership-and-updates).
+A requested help-text addition with supplied wording can use the same compact
+path. A new public export contract triggers detailed planning for that scope.
+The distinction follows consequences and dependencies, not the number of files.
+
+When the correction completes, update its task and evidence.
+The parent keeps its task link; it needs no copied completion count.
+Move its resumption pointer only if work moves to another item.
+For progress, read the linked task under
+[summary ownership](DATA_MODEL.md#summary-ownership-and-updates).
 
 ### Small correction without existing management documents
 
@@ -143,7 +138,7 @@ IDs. The names below are illustrative, not allocations:
 | Owning file | Bounded content |
 |---|---|
 | `overview/DOC-001.md` | Intake revision and analysis limits, objective, folder/ID conventions and initial allocation basis/counters, observed check commands/environment, and a link to the correction. Other features remain outside this analysis. |
-| `tasks/TASK-001.md` | Current basis and writer, source/expected behavior, approach, plan/execution and actual verification sections as described below. Record why the small-change exception applies; no other document owns these definitions. |
+| `tasks/TASK-001.md` | Current basis and writer, source/expected behavior, approach, steps and checks, findings and actual verification as described below. Keep each definition once; no separate exception justification is needed. |
 
 The work document is the next session's entry point:
 
@@ -158,10 +153,9 @@ The work document is the next session's entry point:
   exclusions, impact/readiness assessment, ordered edit/check steps and status.
   Plan the compact example's zero, nonzero, paginated-total and applicable
   loading/error checks with the actual runner/environment found in the project.
-- **Planning review:** compare the plan with the actual request and contract,
-  walk affected states and record findings and remaining prerequisites before
-  implementation. A missing/null total calls for investigation, not an invented
-  fallback to make the plan appear complete.
+- **Findings, when needed:** keep consequential findings and remaining prerequisites
+  with the steps and checks. Compare those steps with the request and contract
+  before implementation; no separate planning-review record is needed.
 - **Actual verification:** add the candidate, actual commands/environment,
   expected/observed results, artifacts and limits only when checks run. Keep
   failures and unrun checks visible, separate from planned checks and old results.
@@ -272,8 +266,8 @@ ownership; a single writer needs no claim record.
 
 When an API task finishes and its UI task comes next, the API task owns its
 execution status and links the actual verification. The plan's resumption
-record points to the UI task. Update the overview only if its phase, blocker
-or other stated facts changed. Apply [current-state updates](WORKFLOW.md#updating-current-work-state)
+record points to the UI task. The overview retains its plan link without copying
+either task's status. Apply [current-state updates](WORKFLOW.md#updating-current-work-state)
 so an old "awaiting implementation approval" instruction cannot survive as the
 current basis after a covered implementation request. Keep the original
 planning-only decision in dated history.
@@ -291,6 +285,13 @@ For a shared dialog change, inspect one real product dialog in representative
 states before migrating all dialogs. A narrow viewport and long error message
 can expose clipping that an element-existence assertion misses. Record the
 states actually examined; other dialogs still need their applicable checks.
+
+For a claim that an error message is readable, an assertion that its element
+exists can pass even when an overlay hides it. Inspect the rendered message
+in the required state and use a check that observes visibility and clipping.
+For a displayed total, use the contract's expected value rather than calling
+the formatter under test to calculate the expectation. Both choices follow
+[claim-based verification](WORKFLOW.md#verification-and-completion).
 
 For feedback, preserve the previous candidate and observations. Assess the
 change, obtain a decision for a material delta when needed, and reverify affected

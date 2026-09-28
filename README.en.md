@@ -15,11 +15,11 @@ This repository provides policies and guidance for agents. There is no separate 
 The framework helps you keep track of four things throughout a project:
 
 - **What to build:** customer requirements and the conditions for satisfying them.
-- **How to build it:** detailed design, implementation order, failure handling and verification methods.
+- **How to build it:** design, implementation order, failure handling and verification methods at the depth the work needs.
 - **Where the work stands:** completed work, observed results, blockers and next actions.
 - **What a change affects:** related requirements and work that need updates.
 
-Detailed planning, separate documents for requirements and their related work, stable IDs, and the agent's own judgment and verification are core principles. Existing content is reused after checking that it still applies.
+Planning depth matched to risk, separate documents for independent items, stable IDs, and the agent's own judgment and verification are core principles. Existing content is reused after checking that it still applies.
 
 ## Getting started
 
@@ -91,7 +91,7 @@ Each stage has defined inputs and outputs. You do not approve every stage — on
 | Discovery | Goals, sources, existing code | Problem boundaries, stakeholders, constraints, unresolved questions | How far to investigate |
 | Requirements | Discovery results and supporting evidence | Intended outcomes, acceptance criteria, priorities, source trace | Whether these are the right requirements |
 | Design | Requirements at a fixed version, and constraints | Components, interfaces, data, alternatives, risks, requirement coverage | Which alternative to take |
-| Detailed plan | Original scope sources, requirements, design, current progress | Work breakdown and order, exception handling, verification methods, disposition of every unknown | Only where a choice is left open |
+| Planning | Original scope sources, requirements, design, current progress | Work order, exception handling, verification methods and unknown dispositions at the selected depth | Only where a choice is left open |
 | Implementation | A concrete scope decision, ready inputs and permissions | Code and document changes, with deviations from the plan recorded | What to implement this time |
 | Verification | Candidate version, criteria, check environment | Actual results, failures, limits of applicability | How far to verify |
 | Acceptance | The candidate and its verification | The authorized customer's acceptance or feedback | Whether to accept — never done on your behalf |
@@ -101,7 +101,7 @@ Each stage has defined inputs and outputs. You do not approve every stage — on
 
 **Moving between stages.** Work stops at the requested stage. A planning-only request ends with the plan; a request to implement a concrete scope continues through ready implementation and verification work, and the same scope does not require approval again at every step. Planning is finished when it passes its completion checks, not when a document exists: the original sources are reflected in the plan, the detail is concrete enough that the implementer does not have to guess consequential behavior, and every unknown has a disposition. Listing open questions is not a pass. Starting implementation additionally needs a scope decision and ready prerequisites.
 
-Planning depth follows the work. A bounded correction whose behavior and existing contracts are settled takes a compact plan; new or changed public contracts, data lifecycle or access-policy changes, coordination across independently managed outputs, and high-risk external effects take the detailed procedure. File or line count does not decide it.
+Compact planning is the default for bounded, reversible low-risk work with a clear outcome, including corrections and small additions using established contracts. Record the basis, expected result, paths, steps and checks in the work document, review them and proceed; no separate exception justification or planning-review log is needed. Public contract, data lifecycle or access-policy changes, coordinated independent outputs and high-risk external effects require detailed planning for the affected scope. See [planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth).
 
 **Going back.** When implementation behaves unexpectedly, the cause is investigated first, then the affected plan is revised or the missing decision requested. Where that change touches what was already agreed, the related requirements, design, tasks and verification are updated with it. A failed check or a withdrawn pass is reported as it stands, and dependent work waits until the condition for restoring it is met.
 
@@ -111,13 +111,13 @@ Planning depth follows the work. A bounded correction whose behavior and existin
 
 ## What documents record
 
-**Start with the overview for the whole project, or the task document for work already identified.** The task's opening points to its current outcome, governing requirements, design and decisions, authorized scope, completion checks, next action and stop conditions. Tasks own execution status; verification records own check results. Plans manage order, dependencies and resumption points. The overview links active plans and summarizes major stages and blockers.
+**Start with the overview for the whole project, or the task document for work already identified.** Work items own execution state, authority, immediate next action and prerequisites; verification records own check results. Plans manage order, dependencies and resumption positions. Overviews and parent plans link these owners without repeating task statuses or pass counts.
 
-Work spanning sessions keeps its current item, next action, last checkpoint, blockers and first reading links in one resumption record. Make that position reachable from the document's opening, and preserve past decisions and results as dated history. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off work. For example, a covered implementation request also updates an obsolete "awaiting implementation approval" instruction. Review affected work and parent summaries, reusing unchanged documents.
+Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from their evidence. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; retained reports are dated snapshots.
 
 | Document | What you can learn |
 |---|---|
-| Project overview | Overall goals, progress by requirement, major blockers and document links |
+| Project overview | Overall goals, shared conventions, item index and links to current owning work |
 | Requirements | Customer outcomes and the conditions for satisfying them |
 | Design | How screens, APIs and data behave and connect |
 | Plan | Implementation order, dependencies, verification methods, completion criteria and the current resumption point for work spanning sessions |
@@ -125,7 +125,7 @@ Work spanning sessions keeps its current item, next action, last checkpoint, blo
 | Verification | Which version was checked, the method, actual results and limitations |
 | Open items and decisions | Questions still to settle, their impact and next action, and actual decisions |
 
-Requirements, designs, plans, tasks and verification normally have separate linked files. For one bounded correction with one writer, the [small-change exception](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change) allows missing definitions in distinct sections of the work document. Existing owners remain linked in place; a design or contract shared by several requirements has one independent owning document.
+Independently managed requirements and shared designs or contracts have their own linked documents. For bounded low-risk work, [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change) keeps missing local approach, plan and verification definitions in distinct sections of the work document. Existing owners stay in place and are updated only when their facts change.
 
 For example, **user search** and **CSV export** are separate requirements. “Display zero when no results match” is a condition within the search requirement. Fixing a search defect continues to reference that requirement.
 
@@ -203,7 +203,7 @@ The agent first states which task it is. Documents of other areas and shared con
 > Fix 〈the lock notice not appearing after failed sign-ins〉.
 > Report the cause and affected scope first, then after the fix check 〈before lock, at lock and after unlock〉.
 
-The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. With no management documents and an eligible small correction, an overview and one work document can suffice. Distinguish expected behavior, design, planning and actual verification within the work document, and reuse existing definitions where available. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
+The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. Compact work without management documents can start with an overview and one work document. Distinguish expected behavior, approach, steps and actual verification there; no separate role files or exception justification are needed. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
 
 **Revise the plan during development**
 
@@ -268,7 +268,7 @@ When an instruction, a specification, a contract, the running code and provision
 
 When a material commitment changes, such as behavior, cost, data handling or use of an external service, the agent presents the reason and impact and obtains any needed decision. Production deployment, production data changes, destructive actions, protected-credential access and final customer acceptance need specific authorization and safeguards for the subject and effect. Sending external messages also needs explicit authority. See [decisions](docs/APPROVALS.md) and [security](docs/SECURITY.md) for the boundaries.
 
-For a correction, the agent reuses applicable content and keeps affected documents current. Changes to shared functions or APIs also require checking their consumers, tests and requirements. [Corrections across tasks](docs/WORKFLOW.md#fixes-across-work-item-boundaries) link to owning work; deferred corrections retain responsibility, a next action and a needed-by point. The overview is updated when its summary changes, including major stages, blockers or dependencies.
+For a correction, reuse applicable content and update affected owners. Changes to shared functions or APIs require checking consumers, tests and requirements. [Corrections across tasks](docs/WORKFLOW.md#fixes-across-work-item-boundaries) link to owning work; deferred corrections retain responsibility, a next action and a needed-by point. Update the overview when its own scope, dependencies or navigation change.
 
 When a decision is settled in conversation, retain its source and what it supersedes, then update the current owning instructions before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
@@ -300,7 +300,7 @@ Completion evidence links the actual tested output version, command, check code 
 
 Checks run against the subject the claim names. A result from a stand-in — a fixture, a copied sample, a mock — is evidence about that stand-in, so a claim about real behavior is confirmed on the real artifact and the record says which one. Where a subject has repeated instances, the record names the ones actually examined and does not present a spot check as a whole-subject pass. A whole-item or acceptance-level pass with high consequence is confirmed by someone other than the writer who produced the work.
 
-Plan when checks run and what they cover. Individual tasks check changes and their effects; integration checks combined flows; release and acceptance cover the required contract and environments. Overlap costly suites only when capacity has been established, and repeat passed checks when there is a reason to recheck. Record commands, execution points, evidence reuse and concurrency limits under [check scope and scheduling](docs/CONTEXT_EFFICIENCY.md#check-scope-and-scheduling).
+Select checks from the intended result and the failure they must detect. Element existence alone cannot establish readability in the rendered product. Reuse checks that already establish the result instead of adding equivalent tests. Execution timing, cost and reuse follow [check scope and scheduling](docs/CONTEXT_EFFICIENCY.md#check-scope-and-scheduling); required project/CI checks remain required.
 
 For UI and graphics, inspect and interact with a representative result in the actual product before extending a shared treatment to other instances. Check required visibility, clipping, readability and usability. Generating captures alone does not complete visual inspection; record the screens, states and limits examined. Keep agent review distinct from human review and customer acceptance.
 
@@ -352,7 +352,7 @@ This README explains the harness for people using it. Agents apply the relevant 
 | To learn more about | Read |
 |---|---|
 | Overall operating principles | [Shared policy](AGENTS.md) · [Constitution](docs/CONSTITUTION.md) |
-| Detailed planning and existing-project analysis | [Development method](docs/DEVELOPMENT_METHOD.md) |
+| Planning depth and existing-project analysis | [Development method](docs/DEVELOPMENT_METHOD.md) |
 | Document organization and IDs | [Information model](docs/DATA_MODEL.md) · [ID dictionary](docs/ID_DICTIONARY.md) |
 | Decisions, permissions and protection | [Approvals](docs/APPROVALS.md) · [Security](docs/SECURITY.md) |
 | Open items, progress and closure | [Workflow](docs/WORKFLOW.md) |

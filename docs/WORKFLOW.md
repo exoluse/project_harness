@@ -65,9 +65,9 @@ work; do not invent earlier approvals or force a lifecycle reset. See
 recording and reuse. When selecting or resuming work, use that assessment and
 review the [open items](#open-item-lifecycle) affecting the selected scope,
 including unresolved owner or provider responsibilities. Where the work records
-a [resumption state](DATA_MODEL.md#resumption-state), enter from it: it names
-the position, last checkpoint, blocker and first documents to read, and spares
-the session a reconstruction. Confirm it against the owning records before
+a [resumption state](DATA_MODEL.md#resumption-state), enter from it. It names
+the position and links to checkpoint evidence, blockers and the first documents
+to read. Confirm it against the owning records before
 relying on it, and correct it where it has fallen behind. Update the owning
 assessment for changed facts; do not maintain another readiness checklist here
 or require a new approval solely because the work item changes.
@@ -256,23 +256,20 @@ use those facts when checking authority and readiness to resume.
 When advancing to another task or plan, resuming work, or handing it off, align
 the current instructions before the next action relies on them.
 
-1. Confirm the work item's actual state and link its results, unfinished work and
-   applicable evidence. A plan's next-item pointer cannot establish task completion.
-2. Compare its execution mode, prerequisites, next action and blockers with the
-   latest governing decisions and owning records. Resolve stale instructions,
-   such as "awaiting implementation approval" after the covered implementation
-   request, under [conversation decisions](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions).
-3. Update the owning [resumption state](DATA_MODEL.md#resumption-state) to the
-   current item, next item and last established checkpoint. Keep unresolved
-   discrepancies visible; do not invent a state to make the records agree.
-4. Correct directly affected plan/overview summaries and entry links under
-   [summary ownership](DATA_MODEL.md#summary-ownership-and-updates). Review both
-   changed statements and remaining instructions that the new decision supersedes.
+1. Read the selected work item's actual state, execution mode, prerequisites,
+   next action and evidence. Resolve superseded instructions in their owner under
+   [conversation decisions](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions).
+   Keep unresolved discrepancies visible; a navigation pointer cannot settle them.
+2. Record a changed result or next action once in its owner. If work moves,
+   move the [resumption position](DATA_MODEL.md#resumption-state) and its reading
+   links. Reference blockers and evidence instead of copying their current state.
+3. Change parent or entry documents only when their own scope, dependencies or
+   navigation change. Replace affected duplicate current claims with owner links
+   under [summary ownership](DATA_MODEL.md#summary-ownership-and-updates).
 
-Check the affected records and their direct summaries; an unchanged ancestor
-needs no edit or full document review. Preserve superseded statements as dated
-history, distinguishable from current instructions. This is part of the work
-transition, with no separate status report or approval step.
+A task status change alone requires no parent update or separate status report.
+Preserve history through versions or dated records. Follow owning records before
+dependent work; reducing duplicate text does not remove a prerequisite.
 
 ## Fixes across work-item boundaries
 
@@ -317,6 +314,27 @@ Choose checks that establish the declared result. Record the subject version,
 the method and environment, the expected and observed result, the relevant
 artifacts and the limits. Apply [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling)
 to their execution scope, timing and resource use.
+
+**Start from the claim.** For each material outcome, identify the observable
+result and a plausible failure the check must distinguish. Keep this reasoning
+with the existing planned check; no separate matrix or verification document is required.
+
+- Ground expected results in requirements, contracts or independently derived
+  examples. Calling the implementation again to produce its own expected answer
+  cannot establish that the answer is correct.
+- Inspect what the check actually observes. An element's existence, a generated
+  capture or a successful command supports only that property, not usability,
+  visibility or a completed user flow.
+- If the check could pass with the relevant defect still present, improve the
+  observation or narrow the claim. Use assertions, known failures or representative
+  cases to assess this; deliberately introducing defects is not a routine requirement.
+
+Narrowing a check's claim does not remove required acceptance coverage.
+Supply another suitable check or report the remaining outcome as unverified.
+
+Reuse checks that already establish the result. Add a check when a missing
+outcome or material regression risk needs coverage; do not add tests merely
+to mirror an implementation or increase counts. Required project/CI checks remain.
 
 **Name the check concretely.** Give the actual command or check target and the
 environment it runs in. Reference the
@@ -484,16 +502,16 @@ coverage judgments.
 | Section | Content |
 |---|---|
 | Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
-| Stage summary | Current stage per the overview, active plans, and the stage actually supported by the owning records where it differs. |
+| Stage summary | Derive the current stage and active work from owning records reached through the overview. Identify stale copied summaries as discrepancies. |
 | Requirement trace | One row per in-scope requirement: covering design/contract, plan, tasks with their statuses, verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
 | Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion) and never added to a pass count; a withdrawn pass is reported as withdrawn, with the condition for restoring it. |
 | Gaps and discrepancies | Requirements without covering design or work; work, contracts or verification missing their requirement/source trace under the item-boundary rules; unresolved links or IDs; summaries that contradict owning records; evidence whose subject version predates later changes to that subject; open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
-For a [small-change document](DATA_MODEL.md#minimum-documentation-for-a-small-change),
+For a [compact work document](DATA_MODEL.md#minimum-documentation-for-a-small-change),
 trace its owning sections and linked sources. Missing separate role files are
-not a gap when the exception applies. If no independent REQ was established,
-report the bounded correction and its evidence without counting it as full
+not a gap under those rules. If no independent REQ was established,
+report the bounded outcome and its evidence without counting it as full
 feature/requirement coverage or inventing a requirement to fill the report.
 
 Progress numbers describe record states, not effort or schedule. State what

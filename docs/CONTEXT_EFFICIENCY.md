@@ -135,6 +135,10 @@ justify hiding results or silencing required checks.
 
 Assign checks to the point where their evidence is needed, using the plan or
 task that already owns verification. Reuse the baseline under the rules above.
+Select checks under [claim-based verification](WORKFLOW.md#verification-and-completion).
+Run a focused check for the changed outcome and likely or consequential failures
+before costly broad coverage. A high pass count cannot compensate for a check
+that does not observe the claimed behavior.
 
 | Execution point | Default scope |
 |---|---|
