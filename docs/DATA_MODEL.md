@@ -5,7 +5,7 @@ identity, paths, exceptions and validation, designated by
 [AGENTS.md](../AGENTS.md#document-organization). Keep information-model rules
 here; the linked ID dictionary provides starter formats and selection guidance.
 Other guidance links these definitions and may show brief summaries or examples.
-The [management format policy](../AGENTS.md#management-document-format)
+The [management format policy](../AGENTS.md#document-organization)
 governs Markdown, existing records and tool-required formats.
 
 This file is long; do not load it whole. Pick the sections for the work from

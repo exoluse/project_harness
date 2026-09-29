@@ -586,7 +586,8 @@ obligations.
 Use a release inventory or existing project document.
 
 Every required item must be complete or have an explicit disposition consistent
-with the agreed scope. Do not omit unfinished work to obtain closure. Final
+with the agreed scope. Deployment alone is not closure. Do not omit unfinished
+work to obtain closure. Final
 customer acceptance and production actions retain [external controls](SECURITY.md).
 A documentation engagement closes at its agreed document scope.
 Reconcile retained open items, deferrals and non-resolution closures under the
