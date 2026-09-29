@@ -8,15 +8,22 @@ authority, documentation, ownership, verification and safety requirements apply.
 
 ## Model tiers
 
-For each delegation, select the subagent model automatically from its
-[model tier](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation) through
-the explicit spawn model, without asking the user: lightweight to
-`gpt-5.6-luna`, standard to `gpt-5.6-terra`, advanced to `gpt-5.6-sol`. An
-`agents.default_subagent_model` or agent role `config_file` model in
-`.codex/config.toml` is the default for spawned agents; override it only when
-the delegated work's tier differs. Keep strongest-tier judgments in the main
-session; if its model is not suited to them, recommend a `/model` change to
-the user. Update this mapping when available models change.
+Apply [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation)
+to reasoning and implementation. Resolve models from the current session's
+supported choices; use the official model guidance to assess capability when
+needed. This adapter keeps no fixed generation-to-tier mapping.
 
-Last checked: 2026-09-18 against the [Codex models](https://learn.chatgpt.com/docs/models)
+For delegation, use an explicit spawn model when the tool exposes and permits
+that override. Account for `agents.default_subagent_model` and any agent role's
+`config_file` settings. Follow the actual tool's inheritance and override rules;
+an inherited or configured model must still suit the assigned work. Respect
+explicit pins and tool restrictions under the shared selection rules.
+
+The main model is selected through the client's model control, or `/model` in
+an interactive CLI session. Apply the shared capability-gap procedure when it
+is unsuitable; recommending a change does not perform one.
+
+Last checked: 2026-09-29 against the [Codex models](https://learn.chatgpt.com/docs/models),
+[subagent guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 and [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+Documentation reviewed; model switching and delegation were not exercised.

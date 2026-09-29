@@ -13,14 +13,22 @@ session, so it stays in context after compaction:
 
 ## Model tiers
 
-For each delegation, select the subagent model automatically from its
-[model tier](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation) through
-the Agent tool `model` option, without asking the user: lightweight to `haiku`,
-standard to `sonnet`, advanced to `opus`. A `model` set in
-`.claude/agents/*.md` frontmatter is the default for that agent type; override
-it only when the delegated work's tier differs. Keep strongest-tier judgments
-in the main session; if its model is not suited to them, recommend a `/model`
-change to the user. Update this mapping when available models change.
+Apply [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation)
+to reasoning and implementation. Resolve supported aliases or full model IDs
+from the current tool and provider. Check their capability and effective model;
+this adapter keeps no fixed family-to-tier ranking.
 
-Last checked: 2026-09-18 against the Agent tool `model` options in Claude Code
-2.1.274.
+For delegation, use the Agent tool's `model` option when exposed and permitted.
+Account for the subagent definition's `model` frontmatter and effective managed
+or forced settings. An alias or `inherit` can resolve to the main session's
+model; use it only when that model suits the work. Respect explicit pins and
+tool restrictions under the shared selection rules.
+
+If the main model is unsuitable, recommend that the user select a suitable model
+with `/model`, following the shared capability-gap procedure. Do not assume that
+a model listed in provider documentation is enabled for this account or client.
+
+Last checked: 2026-09-29 against the Claude Code
+[subagent model selection](https://code.claude.com/docs/en/sub-agents#choose-a-model)
+and [model configuration](https://code.claude.com/docs/en/model-config) documentation.
+Documentation reviewed; model switching and delegation were not exercised.

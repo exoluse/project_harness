@@ -119,7 +119,7 @@ end at the first `## ` heading, to choose the sections for the work.
 | Classify data loss, credential access or high-risk/external effects | Relevant [Security](docs/SECURITY.md) boundaries and applicable external controls before acting. |
 | Configure agent tool permissions or sandboxing for a project | [Tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls). |
 | Plan checks, reuse evidence or determine recheck scope | [Verification reuse and scheduling](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification), [verification methods](docs/WORKFLOW.md#verification-and-completion) and applicable project checks. |
-| Delegate work or choose a model tier | [Subagent delegation](docs/COLLABORATION.md#subagent-delegation), [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation) and the relevant adapter mapping. |
+| Select a model for reasoning or implementation, or delegate work | [Model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation), [subagent delegation](docs/COLLABORATION.md#subagent-delegation) and the relevant adapter's selection instructions. |
 | Maintain this harness's guidance | [Policy maintenance](#harness-policy-maintenance) and [guidance maintenance](docs/CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
 | Interpret former runtime records | [Former runtime records](docs/WORKFLOW.md#former-runtime-records). |
 
@@ -133,6 +133,10 @@ Apply [detailed planning triggers](docs/DEVELOPMENT_METHOD.md#choosing-planning-
 to affected scope. Sprints are optional.
 Stage-only requests end with their outputs. Full-workflow requests continue
 across ready stages within actual authority; readiness does not grant authority.
+
+Use a strong model for definition, analysis, design, planning and consequential
+decisions under [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation).
+Scale implementation models to the work's difficulty and failure impact.
 
 The plan and linked specifications/tasks are the primary implementation basis.
 Planning is complete only after the procedure and completion checks for the
