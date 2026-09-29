@@ -109,9 +109,10 @@ or work keep one owning file linked by all covered requirements. Create files
 when their stage/output is needed, not as placeholders for future stages.
 
 For bounded low-risk work, [compact documentation](#minimum-documentation-for-a-small-change)
-keeps missing local definitions in the work document. References to design,
-plan and verification owners then include those sections. Independently managed
-items and existing definitions keep their own files.
+keeps missing local definitions in the work document. An eligible standalone
+work document may also serve as the overview. References to overview, design,
+plan and verification owners then include their sections in that document.
+Independently managed items and existing definitions keep their own files.
 
 The overview holds the objective, shared project context, links to shared
 requirements and architecture, baseline, resumption links and an index of units.
@@ -685,11 +686,12 @@ and an input contract at `contracts/API-001.md`.
 ## Allocation and validation reuse
 
 **Where the record lives.** Use an `ID allocation` section, or its
-local-language equivalent, in the actual project overview. That is the default
-shared allocation record. Where the team already uses another shared Markdown
-location, link its exact file and section from the overview and maintain the
-allocation there only. Folder names stay contextual; writers must be able to
-discover one authoritative location for each scope.
+local-language equivalent, in the actual project overview, including a
+[compact work document serving that role](#minimum-documentation-for-a-small-change).
+That is the default shared allocation record. Where the team already uses
+another shared Markdown location, link its exact file and section from the
+overview and maintain the allocation there only. Folder names stay contextual;
+writers must be able to discover one authoritative location for each scope.
 
 **The checked basis.** Establish an initial basis by checking project-wide
 definitions, retained and retired IDs, allocation history and outstanding
@@ -888,7 +890,7 @@ when separately managed; requirements do not replace every other identity.
 | A backend plan includes tasks managed as separate outputs | Each task has its own file under the project ID convention; the plan contains links and sequence/dependency information. |
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
 | A small correction restores an existing requirement | Reuse the requirement's linked files, put changed detail and results in their respective owners, and keep source/change trace in the owning plan/work note. |
-| A bounded correction has no management definitions to reuse | When the conditions below hold, keep the correction's missing definitions in sections of one work document, linked from the overview. |
+| A bounded correction has no management definitions to reuse | Under the conditions below, one work document can own the correction's missing definitions and serve as its overview. |
 
 Ordinary prose, navigation and explanatory headings need no independent ID.
 Do not use compact planning or the word "metadata" to conceal
@@ -920,10 +922,30 @@ Reuse the actual scope decision and readiness assessment. No separate exception
 justification, planning-review record or repeated unchanged assessment is needed.
 Task declarations still apply; references to existing instructions satisfy them.
 
-Reuse the overview and its folder/ID conventions. If no management documents
-exist, create a small overview linking this work and one ID-named work document.
-Keep the overview's role to scope, conventions and navigation; it need not repeat
-the task's live state. Allocate an ID only for an actual new item.
+Reuse the overview and its folder/ID conventions where they exist.
+If no management records exist to reuse, one work document may also serve as
+the overview when all of these hold:
+
+- One writer handles one compact work item.
+- No additional independently managed requirement, shared definition or output
+  needs its own owner.
+- No project or contractual rule requires a separate overview.
+
+Use the work item's ID and kind folder; no additional DOC ID or overview file
+is needed. Keep its bounded objective, baseline and analysis limits near the
+start. Record only the document root, folder/ID conventions and allocation basis
+actually needed, plus known check commands and environments. The normal identity,
+allocation and validation rules still apply. Entry links point to this document;
+its owned sections satisfy overview references without duplicating task state.
+No separate eligibility report is needed.
+
+When authorized work expands beyond these conditions, establish a separate
+overview before starting the affected work. Transfer current shared context,
+conventions and allocations there, and link the original work item. Replace
+live sections with links. For a closed work record, add a dated amendment
+linking the new owner and retain the original context as history. Preserve the
+work item's ID and evidence. Do not combine existing owners or accumulate
+unrelated work to keep a single file.
 
 Preserve existing definitions, completed work and evidence. Extend closed work
 under [verification and completion](WORKFLOW.md#verification-and-completion).
@@ -976,6 +998,8 @@ Add a short entry pointer to the project overview and the owning
 for separate streams or [areas](#area-overviews) instead of merging them into
 one list. Link the current position and ordered reading list there without
 maintaining another copy of task status in the entry file.
+For an eligible [compact work document](#minimum-documentation-for-a-small-change)
+serving as the overview, the entry route points to that document and its sections.
 
 Before reporting project instruction setup or harness adoption complete, check
 the entry route against the project's actual state:

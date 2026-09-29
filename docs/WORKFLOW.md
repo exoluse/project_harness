@@ -23,7 +23,9 @@ continues to apply to actual development and requested document deliverables.
 2. Establish the current input versions and preserve existing progress.
 3. Produce the requested discovery, requirements, design or planning outputs.
    Maintain a project overview and separate independently scoped feature/work
-   documents. For planning, follow the
+   documents, with an eligible work document serving as the overview under
+   [compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+   For planning, follow the
    selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth)
    and pass its applicable completion checks,
    including source coverage and executable detail. Check content and trace;

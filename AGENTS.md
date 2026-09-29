@@ -30,8 +30,10 @@ resolve any format conflict before affected delivery.
 ## Document organization
 
 Keep a project overview linking independently managed feature/work items, with
-one owning definition per item. Projects with several teams, streams or
-subsystems may split navigation into
+one owning definition per item. For a standalone compact task, its work document
+may also serve as the overview under
+[compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change).
+Projects with several teams, streams or subsystems may split navigation into
 [area overviews](docs/DATA_MODEL.md#area-overviews). Requirements are the
 primary basis for product scope.
 

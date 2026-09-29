@@ -42,8 +42,9 @@ assigned integration owner. Record relevant ownership, mapping and allocation
 changes before affected work continues. Existing Markdown notes are sufficient;
 these principles add no separate approval or registry service.
 
-When each writer works in their own branch or worktree, integrates through
-reviewed merges, and a designated [external work tracker](DATA_MODEL.md#external-work-trackers)
+When each writer uses a separate worktree or clone on their own branch,
+integrates through reviewed merges, and a designated
+[external work tracker](DATA_MODEL.md#external-work-trackers)
 owns assignment, that arrangement satisfies the ownership agreement: the
 tracker assignee and the branch identify the writer, and whoever merges a
 change is its integration owner. Shared documents such as the overview and
@@ -79,9 +80,10 @@ Concurrency is bounded by the checkout, not only by the writer. In one working
 tree, keep one writing participant active at a time: their edits, and any
 command that rewrites files, merge into a single uncommitted state that no one
 can attribute afterwards. Read-only work — review, analysis, search and checks
-that write nothing into the tree — may run alongside it. Separate worktrees,
-clones or branches remove this constraint; the ownership agreement above still
-applies at merge.
+that write nothing into the tree — may run alongside it. Give each concurrent
+writer a separate worktree or clone with its own working directory and index.
+Separate branch names within one checkout do not isolate uncommitted changes.
+The ownership agreement above still applies at merge.
 
 ### Coordination waits
 

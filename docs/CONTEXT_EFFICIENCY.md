@@ -69,8 +69,12 @@ is here.
 `node tools/check-docs.mjs [path ...]` checks that relative link targets exist,
 that heading anchors resolve and that `Last checked:` dates are recent. It needs
 Node and no packages, reads Markdown and writes nothing; a governed project can
-point it at its own document root. Run it after changing guidance and before a
-completion claim that relies on links.
+point it at its own document root. The checker is an optional way to supply
+part of the required [document validation](DATA_MODEL.md#document-validation).
+After changing guidance and before a completion claim that relies on links,
+verify the affected targets and anchors with this checker or an equivalent
+tool or manual check. Record the method, scope, result and limits in the
+existing work record; policy maintenance uses the Git/conversation trace.
 
 For files named `<ID>.md` or `<ID>-<slug>.md` it also reports two files owning
 one ID (an error), an ID-only heading that repeats an ID defined elsewhere, a
@@ -84,8 +88,9 @@ harness guidance and [required-name files](DATA_MODEL.md#required-name-exception
 Scope the scanned path when retained historical copies share an ID.
 
 A pass covers only these checks: content, ID format and allocation, trace
-coverage and meaning still need their own review. Without Node, make the same
-checks by a lightweight scan and say so.
+coverage and meaning still need their own review. If the checker is unavailable
+or not used, perform the applicable checks by another method and state any gaps.
+Required project, contract and CI checks retain their specified tools and scope.
 
 ### Dated tool facts
 

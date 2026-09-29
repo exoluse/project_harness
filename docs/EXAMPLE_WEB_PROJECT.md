@@ -132,15 +132,16 @@ declaring the implementation plan complete.
 Assume one writer owns this correction, the inspected sources establish its
 expected behavior, and no shared definition or additional independently managed
 output needs introducing. No project or delivery rule requires separate files.
-Prepare an overview and one work document using the chosen folders and checked
-IDs. The names below are illustrative, not allocations:
+Prepare one work document that also serves as the overview under
+[compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change).
+Its ID and path below are illustrative, not an allocation:
 
-| Owning file | Bounded content |
+| Owning section in `tasks/TASK-001.md` | Bounded content |
 |---|---|
-| `overview/DOC-001.md` | Intake revision and analysis limits, objective, folder/ID conventions and initial allocation basis/counters, observed check commands/environment, and a link to the correction. Other features remain outside this analysis. |
-| `tasks/TASK-001.md` | Current basis and writer, source/expected behavior, approach, steps and checks, findings and actual verification as described below. Keep each definition once; no separate exception justification is needed. |
+| Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used, initial allocation basis/counter and observed check commands/environment. Other features remain outside this analysis. |
+| Work and evidence | Current basis and writer, source/expected behavior, approach, steps and checks, findings and actual verification as described below. Keep each definition once; no separate overview or eligibility report is needed. |
 
-The work document is the next session's entry point:
+Project entry links lead to this work document. It is the next session's entry point:
 
 - **Current basis and expected behavior:** link the actual request, source
   revision and inspected API definition. State the bounded zero/nonzero count
@@ -164,13 +165,15 @@ If a later conversation changes a governing decision, preserve its source and
 update the affected current section before dependent work continues. A change
 note alone must not leave conflicting instructions for the next session.
 
-This needs no additional REQ, DES, PLAN or VER file just to fill those roles.
+This needs no additional DOC, REQ, DES, PLAN or VER file just to fill those roles.
 Where any such owner already exists, reuse it instead of moving or copying its
 definition here. If scope expands to a new export requirement or work assigned
-to several writers, create the necessary independent owning items before that
-work starts and retain the correction's ID and history. No whole-application
-reconstruction or invented historical approval is needed. This example
-demonstrates documentation scope, not product success.
+to several writers, establish a separate overview and the necessary independent
+owners before that work starts. Transfer current shared context and allocations
+to the overview and link it from the original task. Retain the correction's ID,
+history and evidence; if the task is closed, add the link in a dated amendment.
+No whole-application reconstruction or invented historical approval is needed.
+This example demonstrates documentation scope, not product success.
 
 ### Detailed planning example
 
