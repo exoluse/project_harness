@@ -38,6 +38,8 @@ separate current implementation from proposed changes.
 | `CLAUDE.md`, start prompts | Tool entry guidance consistent with the policy. |
 | `README.md`, `docs/` | Workflow, decisions, security, examples and reference material. |
 | `tools/check-docs.mjs` | Optional dependency-free Node check of relative links, heading anchors, `Last checked:` dates and ID-named files; see [guidance maintenance](CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
+| `tools/check-docs.test.mjs` | Regression tests for the checker, using Node's built-in test runner and temporary fixtures. |
+| `.github/workflows/check-docs.yml` | CI that runs the checker tests and the checker on Linux and Windows for pushes to `main` and pull requests. |
 | Existing `.harness/` records in an adopted project | Records left by the retired runtime; see [former runtime records](WORKFLOW.md#former-runtime-records). |
 
 An adopting project holds these files unchanged in its own harness folder,

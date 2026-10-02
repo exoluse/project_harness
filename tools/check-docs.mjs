@@ -13,6 +13,7 @@
 // Exit code: 1 when a link or anchor does not resolve, a link's path differs in
 // letter case from the file on disk, or two scanned files own the same ID,
 // otherwise 0. Warnings never change the exit code.
+// Tests: node --test tools/check-docs.test.mjs
 //
 // ID checks read the ID from the filename, so files with other names, such as
 // harness guidance and required-name files, are not examined. They know nothing

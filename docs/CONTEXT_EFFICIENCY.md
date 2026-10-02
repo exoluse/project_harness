@@ -92,6 +92,12 @@ delegated ranges or retired IDs, and it skips files with other names, including
 harness guidance and [required-name files](DATA_MODEL.md#required-name-exceptions).
 Scope the scanned path when retained historical copies share an ID.
 
+`node --test tools/check-docs.test.mjs` runs the checker's regression tests.
+In this repository, CI runs those tests and the checker on Linux and Windows
+for every push to `main` and every pull request. A failing run is a failure to
+report and fix. Without branch protection it blocks nothing by itself, so run
+both locally before pushing a checker or guidance change.
+
 A pass covers only these checks: content, ID format and allocation, trace
 coverage and meaning still need their own review. If the checker is unavailable
 or not used, perform the applicable checks by another method and state any gaps.
