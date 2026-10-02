@@ -11,6 +11,26 @@ session, so it stays in context after compaction:
 
 @AGENTS.md
 
+## In an adopting project
+
+The project's root `CLAUDE.md` belongs to the project. It imports this adapter
+from the [harness copy](docs/DATA_MODEL.md#project-instruction-files) with a
+line such as `@harness/CLAUDE.md`. Claude Code resolves a relative import from
+the importing file, so the `AGENTS.md` import above then loads the policy from
+the copy. A root `AGENTS.md` alone does not load this adapter.
+
+Where the project keeps its entry content in a root `AGENTS.md` for other
+tools, import that file as well with `@AGENTS.md`. Otherwise write the entry
+content in the root `CLAUDE.md` below the import.
+
+Imports that resolve inside the working directory load without a prompt. An
+import outside it asks for approval once and stays disabled if declined, so
+keep the copy inside the project.
+
+Last checked: 2026-10-02 against the Claude Code
+[memory documentation](https://code.claude.com/docs/en/memory).
+Documentation reviewed; imports were not exercised.
+
 ## Model tiers
 
 Apply [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation)

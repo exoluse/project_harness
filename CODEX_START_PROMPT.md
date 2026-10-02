@@ -6,6 +6,24 @@ once per session; a current supplied/read copy counts. Use its
 requested scope and read applicable detailed rules before acting. All shared
 authority, documentation, ownership, verification and safety requirements apply.
 
+## In an adopting project
+
+Codex loads the project's root `AGENTS.md`, which belongs to the project. It
+reads `AGENTS.md` files from the project root down to the working directory and
+has no documented import syntax. The root file therefore names the
+[harness copy](docs/DATA_MODEL.md#project-instruction-files) and tells the
+session to read the policy and this adapter there, such as
+`harness/AGENTS.md` and `harness/CODEX_START_PROMPT.md`, before acting. It also
+carries the project's entry content or routes to the file that holds it.
+
+Codex stops adding instruction files once their combined size reaches a limit,
+32 KiB by default (`project_doc_max_bytes`). A short root entry file stays well
+under it, and the harness files are read on instruction instead.
+
+Last checked: 2026-10-02 against the Codex
+[AGENTS.md guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+Documentation reviewed through fetched page summaries; loading was not exercised.
+
 ## Model tiers
 
 Apply [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation)

@@ -40,6 +40,10 @@ separate current implementation from proposed changes.
 | `tools/check-docs.mjs` | Optional dependency-free Node check of relative links, heading anchors, `Last checked:` dates and ID-named files; see [guidance maintenance](CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
 | Existing `.harness/` records in an adopted project | Records left by the retired runtime; see [former runtime records](WORKFLOW.md#former-runtime-records). |
 
+An adopting project holds these files unchanged in its own harness folder,
+`harness/` by default, and owns its root entry files. See
+[project instruction files](DATA_MODEL.md#project-instruction-files).
+
 The repository ships no workflow runtime, schema or record store. Its policy
 and guidance use Markdown; the document checker reads them and writes nothing. Former runtime records in adopted projects keep their
 original formats; a governed project supplies its own build and test tooling.

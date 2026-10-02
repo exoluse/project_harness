@@ -55,9 +55,10 @@ resolve actual conflicts before the affected delivery.
 The harness's own policy, framework overview, exception guidance and agent
 instructions do not receive document or rule IDs. This applies to new guidance
 as well as existing files, including `AGENTS.md`, the harness `README.md` and
-its policy documentation. Use meaningful or consumer-required Markdown names;
-no ID filename, classification-folder mapping or exception-ID registry is needed
-for these guidance files. Maintain them through Git under
+its policy documentation, in this repository and in a project's
+[harness copy](#project-instruction-files). Use meaningful or
+consumer-required Markdown names; no ID filename, classification-folder mapping
+or exception-ID registry is needed for these guidance files. Maintain them through Git under
 [policy maintenance](../AGENTS.md#harness-policy-maintenance).
 
 Actual project deliverables remain subject to the ID rules: project overviews,
@@ -982,9 +983,32 @@ required name does not need an additional approval ceremony.
 
 ### Project instruction files
 
-A project's own root instruction file — the `AGENTS.md`, `CLAUDE.md` or tool
-adapter a session loads before it reads anything else — is the one document
-whose cost is paid in every session. Use it for what the work cannot start
+A project that adopts the harness keeps two sets of files apart:
+
+- **The harness copy.** The harness repository's tracked files, unchanged, in
+  one folder of the project: `harness/` by default. Do not use `.harness/`,
+  which holds [former runtime records](WORKFLOW.md#former-runtime-records).
+  Links inside the copy are relative, so it works wherever the folder sits.
+- **The project's entry files.** The root `AGENTS.md`, `CLAUDE.md` or other
+  tool adapter that a session loads first. The project owns them. They route
+  to the policy and the tool's adapter in the copy and carry the project's own
+  entry content described below.
+
+Do not edit the copy inside the project. Put project additions in the entry
+files or the owning project records. Make a harness change in the harness
+repository and bring it in by sync. Where several tools are used, keep the
+entry content in one entry file and let the others route to it. The
+[Claude](../CLAUDE.md#in-an-adopting-project) and
+[Codex](../CODEX_START_PROMPT.md#in-an-adopting-project) adapters give each
+tool's route from the entry file into the copy.
+
+Record the copy's folder and the harness commit it came from once, in the
+entry file. A sync replaces the folder's contents with a newer commit's files
+and updates that record. Nothing needs merging, because the project never
+edited the copy.
+
+The project's root instruction file is the one document whose cost is paid in
+every session. Use it for what the work cannot start
 without and what rarely changes: the stack and runtime versions actually in
 use, the real build/test/static-check commands and the environments they run
 in, the top-level code and document layout, the conventions a writer would
@@ -1004,6 +1028,9 @@ serving as the overview, the entry route points to that document and its section
 Before reporting project instruction setup or harness adoption complete, check
 the entry route against the project's actual state:
 
+- Each tool's entry file reaches the policy and that tool's adapter in the
+  harness copy. The entry file records the copy's folder and source commit,
+  and the copy matches that commit without local edits.
 - The root instruction file reaches the project overview and, where work is
   active, its current resumption record.
 - The stack, actual check commands and code/document paths are available here
@@ -1025,6 +1052,13 @@ the item that owns it and link it, under
 authority of its own: an execution mode, a decision and a pass stay with the
 records that own them.
 
+A project that copied the harness into its own root, with or without local
+edits, keeps that layout until a requested reorganization moves it. The move
+places the harness files in the copy folder and the local entry content in
+project-owned entry files. It repairs project links into the moved files and
+preserves history. Compare each harness file with its source commit first, so
+that every local edit is relocated rather than lost.
+
 ### Path-scoped instruction files
 
 A project may keep an instruction file next to the area it governs, such as a
@@ -1041,6 +1075,10 @@ one file at the narrowest path covering its subject instead of copying it into
 several, and record these paths and their scope in the overview so a session
 can tell which apply without scanning the tree. They keep the name their
 consumer requires under the [exceptions above](#required-name-exceptions).
+
+The `AGENTS.md` and `CLAUDE.md` inside the
+[harness copy](#project-instruction-files) are the governing policy and its
+adapter. They are not path-scoped rules for the copy's folder.
 
 ## Document validation
 
