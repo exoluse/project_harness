@@ -83,7 +83,7 @@ binding.
 |---|---|
 | Project note | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
 | Check commands | Kept in the project's [entry file](#project-instruction-files): each build, test and static-check command, what it verifies, the environment and prerequisites it needs, and commands not to run routinely. Name the commands; their definitions stay in the build and CI files. |
-| Project conventions | Kept in the overview: required verification levels and environments, integration/branch model and quality criteria, with their source/version. |
+| Project conventions | Kept in the overview: required verification kinds and environments, integration/branch model and quality criteria, with their source/version. |
 | Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
@@ -130,7 +130,7 @@ The overview holds the objective, shared project context, links to shared
 requirements and architecture, baseline, resumption links and an index of units.
 It also states the document and item-ID convention, including agent-selected
 extensions and any allocation ownership. Once they exist, it records the
-[project conventions](#suggested-information): required verification levels
+[project conventions](#suggested-information): required verification kinds
 and environments, integration and quality criteria. The check commands
 themselves belong to the project's [entry file](#project-instruction-files).
 A new project adds both when its design or plan decides them; intake records
@@ -305,7 +305,8 @@ Its owning task file is named under the project's ID convention and records:
 - the expected output, and the accountable writer or that it is unassigned;
 - the affected paths and logical resources, and the inputs the work reads;
 - parent plan and input links, and prerequisites;
-- current status, ordered actions and concrete completion checks;
+- current [state](WORKFLOW.md#task-states), ordered actions and concrete
+  completion checks;
 - the current execution mode and the declared stop conditions.
 
 Supply or link the implementation details and verification scenarios required
@@ -1223,6 +1224,7 @@ project overview, or in the relevant [area overview](#area-overviews):
 | Identity and references | Key format and how Markdown documents reference items (key with a resolvable link). |
 | Agent operations | Operations the agent may perform as routine parts of covered work, such as creating in-scope items, updating status or assignment, and adding links or comments. |
 | Required content | Where the tracker holds content this model requires, such as an open item's resolution criterion, next action and history (fields, templates or comments). |
+| State mapping | How the tracker's states, close reasons or labels express the [task states](WORKFLOW.md#task-states) and [open-item states](WORKFLOW.md#states-and-transitions), for a tracker that owns them. |
 
 For each designated kind, the tracker is the single authoritative record. Do not
 keep a parallel Markdown list or a copy of its status, assignment or history;
@@ -1266,10 +1268,10 @@ Store only actual decisions with truthful attribution; record labels do not
 grant authority. A decision can cover several plans within its bounds. Keep
 the reviewed prior version when commitments change.
 
-Evidence describes what actually happened to a particular subject. Keep
-IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
-LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Unrun, failed, stale,
-ambiguous or partial evidence is not PASS. Check current applicability without
+Evidence describes what actually happened to a particular subject. Keep task
+states, [verification kinds](WORKFLOW.md#verification-and-completion),
+acceptance and closure distinct. Unrun, failed, stale, ambiguous or partial
+evidence is not PASS. Check current applicability without
 rewriting old observations or concealing newer failures.
 
 Never include secrets, private keys or protected credential material.

@@ -28,7 +28,7 @@ Sprints are optional.
 | Design | Versioned requirements and constraints | Components, interfaces, data, alternatives, risks and requirement coverage are described. |
 | Planning | Original scope sources, requirements, design and current progress | Source coverage, detailed work, integration order and verification pass the planning completion checks; unresolved prerequisites have an explicit disposition. |
 | Implementation | Concrete scope decision, ready inputs and permissions | Covered work is implemented; changes and deviations are recorded. |
-| Verification | Candidate version, criteria and check environment | Actual results, failures, applicability and limits are recorded for the declared verification level. |
+| Verification | Candidate version, criteria and check environment | Actual results, failures, applicability and limits are recorded for the declared verification kind. |
 | Acceptance | Candidate and applicable verification | The authorized customer gives attributable acceptance or feedback for the stated candidate. |
 | Delivery | Release scope, operational prerequisites and permits | Delivery is performed within authority; deployed version and applicable post-delivery checks are recorded. |
 | Closure | Contributions from all plans, evidence and obligations | Required work has an honest disposition; acceptance, delivery, handover and maintenance obligations are satisfied as applicable. |
