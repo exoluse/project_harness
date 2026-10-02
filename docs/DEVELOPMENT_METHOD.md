@@ -69,7 +69,9 @@ completion alone cannot create consent or turn missing evidence into a pass.
 
 ### Choosing planning depth
 
-Use compact planning by default for bounded, reversible work with a clear
+Choose the depth by what the work commits to and what it leaves behind, not by
+its size. A [direct change](#direct-changes) needs no planning record. Use
+compact planning by default for other bounded, reversible work with a clear
 outcome and no consequential scope/design unknown. This includes corrections
 and small additions using established contracts. File count and a new requirement
 ID alone do not require detailed planning.
@@ -101,6 +103,45 @@ planned until run. The [unknown dispositions](#planning-completion-checks) still
 
 If a detailed trigger appears, expand only affected planning before that work
 starts. Preserve useful analysis and evidence. Changing depth alone needs no approval.
+
+#### Direct changes
+
+Make a change without a work document when all of these hold:
+
+- A [clear request](APPROVALS.md#clear-implementation-requests) supplies its
+  scope.
+- The work finishes in this session. No handoff, resumption, open item or
+  deferred correction remains.
+- Every check the change needs runs and passes in this session.
+- It changes no commitment under the
+  [material-change criteria](APPROVALS.md#material-changes) and crosses no
+  [high-risk boundary](../AGENTS.md#high-risk-and-external-control).
+- One writer makes it, outside other work items' declared write scopes and
+  other writers' uncommitted work.
+- No existing work item owns it as part of a larger outcome. If one does,
+  record the change there.
+
+Small behavior changes qualify, such as a fix that restores specified behavior
+or help text with supplied wording. Size and file count do not decide.
+
+Before editing, know the expected result and the check that shows it. Inspect
+the starting state as usual. Afterwards, report:
+
+- the request and the scope derived from it;
+- the starting revision and any uncommitted work already present;
+- the changed paths;
+- the checks run, with their results and limits;
+- a draft commit message stating the reason and the checks.
+
+That report, the diff and the commit replace the work note. Without Git, the
+preserved pre-edit copy identifies the baseline and the report carries the
+rest. Update an owning record only when the facts it states change.
+
+A condition can fail during the work: a check fails and cannot be fixed, a
+finding falls outside the scope, a decision is needed or the work cannot
+finish. Record the work under
+[compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change)
+before the session ends. Remaining work never ends a session unrecorded.
 
 ### Detailed planning procedure
 

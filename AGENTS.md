@@ -90,9 +90,11 @@ product files, original evidence and tool-internal files keep their formats.
 ## Development method
 
 Work moves through waterfall stages, revised as needed, under the
-[stage contract](docs/DEVELOPMENT_METHOD.md#stage-contract). Use compact
-planning for bounded, reversible work with a clear outcome. Apply the
-[detailed planning triggers](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)
+[stage contract](docs/DEVELOPMENT_METHOD.md#stage-contract). Make a
+[direct change](docs/DEVELOPMENT_METHOD.md#direct-changes) without a work
+document when the work finishes in one session and leaves nothing behind. Use
+compact planning for other bounded, reversible work with a clear outcome.
+Apply the [detailed planning triggers](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)
 to the affected scope. A plan is complete only when its completion checks
 pass; listing consequential unknowns is not a pass.
 
@@ -111,8 +113,9 @@ or stage-only requests do not authorize later implementation.
 A clear implementation or fix request supplies its scope decision under
 [Approvals](docs/APPROVALS.md#clear-implementation-requests). Record the actual
 request and derived scope on the work item under
-[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks). Then perform the covered
-edits and checks without a second proceed response. Execution also needs
+[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks), or in the report of a
+[direct change](docs/DEVELOPMENT_METHOD.md#direct-changes). Then perform the
+covered edits and checks without a second proceed response. Execution also needs
 ready prerequisites under
 [coverage and currentness](docs/APPROVALS.md#coverage-and-currentness).
 

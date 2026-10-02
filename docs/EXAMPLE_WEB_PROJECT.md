@@ -121,6 +121,12 @@ search count showing one for zero results; preserve the existing search API
 and verify zero and nonzero results." This fictional request supplies the
 bounded correction's scope; it does not confirm every existing search behavior.
 
+If the correction finishes in one session with its checks passing and nothing
+left over, it is a [direct change](DEVELOPMENT_METHOD.md#direct-changes). Its
+report and commit carry the record, and no document is created. The rest of
+this example assumes it does not finish that way, for example because the work
+spans sessions or a needed check cannot run yet.
+
 Inspect the relevant source revision, dirty work, API definition, formatter
 callers and test setup. Establish the intended count behavior from the request
 and attributable contract sources, distinguishing it from observed code. When

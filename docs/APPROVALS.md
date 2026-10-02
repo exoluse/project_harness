@@ -41,8 +41,9 @@ human decisions required by [high-risk controls](../AGENTS.md#high-risk-and-exte
 
 An explicit fix/implementation request can supply the decision without a prior
 agent proposal when its outcome and bounds are clear in context. Record that
-request and the derived scope; choose routine implementation details and relevant
-checks within it and proceed. Missing exact filenames or test names alone is
+request and the derived scope in the work item, or in the report of a
+[direct change](DEVELOPMENT_METHOD.md#direct-changes). Choose routine
+implementation details and relevant checks within it and proceed. Missing exact filenames or test names alone is
 not a reason to ask again. Clarify essential ambiguity or uncovered material tradeoffs;
 do not expand scope or bypass high-risk/external controls.
 

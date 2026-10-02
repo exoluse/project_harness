@@ -74,7 +74,9 @@ part of the required [document validation](DATA_MODEL.md#document-validation).
 After changing guidance and before a completion claim that relies on links,
 verify the affected targets and anchors with this checker or an equivalent
 tool or manual check. Record the method, scope, result and limits in the
-existing work record; policy maintenance uses the Git/conversation trace.
+existing work record. Policy maintenance and
+[direct changes](DEVELOPMENT_METHOD.md#direct-changes) use the Git/conversation
+trace.
 
 For files named `<ID>.md` or `<ID>-<slug>.md` it also reports two files owning
 one ID (an error), an ID-only heading that repeats an ID defined elsewhere, a

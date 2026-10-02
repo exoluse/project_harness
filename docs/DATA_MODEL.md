@@ -899,6 +899,10 @@ separately managed items inside a single growing document.
 
 ### Minimum documentation for a small change
 
+A [direct change](DEVELOPMENT_METHOD.md#direct-changes) needs no work
+document: its report, diff and commit carry the record. When a direct change
+stops qualifying, record it under the rules below before the session ends.
+
 For [compact work](DEVELOPMENT_METHOD.md#choosing-planning-depth), use the
 existing owning work document and link applicable requirements and contracts.
 Update another owning definition only when its facts or instructions change.

@@ -98,7 +98,8 @@ the work starts from, the uncommitted paths that were already there, and the
 outcome for any overlap with the declared write scope. Without it, a later
 session cannot separate this item's diff from work it inherited, and the next
 writer re-derives those facts from a tree that has since moved. A few lines in
-the item or its progress note are enough; this needs no separate document.
+the item or its progress note are enough; this needs no separate document. A
+[direct change](DEVELOPMENT_METHOD.md#direct-changes) states them in its report.
 
 This establishes the starting state and its limits. It grants no authority and
 does not replace [work-item readiness](#scope-decisions-and-work-item-readiness)
@@ -515,6 +516,11 @@ trace its owning sections and linked sources. Missing separate role files are
 not a gap under those rules. If no independent REQ was established,
 report the bounded outcome and its evidence without counting it as full
 feature/requirement coverage or inventing a requirement to fill the report.
+
+[Direct changes](DEVELOPMENT_METHOD.md#direct-changes) leave no work record.
+Where the scope covers them, take the commits since the baseline that no work
+item links from Git history. Report them as unlinked changes, and do not count
+them toward requirement coverage.
 
 Progress numbers describe record states, not effort or schedule. State what
 each count measures; a task-completion ratio is not a requirement-level
