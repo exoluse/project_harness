@@ -144,7 +144,7 @@ Its ID and path below are illustrative, not an allocation:
 
 | Owning section in `tasks/TASK-001.md` | Bounded content |
 |---|---|
-| Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used, initial allocation basis/counter and observed check commands/environment. Other features remain outside this analysis. |
+| Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used and initial allocation basis/counter. The observed check commands go in the project's [entry file](DATA_MODEL.md#project-instruction-files), not here. Other features remain outside this analysis. |
 | Work and evidence | Current basis and writer, source/expected behavior, approach, steps and checks, findings and actual verification as described below. Keep each definition once; no separate overview or eligibility report is needed. |
 
 Project entry links lead to this work document. It is the next session's entry point:

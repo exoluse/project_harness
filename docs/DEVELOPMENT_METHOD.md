@@ -356,8 +356,8 @@ distinguishes agent review, observed use and customer acceptance.
 
 Preserve the intake commit or snapshot and identify dirty/unknown work before
 editing. Record analysis boundaries, available sources, actual progress,
-known verification/deployment status and the observed build, test and check
-conventions under [project conventions](DATA_MODEL.md#suggested-information).
+known verification/deployment status and the observed
+[check commands and project conventions](DATA_MODEL.md#suggested-information).
 Existing documents and tools remain inputs; resolve conflicting project rules
 explicitly. Material kept for communication, superseded by a later decision or
 scheduled for replacement is designated under

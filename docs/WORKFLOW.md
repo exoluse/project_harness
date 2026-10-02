@@ -341,8 +341,8 @@ to mirror an implementation or increase counts. Required project/CI checks remai
 
 **Name the check concretely.** Give the actual command or check target and the
 environment it runs in. Reference the
-[project conventions](DATA_MODEL.md#suggested-information) recorded in the
-overview where they exist.
+[check commands](DATA_MODEL.md#suggested-information) in the project's entry
+file and the project conventions in the overview where they exist.
 
 Where no convention is recorded, record the command and environment actually
 used, and state that the convention is undecided. Track it under the
