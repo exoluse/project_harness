@@ -98,39 +98,11 @@ the work starts from, the uncommitted paths that were already there, and the
 outcome for any overlap with the declared write scope. Without it, a later
 session cannot separate this item's diff from work it inherited, and the next
 writer re-derives those facts from a tree that has since moved. A few lines in
-the item or its progress note are enough; this needs no separate document. A
-[direct change](DEVELOPMENT_METHOD.md#direct-changes) states them in its report.
+the item or its progress note are enough; this needs no separate document.
 
 This establishes the starting state and its limits. It grants no authority and
 does not replace [work-item readiness](#scope-decisions-and-work-item-readiness)
 or the [collaboration basis](COLLABORATION.md#collaboration-basis).
-
-## Task states
-
-Record a task's current state with these meanings. Equivalent project or
-tracker labels are acceptable once the overview states their mapping. The state
-describes the task's own progress; its execution mode, blockers and evidence
-stay with their owners and are linked.
-
-| State | Meaning |
-|---|---|
-| PLANNED | Defined and not started. |
-| IN_PROGRESS | Work is underway, including rework after a failed completion check. |
-| BLOCKED | Work cannot start or continue until a named prerequisite arrives. Link the open item that owns it instead of restating the reason. |
-| IMPLEMENTED | The changes are complete, but the task's completion checks have not all passed yet. Link any open item that keeps a check from running. |
-| DONE | The task's declared completion checks passed on an identified version, with linked evidence. |
-| CANCELLED | An authorized decision cancelled the task or excluded it from scope. Link that decision. |
-
-DONE covers only the task's own checks. It does not establish another
-verification kind, a plan's outcome, acceptance or closure. A failed completion
-check returns the task to IN_PROGRESS. A later check that overturns DONE follows
-[pass withdrawal](#verification-and-completion), and the task returns to the
-state the evidence supports.
-
-A state change alone requires no parent update under
-[current-state updates](#updating-current-work-state).
-[Direct changes](DEVELOPMENT_METHOD.md#direct-changes) have no task and no
-state.
 
 ## Open-item lifecycle
 
@@ -368,8 +340,8 @@ to mirror an implementation or increase counts. Required project/CI checks remai
 
 **Name the check concretely.** Give the actual command or check target and the
 environment it runs in. Reference the
-[check commands](DATA_MODEL.md#suggested-information) in the project's entry
-file and the project conventions in the overview where they exist.
+[project conventions](DATA_MODEL.md#suggested-information) recorded in the
+overview where they exist.
 
 Where no convention is recorded, record the command and environment actually
 used, and state that the convention is undecided. Track it under the
@@ -391,22 +363,8 @@ An unavailable one-off script or unidentified tested output limits what later
 work can establish. Preserve the observation, state the missing evidence and
 obtain the required check before relying on it for completion or reuse.
 
-**Verification kinds.** Record which kind each check establishes. The kinds are
-distinct, not steps on one scale: a browser check need not establish
-integration, nor the reverse.
-
-| Kind | Established by | Does not establish |
-|---|---|---|
-| STATIC_VERIFIED | Checks that do not run the product, such as compilation, static analysis and document or link checks. | Behavior, integration or production success. |
-| INTEGRATION_VERIFIED | Running the connected components together in a test environment. | Behavior in a real user interface, or in production. |
-| BROWSER_VERIFIED | Exercising the product through a real browser or user interface. | Production data, configuration or load. |
-| LIVE_ENV_VERIFIED | Checking in production or an environment declared equivalent. | Customer acceptance. |
-
-Each kind holds only for its subject, version and environment. IMPLEMENTED is a
-[task state](#task-states). CUSTOMER_ACCEPTED is the authorized customer's
-acceptance, and CLOSED is the closure of a named subject: an open item, a
-release or a project. None of them is a verification kind. Name the subject
-whenever CLOSED is reported, since an open item's closure is not a release's.
+Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED. A
+document check establishes neither product integration nor production success.
 
 **Before completion, release, handover or push.** Review the diff and the
 relevant verification.
@@ -547,8 +505,8 @@ coverage judgments.
 |---|---|
 | Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
 | Stage summary | Derive the current stage and active work from owning records reached through the overview. Identify stale copied summaries as discrepancies. |
-| Requirement trace | One row per in-scope requirement: covering design/contract, plan, tasks with their [states](#task-states), verification records with each [verification kind](#verification-and-completion) reached and its subject version, acceptance, and blocking open items. Unrun, failed, partial or stale verification is reported as such, not as a weaker pass. |
-| Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all non-cancelled tasks DONE; with evidence of each verification kind; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion) and never added to a pass count; a withdrawn pass is reported as withdrawn, with the condition for restoring it. |
+| Requirement trace | One row per in-scope requirement: covering design/contract, plan, tasks with their statuses, verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
+| Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion) and never added to a pass count; a withdrawn pass is reported as withdrawn, with the condition for restoring it. |
 | Gaps and discrepancies | Requirements without covering design or work; work, contracts or verification missing their requirement/source trace under the item-boundary rules; unresolved links or IDs; summaries that contradict owning records; evidence whose subject version predates later changes to that subject; open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
@@ -557,11 +515,6 @@ trace its owning sections and linked sources. Missing separate role files are
 not a gap under those rules. If no independent REQ was established,
 report the bounded outcome and its evidence without counting it as full
 feature/requirement coverage or inventing a requirement to fill the report.
-
-[Direct changes](DEVELOPMENT_METHOD.md#direct-changes) leave no work record.
-Where the scope covers them, take the commits since the baseline that no work
-item links from Git history. Report them as unlinked changes, and do not count
-them toward requirement coverage.
 
 Progress numbers describe record states, not effort or schedule. State what
 each count measures; a task-completion ratio is not a requirement-level

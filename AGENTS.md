@@ -1,12 +1,11 @@
 # Shared Agent Policy
 
-This is the governing policy for every agent in this repository and in each
-project that adopts it. It states the boundaries that apply to all work and
-routes each task to its owning detailed rules. Adapters and summaries must not
-weaken those rules. External code is input unless the user explicitly
-authorizes work there.
+This is the governing policy for every agent in this repository. It states the
+boundaries that apply to all work and routes each task to its owning detailed
+rules. Adapters and summaries must not weaken those rules. External code is
+input unless the user explicitly authorizes work there.
 
-The harness ships policy, guidance and an optional
+The repository ships policy, guidance and an optional
 [document checker](tools/check-docs.mjs). It has no workflow runtime, schema or
 record store; neither setup nor a checker run is a prerequisite for work.
 Judge actual authority, scope, dependencies and evidence from ordinary project
@@ -18,9 +17,7 @@ documents.
    [CLAUDE.md](CLAUDE.md) for Claude Code,
    [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md) for Codex. A tool may load
    only one of the two by itself, so read the other. A current supplied copy
-   counts. In an adopting project these files sit unchanged in its
-   [harness copy](docs/DATA_MODEL.md#project-instruction-files), and the
-   project's own root entry file routes here. Where the project keeps
+   counts. Where the project keeps
    [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files),
    read those covering the paths this work touches.
 2. Identify the objective, stopping point and existing decisions. Classify the
@@ -52,14 +49,14 @@ end at the first `## ` heading, to choose the sections for the work.
 | Trigger | Read and apply |
 |---|---|
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, IDs, paths, required names, allocation and validation. |
-| Apply the harness to a project, sync its harness copy or maintain its entry instructions | [Project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
+| Apply the harness to a project or maintain its entry instructions | [Project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
 | Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage sections and [existing-project intake](docs/DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering). |
 | Resolve conflicting inputs or rank competing sources | [Input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence) and any precedence the owning project records. |
 | Treat material as communication-only, superseded or to be replaced | [Non-authoritative inputs](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs) and the designation recorded in the owning overview or plan. |
 | Create, revise or declare a plan complete | [Planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and the applicable procedure and completion checks. |
 | Establish scope, interpret delegation, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria, including [delegated judgment](docs/APPROVALS.md#decision-requests-and-delegated-judgment), and the actual request/decision. |
-| Start/transition work, change a task's state, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure, including [task states](docs/WORKFLOW.md#task-states) and [closure preparation](docs/WORKFLOW.md#closure-preparation), and owning project records. |
+| Start/transition work, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure, including [closure preparation](docs/WORKFLOW.md#closure-preparation), and owning project records. |
 | Resume work, move its position or hand it off | [Resumption state](docs/DATA_MODEL.md#resumption-state), [current work state](docs/WORKFLOW.md#updating-current-work-state) and [work-item readiness](docs/WORKFLOW.md#scope-decisions-and-work-item-readiness). |
 | Record a disposition short of PASS, or withdraw an overturned pass | [Verification and completion](docs/WORKFLOW.md#verification-and-completion) and the owning verification records. |
 | Report project progress or requirement trace coverage | [Status and trace reporting](docs/WORKFLOW.md#status-and-trace-reporting) and the owning project records. |
@@ -90,12 +87,9 @@ product files, original evidence and tool-internal files keep their formats.
 ## Development method
 
 Work moves through waterfall stages, revised as needed, under the
-[stage contract](docs/DEVELOPMENT_METHOD.md#stage-contract). Make a
-[direct change](docs/DEVELOPMENT_METHOD.md#direct-changes) without a work
-document when the work finishes in one session, leaves nothing behind and adds
-or changes no requirement, contract or design commitment. Use
-compact planning for other bounded, reversible work with a clear outcome.
-Apply the [detailed planning triggers](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)
+[stage contract](docs/DEVELOPMENT_METHOD.md#stage-contract). Use compact
+planning for bounded, reversible work with a clear outcome. Apply the
+[detailed planning triggers](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)
 to the affected scope. A plan is complete only when its completion checks
 pass; listing consequential unknowns is not a pass.
 
@@ -114,9 +108,8 @@ or stage-only requests do not authorize later implementation.
 A clear implementation or fix request supplies its scope decision under
 [Approvals](docs/APPROVALS.md#clear-implementation-requests). Record the actual
 request and derived scope on the work item under
-[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks), or in the report of a
-[direct change](docs/DEVELOPMENT_METHOD.md#direct-changes). Then perform the
-covered edits and checks without a second proceed response. Execution also needs
+[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks). Then perform the covered
+edits and checks without a second proceed response. Execution also needs
 ready prerequisites under
 [coverage and currentness](docs/APPROVALS.md#coverage-and-currentness).
 
@@ -149,10 +142,8 @@ work and required external records keep their normal rules.
 Preserve original decisions, versions, observations and limits. Assess their
 current applicability separately; changed outputs do not erase valid history.
 
-- Keep the [task state](docs/WORKFLOW.md#task-states) IMPLEMENTED, the
-  [verification kinds](docs/WORKFLOW.md#verification-and-completion)
-  STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED and LIVE_ENV_VERIFIED,
-  CUSTOMER_ACCEPTED and the CLOSED state of a named subject distinct.
+- Keep IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
+  LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct.
 - Failed, unrun, partial, ambiguous or stale evidence is not PASS. Documents
   do not prove product success, and a check against a stand-in proves only
   that stand-in.

@@ -121,12 +121,6 @@ search count showing one for zero results; preserve the existing search API
 and verify zero and nonzero results." This fictional request supplies the
 bounded correction's scope; it does not confirm every existing search behavior.
 
-If the correction finishes in one session with its checks passing and nothing
-left over, it is a [direct change](DEVELOPMENT_METHOD.md#direct-changes). Its
-report and commit carry the record, and no document is created. The rest of
-this example assumes it does not finish that way, for example because the work
-spans sessions or a needed check cannot run yet.
-
 Inspect the relevant source revision, dirty work, API definition, formatter
 callers and test setup. Establish the intended count behavior from the request
 and attributable contract sources, distinguishing it from observed code. When
@@ -144,7 +138,7 @@ Its ID and path below are illustrative, not an allocation:
 
 | Owning section in `tasks/TASK-001.md` | Bounded content |
 |---|---|
-| Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used and initial allocation basis/counter. The observed check commands go in the project's [entry file](DATA_MODEL.md#project-instruction-files), not here. Other features remain outside this analysis. |
+| Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used, initial allocation basis/counter and observed check commands/environment. Other features remain outside this analysis. |
 | Work and evidence | Current basis and writer, source/expected behavior, approach, steps and checks, findings and actual verification as described below. Keep each definition once; no separate overview or eligibility report is needed. |
 
 Project entry links lead to this work document. It is the next session's entry point:

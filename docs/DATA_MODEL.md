@@ -55,17 +55,10 @@ resolve actual conflicts before the affected delivery.
 The harness's own policy, framework overview, exception guidance and agent
 instructions do not receive document or rule IDs. This applies to new guidance
 as well as existing files, including `AGENTS.md`, the harness `README.md` and
-its policy documentation, in this repository and in a project's
-[harness copy](#project-instruction-files). Use meaningful or
-consumer-required Markdown names; no ID filename, classification-folder mapping
-or exception-ID registry is needed for these guidance files. Maintain them
-through Git under [policy maintenance](../AGENTS.md#harness-policy-maintenance).
-
-A project's own entry files are agent instructions as well: its root and
-[path-scoped](#path-scoped-instruction-files) `AGENTS.md`, `CLAUDE.md` or other
-tool adapters. Their required path identifies them and Git keeps their history,
-so they receive no document ID. They hold no item content under
-[project instruction files](#project-instruction-files).
+its policy documentation. Use meaningful or consumer-required Markdown names;
+no ID filename, classification-folder mapping or exception-ID registry is needed
+for these guidance files. Maintain them through Git under
+[policy maintenance](../AGENTS.md#harness-policy-maintenance).
 
 Actual project deliverables remain subject to the ID rules: project overviews,
 requirements, designs, plans, tasks, decisions, research and verification, among
@@ -82,8 +75,7 @@ binding.
 | Information | Minimum useful content |
 |---|---|
 | Project note | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
-| Check commands | Kept in the project's [entry file](#project-instruction-files): each build, test and static-check command, what it verifies, the environment and prerequisites it needs, and commands not to run routinely. Name the commands; their definitions stay in the build and CI files. |
-| Project conventions | Kept in the overview: required verification kinds and environments, integration/branch model and quality criteria, with their source/version. |
+| Project conventions | Build, test and static-check commands, verification environments, integration/branch model and quality criteria that are actually decided or observed, with their source/version. Record each when it is decided or found at intake, not as a placeholder; verification records reference them. |
 | Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
 | Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
 | Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
@@ -94,10 +86,6 @@ binding.
 | Open item | Question/finding and evidence; continued follow-up adds state, responsibility, impact, next action and resolution history under [Open items](#open-items). |
 | Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
 | Release/handoff | Contributions, versions, decisions, current evidence, unfinished obligations and next owner/action. |
-
-Record check commands and project conventions when they are decided or found
-at intake, not as placeholders, and mark undecided ones as such. Verification
-records reference them.
 
 Keep supporting conditions and implementation steps in their owning files.
 Requirements and their design, plan, task and verification definitions use
@@ -130,11 +118,10 @@ The overview holds the objective, shared project context, links to shared
 requirements and architecture, baseline, resumption links and an index of units.
 It also states the document and item-ID convention, including agent-selected
 extensions and any allocation ownership. Once they exist, it records the
-[project conventions](#suggested-information): required verification kinds
-and environments, integration and quality criteria. The check commands
-themselves belong to the project's [entry file](#project-instruction-files).
-A new project adds both when its design or plan decides them; intake records
-those observed in an existing project.
+[project conventions](#suggested-information) for build, test and check
+commands, verification environments and integration. A new
+project adds them when its design or plan decides them; intake records those
+observed in an existing project. An undecided convention is stated as such.
 Each index entry states its scope and material dependencies and links the unit's
 owning documents. Follow those links for current status under
 [summary ownership](#summary-ownership-and-updates).
@@ -305,8 +292,7 @@ Its owning task file is named under the project's ID convention and records:
 - the expected output, and the accountable writer or that it is unassigned;
 - the affected paths and logical resources, and the inputs the work reads;
 - parent plan and input links, and prerequisites;
-- current [state](WORKFLOW.md#task-states), ordered actions and concrete
-  completion checks;
+- current status, ordered actions and concrete completion checks;
 - the current execution mode and the declared stop conditions.
 
 Supply or link the implementation details and verification scenarios required
@@ -368,8 +354,7 @@ before either starts.
 
 **Completion checks.** Record the actual commands or check targets and the
 environment they run in, referencing the
-[check commands and project conventions](#suggested-information) where they
-exist. A resuming
+[project conventions](#suggested-information) where they exist. A resuming
 writer or a separate auditor then runs the same check instead of inventing an
 equivalent one.
 
@@ -913,10 +898,6 @@ separately managed items inside a single growing document.
 
 ### Minimum documentation for a small change
 
-A [direct change](DEVELOPMENT_METHOD.md#direct-changes) needs no work
-document: its report, diff and commit carry the record. When a direct change
-stops qualifying, record it under the rules below before the session ends.
-
 For [compact work](DEVELOPMENT_METHOD.md#choosing-planning-depth), use the
 existing owning work document and link applicable requirements and contracts.
 Update another owning definition only when its facts or instructions change.
@@ -953,8 +934,7 @@ the overview when all of these hold:
 Use the work item's ID and kind folder; no additional DOC ID or overview file
 is needed. Keep its bounded objective, baseline and analysis limits near the
 start. Record only the document root, folder/ID conventions and allocation basis
-actually needed, plus known project conventions. Known check commands go in the
-project's [entry file](#project-instruction-files). The normal identity,
+actually needed, plus known check commands and environments. The normal identity,
 allocation and validation rules still apply. Entry links point to this document;
 its owned sections satisfy overview references without duplicating task state.
 No separate eligibility report is needed.
@@ -979,13 +959,11 @@ This section applies to project deliverables within the [ID scope](#id-scope).
 The harness's own guidance is excluded there and needs no exception-ID mapping.
 
 Keep an exact filename/location when a consuming tool, project contract or
-repository entry convention requires it. Examples include a tool's `SKILL.md`
-and a repository landing `README.md`. These files are
+repository entry convention requires it. Examples include a tool's `AGENTS.md`,
+`CLAUDE.md` or `SKILL.md`, and a repository landing `README.md`. These files are
 exceptions to the ID-based filename and classification-path requirements, not
 to identity, trace, scope or verification. The exception must have a concrete
-consumer/contract reason; personal filename preference is insufficient. A
-project's agent entry files, such as `AGENTS.md` or `CLAUDE.md`, are outside the
-[ID scope](#id-scope) and need no exception.
+consumer/contract reason; personal filename preference is insufficient.
 
 Choose the stable document ID as usual. Put it in the body when permitted by
 the required format, and record its ID, canonical path and exception reason/
@@ -995,56 +973,25 @@ do not create an ID-named duplicate just to satisfy the ordinary layout.
 Independently managed content still has one owning definition; use links to
 other item documents rather than duplicating them into an entry file.
 
-For example, when a tool requires a project skill at `skills/review/SKILL.md`,
-retain that path, record its document ID and the consumer requirement in the
-index, and add the ID to its body if compatible. A normal requirements
-document continues to use `requirements/REQ-001.md` under the chosen document
-root. The agent assesses
+For example, when a consumer requires a root `AGENTS.md`, retain that path,
+record its document ID and the consumer requirement in the index, and add the
+ID to its body if compatible. A normal requirements document continues to use
+`requirements/REQ-001.md` under the chosen document root. The agent assesses
 and documents the exception within the already authorized task; preserving a
 required name does not need an additional approval ceremony.
 
 ### Project instruction files
 
-A project that adopts the harness keeps two sets of files apart:
-
-- **The harness copy.** The harness repository's tracked files, unchanged, in
-  one folder of the project: `harness/` by default. Do not use `.harness/`,
-  which holds [former runtime records](WORKFLOW.md#former-runtime-records).
-  Links inside the copy are relative, so it works wherever the folder sits.
-- **The project's entry files.** The root `AGENTS.md`, `CLAUDE.md` or other
-  tool adapter that a session loads first. The project owns them. They route
-  to the policy and the tool's adapter in the copy and carry the project's own
-  entry content described below.
-
-Do not edit the copy inside the project. Put project additions in the entry
-files or the owning project records. Make a harness change in the harness
-repository and bring it in by sync. Where several tools are used, keep the
-entry content in one entry file and let the others route to it. The
-[Claude](../CLAUDE.md#in-an-adopting-project) and
-[Codex](../CODEX_START_PROMPT.md#in-an-adopting-project) adapters give each
-tool's route from the entry file into the copy.
-
-Record the copy's folder and the harness commit it came from once, in the
-entry file. A sync replaces the folder's contents with a newer commit's files
-and updates that record. Nothing needs merging, because the project never
-edited the copy.
-
-The project's root instruction file is the one document whose cost is paid in
-every session. Use it for what the work cannot start without and what rarely
-changes. It holds only these:
-
-- the stack, linking the build files that pin its runtime and tool versions;
-- the [check commands](#suggested-information): what each verifies, the
-  environment and prerequisites it needs, and commands not to run routinely.
-  Name each command; its definition stays in the build or CI file;
-- the top-level code and document layout;
-- rules a writer would otherwise violate that no other record owns.
-
-Link everything else. The overview owns the
-[project conventions](#suggested-information) and any
-[non-authoritative](DEVELOPMENT_METHOD.md#non-authoritative-inputs)
-designations; items own their content. Record each entry when it is decided or
-found at intake, not as a placeholder.
+A project's own root instruction file — the `AGENTS.md`, `CLAUDE.md` or tool
+adapter a session loads before it reads anything else — is the one document
+whose cost is paid in every session. Use it for what the work cannot start
+without and what rarely changes: the stack and runtime versions actually in
+use, the real build/test/static-check commands and the environments they run
+in, the top-level code and document layout, the conventions a writer would
+otherwise violate, and any material the project has designated
+[non-authoritative](DEVELOPMENT_METHOD.md#non-authoritative-inputs). These are
+the [project conventions](#suggested-information) placed where they are needed;
+record each when it is decided or found at intake, not as a placeholder.
 
 Add a short entry pointer to the project overview and the owning
 [resumption state](#resumption-state) for work in progress. Keep separate pointers
@@ -1057,14 +1004,11 @@ serving as the overview, the entry route points to that document and its section
 Before reporting project instruction setup or harness adoption complete, check
 the entry route against the project's actual state:
 
-- Each tool's entry file reaches the policy and that tool's adapter in the
-  harness copy. The entry file records the copy's folder and source commit,
-  and the copy matches that commit without local edits.
 - The root instruction file reaches the project overview and, where work is
   active, its current resumption record.
-- The stack, the check commands and the code/document layout are here, and the
-  overview's project conventions are linked. Mark undecided ones honestly; do
-  not invent commands to complete setup.
+- The stack, actual check commands and code/document paths are available here
+  or through precise links to their owning project conventions. Mark undecided
+  conventions honestly; do not invent commands to complete setup.
 - The project's landing README introduces the project and links its overview.
   Link the harness usage guide separately, preserving existing guidance and
   required entry names when integrating it.
@@ -1072,21 +1016,14 @@ the entry route against the project's actual state:
 These checks apply to authorized adoption or instruction maintenance. A read-only
 review reports missing entry information without creating files.
 
-Keep all other owning content out of it. An entry file that accumulates
-requirement decisions, item-level instructions or verification gates becomes a
-second owning definition that drifts from the first, and every session loads it in
+Keep owning content out of it. An entry file that accumulates requirement
+decisions, item-level instructions or verification gates becomes a second
+owning definition that drifts from the first, and every session loads it in
 full, including the sessions it has nothing to do with. Move such content to
 the item that owns it and link it, under
 [summary ownership](#summary-ownership-and-updates). The entry file carries no
 authority of its own: an execution mode, a decision and a pass stay with the
 records that own them.
-
-A project that copied the harness into its own root, with or without local
-edits, keeps that layout until a requested reorganization moves it. The move
-places the harness files in the copy folder and the local entry content in
-project-owned entry files. It repairs project links into the moved files and
-preserves history. Compare each harness file with its source commit first, so
-that every local edit is relocated rather than lost.
 
 ### Path-scoped instruction files
 
@@ -1097,20 +1034,13 @@ exist, read the ones covering the paths the current work touches, closest path
 first, in addition to the root policy and adapter, and name the applicable ones
 among a work item's inputs.
 
-A path-scoped file adds detail for its subtree. It may hold that subtree's check
-commands and writer rules within the same limits as the root file. It cannot
-weaken the root
+A path-scoped file adds detail for its subtree. It cannot weaken the root
 policy, a contract or an external control; where it appears to, the root
 governs and the conflict is resolved rather than followed. Keep each rule in
 one file at the narrowest path covering its subject instead of copying it into
 several, and record these paths and their scope in the overview so a session
 can tell which apply without scanning the tree. They keep the name their
-consumer requires and, as agent entry files, need no document ID under the
-[ID scope](#id-scope).
-
-The `AGENTS.md` and `CLAUDE.md` inside the
-[harness copy](#project-instruction-files) are the governing policy and its
-adapter. They are not path-scoped rules for the copy's folder.
+consumer requires under the [exceptions above](#required-name-exceptions).
 
 ## Document validation
 
@@ -1224,7 +1154,6 @@ project overview, or in the relevant [area overview](#area-overviews):
 | Identity and references | Key format and how Markdown documents reference items (key with a resolvable link). |
 | Agent operations | Operations the agent may perform as routine parts of covered work, such as creating in-scope items, updating status or assignment, and adding links or comments. |
 | Required content | Where the tracker holds content this model requires, such as an open item's resolution criterion, next action and history (fields, templates or comments). |
-| State mapping | How the tracker's states, close reasons or labels express the [task states](WORKFLOW.md#task-states) and [open-item states](WORKFLOW.md#states-and-transitions), for a tracker that owns them. |
 
 For each designated kind, the tracker is the single authoritative record. Do not
 keep a parallel Markdown list or a copy of its status, assignment or history;
@@ -1268,10 +1197,10 @@ Store only actual decisions with truthful attribution; record labels do not
 grant authority. A decision can cover several plans within its bounds. Keep
 the reviewed prior version when commitments change.
 
-Evidence describes what actually happened to a particular subject. Keep task
-states, [verification kinds](WORKFLOW.md#verification-and-completion),
-acceptance and closure distinct. Unrun, failed, stale, ambiguous or partial
-evidence is not PASS. Check current applicability without
+Evidence describes what actually happened to a particular subject. Keep
+IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
+LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Unrun, failed, stale,
+ambiguous or partial evidence is not PASS. Check current applicability without
 rewriting old observations or concealing newer failures.
 
 Never include secrets, private keys or protected credential material.

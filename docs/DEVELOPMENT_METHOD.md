@@ -28,7 +28,7 @@ Sprints are optional.
 | Design | Versioned requirements and constraints | Components, interfaces, data, alternatives, risks and requirement coverage are described. |
 | Planning | Original scope sources, requirements, design and current progress | Source coverage, detailed work, integration order and verification pass the planning completion checks; unresolved prerequisites have an explicit disposition. |
 | Implementation | Concrete scope decision, ready inputs and permissions | Covered work is implemented; changes and deviations are recorded. |
-| Verification | Candidate version, criteria and check environment | Actual results, failures, applicability and limits are recorded for the declared verification kind. |
+| Verification | Candidate version, criteria and check environment | Actual results, failures, applicability and limits are recorded for the declared verification level. |
 | Acceptance | Candidate and applicable verification | The authorized customer gives attributable acceptance or feedback for the stated candidate. |
 | Delivery | Release scope, operational prerequisites and permits | Delivery is performed within authority; deployed version and applicable post-delivery checks are recorded. |
 | Closure | Contributions from all plans, evidence and obligations | Required work has an honest disposition; acceptance, delivery, handover and maintenance obligations are satisfied as applicable. |
@@ -69,9 +69,7 @@ completion alone cannot create consent or turn missing evidence into a pass.
 
 ### Choosing planning depth
 
-Choose the depth by what the work commits to and what it leaves behind, not by
-its size. A [direct change](#direct-changes) needs no planning record. Use
-compact planning by default for other bounded, reversible work with a clear
+Use compact planning by default for bounded, reversible work with a clear
 outcome and no consequential scope/design unknown. This includes corrections
 and small additions using established contracts. File count and a new requirement
 ID alone do not require detailed planning.
@@ -103,52 +101,6 @@ planned until run. The [unknown dispositions](#planning-completion-checks) still
 
 If a detailed trigger appears, expand only affected planning before that work
 starts. Preserve useful analysis and evidence. Changing depth alone needs no approval.
-
-#### Direct changes
-
-Make a change without a work document when all of these hold:
-
-- A [clear request](APPROVALS.md#clear-implementation-requests) supplies its
-  scope.
-- The work finishes in this session. No handoff, resumption, open item or
-  deferred correction remains.
-- Every check the change needs runs and passes in this session.
-- It adds no separately meaningful commitment, such as a new requirement,
-  acceptance criterion, public contract or design decision under the
-  [item-boundary rules](DATA_MODEL.md#independent-items-and-supporting-detail).
-  This holds whether or not the project has records yet.
-- It changes nothing the project's records define. Restoring defined behavior,
-  or adjusting detail no record defines, qualifies.
-- It crosses no [high-risk boundary](../AGENTS.md#high-risk-and-external-control).
-- One writer makes it, outside other work items' declared write scopes and
-  other writers' uncommitted work.
-- No existing work item owns it as part of a larger outcome. If one does,
-  record the change there.
-
-Small behavior changes qualify, such as a fix that restores specified behavior
-or help text with supplied wording that no requirement defines. A clear request
-for a new capability does not: it supplies the scope decision, but the
-capability still needs its requirement and planning records. Size and file
-count alone do not decide; a new or changed commitment does.
-
-Before editing, know the expected result and the check that shows it. Inspect
-the starting state as usual. Afterwards, report:
-
-- the request and the scope derived from it;
-- the starting revision and any uncommitted work already present;
-- the changed paths;
-- the checks run, with their results and limits;
-- a draft commit message stating the reason and the checks.
-
-That report, the diff and the commit replace the work note. Without Git, the
-preserved pre-edit copy identifies the baseline and the report carries the
-rest. Update an owning record only when the facts it states change.
-
-A condition can fail during the work: a check fails and cannot be fixed, a
-finding falls outside the scope, a decision is needed or the work cannot
-finish. Record the work under
-[compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change)
-before the session ends. Remaining work never ends a session unrecorded.
 
 ### Detailed planning procedure
 
@@ -356,8 +308,8 @@ distinguishes agent review, observed use and customer acceptance.
 
 Preserve the intake commit or snapshot and identify dirty/unknown work before
 editing. Record analysis boundaries, available sources, actual progress,
-known verification/deployment status and the observed
-[check commands and project conventions](DATA_MODEL.md#suggested-information).
+known verification/deployment status and the observed build, test and check
+conventions under [project conventions](DATA_MODEL.md#suggested-information).
 Existing documents and tools remain inputs; resolve conflicting project rules
 explicitly. Material kept for communication, superseded by a later decision or
 scheduled for replacement is designated under

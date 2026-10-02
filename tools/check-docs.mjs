@@ -6,27 +6,20 @@
 //
 // Usage: node tools/check-docs.mjs [--max-age <days>] [path ...]
 //   path       Files or directories to scan (default: current directory).
-//              Inside a Git work tree a directory yields the Markdown files Git
-//              tracks or would track, so .gitignore applies; elsewhere it is
-//              walked. A file given by name is always checked.
 //   --max-age  Warn when a "Last checked: YYYY-MM-DD" date is older (default 90).
-// Exit code: 1 when a link or anchor does not resolve, a link's path differs in
-// letter case from the file on disk, or two scanned files own the same ID,
-// otherwise 0. Warnings never change the exit code.
-// Tests: node --test tools/check-docs.test.mjs
+// Exit code: 1 when a link or anchor does not resolve or two scanned files own
+// the same ID, otherwise 0. Warnings never change the exit code.
 //
 // ID checks read the ID from the filename, so files with other names, such as
 // harness guidance and required-name files, are not examined. They know nothing
 // of a project's format table, allocation record or retired IDs.
 
-import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { basename, dirname, extname, join, relative, resolve, sep } from 'node:path';
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.venv', '.harness']);
 const LINK = /!?\[((?:[^\[\]]|\[[^\]]*\])*)\]\(\s*(<[^>]*>|[^()\s]+(?:\([^()]*\)[^()\s]*)*)(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g;
-// Link reference definitions; a footnote definition (`[^1]: text`) is not one.
-const REFERENCE = /^ {0,3}\[(?!\^)[^\]]+\]:\s*(<[^>]*>|\S+)/gm;
+const REFERENCE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/gm;
 const HEADING = /^ {0,3}#{1,6}[ \t]+(.*?)[ \t]*#*[ \t]*$/;
 const EXPLICIT_ID = /<[a-zA-Z][^>]*\s(?:id|name)\s*=\s*["']([^"']+)["']/g;
 const LAST_CHECKED = /Last checked:\s*(\d{4})-(\d{2})-(\d{2})/g;
@@ -53,66 +46,16 @@ function parseArgs(argv) {
   return options;
 }
 
-function isMarkdown(path) {
-  return extname(path).toLowerCase() === '.md';
-}
-
-function ignoredByGit(directory) {
-  const path = resolve(directory);
-  try {
-    execFileSync('git', ['-C', dirname(path), 'check-ignore', '-q', basename(path)], {
-      stdio: 'ignore',
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Markdown files under a directory that Git tracks or would track, honoring
-// .gitignore. Returns null outside a work tree, without Git, or for an ignored
-// directory named explicitly; the walk applies then.
-function gitMarkdown(directory) {
-  let output;
-  try {
-    output = execFileSync(
-      'git',
-      ['-C', directory, 'ls-files', '-z', '--cached', '--others', '--exclude-standard'],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 256 * 1024 * 1024 },
-    );
-  } catch {
-    return null;
-  }
-  const files = output
-    .split('\0')
-    .filter((path) => path !== '' && isMarkdown(path))
-    .filter((path) => !path.split('/').some((segment) => SKIP_DIRS.has(segment)))
-    .map((path) => resolve(directory, path))
-    .filter((path) => existsSync(path));
-  if (files.length === 0 && ignoredByGit(directory)) return null;
-  return files;
-}
-
-function walkMarkdown(path, found) {
-  if (statSync(path).isFile()) {
-    if (isMarkdown(path)) found.add(resolve(path));
+function collectMarkdown(path, found) {
+  const stats = statSync(path);
+  if (stats.isFile()) {
+    if (extname(path).toLowerCase() === '.md') found.add(resolve(path));
     return;
   }
   for (const entry of readdirSync(path, { withFileTypes: true })) {
     if (entry.isDirectory() && SKIP_DIRS.has(entry.name)) continue;
-    walkMarkdown(join(path, entry.name), found);
+    collectMarkdown(join(path, entry.name), found);
   }
-}
-
-function collectMarkdown(path, found) {
-  if (statSync(path).isDirectory()) {
-    const listed = gitMarkdown(path);
-    if (listed) {
-      for (const file of listed) found.add(file);
-      return;
-    }
-  }
-  walkMarkdown(path, found);
 }
 
 // Blank out fenced blocks and inline code so that examples are not checked,
@@ -173,59 +116,15 @@ function headingsOf(raw) {
   return headings;
 }
 
-// Heading slugs are lowercase and match a fragment of any case, as before.
-// Explicit HTML ids keep their case, which an HTML fragment must match exactly.
 function anchorsOf(file, cache) {
   if (cache.has(file)) return cache.get(file);
   const raw = readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
-  const anchors = { headings: new Set(), explicit: new Set() };
+  const anchors = new Set();
   const seen = new Map();
-  for (const [heading] of headingsOf(raw)) anchors.headings.add(slugify(heading, seen));
-  for (const match of blankCode(raw).matchAll(EXPLICIT_ID)) anchors.explicit.add(match[1]);
+  for (const [heading] of headingsOf(raw)) anchors.add(slugify(heading, seen));
+  for (const match of blankCode(raw).matchAll(EXPLICIT_ID)) anchors.add(match[1]);
   cache.set(file, anchors);
   return anchors;
-}
-
-function hasAnchor(anchors, anchor) {
-  return anchors.explicit.has(anchor) || anchors.headings.has(anchor.toLowerCase());
-}
-
-const entriesCache = new Map();
-
-function entriesOf(directory) {
-  if (!entriesCache.has(directory)) {
-    let names = [];
-    try {
-      names = readdirSync(directory);
-    } catch {
-      // An unreadable directory leaves nothing to compare.
-    }
-    entriesCache.set(directory, names);
-  }
-  return entriesCache.get(directory);
-}
-
-// A case-insensitive filesystem resolves a link whose letter case differs from
-// the file name, and the link then breaks on GitHub or Linux. Compare each
-// segment the link itself names with the names on disk; returns the first
-// differing segment and its actual name, or null.
-function caseMismatch(fromDirectory, pathPart) {
-  if (isAbsolute(pathPart)) return null;
-  let current = fromDirectory;
-  for (const segment of pathPart.split(/[\\/]/)) {
-    if (segment === '' || segment === '.') continue;
-    if (segment === '..') {
-      current = dirname(current);
-      continue;
-    }
-    const names = entriesOf(current);
-    if (!names.includes(segment)) {
-      const actual = names.find((name) => name.toLowerCase() === segment.toLowerCase());
-      return actual === undefined ? null : [segment, actual];
-    }
-    current = join(current, segment);
-  }
-  return null;
 }
 
 function lineAt(text, index) {
@@ -269,19 +168,11 @@ function checkFile(file, cache, options, report) {
       report.errors.push([file, lineAt(text, index), `missing target: ${target}`]);
       continue;
     }
-    const mismatch = pathPart === '' ? null : caseMismatch(dirname(file), pathPart);
-    if (mismatch) {
-      report.errors.push([
-        file,
-        lineAt(text, index),
-        `letter case differs from disk: ${target} ("${mismatch[0]}" is "${mismatch[1]}" on disk)`,
-      ]);
-    }
     if (extname(destination).toLowerCase() !== '.md') continue;
     if (!statSync(destination).isFile()) continue;
     linked.add(pathKey(destination));
     if (anchor === '') continue;
-    if (!hasAnchor(anchorsOf(destination, cache), anchor)) {
+    if (!anchorsOf(destination, cache).has(anchor.toLowerCase())) {
       report.errors.push([file, lineAt(text, index), `missing anchor: ${target}`]);
     }
   }
@@ -364,9 +255,6 @@ function checkIds(scanned, options, report) {
     if (id) idFiles.add(pathKey(file));
     for (const target of linked) if (target !== pathKey(file)) incoming.add(target);
   }
-  // A lone ID-named file has no item that could link it: it is the overview,
-  // such as a compact work document serving that role.
-  if (idFiles.size === 1) return;
   const unlinked = [];
   for (const [file, { id, linked }] of scanned) {
     if (!id || incoming.has(pathKey(file))) continue;

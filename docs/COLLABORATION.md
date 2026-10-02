@@ -60,8 +60,7 @@ A single writer needs no claim system or placeholder handoff. Use the
 when no delegated ranges or outstanding reservations remain.
 Inspect dirty files before writing and preserve user/unknown changes. Use a
 concise task list and progress notes sufficient to explain what was changed
-and what remains. The report of a
-[direct change](DEVELOPMENT_METHOD.md#direct-changes) serves that purpose.
+and what remains.
 
 ## Concurrent writers
 
