@@ -66,10 +66,13 @@ is here.
 
 ### Document checker
 
-`node tools/check-docs.mjs [path ...]` checks that relative link targets exist,
-that heading anchors resolve and that `Last checked:` dates are recent. It needs
-Node and no packages, reads Markdown and writes nothing; a governed project can
-point it at its own document root. The checker is an optional way to supply
+`node tools/check-docs.mjs [path ...]` checks that relative link targets exist
+with the letter case they have on disk, that heading anchors and HTML ids
+resolve and that `Last checked:` dates are recent. It needs Node and no
+packages, reads Markdown and writes nothing; a governed project can point it at
+its own document root. Inside a Git work tree a scanned directory yields the
+Markdown files Git tracks or would track, so `.gitignore` applies; a file named
+on the command line is always checked. The checker is an optional way to supply
 part of the required [document validation](DATA_MODEL.md#document-validation).
 After changing guidance and before a completion claim that relies on links,
 verify the affected targets and anchors with this checker or an equivalent
@@ -83,7 +86,7 @@ one ID (an error), an ID-only heading that repeats an ID defined elsewhere, a
 filename description that is not two lowercase hyphenated words, a filename ID
 absent from the body, and, when a directory is scanned, an ID-named file that
 no scanned document links to. It takes the unlinked document linking to the
-most items as the project overview. It reads the ID from the filename alone:
+most items, or a lone ID-named file, as the project overview. It reads the ID from the filename alone:
 it does not know the project's format table, folder mapping, allocation record,
 delegated ranges or retired IDs, and it skips files with other names, including
 harness guidance and [required-name files](DATA_MODEL.md#required-name-exceptions).

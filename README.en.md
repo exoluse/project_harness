@@ -327,7 +327,7 @@ For [product assumptions](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions
 
 If work is blocked, the report identifies the cause and affected scope. A handoff states what the next contributor should do and which inputs are needed.
 
-You can check for broken document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files. The checker is optional; the required document validation may use equivalent tools or manual checks under [verification guidance](docs/CONTEXT_EFFICIENCY.md#document-checker). For files named by ID, such as `REQ-001.md`, it also reports two files owning the same ID, a filename ID missing from the body, and an item that no document links to. A pass covers only these mechanical checks; content, ID allocation and trace coverage are reviewed separately.
+You can check for broken document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files. It also catches links whose letter case differs from the file, which pass on case-insensitive systems such as Windows but break on GitHub. Inside a Git repository it skips folders that `.gitignore` excludes. The checker is optional; the required document validation may use equivalent tools or manual checks under [verification guidance](docs/CONTEXT_EFFICIENCY.md#document-checker). For files named by ID, such as `REQ-001.md`, it also reports two files owning the same ID, a filename ID missing from the body, and an item that no document links to. A pass covers only these mechanical checks; content, ID allocation and trace coverage are reviewed separately.
 
 ### States and verification levels
 
