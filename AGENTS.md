@@ -92,7 +92,8 @@ product files, original evidence and tool-internal files keep their formats.
 Work moves through waterfall stages, revised as needed, under the
 [stage contract](docs/DEVELOPMENT_METHOD.md#stage-contract). Make a
 [direct change](docs/DEVELOPMENT_METHOD.md#direct-changes) without a work
-document when the work finishes in one session and leaves nothing behind. Use
+document when the work finishes in one session, leaves nothing behind and adds
+or changes no requirement, contract or design commitment. Use
 compact planning for other bounded, reversible work with a clear outcome.
 Apply the [detailed planning triggers](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)
 to the affected scope. A plan is complete only when its completion checks

@@ -113,16 +113,23 @@ Make a change without a work document when all of these hold:
 - The work finishes in this session. No handoff, resumption, open item or
   deferred correction remains.
 - Every check the change needs runs and passes in this session.
-- It changes no commitment under the
-  [material-change criteria](APPROVALS.md#material-changes) and crosses no
-  [high-risk boundary](../AGENTS.md#high-risk-and-external-control).
+- It adds no separately meaningful commitment, such as a new requirement,
+  acceptance criterion, public contract or design decision under the
+  [item-boundary rules](DATA_MODEL.md#independent-items-and-supporting-detail).
+  This holds whether or not the project has records yet.
+- It changes nothing the project's records define. Restoring defined behavior,
+  or adjusting detail no record defines, qualifies.
+- It crosses no [high-risk boundary](../AGENTS.md#high-risk-and-external-control).
 - One writer makes it, outside other work items' declared write scopes and
   other writers' uncommitted work.
 - No existing work item owns it as part of a larger outcome. If one does,
   record the change there.
 
 Small behavior changes qualify, such as a fix that restores specified behavior
-or help text with supplied wording. Size and file count do not decide.
+or help text with supplied wording that no requirement defines. A clear request
+for a new capability does not: it supplies the scope decision, but the
+capability still needs its requirement and planning records. Size and file
+count alone do not decide; a new or changed commitment does.
 
 Before editing, know the expected result and the check that shows it. Inspect
 the starting state as usual. Afterwards, report:
