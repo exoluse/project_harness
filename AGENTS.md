@@ -43,8 +43,8 @@ This table routes work to its owning rules. Applicable detail is mandatory,
 even where this policy or a README summarizes it; unrelated detail need not be
 loaded. Open a detailed rule file by section: search for the linked heading and
 read to the next heading of the same level. For
-[DATA_MODEL.md](docs/DATA_MODEL.md), first read only its opening tables, which
-end at the first `## ` heading, to choose the sections for the work.
+[DATA_MODEL.md](docs/DATA_MODEL.md), first read only its opening table, which
+ends at the first `## ` heading, to choose the sections for the work.
 
 | Trigger | Read and apply |
 |---|---|

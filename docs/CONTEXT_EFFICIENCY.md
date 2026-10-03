@@ -4,24 +4,6 @@ Follow [AGENTS.md](../AGENTS.md). Efficiency means reading and checking what
 supports the current decision; it never permits omitting authority, dirty work,
 failures, blockers or verification limits.
 
-## Startup and routing
-
-Use the [startup and routing rules](../AGENTS.md#startup-and-context) as the
-single entry map. Find a requested item through the project/area overview when
-its owner is unknown; when its owning document is already identified, start
-there and follow its [current basis](DATA_MODEL.md#plans-and-tasks). Read the
-linked requirements, design, decisions and checks that govern the selected work,
-including relevant shared constraints and tracker items. Do not reconstruct
-current instructions from old conversations or load unrelated areas. Use
-targeted searches for linked detail; do not load all policies, records or the
-entire README for orientation.
-Where the project keeps its own
-[entry instruction file](DATA_MODEL.md#project-instruction-files), its stage
-pointer is the cheapest way in; confirm the position against the owning records
-before relying on it.
-Reuse current supplied/read copies. A summary or link does not substitute for
-reading an applicable rule before its action or completion claim.
-
 ## Maintaining policy guidance
 
 Keep always-needed boundaries and reading triggers in AGENTS.md. Maintain each
@@ -134,11 +116,6 @@ impact, or project/CI controls require it. Unchanged files are reusable only to
 the extent the baseline still covers them. A scan of changed files alone does
 not prove project-wide uniqueness without a reliable allocation baseline.
 
-Apply the [verification requirements](../AGENTS.md#verification-and-exceptional-paths)
-to the chosen scope. A compile pass or skipped test does not establish intended
-product behavior. Retain failures and their actual impact; efficiency cannot
-justify hiding results or silencing required checks.
-
 ### Check scope and scheduling
 
 Assign checks to the point where their evidence is needed, using the plan or
@@ -243,20 +220,8 @@ model selection does not require creating subagents or changing saved settings.
 
 Delegated output is evidence for what it actually checked; it creates no
 authority, completion or PASS. A lower tier never lowers required checks,
-completion criteria, decisions or security boundaries. Do not claim cost or
-token savings without the [measurement described below](#progress-and-handoff-notes).
+completion criteria, decisions or security boundaries.
 
-## Progress and handoff notes
-
-Retain the objective/stopping point, input/output versions, actual decision
-bounds, ownership and dirty work, completed work, current failures and remaining
-obligations. State the next action and what would unblock affected work.
-For retained open items, link their current state, owner, next action,
-needed-by/review trigger and resolution or closure evidence. Reassess the
-affected items at the [lifecycle review points](WORKFLOW.md#review-escalation-and-reopening),
-without copying the full item history into each progress note.
-
-Do not invent performance or token savings. If measuring efficiency, record the
-actual method, workload and limitations; comparisons need comparable scope.
-Historical reports remain observations of their original runtime and workload,
-not current performance guarantees.
+Do not claim cost, performance or token savings without measuring them. A
+measurement records the actual method, workload and limitations; comparisons
+need comparable scope.

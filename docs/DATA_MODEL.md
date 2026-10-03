@@ -1,15 +1,12 @@
 # Project Information Model
 
-This is the required detailed standard for project document organization,
-identity, paths, exceptions and validation, designated by
-[AGENTS.md](../AGENTS.md#document-organization). Keep information-model rules
-here; the linked ID dictionary provides starter formats and selection guidance.
-Other guidance links these definitions and may show brief summaries or examples.
-The [management format policy](../AGENTS.md#document-organization)
-governs Markdown, existing records and tool-required formats.
+This is the detailed standard for project document organization, identity,
+paths, exceptions and validation under
+[AGENTS.md](../AGENTS.md#document-organization). Other guidance links these
+definitions.
 
 This file is long; do not load it whole. Pick the sections for the work from
-the two tables below and read only those, locating each by its heading text
+the table below and read only those, locating each by its heading text
 (for example, search for `## Item IDs` and read to the next `## ` heading).
 Follow a link into another section only when the rule being applied depends on
 it. Every section that applies to the work remains mandatory; a section that
@@ -25,30 +22,12 @@ does not apply is not required reading.
 | Resume work that spans sessions, or record where it stands | [Resumption state](#resumption-state) |
 | Several teams, delegated ID ranges or an external tracker | [Area overviews](#area-overviews), the range record in [Allocation reuse](#allocation-and-validation-reuse), [External work trackers](#external-work-trackers) |
 | Check documents before a completion claim | [Document validation](#document-validation), then the sections its rows name for the changed content |
+| Keep a consumer-required name, or write project or subtree instruction files | [Required-name exceptions](#required-name-exceptions), [Project instruction files](#project-instruction-files), [Path-scoped instruction files](#path-scoped-instruction-files) |
 
-| Need | Governing section |
-|---|---|
-| Harness guidance or project deliverable | [ID scope](#id-scope) |
-| Overview and relationships | [Document organization](#document-organization) |
-| Progress summaries and update scope | [Summary ownership and updates](#summary-ownership-and-updates) |
-| Several teams, streams or subsystems | [Area overviews](#area-overviews) |
-| Plan/task responsibilities | [Plans and tasks](#plans-and-tasks) |
-| Current position of long-running work | [Resumption state](#resumption-state) |
-| Identity, types and numbering | [Item IDs](#item-ids) |
-| Project ID formats and optional classification codes | [Document ID dictionary](ID_DICTIONARY.md) |
-| Canonical filename and folder mapping | [Document paths](#document-paths), [Folders by document kind](#folders-by-document-kind) |
-| Separate item or supporting detail | [Item boundaries](#independent-items-and-supporting-detail) |
-| Consumer-required name/location | [Required-name exceptions](#required-name-exceptions) |
-| Instructions scoped to a subtree | [Path-scoped instruction files](#path-scoped-instruction-files) |
-| Completion checks | [Document validation](#document-validation) |
-| Reuse of checked allocations | [Allocation reuse](#allocation-and-validation-reuse) |
-| Work status kept in an external tool | [External work trackers](#external-work-trackers) |
-
-Preserve existing non-Markdown records and reference them without automatic
-conversion or deletion. Product files such as `package.json`, original evidence
-such as logs or test reports, and tool-internal files retain their required
-formats. Summarize verification in Markdown and link to those original artifacts. Contractual delivery formats and external controls remain binding;
-resolve actual conflicts before the affected delivery.
+Reference existing non-Markdown records, product files such as `package.json`
+and original evidence such as logs in their own formats; do not convert or
+delete them automatically. Summarize verification in Markdown and link those
+original artifacts.
 
 ## ID scope
 
@@ -76,23 +55,16 @@ binding.
 |---|---|
 | Project note | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
 | Project conventions | Build, test and static-check commands, verification environments, integration/branch model and quality criteria that are actually decided or observed, with their source/version. Record each when it is decided or found at intake, not as a placeholder; verification records reference them. |
-| Source/intake | Origin, version, analysis scope, ownership and reliability/limitations. |
-| Requirements | Intended outcomes, constraints, acceptance criteria and material source trace. |
-| Design | Components, interfaces/data, alternatives, requirement coverage and open risks. |
-| Plan | Goal, scope, source-to-work/check coverage, linked implementation detail, dependencies, ordered task links, overall completion criteria, open-item dispositions, [resumption state](#resumption-state) for work spanning sessions and actual decision reference. |
-| Task/work item | Concrete output, owner, affected paths/logical resources, declared inputs and shared paths, current execution mode, plan/input links, prerequisites, ordered actions, applicable implementation detail, declared stop conditions, status and concrete completion checks with their actual commands. |
-| Decision | Concrete scope/version, actual owner request or response/source, bounds and conditions. |
-| Change trace | Request, before/after, impact, affected work, decision and verification. |
-| Open item | Question/finding and evidence; continued follow-up adds state, responsibility, impact, next action and resolution history under [Open items](#open-items). |
-| Verification | Subject/version, method/environment, expected/observed result, artifacts and limits. |
-| Release/handoff | Contributions, versions, decisions, current evidence, unfinished obligations and next owner/action. |
 
-Keep supporting conditions and implementation steps in their owning files.
-Requirements and their design, plan, task and verification definitions use
-separate files under [document organization](#document-organization), with the
-[compact documentation rules](#minimum-documentation-for-a-small-change).
-A plan may organize nested task links or reference several plans; no
-single-active-plan field is required.
+Other records take their content from the rules that own them: requirements and
+design from the [stage contract](DEVELOPMENT_METHOD.md#stage-contract), plans
+and tasks from [plans and tasks](#plans-and-tasks), decisions from
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision), open items from
+[open items](#open-items), verification from
+[verification](WORKFLOW.md#verification-and-completion), change trace from the
+[change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation), intake from
+[existing-project intake](DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering)
+and handoffs from [transfer](COLLABORATION.md#transfer-and-integration).
 
 ## Document organization
 
@@ -107,21 +79,15 @@ Each requirement owns its REQ file and links the separate owning design, plan,
 task and verification files needed at the requested stage. Shared definitions
 or work keep one owning file linked by all covered requirements. Create files
 when their stage/output is needed, not as placeholders for future stages.
-
-For bounded low-risk work, [compact documentation](#minimum-documentation-for-a-small-change)
-keeps missing local definitions in the work document. An eligible standalone
-work document may also serve as the overview. References to overview, design,
-plan and verification owners then include their sections in that document.
-Independently managed items and existing definitions keep their own files.
+Bounded low-risk work follows the
+[compact documentation](#minimum-documentation-for-a-small-change) exception.
 
 The overview holds the objective, shared project context, links to shared
 requirements and architecture, baseline, resumption links and an index of units.
 It also states the document and item-ID convention, including agent-selected
-extensions and any allocation ownership. Once they exist, it records the
-[project conventions](#suggested-information) for build, test and check
-commands, verification environments and integration. A new
-project adds them when its design or plan decides them; intake records those
-observed in an existing project. An undecided convention is stated as such.
+extensions and any allocation ownership. It records the
+[project conventions](#suggested-information) once they are decided or
+observed, and states an undecided convention as such.
 Each index entry states its scope and material dependencies and links the unit's
 owning documents. Follow those links for current status under
 [summary ownership](#summary-ownership-and-updates).
@@ -134,59 +100,13 @@ Length alone does not create a new item; use sections and navigation
 when accumulated supporting detail obscures scope, decisions or evidence.
 Record the chosen boundaries and rationale briefly in the overview or work note.
 
-The following example uses the [default folder mapping](#folders-by-document-kind).
-The IDs are illustrative, not allocations in this repository.
-Create only documents needed for the requested stage:
-
-```text
-project-docs/
-  overview/
-    DOC-001.md                  # Shared context and feature/work index
-  requirements/
-    REQ-001.md                  # Sign-in requirement
-    REQ-002.md                  # Search requirement
-  designs/
-    DES-001.md                  # Shared architecture
-    DES-002.md                  # Sign-in design
-  features/
-    FEATURE-001.md              # Links sign-in requirement and related work
-  contracts/
-    API-001.md                  # Sign-in API contract
-  screens/
-    SCR-PC-001.md               # Desktop sign-in screen specification
-  plans/
-    PLAN-001.md                 # Implementation order and task links
-  tasks/
-    TASK-API-001.md
-    TASK-PC-001.md
-  verifications/
-    VER-001.md
-    contracts/
-      CT-API-001-01.md          # Separately managed contract check
-    backend/
-      BT-API-001-01.md          # Separately managed backend check
-  open-items/
-    OI-001.md
-  decisions/
-    DEC-001.md
-    architecture/
-      ADR-001.md
-    open-items/
-      OD-001-01.md              # Separately managed resolution of OI-001
-  changes/
-    CHG-001.md                  # Change trace when separately required
-  handoffs/
-    HANDOFF-001.md
-```
-
 Every unit links back to its overview and applicable shared specifications.
 Connect requirements and acceptance criteria to the covering design, planned
 work and actual verification. Use item IDs with file or anchor links, optionally
 in a compact trace table.
 Links may be many-to-many: several plans can implement one requirement, and a
 shared design can support several features. State cross-unit dependencies and
-the relevant input versions. When verification has not run, record that state
-in the plan instead of creating evidence or implying success.
+the relevant input versions.
 
 When adding a new unit, add its index entry and relevant dependency links.
 When scope changes, update the owning detail, affected links and overview
@@ -399,16 +319,11 @@ permission to continue past it.
 ### Plans, tasks and their files
 
 **Requirements and boundaries.** Plans and tasks reference the requirements
-they cover. One requirement can need several tasks, and one task can serve
-several requirements.
-
-Keep plan and task definitions in their respective files, with local sections
-allowed under [compact documentation](#minimum-documentation-for-a-small-change). Split
-further on actual output, assignment and completion boundaries. Reuse shared
-files across requirements; do not create duplicate definitions or placeholders
-for unrequested stages. Use the
-[boundary criteria](#independent-items-and-supporting-detail) for small changes,
-supporting detail and work that precedes requirements.
+they cover; the relationship can be many-to-many. Keep plan and task
+definitions in their respective files, with local sections allowed under
+[compact documentation](#minimum-documentation-for-a-small-change). Split
+further on actual output, assignment and completion boundaries under the
+[boundary criteria](#independent-items-and-supporting-detail).
 
 **Where status lives.** Keep task definitions and execution status in their
 owning files, and link the actual check results from the verification
@@ -433,14 +348,6 @@ The parent's planning completion checks cover that cross-plan content. They
 reuse a child's passed planning checks for its stated scope and versions, and
 recheck a child whose inputs changed. Completing every child does not complete
 the parent outcome while integration work or parent criteria remain.
-
-**Coverage links.** Keep the source inventory and coverage links in the
-existing plan or work document, or reference their owning sections where those
-are already maintained. Supporting source entries, checklist dispositions and
-verification scenarios do not create new item identities solely to fill a
-table. Requirement details stay with their requirement, and task instructions
-stay with their task. A plan's summary leads to those concrete definitions
-rather than substituting for them.
 
 **Directories and ownership.** Directory ownership and task ownership
 complement each other. Record the document root and type-to-folder mapping in
@@ -498,9 +405,20 @@ exhaustive list.
 **The format table.** Use the project's recorded ID format table. There is no
 mandatory token length, serial width, universal AREA segment or fixed number of
 segments. Prefer simple semantic prefixes, and add a classification or parent
-segment only when the project needs it. The [ID dictionary](ID_DICTIONARY.md)
-offers starter formats such as `REQ-001`, `SCR-PC-001` and `TASK-API-001`; its
-rows are examples, not a closed vocabulary or allocated IDs.
+segment only when the project needs it. The
+[folder table](#folders-by-document-kind) lists starter formats such as
+`REQ-NNN`, `SCR-{surface}-NNN` and `TASK-{work}-NNN`; its rows are examples,
+not a closed vocabulary or allocated IDs.
+
+In the starter formats, `NNN` is a three-digit serial starting at `001`. A
+final `NN` is a child serial starting at `01`, and the child's `NNN` copies its
+parent's serial: `OD` details an `OI`, and `CT` and `BT` check an `API`.
+Starter `surface` values are `PC`, `MOB` and `AD` (desktop, mobile and
+administrator screens). Starter `work` values are `PC`, `MOB`, `API`, `ADMIN`
+and `COMMON` (desktop UI, mobile UI, backend, admin UI and shared work); a
+cross-component task uses `COMMON` and describes its scope in the body.
+Register others, such as `DB` or `AI`, when the work needs them. A
+classification describes work scope; it does not assign a person or authority.
 
 The project overview owns the table, or links its one owning dictionary where
 separate management is useful. Record each kind's meaning, exact format, allowed
@@ -518,7 +436,7 @@ axes: screen platform and task work area need not share a code list. Technology,
 audience and feature metadata can stay in the body instead of the ID.
 
 **Reading an ID.** Interpret an ID using its whole registered format. In the
-starter dictionary, `API-001` identifies an API contract, and its method, path,
+starter formats, `API-001` identifies an API contract, and its method, path,
 version and coverage are specified in the body. `PLAN-001` can plan its
 implementation, and `TASK-API-003` can implement it.
 
@@ -627,9 +545,9 @@ Group new documents by kind beneath the chosen document root, such as
 established mapping. Each folder holds the separate files for that kind;
 it is not one combined file per kind.
 
-| Document kind | Example ID or format | Default folder beneath the document root |
+| Document kind | Starter ID format | Default folder beneath the document root |
 |---|---|---|
-| Project or area overview | `DOC-001` | `overview/` |
+| Project or area overview | `DOC-NNN` | `overview/` |
 | Requirements | `REQ-NNN` | `requirements/` |
 | Separately managed acceptance criteria | Project-registered `AC` format | `requirements/acceptance/` |
 | Feature navigation | `FEATURE-NNN` | `features/` |
@@ -652,14 +570,13 @@ it is not one combined file per kind.
 | Meeting notes | Project-registered format | `meetings/` |
 | Reviews | Project-registered format | `reviews/` |
 | Progress and recurring reports | Project-registered format | `reports/` |
-| Separately managed dictionaries | `DOC-002` | `dictionaries/` |
+| Separately managed dictionaries | `DOC-NNN` | `dictionaries/` |
 
 Choose the folder by the document's purpose, not its ID prefix alone.
 For example, a `DOC` overview and a `DOC` dictionary belong in different folders;
 a deployment guide belongs in `guides/`, even when its ID also uses `DOC`.
 These are placement defaults, not required deliverables or new ID allocations.
-Use the [ID dictionary](ID_DICTIONARY.md#starter-format-table) for starter formats
-and [item boundaries](#independent-items-and-supporting-detail) to decide whether
+Use [item boundaries](#independent-items-and-supporting-detail) to decide whether
 content needs its own file. A folder row does not require splitting supporting
 detail out of its owner or the [compact documentation rules](#minimum-documentation-for-a-small-change).
 
@@ -763,9 +680,7 @@ A may state: used `001` and `003`, retired `002`, remaining `004` through `020`
 reserved for A. Its row must also link the actual checked basis. This example
 does not allocate IDs in this harness repository.
 
-Harness guidance outside the [ID scope](#id-scope) needs no allocation table
-simply to maintain policy. Do not create a second registry or a new document per
-allocation.
+Do not create a second registry or a new document per allocation.
 
 **Consuming a range.** Within an assigned range, consume unused serials and
 record their disposition. Reuse the verified basis plus subsequent allocation
@@ -909,18 +824,11 @@ An independently managed requirement or shared definition still has its own
 owner under [item boundaries](#independent-items-and-supporting-detail).
 Existing owners and required contractual files retain their roles and history.
 
-The work note needs only the concrete basis and result of the compact procedure:
-
-- Before work: request/source and baseline, expected outcome, affected paths,
-  approach and ordered checks, with actual commands/targets and environment.
-- During work: consequential findings, changed instructions and any unresolved
-  prerequisite, with its owner or needed assignment.
-- After checks: tested version, observed results, evidence and limits.
-  Link existing verification records instead of copying them.
-
-Reuse the actual scope decision and readiness assessment. No separate exception
-justification, planning-review record or repeated unchanged assessment is needed.
-Task declarations still apply; references to existing instructions satisfy them.
+The work note holds what the
+[compact procedure](DEVELOPMENT_METHOD.md#choosing-planning-depth) records
+before, during and after the work. Link existing verification records instead
+of copying them. Task declarations still apply; references to existing
+instructions satisfy them.
 
 Reuse the overview and its folder/ID conventions where they exist.
 If no management records exist to reuse, one work document may also serve as
@@ -937,7 +845,6 @@ start. Record only the document root, folder/ID conventions and allocation basis
 actually needed, plus known check commands and environments. The normal identity,
 allocation and validation rules still apply. Entry links point to this document;
 its owned sections satisfy overview references without duplicating task state.
-No separate eligibility report is needed.
 
 When authorized work expands beyond these conditions, establish a separate
 overview before starting the affected work. Transfer current shared context,
@@ -945,13 +852,10 @@ conventions and allocations there, and link the original work item. Replace
 live sections with links. For a closed work record, add a dated amendment
 linking the new owner and retain the original context as history. Preserve the
 work item's ID and evidence. Do not combine existing owners or accumulate
-unrelated work to keep a single file.
-
-Preserve existing definitions, completed work and evidence. Extend closed work
-under [verification and completion](WORKFLOW.md#verification-and-completion).
-If scope grows, establish only the new independent owners or detailed planning
-that the change requires before affected work starts. Retain the original ID
-and history; unrelated outcomes must not accumulate in the same work document.
+unrelated work to keep a single file. If scope grows, establish only the new
+independent owners or detailed planning that the change requires before the
+affected work starts. Extend closed
+work under [verification and completion](WORKFLOW.md#verification-and-completion).
 
 ## Required-name exceptions
 
@@ -1068,22 +972,8 @@ Required-name checks replace ordinary path/name/body checks only to the extent
 required by the documented consumer constraint; identity, links and other checks
 remain applicable. Do not treat every existing descriptive filename as a new
 exception. Existing records keep their names and applicable prior evidence.
-
 The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the
-filename-derived part of the identity and path checks: duplicate owning files,
-repeated ID-only headings, slug syntax, filename/body ID agreement and unlinked
-ID-named files. Registered formats, folder mapping, allocation, current-state
-consistency and whether an ID names the intended item still need review.
-
-## Trace and baselines
-
-Use commits, snapshots or document versions to identify the basis of important
-claims and decisions. Preserve material source-to-requirement-to-design-to-work
-relationships without requiring every optional record type.
-
-When recovering documents from code, label observation, inference, confirmed
-intent and uncertainty. Link observations to the inspected revision and source
-locations. Keep current implementation and proposed target separate.
+filename-derived part of the identity and path checks.
 
 ## Open items
 
@@ -1190,36 +1080,3 @@ and apply them when access returns. That note is not the authoritative status.
 
 Changing or ending a designation is an owner decision. Preserve existing items
 and links, and record where each kind of information is owned from then on.
-
-## Decisions and evidence
-
-Store only actual decisions with truthful attribution; record labels do not
-grant authority. A decision can cover several plans within its bounds. Keep
-the reviewed prior version when commitments change.
-
-Evidence describes what actually happened to a particular subject. Keep
-IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
-LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct. Unrun, failed, stale,
-ambiguous or partial evidence is not PASS. Check current applicability without
-rewriting old observations or concealing newer failures.
-
-Never include secrets, private keys or protected credential material.
-Reference externally controlled approval receipts without copying protected
-authority into project files.
-
-## Completion and closure
-
-A completion claim covers the requested deliverable and its actual verification.
-Release/project closure aggregates all contributing plans, required outcomes,
-decisions, evidence and applicable acceptance/delivery/maintenance obligations.
-A release inventory is sufficient; no canonical closure dependency manifest is
-required under this policy.
-
-## Harness policy maintenance
-
-Maintain this harness's policy and guidance directly under
-[policy maintenance](../AGENTS.md#harness-policy-maintenance). Git history
-replaces a policy-change index and separate archive/change-note files.
-Earlier policy records and their allocated IDs remain discoverable in Git
-history; removing their working-tree copies does not make those IDs reusable.
-The document and ID rules above continue to govern actual project deliverables.

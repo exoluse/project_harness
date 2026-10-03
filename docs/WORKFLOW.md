@@ -1,14 +1,6 @@
 # Workflow
 
 Follow [AGENTS.md](../AGENTS.md) for the current workflow and authority.
-Identify applicable project-contract and protected-CI requirements.
-
-For this harness's own policy, README and agent-guidance maintenance, use
-[policy maintenance](../AGENTS.md#harness-policy-maintenance): edit current
-files, use Git/diffs for history and report scope/decisions/checks in the
-conversation. Do not create change notes, update a policy-work index or archive
-copies merely to record those edits. The project-document workflow below
-continues to apply to actual development and requested document deliverables.
 
 ## The path as it runs today
 
@@ -18,48 +10,19 @@ continues to apply to actual development and requested document deliverables.
    from the selected item's [current basis](DATA_MODEL.md#plans-and-tasks)
    when its owning document is already known;
    present candidates before editing when several items could match, and do
-   not create a new item merely because no description matched. Inspect dirty
-   work before writing.
+   not create a new item merely because no description matched.
 2. Establish the current input versions and preserve existing progress.
-3. Produce the requested discovery, requirements, design or planning outputs.
-   Maintain a project overview and separate independently scoped feature/work
-   documents, with an eligible work document serving as the overview under
-   [compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change).
-   For planning, follow the
-   selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth)
-   and pass its applicable completion checks,
-   including source coverage and executable detail. Check content and trace;
-   stop there for a stage-only request.
-4. For implementation, establish scope, feasibility, impact, risks, dependencies
-   and verification at a useful level. A clear direct implementation request
-   supplies its scope decision; record it or reference an applicable prior
-   decision. Present alternatives and obtain a decision for unresolved material
-   choices or uncovered scope under [Approvals](APPROVALS.md).
+3. Produce the requested stage outputs. For planning, pass the completion
+   checks of the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth).
+   Stop there for a stage-only request.
+4. For implementation, establish the scope decision under [Approvals](APPROVALS.md).
 5. Apply [work-item readiness](#scope-decisions-and-work-item-readiness), reusing
    the owning assessment and recording changed facts and real blockers.
 6. Apply [starting execution in a working tree](#starting-execution-in-a-working-tree)
    before the first edit. Execute covered work and verify the changed
-   deliverables against the agreed criteria. Preserve observations, failures
-   and limits.
-7. Deliver the requested result. For releases or project closure, include all
-   contributing work, acceptance and operational obligations as applicable.
-
-When authoring stage outputs, use the
-[document organization standard](DATA_MODEL.md#document-organization) to locate
-the overview and owning documents. Apply the Information model's detailed
-rules; create only the outputs needed for the requested stage.
-
-## Existing project intake and reverse engineering
-
-Keep the existing commit/snapshot, unknown changes and actual progress. Inventory
-only the material needed for the requested scope. Recover requirements/design
-with source/version references and distinguish observed behavior, inferred intent,
-confirmed requirements and unresolved contradictions.
-
-Describe current implementation separately from desired changes. A code review
-does not establish test success or customer acceptance. Plan actual remaining
-work; do not invent earlier approvals or force a lifecycle reset. See
-[Development method](DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering).
+   deliverables against the agreed criteria.
+7. Deliver the requested result. For releases or project closure, apply
+   [closure preparation](#closure-preparation).
 
 ## Scope decisions and work-item readiness
 
@@ -230,29 +193,6 @@ WAITING), owner, action and affected dependents. Reassess their readiness and
 stop affected work as necessary. A genuinely different issue follows the normal
 item-boundary rules and links the earlier one instead of overwriting its history.
 
-## Changing an approved plan
-
-Preserve the reviewed version, actual decision and observations. Refine tasks,
-ordering and document structure within that scope without another decision.
-For material changes, prepare the delta and its impact, obtain the applicable
-owner decision once, then implement and reverify affected parts.
-Apply [conversation decisions](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions)
-to current owning instructions before dependent work uses them. For unexpected
-implementation behavior, follow
-[discoveries during implementation](DEVELOPMENT_METHOD.md#discoveries-during-implementation)
-to investigate, revise the affected plan or obtain the missing outcome decision.
-
-A sibling task edit or stale historical observation does not automatically
-invalidate unrelated work. Explain actual dependency or scope impacts. Do not
-copy an old PASS into new evidence without checking applicability.
-Reassess affected open items and reopen invalidated resolutions under the
-[lifecycle rules](#review-escalation-and-reopening).
-
-For a cancellation, pause or withdrawn permission, follow
-[cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption).
-Keep the actual stopping state and remaining work in the owning plan/work note;
-use those facts when checking authority and readiness to resume.
-
 ## Updating current work state
 
 When advancing to another task or plan, resuming work, or handing it off, align
@@ -298,17 +238,6 @@ Keep dependent work blocked where the correction is a prerequisite; independent
 covered work can continue. Report missing assignments under the open-item
 lifecycle. Extend closed records under [verification and completion](#verification-and-completion)
 and preserve their original scope and results.
-
-## Switching to the next plan
-
-Plans are an organizational choice, not a single active slot. Several plans
-may share an owner decision or reference their own decisions. Switching or
-splitting plans does not by itself require approval.
-
-Carry forward unfinished work explicitly. Verify the next work item's coverage
-and dependencies, then apply [current-state updates](#updating-current-work-state).
-Keep actual assignments accurate and report completion when the requested scope
-is complete.
 
 ## Verification and completion
 
@@ -362,23 +291,6 @@ is not required.
 An unavailable one-off script or unidentified tested output limits what later
 work can establish. Preserve the observation, state the missing evidence and
 obtain the required check before relying on it for completion or reuse.
-
-Use distinct levels such as STATIC_VERIFIED and INTEGRATION_VERIFIED. A
-document check establishes neither product integration nor production success.
-
-**Before completion, release, handover or push.** Review the diff and the
-relevant verification.
-
-- Apply [document validation](DATA_MODEL.md#document-validation) for document
-  deliverables at the requested stage.
-- Reuse applicable baseline results under
-  [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification). Moving
-  from completion to push alone needs no fresh full scan.
-- Required project and CI checks remain required.
-- Report a check failure accurately, even when unrelated authorized work can
-  continue.
-
-No test run means no test-pass claim.
 
 **Check the actual subject of the claim.** A stand-in — a synthetic fixture, a
 copied sample, a mock of the component under test, a hand-built approximation —
@@ -530,7 +442,7 @@ a handoff record; it is historical and not a parallel current status. Repairing
 links, updating summaries or recording discrepancies as open items is separate
 work that follows the usual [request authority](../AGENTS.md#authority-and-decisions);
 propose it with the report and perform it when requested. Handoff notes reuse
-the same basis under [progress and handoff notes](CONTEXT_EFFICIENCY.md#progress-and-handoff-notes).
+the same basis under [transfer](COLLABORATION.md#transfer-and-integration).
 
 ### Recurring reports
 
@@ -594,18 +506,6 @@ Reconcile retained open items, deferrals and non-resolution closures under the
 [open-item lifecycle](#open-item-lifecycle); handing them over does not itself
 satisfy an outstanding required obligation.
 
-## Collaboration and handoff
-
-One writer needs no claim record. Concurrent writers agree owners and
-non-overlapping paths/resources, using worktrees where practical. Treat unknown
-dirty files as someone else's work until ownership is understood.
-
-For a handoff, state baseline/output versions, changed paths, applicable
-decisions, verification, failures, limits, unfinished work and next action.
-Apply [current-state updates](#updating-current-work-state) before the receiver
-relies on the entry pointers. Markdown is sufficient when accepted by the delivery
-contract. See [Collaboration](COLLABORATION.md).
-
 ## Hotfixes and incidents
 
 Record the incident, affected version, smallest feasible repair scope, risk and
@@ -628,10 +528,9 @@ Verify recoverability, including uncommitted records, before destructive work.
 
 ## Former runtime records
 
-This repository no longer ships a CLI, runtime, schemas or record store. There
-is nothing to install, initialize or invoke, and no tool gate, claim, PLAN
-fingerprint or runtime marker takes part in current work. Management records are
-ordinary project documents under the [Information model](DATA_MODEL.md).
+No tool gate, claim, PLAN fingerprint or runtime marker takes part in current
+work. Management records are ordinary project documents under the
+[Information model](DATA_MODEL.md).
 
 A project adopted from the earlier runtime-required process may still hold
 `.harness/` records, signed payloads, baselines and snapshots. Preserve them:

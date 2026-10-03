@@ -27,7 +27,7 @@ Planning depth matched to risk, separate documents for independent items, stable
 2. Describe the intended result, source/code locations, constraints and how far to proceed this time. Mention any build and test approach you have already chosen; otherwise it is decided during design and planning.
 3. The agent checks the current state and prepares the documents and work for that scope.
 
-Entry guidance is available for [Codex](CODEX_START_PROMPT.md) and [Claude](CLAUDE_START_PROMPT.md). When adopting the harness in another project, inspect its existing policies and documents before integrating the relevant guidance.
+Entry guidance is available for [Codex](CODEX_START_PROMPT.md) and [Claude](CLAUDE.md). When adopting the harness in another project, inspect its existing policies and documents before integrating the relevant guidance.
 
 A first request can look like this. You do not need to specify every document ID or file path yourself.
 
@@ -42,7 +42,7 @@ If the goal is still unclear, start with discovery and requirements. The agent p
 
 1. **Bring in the policy files.** Copy [AGENTS.md](AGENTS.md) and [docs/](docs/) into the project, or keep this repository alongside and reference it by path. Copying keeps the policy versioned with the project, which helps tracing. Put the tool entry file ([CLAUDE.md](CLAUDE.md) or [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md)) at the project root. Every session loads that root file, so it carries what work cannot start without — the stack, the real build and test commands, the code and document layout, the conventions a writer would otherwise violate — plus a short pointer to the current stage and the first documents to read. Content that an item owns stays with that item; see [project instruction files](docs/DATA_MODEL.md#project-instruction-files). If the project already has a CLAUDE.md or AGENTS.md, compare the two sets of rules, resolve conflicts and integrate them. The harness policy never weakens the project's contracts or CI rules. In a large repository, rules for one area can live in a [path-scoped instruction file](docs/DATA_MODEL.md#path-scoped-instruction-files) inside that subtree, read together with the root policy by work that touches those paths. A path-scoped file adds detail; it cannot weaken the root policy or a contract.
 2. **Choose a document root and folders by kind.** For example, place requirements in `requirements/`, plans in `plans/` and tasks in `tasks/` beneath `project-docs/`. Where no convention exists, use the [default folder table](docs/DATA_MODEL.md#folders-by-document-kind) and record the chosen layout in the overview.
-3. **Establish the overview when document work starts.** Reuse an existing overview; otherwise follow [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change), which allows an eligible work document to also serve as the overview. A report-only request creates no files. Record the objective and scope, the document root and type-to-folder mapping, the ID format table (only the kinds needed, from the [starter table](docs/ID_DICTIONARY.md)), the ID allocation section, and any build, test and check commands and environments already decided. An undecided convention is recorded as undecided and settled during design and planning. Material that is not a development basis — customer communication documents, a superseded source, a legacy implementation being replaced — is designated in the overview as a [non-authoritative input](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs): it is not used as requirement, scope or evidence, and its divergence from the product is not raised as a defect or blocker.
+3. **Establish the overview when document work starts.** Reuse an existing overview; otherwise follow [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change), which allows an eligible work document to also serve as the overview. A report-only request creates no files. Record the objective and scope, the document root and type-to-folder mapping, the ID format table (only the kinds needed, from the [starter formats](docs/DATA_MODEL.md#folders-by-document-kind)), the ID allocation section, and any build, test and check commands and environments already decided. An undecided convention is recorded as undecided and settled during design and planning. Material that is not a development basis — customer communication documents, a superseded source, a legacy implementation being replaced — is designated in the overview as a [non-authoritative input](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs): it is not used as requirement, scope or evidence, and its divergence from the product is not raised as a defect or blocker.
 4. **An existing project starts from its actual state.** Record the intake commit, analysis scope, what is already implemented and the known verification and deployment status in the overview. Requirements recovered from code are marked as observed or inferred; only what the customer confirmed counts as a confirmed requirement. Existing documents and IDs stay as they are and are referenced.
 5. **Add tool settings when the project has secrets, deployments or shared branches.** Policy text changes what the agent attempts; it does not stop execution. Configure blocked secret-file reads and prompts for risky commands from the [tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls), and keep the actual boundary, such as refusing force pushes, in controls the agent cannot change, like branch protection.
 
@@ -266,7 +266,7 @@ You decide the goals, priorities, constraints and execution scope. Within that s
 
 When you delegate judgment, the agent records the [subject and limits](docs/APPROVALS.md#decision-requests-and-delegated-judgment), then records its choice and rationale within them. Delegated choices and routine implementation decisions need no repeated approval. A new specification version or plan prompts a coverage check against the actual delegation.
 
-When an instruction, a specification, a contract, the running code and provisional material disagree, the agent follows a fixed [input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence): your current instruction, then received specifications and their approved changes, then approved requirements, design and contracts, then current code and tests, then provisional material such as mock-ups and samples, and last the agent's own proposal. A lower basis does not win by being newer or more detailed. Detail found only in a mock-up does not become a requirement, and current behavior that contradicts an approved contract is reported as a defect. The order exists so a conflict does not halt bounded work; the conflict itself is recorded where it belongs, and a changed commitment goes through the change procedure.
+When an instruction, a specification, a contract, the running code and provisional material disagree, the agent follows a fixed [input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence). A lower basis does not win by being newer or more detailed, and the conflict itself is recorded where it belongs.
 
 When a material commitment changes, such as behavior, cost, data handling or use of an external service, the agent presents the reason and impact and obtains any needed decision. Production deployment, production data changes, destructive actions, protected-credential access and final customer acceptance need specific authorization and safeguards for the subject and effect. Sending external messages also needs explicit authority. See [decisions](docs/APPROVALS.md) and [security](docs/SECURITY.md) for the boundaries.
 
@@ -274,7 +274,7 @@ For a correction, reuse applicable content and update affected owners. Changes t
 
 When a decision is settled in conversation, retain its source and what it supersedes, then update the current owning instructions before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
-Concurrent agents keep separate edit scopes and use a separate worktree or clone for each writer. Branch names alone do not isolate a shared checkout. In a single working tree, run one writing agent at a time; review and analysis that write nothing can run alongside it. Two writers in one tree merge into a single uncommitted state that no one can attribute afterwards. Commits stage the paths the work actually changed; staging a whole directory or working tree sweeps in whatever else was already there. Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue. Questions are tracked through their answers and incorporation into related documents, without copying the same evidence into multiple records.
+Concurrent agents use a separate worktree or clone for each writer, and a single working tree runs one writing agent at a time; see [collaboration](docs/COLLABORATION.md#concurrent-writers). Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue.
 
 ### When the agent stops and asks
 
@@ -298,19 +298,11 @@ Look for three things in a result report:
 
 Planning completion, implementation, verification, customer acceptance and project closure are distinct. Prepared documents or existing code do not by themselves establish working behavior or customer acceptance. Failed, unrun and partial checks are reported as such. The commands and environments used for checks are recorded in the project overview once decided, and verification records refer to them.
 
-Completion evidence links the actual tested output version, command, check code and relevant inputs. Without Git, a preserved tested snapshot or equivalent identifies the subject. One-off observations lacking reviewable evidence retain that limitation under [verification and completion](docs/WORKFLOW.md#verification-and-completion).
-
-Checks run against the subject the claim names. A result from a stand-in — a fixture, a copied sample, a mock — is evidence about that stand-in, so a claim about real behavior is confirmed on the real artifact and the record says which one. Where a subject has repeated instances, the record names the ones actually examined and does not present a spot check as a whole-subject pass. A whole-item or acceptance-level pass with high consequence is confirmed by someone other than the writer who produced the work.
-
-Select checks from the intended result and the failure they must detect. Element existence alone cannot establish readability in the rendered product. Reuse checks that already establish the result instead of adding equivalent tests. Execution timing, cost and reuse follow [check scope and scheduling](docs/CONTEXT_EFFICIENCY.md#check-scope-and-scheduling); required project/CI checks remain required.
-
-For UI and graphics, inspect and interact with a representative result in the actual product before extending a shared treatment to other instances. Check required visibility, clipping, readability and usability. Generating captures alone does not complete visual inspection; record the screens, states and limits examined. Keep agent review distinct from human review and customer acceptance.
-
-For [product assumptions](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions) such as enjoyment or usability, plan how and when actual use will inform the decision before expanding dependent work. If you defer the check, retain that decision, the risk and the later checkpoint. Expectations and estimates remain distinct from observations.
+Checks run against the subject the claim names and are chosen from the intended result and the failure they must detect. A result from a stand-in — a fixture, a copied sample, a mock — is evidence about that stand-in, and element existence alone cannot establish readability in the rendered product. For UI and graphics, a representative result in the actual product is checked before a shared treatment is extended, and [product assumptions](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions) such as enjoyment or usability get a planned check before dependent work expands. See [verification and completion](docs/WORKFLOW.md#verification-and-completion).
 
 If work is blocked, the report identifies the cause and affected scope. A handoff states what the next contributor should do and which inputs are needed.
 
-You can check for broken document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files. The checker is optional; the required document validation may use equivalent tools or manual checks under [verification guidance](docs/CONTEXT_EFFICIENCY.md#document-checker). For files named by ID, such as `REQ-001.md`, it also reports two files owning the same ID, a filename ID missing from the body, and an item that no document links to. A pass covers only these mechanical checks; content, ID allocation and trace coverage are reviewed separately.
+You can check document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files; its scope is described under [document checker](docs/CONTEXT_EFFICIENCY.md#document-checker).
 
 ### States and verification levels
 
@@ -327,11 +319,7 @@ The policy requires these states to be kept distinct. A verification record carr
 | CUSTOMER_ACCEPTED | The authorized customer explicitly accepted a specific candidate version. | Completion of handover and maintenance obligations. |
 | CLOSED | All contributing work and the acceptance, delivery, handover and maintenance obligations are settled. | Nothing. This is closure. |
 
-A subject examined without passing, one that cannot be checked because a required input is missing — a permission state, data set, environment, policy or source version — one needing rework, and one the criteria do not apply to each carry their own disposition and stay out of pass counts. A missing required input is raised as an open item so it has an owner and a next action.
-
-When a later check overturns an earlier pass, that pass is withdrawn explicitly: the record names which subjects lost their pass, keeps both the original evidence and the finding that overturned it, and states what must pass to restore it. Work that proceeded on the withdrawn basis returns to its prior state. Withdrawal preserves the history rather than erasing it.
-
-Failed, unrun, partial or stale checks are not a pass at any level. After a change, assess existing evidence for applicability and recheck the affected scope. Unaffected results can be reused with their original version/environment and the reuse basis. Metadata changes alone do not require repeating product checks; required project/CI checks remain required. See [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
+A subject examined without passing, one that cannot be checked because a required input is missing, one needing rework and one the criteria do not apply to each carry their own disposition and stay out of pass counts. When a later check overturns an earlier pass, the pass is withdrawn explicitly and its history is preserved. See [verification and completion](docs/WORKFLOW.md#verification-and-completion) and [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 ### Example result report
 
@@ -353,9 +341,9 @@ This README explains the harness for people using it. Agents apply the relevant 
 
 | To learn more about | Read |
 |---|---|
-| Overall operating principles | [Shared policy](AGENTS.md) · [Constitution](docs/CONSTITUTION.md) |
+| Overall operating principles | [Shared policy](AGENTS.md) |
 | Planning depth and existing-project analysis | [Development method](docs/DEVELOPMENT_METHOD.md) |
-| Document organization and IDs | [Information model](docs/DATA_MODEL.md) · [ID dictionary](docs/ID_DICTIONARY.md) |
+| Document organization and IDs | [Information model](docs/DATA_MODEL.md) |
 | Decisions, permissions and protection | [Approvals](docs/APPROVALS.md) · [Security](docs/SECURITY.md) |
 | Open items, progress and closure | [Workflow](docs/WORKFLOW.md) |
 | Concurrent work and handoff | [Collaboration](docs/COLLABORATION.md) |

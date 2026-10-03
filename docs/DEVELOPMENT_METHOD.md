@@ -8,18 +8,10 @@ an invented history.
 ## Stage contract
 
 For each requested stage, identify the input versions, scope, deliverables,
-dependencies, verification and exit criteria. Organize deliverables by feature
-or work unit under a project overview, following the
-[document boundaries](DATA_MODEL.md#document-organization). Keep supporting
-detail in sections of its owning file and preserve the requirement, design,
-plan, task and verification file boundaries, subject to the
-[compact documentation rules](DATA_MODEL.md#minimum-documentation-for-a-small-change).
-Use the [item-boundary criteria](DATA_MODEL.md#independent-items-and-supporting-detail)
-to distinguish parent-specific explanation from independently managed work.
-For a bounded correction, the
-[minimum documentation example](DATA_MODEL.md#minimum-documentation-for-a-small-change)
-shows how to reuse those files and update only affected content.
-Sprints are optional.
+dependencies, verification and exit criteria. Organize deliverables under the
+[document boundaries](DATA_MODEL.md#document-organization), with
+[compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change)
+for bounded work. Sprints are optional.
 
 | Stage | Inputs | Deliverables and exit criteria |
 |---|---|---|
@@ -47,11 +39,8 @@ authorizes writing its document outputs and relevant document checks; no
 placeholder project, PLAN or TASK record is needed.
 
 Under a full-workflow request, continue across ready stages within the actual
-decision and permissions. A clear direct implementation request can supply that
-decision; record its scope under [Approvals](APPROVALS.md). Prepare a proposal
-when the concrete scope is not already covered. Ask only for
-essential missing input, material choices or genuinely required authority.
-Do not add a separate approval of planning completion.
+decision and permissions under [Approvals](APPROVALS.md). Do not add a separate
+approval of planning completion.
 
 ## Planning complete and execution ready
 
@@ -334,33 +323,13 @@ Plan the remaining work from the actual baseline and report analysis coverage.
 Running unfamiliar code requires a suitable environment and applicable scope;
 static recovery does not require executing it.
 
-## Requirements, tasks and execution order
-
-Keep the [plan/task distinction](DATA_MODEL.md#plans-and-tasks) explicit:
-plans organize goals, scope, dependencies, task sequence and overall completion;
-tasks specify concrete outputs, owners, edit boundaries and completion checks.
-Before concurrent execution, confirm that these assignments, the shared folder
-mapping and non-overlapping ID allocations are visible to the participating
-writers under the [collaboration basis](COLLABORATION.md#collaboration-basis).
-
-Requirements state the intended outcomes and constraints and provide the
-primary basis for separating product scope. Apply the
-[requirement boundaries](DATA_MODEL.md#requirement-boundaries) before splitting
-documents: supporting conditions stay with their requirement, and fixes that
-restore specified behavior reference the existing REQ. Plans, tasks and
-verification connect to the requirements they cover; separate files follow
-actual work boundaries, not a mandatory set of stages per REQ.
-The agent may split, refine, reorder and move tasks within the
-reviewed scope without another decision. Several plans may share a decision,
-and ordinary documents use the project overview and feature/work boundaries.
-Refine plan-level grouping, ordering and dependencies in the plan. Refine a
-separately managed task in its owning task file; the plan updates its links
-rather than holding a second definition. A new independent feature or change
-gets the corresponding owning documents and an overview entry.
+## Execution order
 
 Follow user priorities subject to real dependencies. Explain a material
-tradeoff when priority and feasibility conflict. Keep dependencies visible;
-do not infer a global stop from an unrelated draft or a tool's single-plan model.
+tradeoff when priority and feasibility conflict. Refine plan-level grouping,
+ordering and dependencies in the plan, and a separately managed task in its
+owning task file; the plan updates its links rather than holding a second
+definition.
 
 ## Baselines and review boundaries
 
@@ -429,23 +398,11 @@ history keeps its value as history under
 unclear, resolve it as an [open item](WORKFLOW.md#open-item-lifecycle) instead
 of assuming either reading.
 
-## Change classification
-
-Apply the [material-change criteria](APPROVALS.md#material-changes) against the
-actual authorized scope; the table below describes the resulting workflow.
-
-| Change | Treatment |
-|---|---|
-| Task detail, ordering or document formatting within scope | Record useful rationale and proceed under current authority. |
-| Metadata or format migration with unchanged commitments | Preserve provenance and history; no decision solely for the format. |
-| Changed outcome, criterion, data effect, risk or delivery commitment | Prepare the material delta and obtain the actual owner decision before affected implementation. |
-| Defect or contradictory current evidence | Report honestly, assess impact and block the affected claim/work until resolved. |
-| Production, destructive, credential or final acceptance action | Apply the specific human and external control in [Security](SECURITY.md). |
-
 ## Change cycle and propagation
 
-Record the impact assessment once in the owning plan/work document and reference
-it from affected items. Identify the change and baseline, affected item IDs and
+Apply the [material-change criteria](APPROVALS.md#material-changes) against the
+actual authorized scope. Record the impact assessment once in the owning
+plan/work document and reference it from affected items. Identify the change and baseline, affected item IDs and
 reasons, required updates/work/checks, and the basis for reusing existing content
 or evidence. Follow consumers, shared contracts and dependencies across
 requirements, designs, plans, tasks and verification, including effects on
@@ -504,8 +461,7 @@ actual editing scope. In a report-only request, describe the needed amendments
 and current discrepancy without editing files. If another writer must apply an
 update, record the pending change and follow
 [coordination waits](COLLABORATION.md#coordination-waits); do not present the old
-definition as current or claim propagation complete. Harness policy maintenance
-uses its Git/conversation trace without adding decision records.
+definition as current or claim propagation complete.
 
 ### Discoveries during implementation
 
@@ -525,14 +481,3 @@ finished design for the dependent feature. Its execution still needs matching
 authority and applicable security controls. An experiment's result establishes
 only what it exercised, not product acceptance. Reuse unaffected planning and
 verification instead of restarting the whole project for a local discovery.
-
-## When to ask again
-
-Ask again when a material commitment, assumption, impact, condition or authority
-has changed beyond the authorized scope. Explain the delta. Missing essential
-input also requires clarification; a simple task split does not.
-Apply [delegated judgment](APPROVALS.md#decision-requests-and-delegated-judgment)
-before treating an undecided choice as a question for the owner.
-
-Do not renew approval merely because a plan ID or file layout differs. Do not widen an old decision to cover work
-that was never reviewed. Continue independent covered work when safe.

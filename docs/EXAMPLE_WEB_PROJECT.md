@@ -20,48 +20,19 @@ and product documents, then writes:
 | Remaining-work plan | Actual gaps, tasks, dependencies, alternatives, risk and verification. |
 
 These are information types, not a limit of one file per type. For a project
-with sign-in and search features, maintain an overview grouping each feature's
-requirements, designs, plans, tasks and verification links. Store the actual
-documents in folders by document kind, for example under `project-docs/`.
-Use the [default folder mapping](DATA_MODEL.md#folders-by-document-kind) where
-the project has no established layout, and record the mapping in its overview.
-A small search empty-state correction reuses its requirement's
-separate design, plan, task and verification files, updating affected content.
-Record the boundaries and
-link dependencies. See
-the [illustrative layout](DATA_MODEL.md#document-organization).
-
-Use requirements as the primary scope boundaries under the
-[requirement criteria](DATA_MODEL.md#requirement-boundaries). Search and export
-are distinct requirements; displaying zero for an empty search result is a
-condition of search. A correction or regression test for that count references
-the existing search REQ. Separate frontend/backend tasks may cover the same
-REQ, and a shared design or verification item may cover several REQs without
-duplicating them. Preserve those document roles, create their files when needed
-for the requested stage, and split further for actual separate work boundaries.
-
-Project deliverables normally use `<document-type>/<ID>.md` under that root,
-including the overview and shared specifications: for example
-`overview/DOC-001.md`, `requirements/REQ-001.md`,
-`plans/PLAN-001.md`, `contracts/API-001.md`, `tasks/TASK-API-001.md` and
-`changes/CHG-001.md`. A short optional description can follow the ID, for example
-`contracts/API-001-sign-in.md`; the body ID remains `API-001`. Keep one owning
-file per ID and link its actual filename. Full titles and context belong in
-the body and overview; apply [document paths](DATA_MODEL.md#document-paths)
-for slug syntax and renames.
-For a consumer-required name such as `README.md`, apply the
-[required-name exception](DATA_MODEL.md#required-name-exceptions): retain the
-required path and indexed identity instead of creating an ID-named duplicate.
+with sign-in and search features, an overview groups each feature's
+requirements, designs, plans, tasks and verification links, stored in the
+[default folders](DATA_MODEL.md#folders-by-document-kind) under `project-docs/`
+where the project has no established layout.
 
 Illustrative item trace: requirement `REQ-001` connects to design `DES-001`,
 API contract `API-001`, screen specification `SCR-PC-001` and implementation
-plan `PLAN-001`; work items might be `TASK-API-001` and `TASK-PC-001`.
-This example selects three-digit formats from the [ID dictionary](ID_DICTIONARY.md);
-retain the actual project's established IDs and meanings during intake.
-Actual documents use resolvable links to
-each item's anchor and record each task's real parent plan. A later search
-requirement gets the next available `REQ` serial, not another `REQ-001` in a
-different file. These syntax examples do not allocate IDs or establish evidence.
+plan `PLAN-001`; work items might be `TASK-API-001` and `TASK-PC-001`, stored
+as `requirements/REQ-001.md`, `contracts/API-001-sign-in.md`,
+`tasks/TASK-API-001.md` and so on. A later search requirement gets the next
+available `REQ` serial, not another `REQ-001` in a different file. Retain the
+actual project's established IDs and meanings during intake. These syntax
+examples do not allocate IDs or establish evidence.
 
 At this planning-only stopping point, record intended checks in the plans;
 actual verification reports are written when those checks are performed.
@@ -69,10 +40,6 @@ actual verification reports are written when those checks are performed.
 For example, finding pagination code supports “the current implementation has a
 pagination path.” It does not establish that pagination is a confirmed business
 requirement or that its tests pass. Keep proposed behavior separate.
-
-The document request authorizes those files and their relevant checks;
-unrelated implementation or product-code execution is outside this scope.
-Report document coverage and open items at this stopping point.
 
 ### Compact planning example
 
@@ -106,12 +73,6 @@ Unchanged requirement, design and overview files need no edit.
 A requested help-text addition with supplied wording can use the same compact
 path. A new public export contract triggers detailed planning for that scope.
 The distinction follows consequences and dependencies, not the number of files.
-
-When the correction completes, update its task and evidence.
-The parent keeps its task link; it needs no copied completion count.
-Move its resumption pointer only if work moves to another item.
-For progress, read the linked task under
-[summary ownership](DATA_MODEL.md#summary-ownership-and-updates).
 
 ### Small correction without existing management documents
 
@@ -161,19 +122,12 @@ Project entry links lead to this work document. It is the next session's entry p
   expected/observed results, artifacts and limits only when checks run. Keep
   failures and unrun checks visible, separate from planned checks and old results.
 
-If a later conversation changes a governing decision, preserve its source and
-update the affected current section before dependent work continues. A change
-note alone must not leave conflicting instructions for the next session.
-
 This needs no additional DOC, REQ, DES, PLAN or VER file just to fill those roles.
-Where any such owner already exists, reuse it instead of moving or copying its
-definition here. If scope expands to a new export requirement or work assigned
-to several writers, establish a separate overview and the necessary independent
-owners before that work starts. Transfer current shared context and allocations
-to the overview and link it from the original task. Retain the correction's ID,
-history and evidence; if the task is closed, add the link in a dated amendment.
-No whole-application reconstruction or invented historical approval is needed.
-This example demonstrates documentation scope, not product success.
+If scope expands to a new export requirement or work assigned to several
+writers, establish a separate overview under the
+[expansion rule](DATA_MODEL.md#minimum-documentation-for-a-small-change) before
+that work starts. This example demonstrates documentation scope, not product
+success.
 
 ### Detailed planning example
 
@@ -221,51 +175,25 @@ When checking and incorporating the answer finish together, one closure entry
 can link the checked owner response/version, the updated contract, design, task
 and planned check, and state: "CLOSED: missing total uses the invalid-response
 state; the planning gap is removed; implementation and product verification
-remain pending." Record the actual actor and date/version. The follow-up owner,
-scope and review trigger may be inherited from the parent when unambiguous;
-only differing values need local fields. Preserve earlier question/response
-history without repeating the same evidence for RESOLVED and CLOSED. If the
-contract update is still pending, keep RESOLVED and its next action instead.
-This is a fictional record shape, not an actual decision or test result.
-
-If the owner instead defers the question, retain the unresolved state and
-blocking effect, with the next action and review trigger. A delayed answer does
-not complete the display plan. If the question duplicates a shared issue,
-reference that issue and its owner; the display work keeps that dependency even
-if the duplicate entry is closed. A handoff carries the surviving item and its
-current resolution criterion, owner, needed-by point and next action.
+remain pending." This is a fictional record shape, not an actual decision or
+test result.
 
 ## 2. Prepare one concrete implementation decision
 
-For a clear direct request such as “Fix the empty search result count to show
-zero and check non-empty results,” record the actual request/source and derived
-scope. Establish the outcome and acceptance criteria, affected components/data,
-exclusions, dependencies, feasible approach, risks and checks, then proceed
-when prerequisites are ready under the [clear-request criteria](APPROVALS.md#clear-implementation-requests).
-The request supplies the scope decision; no second proceed response is needed.
-
-When the request leaves an uncovered material choice or scope, present the
-concrete proposal and its version for the owner's decision. Record the actual
-response, such as “Proceed with this scope,” and its source. Do not copy these
-examples as real decisions. Reuse applicable decisions across plans/tasks;
-high-risk actions retain their specific authority and external controls.
-For explicitly delegated choices, apply the recorded limits under
-[delegated judgment](APPROVALS.md#decision-requests-and-delegated-judgment).
+A clear direct request such as “Fix the empty search result count to show zero
+and check non-empty results” supplies the scope decision under the
+[clear-request criteria](APPROVALS.md#clear-implementation-requests). Record the
+request and derived scope, then proceed when prerequisites are ready; no second
+proceed response is needed. When a request leaves an uncovered material choice,
+present the concrete proposal and record the actual response, such as “Proceed
+with this scope,” with its source. Do not copy these examples as real decisions.
 
 ## 3. Implement across several plans
 
-Within a feature, one plan may group frontend and API task links in sections.
-Each separately managed task has its own file; separate plans are appropriate
-when their scope, ownership or verification needs independent tracking. The
-overview indexes the documents, and each work item identifies dependencies
-and verification. A small shared scope does not merge separate task definitions.
-Before starting, the agent checks coverage, input readiness, ownership and
-external permissions.
-
-Task splitting or order changes within scope do not require another decision.
-A new production data migration or changed acceptance criterion is a material
-delta with its own applicable authority. Concurrent writers agree non-overlapping
-ownership; a single writer needs no claim record.
+Within a feature, one plan may group frontend and API task links in sections;
+each separately managed task has its own file. A new production data migration
+or changed acceptance criterion is a material delta with its own applicable
+authority; task splitting or reordering within scope is not.
 
 When an API task finishes and its UI task comes next, the API task owns its
 execution status and links the actual verification. The plan's resumption
@@ -276,10 +204,6 @@ current basis after a covered implementation request. Keep the original
 planning-only decision in dated history.
 
 ## 4. Verify and handle feedback
-
-Run the agreed relevant checks on the candidate and report the actual version,
-environment and result. Static review, integration tests and browser verification
-are distinct. An unavailable environment is a limit, not a pass.
 
 Schedule a task's changed API checks with that task and the combined browser
 flow after API and UI integration. Run required release coverage at its required
@@ -296,19 +220,14 @@ For a displayed total, use the contract's expected value rather than calling
 the formatter under test to calculate the expectation. Both choices follow
 [claim-based verification](WORKFLOW.md#verification-and-completion).
 
-For feedback, preserve the previous candidate and observations. Assess the
-change, obtain a decision for a material delta when needed, and reverify affected
-outputs. Unrelated historical evidence stays visible without automatically
-stopping independent work.
+For feedback, preserve the previous candidate and observations. Obtain a
+decision for a material delta when needed, then reverify the affected outputs.
 
 ## 5. Accept, deliver and close
 
-The authorized customer supplies final acceptance for the identified candidate
-when the contract requires it. Production deployment uses the specific human
-decision and an independently controlled deployment boundary; a development
-decision or agent test report cannot replace either.
-
-Aggregate frontend/API work, actual decisions, current evidence, delivery,
-handover and maintenance obligations into a release inventory. Several plans
-can contribute. A Markdown handoff is
-sufficient if the delivery contract accepts it.
+Where the contract requires acceptance, the authorized customer accepts the
+identified candidate. Production deployment uses its specific human decision
+and an independently controlled deployment boundary. A development decision or
+agent test report replaces neither. A release inventory aggregates the frontend/API work, actual
+decisions, current evidence, delivery, handover and maintenance obligations
+from every contributing plan.

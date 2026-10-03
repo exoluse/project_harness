@@ -5,33 +5,21 @@ writes; it does not create execution authority.
 
 ## Collaboration basis
 
-All participating agents use the same plan/task boundaries, directory mapping
-and document-ID convention, regardless of their tool. Make the following clear
-in the existing overview and linked plan/task documents before concurrent work:
+All participating agents share the same plan/task boundaries, directory mapping,
+ID convention and allocation arrangement, regardless of their tool. Before
+concurrent work, make these clear in the existing overview and linked plan/task
+documents:
 
-| Basis | Shared information |
-|---|---|
-| Plans and tasks | Plans organize goals, scope, dependencies, task order and overall completion criteria. Each task states its concrete output, writer, affected paths/logical resources and completion checks, and links its plan and required inputs. |
-| Directory structure | The overview records the document root and type-to-folder mapping. Choose names and nesting for the project, reuse them consistently and identify each writer's actual edit scope. |
-| Markdown filenames and serials | Each independent item owns one `<ID>.md` or `<ID>-<slug>.md` file in its mapped folder, subject to documented required-name exceptions. Follow the shared format table, allocation arrangement and [ID rules](DATA_MODEL.md#item-ids), including the limited exception for provisional branch IDs. |
+- [plans and tasks](DATA_MODEL.md#plans-and-tasks), with each task's writer and
+  actual edit scope;
+- the document root and [folder mapping](DATA_MODEL.md#folders-by-document-kind);
+- the [ID format table](DATA_MODEL.md#item-ids) and the
+  [allocation arrangement](DATA_MODEL.md#allocation-and-validation-reuse).
 
-Use the [requirement boundaries](DATA_MODEL.md#requirement-boundaries) as the
-shared basis for product scope. Writers working on the same requirement link
-the same REQ; a task assignment or handoff does not create another requirement.
-See [plans and tasks](DATA_MODEL.md#plans-and-tasks) and the
-[ID convention](DATA_MODEL.md#item-ids). Folder and prefix examples are starting
-choices; agents extend the shared mapping for actual needs. One directory can
-contain several writers' files when their edit scopes do not overlap.
-
-Before allocating concurrently, record the shared arrangement under
-[allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse). Use
-non-overlapping ranges or allocation-scope ownership, including the parent for
-child counters, unless the tracker or isolated-branch exception applies.
-Separate checkouts follow that arrangement; only the
-[branch exception](DATA_MODEL.md#branch-allocation-and-collision-repair) permits
-temporary collisions of new provisional IDs and repair before integration.
-Do not introduce agent-specific prefixes for the same document type. Keep IDs
-stable through reassignment, and never reuse retired IDs.
+Writers on the same requirement link the same REQ; a task assignment or handoff
+does not create another requirement. One directory can contain several writers'
+files when their edit scopes do not overlap. Do not introduce agent-specific
+prefixes for the same document type.
 
 Include the overview (root and [area overviews](DATA_MODEL.md#area-overviews)
 when used), shared specifications and Git integration in the ownership
@@ -52,15 +40,6 @@ contracts may then change through the same reviewed merge; no separate owner
 table is needed in the overview. Record the arrangement once in the overview.
 Writers sharing one checkout or one allocation record still need the explicit
 assignments above.
-
-## Single writer
-
-A single writer needs no claim system or placeholder handoff. Use the
-[single-writer allocation rule](DATA_MODEL.md#allocation-and-validation-reuse)
-when no delegated ranges or outstanding reservations remain.
-Inspect dirty files before writing and preserve user/unknown changes. Use a
-concise task list and progress notes sufficient to explain what was changed
-and what remains.
 
 ## Concurrent writers
 
@@ -121,18 +100,20 @@ run one writing subagent at a time and use read-only subagents for parallel
 work. User instructions or tool rules that limit or prohibit delegation remain
 binding.
 
-## Formal records for a single writer
-
-A requested result or handoff can be an ordinary document when the agreed
-delivery contract accepts it. Record the real baseline, changed paths, decisions,
-checks, observations, limits, unfinished work and next action.
-
 ## Transfer and integration
 
-At transfer, identify the actual owner, input/output versions, dirty work,
-applicable decisions, failed or unrun checks, outstanding obligations and next
-steps. The recipient checks applicability and permissions in the new environment;
-a handoff does not widen the original decision.
+At transfer, identify the actual owner, objective and stopping point,
+input/output versions, dirty work, completed work and changed paths, applicable
+decisions, checks run with their results, failed or unrun checks, limits,
+outstanding obligations and next action. Apply
+[current-state updates](WORKFLOW.md#updating-current-work-state) before the
+receiver relies on the entry pointers. A Markdown handoff is sufficient when
+the delivery contract accepts it.
+
+The recipient checks applicability and permissions in the new environment. A
+handoff or a Git transfer does not by itself establish current permissions,
+decision provenance or protected credentials, and it does not widen the
+original decision.
 
 Carry links to retained open items with their current state, blocking impact,
 resolution criterion, owner, next action and needed-by/review trigger. Include
@@ -154,7 +135,3 @@ before committing, and leave another writer's uncommitted files unstaged,
 uncommitted and unreverted, handing them back under
 [concurrent writers](#concurrent-writers). Where a tool stages automatically,
 inspect the staged set and unstage what the item did not change.
-
-Before a normal authorized push, fetch the configured remote and preserve both
-histories. Force/tag pushes, branch deletion, different targets and published
-history rewrites need separate explicit authorization.
