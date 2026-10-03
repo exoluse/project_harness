@@ -137,7 +137,7 @@ a gap. Keep the requested stopping point and actual implementation authority.
    item. Include integration and affected regression checks. Apply
    [claim-based verification](WORKFLOW.md#verification-and-completion) to ensure
    the checks can distinguish a correct result from the relevant failure. Use the
-   [recorded project conventions](DATA_MODEL.md#suggested-information) or known
+   [recorded check commands](DATA_MODEL.md#suggested-information) or known
    commands/targets where available; otherwise specify the check to create and
    how it will run. State unrun checks as planned, including any unavailable
    environment or permission. Apply [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling)
@@ -303,8 +303,9 @@ distinguishes agent review, observed use and customer acceptance.
 
 Preserve the intake commit or snapshot and identify dirty/unknown work before
 editing. Record analysis boundaries, available sources, actual progress,
-known verification/deployment status and the observed build, test and check
-conventions under [project conventions](DATA_MODEL.md#suggested-information).
+known verification/deployment status and the observed stack and build, test
+and check commands under the
+[project entry and conventions](DATA_MODEL.md#suggested-information).
 Existing documents and tools remain inputs; resolve conflicting project rules
 explicitly. Some material is kept for communication, superseded by a later
 decision or scheduled for replacement. Such material is designated under

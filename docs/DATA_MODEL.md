@@ -54,7 +54,13 @@ binding.
 | Information | Minimum useful content |
 |---|---|
 | Project note | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
-| Project conventions | Build, test and static-check commands, verification environments, integration/branch model and quality criteria that are actually decided or observed, with their source/version. Record each when it is decided or found at intake, not as a placeholder; verification records reference them. |
+| Project entry | Stack and runtime versions, build, test and static-check commands with the environment each runs in, the top-level code layout and writer rules no other record owns. The project's [root instruction file](#project-instruction-files) owns these. |
+| Project conventions | Integration/branch model, quality criteria and shared verification environments, such as staging or a live-equivalent environment. The project overview owns these. |
+
+Record entry and convention facts that are actually decided or observed, with
+their source/version. Record each when it is decided or found at intake, not as
+a placeholder, and mark an undecided one as undecided. Other records,
+including verification records, link them instead of copying them.
 
 Other records take their content from the rules that own them:
 
@@ -91,7 +97,8 @@ requirements and architecture, baseline, resumption links and an index of units.
 It also states the document and item-ID convention, including agent-selected
 extensions and any allocation ownership. It records the
 [project conventions](#suggested-information) once they are decided or
-observed, and states an undecided convention as such.
+observed, and states an undecided convention as such. It links the project
+entry for the stack and check commands.
 Each index entry states its scope and material dependencies and links the unit's
 owning documents. Follow those links for current status under
 [summary ownership](#summary-ownership-and-updates).
@@ -283,7 +290,7 @@ before either starts.
 
 **Completion checks.** Record the actual commands or check targets and the
 environment they run in, referencing the
-[project conventions](#suggested-information) where they exist. A resuming
+[project entry and conventions](#suggested-information) where they exist. A resuming
 writer or a separate auditor then runs the same check instead of inventing an
 equivalent one.
 
@@ -857,7 +864,8 @@ the overview when all of these hold:
 Use the work item's ID and kind folder; no additional DOC ID or overview file
 is needed. Keep its bounded objective, baseline and analysis limits near the
 start. Record only the document root, folder/ID conventions and allocation basis
-actually needed, plus known check commands and environments. The normal identity,
+actually needed. Hold known check commands and environments here only while the
+project has no root instruction file to own them. The normal identity,
 allocation and validation rules still apply. Entry links point to this document;
 its owned sections satisfy overview references without duplicating task state.
 
@@ -903,24 +911,25 @@ required name does not need an additional approval ceremony.
 
 A project's own root instruction file is the `AGENTS.md`, `CLAUDE.md` or tool
 adapter a session loads before it reads anything else. It is the one document
-whose cost is paid in every session. Use it for what the work cannot start
-without and what rarely changes:
+whose cost is paid in every session. It owns the
+[project entry](#suggested-information), the facts the work cannot start
+without and that rarely change:
 
 - the stack and runtime versions actually in use;
-- the real build/test/static-check commands and the environments they run in;
-- the top-level code and document layout;
-- the conventions a writer would otherwise violate;
-- any material the project has designated
-  [non-authoritative](DEVELOPMENT_METHOD.md#non-authoritative-inputs).
+- the real build/test/static-check commands and the environment each runs in;
+- the top-level code layout;
+- writer rules that no other record owns.
 
-These are the [project conventions](#suggested-information) placed where they
-are needed. Record each when it is decided or found at intake, not as a
-placeholder.
+Where several tools are used, keep the project entry in one of their files and
+let the others route to it. Where a project has no root instruction file yet,
+its overview holds the project entry until one exists. Then move the entry and
+leave a link.
 
-Add a short entry pointer to the project overview and the owning
-[resumption state](#resumption-state) for work in progress. Keep separate pointers
-for separate streams or [areas](#area-overviews) instead of merging them into
-one list. Link the current position and ordered reading list there without
+Add a short entry pointer to the project overview, its
+[non-authoritative](DEVELOPMENT_METHOD.md#non-authoritative-inputs) designations
+and the owning [resumption state](#resumption-state) for work in progress.
+Keep separate pointers for separate streams or [areas](#area-overviews) instead
+of merging them into one list. Link the current position and ordered reading list there without
 maintaining another copy of task status in the entry file.
 For an eligible [compact work document](#minimum-documentation-for-a-small-change)
 serving as the overview, the entry route points to that document and its sections.
@@ -930,9 +939,9 @@ the entry route against the project's actual state:
 
 - The root instruction file reaches the project overview and, where work is
   active, its current resumption record.
-- The stack, actual check commands and code/document paths are available here
-  or through precise links to their owning project conventions. Mark undecided
-  conventions honestly; do not invent commands to complete setup.
+- The stack, actual check commands and top-level code layout are recorded
+  here, and the overview's conventions are linked. Mark undecided entries
+  honestly; do not invent commands to complete setup.
 - The project's landing README introduces the project and links its overview.
   Link the harness usage guide separately, preserving existing guidance and
   required entry names when integrating it.
@@ -940,7 +949,7 @@ the entry route against the project's actual state:
 These checks apply to authorized adoption or instruction maintenance. A read-only
 review reports missing entry information without creating files.
 
-Keep owning content out of it. An entry file that accumulates requirement
+Keep other owning content out of it. An entry file that accumulates requirement
 decisions, item-level instructions or verification gates becomes a second
 owning definition that drifts from the first. Every session also loads it in
 full, including the sessions it has nothing to do with. Move such content to

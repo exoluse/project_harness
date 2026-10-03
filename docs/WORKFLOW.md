@@ -305,12 +305,12 @@ to mirror an implementation or increase counts. Required project/CI checks remai
 
 **Name the check concretely.** Give the actual command or check target and the
 environment it runs in. Reference the
-[project conventions](DATA_MODEL.md#suggested-information) recorded in the
-overview where they exist.
+[project entry and conventions](DATA_MODEL.md#suggested-information) where
+they exist.
 
-Where no convention is recorded, record the command and environment actually
-used, and state that the convention is undecided. Track it under the
-[open-item lifecycle](#open-item-lifecycle) once a verification-level claim,
+Where none is recorded, record the command and environment actually used, and
+state that the project has not decided them. Track that under the
+[open-item lifecycle](#open-item-lifecycle) once a verification claim,
 dependent work or handoff relies on it. Do not invent one.
 
 **Keep completion evidence reproducible.** Identify the actual tested output,
