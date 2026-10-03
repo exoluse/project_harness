@@ -44,6 +44,12 @@ separate owner table is needed in the overview. Record the arrangement once in
 the overview. Writers sharing one checkout or one allocation record still need
 the explicit assignments above.
 
+The tracker numbers only the kinds whose registered format embeds its key.
+Other kinds, such as requirements and open items, still need a concurrent-writer
+[allocation arrangement](DATA_MODEL.md#allocation-and-validation-reuse), such as
+delegated ranges or provisional branch IDs. Record it with the arrangement
+above.
+
 ## Concurrent writers
 
 Agree owners and non-overlapping paths and logical resources before concurrent

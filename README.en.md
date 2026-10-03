@@ -164,9 +164,9 @@ Name the area during planning; later requests can use the item records. A featur
 > Task numbers use 〈the GitHub issue number〉, and task assignment and status live in 〈GitHub Issues〉.
 > Record the areas, ID formats, where task status lives and how changes land in the overview.
 
-The agent records the area list, ID format table, tracker designation and change flow in the overview. Later requests use the recorded area, and the designated tracker allocates numbers. With separate worktrees and branches, issue assignees and reviewed pull-request merges as in this example, no separate owner table is needed. Shared documents can change within authorized scope through the same merge process.
+The agent records the area list, ID format table, tracker designation and change flow in the overview. Later requests use the recorded area, and the designated tracker allocates task numbers. Requirements, open items and other kinds the tracker does not number still need an allocation arrangement for concurrent writers, such as delegated ranges or provisional branch IDs; the agent records that too. With separate worktrees and branches, issue assignees and reviewed pull-request merges as in this example, no separate owner table is needed. Shared documents can change within authorized scope through the same merge process.
 
-If the team chooses allocation on separate branches without a tracker, new IDs are provisional until first integration. Fetch cannot prevent simultaneous allocations, so the later-integrated item's provisional ID and references are repaired if they collide, retaining a mapping to earlier records. Established IDs stay unchanged. See the conditions for [branch allocation](docs/DATA_MODEL.md#branch-allocation-and-collision-repair).
+With allocation on separate branches, for kinds the tracker does not number or for a team without a tracker, new IDs are provisional until first integration. Fetch cannot prevent simultaneous allocations, so the later-integrated item's provisional ID and references are repaired if they collide, retaining a mapping to earlier records. Established IDs stay unchanged. See the conditions for [branch allocation](docs/DATA_MODEL.md#branch-allocation-and-collision-repair).
 
 **Join and check the current state**
 

@@ -663,7 +663,8 @@ Two arrangements need no range or owner record:
 - A registered format may take its serial from a designated
   [external work tracker](#external-work-trackers) key, such as
   `TASK-{area}-{issue}`. The tracker then allocates, and the overview records
-  the format and tracker.
+  the format and tracker. Kinds without such a format, such as `REQ` or `OI`,
+  still need one of the other arrangements.
 - Writers on separate branches may use a per-scope next serial with provisional
   IDs and collision repair, under
   [branch allocation](#branch-allocation-and-collision-repair).
