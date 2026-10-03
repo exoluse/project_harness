@@ -216,7 +216,8 @@ Its owning task file is named under the project's ID convention and records:
 - the expected output, and the accountable writer or that it is unassigned;
 - the affected paths and logical resources, and the inputs the work reads;
 - parent plan and input links, and prerequisites;
-- current status, ordered actions and concrete completion checks;
+- current [state](WORKFLOW.md#task-states), ordered actions and concrete
+  completion checks;
 - the current execution mode and the declared stop conditions.
 
 Supply or link the implementation details and verification scenarios required

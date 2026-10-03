@@ -304,20 +304,22 @@ If work is blocked, the report identifies the cause and affected scope. A handof
 
 You can check document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. It needs only Node and changes no files; its scope is described under [document checker](docs/CONTEXT_EFFICIENCY.md#document-checker).
 
-### States and verification levels
+### States and verification kinds
 
-The policy requires these states to be kept distinct. A verification record carries the actual method, environment, subject version, result and limits alongside the label, so the label alone is never the judgment.
+The policy requires these to be kept distinct. A record carries the actual method, environment, subject version, result and limits alongside each label, so the label alone is never the judgment. The definitions are in [task states](docs/WORKFLOW.md#task-states) and [verification and completion](docs/WORKFLOW.md#verification-and-completion).
 
-| State | Meaning | What it does not prove |
+**Task states.** A task is PLANNED, IN_PROGRESS, BLOCKED, IMPLEMENTED (changes made, completion checks not all run), DONE (its own completion checks passed) or CANCELLED. DONE does not mean acceptance or closure.
+
+**Verification kinds.** These are separate kinds, not steps on one scale. A browser check does not imply an integration check.
+
+| Kind | Meaning | What it does not prove |
 |---|---|---|
-| Planning complete | The planning completion checks passed: source coverage, executable detail and dispositions for unknowns. | Authority to execute. A scope decision and ready prerequisites are still needed. |
-| IMPLEMENTED | The code or document change is done. | Any check may still be unrun. |
 | STATIC_VERIFIED | Checks that need no execution passed, such as compilation, static analysis and document or link checks. | Actual behavior or integration. |
 | INTEGRATION_VERIFIED | Connected components were run together in a check environment. | Real screen behavior or the live environment. |
 | BROWSER_VERIFIED | Confirmed through a real browser or user interface. | Live-environment data and configuration. |
 | LIVE_ENV_VERIFIED | Confirmed in the live environment or one equivalent to it. | Customer acceptance. |
-| CUSTOMER_ACCEPTED | The authorized customer explicitly accepted a specific candidate version. | Completion of handover and maintenance obligations. |
-| CLOSED | All contributing work and the acceptance, delivery, handover and maintenance obligations are settled. | Nothing. This is closure. |
+
+**Beyond verification.** Planning complete means the planning completion checks passed; it is not authority to execute. CUSTOMER_ACCEPTED means the authorized customer explicitly accepted a specific candidate version; it does not complete handover or maintenance obligations. CLOSED always names what was closed: an open item, a release or the project. Project closure means all contributing work and the acceptance, delivery, handover and maintenance obligations are settled.
 
 A subject examined without passing, one that cannot be checked because a required input is missing, one needing rework and one the criteria do not apply to each carry their own disposition and stay out of pass counts. When a later check overturns an earlier pass, the pass is withdrawn explicitly and its history is preserved. See [verification and completion](docs/WORKFLOW.md#verification-and-completion) and [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
@@ -327,7 +329,7 @@ After taking the "lock the account after five failed sign-ins" task through veri
 
 > **Scope completed**: TASK-AUTH-003 under REQ-005 (account lockout). Lock counter, lock response and lock notice text. Other tasks in PLAN-002 untouched.
 >
-> **Actually verified**: commit 9f3e21a, local Node 20 environment. `npm test`: 47 passed. Before-lock, at-lock and after-unlock scenarios confirmed by integration tests. State: INTEGRATION_VERIFIED. No browser check performed.
+> **Actually verified**: commit 9f3e21a, local Node 20 environment. `npm test`: 47 passed. Before-lock, at-lock and after-unlock scenarios confirmed by integration tests: INTEGRATION_VERIFIED. No browser check performed. Task state: IMPLEMENTED, because contract test CT-API-001-02 cannot run yet.
 >
 > **Remaining**: API-001 still lacks the lock-status response field, recorded as OI-003, follow-up by minsu, needed before the next integration. Unlock notification is out of scope. Next action: run contract test CT-API-001-02 once API-001 is updated.
 

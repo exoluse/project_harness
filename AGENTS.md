@@ -56,7 +56,7 @@ ends at the first `## ` heading, to choose the sections for the work.
 | Treat material as communication-only, superseded or to be replaced | [Non-authoritative inputs](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs) and the designation recorded in the owning overview or plan. |
 | Create, revise or declare a plan complete | [Planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth) and the applicable procedure and completion checks. |
 | Establish scope, interpret delegation, change commitments, cancel or resume | Relevant [Approvals](docs/APPROVALS.md) criteria, including [delegated judgment](docs/APPROVALS.md#decision-requests-and-delegated-judgment), and the actual request/decision. |
-| Start/transition work, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure, including [closure preparation](docs/WORKFLOW.md#closure-preparation), and owning project records. |
+| Start/transition work, change a task's state, resolve open items or close a release | Relevant [Workflow](docs/WORKFLOW.md) procedure, including [task states](docs/WORKFLOW.md#task-states) and [closure preparation](docs/WORKFLOW.md#closure-preparation), and owning project records. |
 | Resume work, move its position or hand it off | [Resumption state](docs/DATA_MODEL.md#resumption-state), [current work state](docs/WORKFLOW.md#updating-current-work-state) and [work-item readiness](docs/WORKFLOW.md#scope-decisions-and-work-item-readiness). |
 | Record a disposition short of PASS, or withdraw an overturned pass | [Verification and completion](docs/WORKFLOW.md#verification-and-completion) and the owning verification records. |
 | Report project progress or requirement trace coverage | [Status and trace reporting](docs/WORKFLOW.md#status-and-trace-reporting) and the owning project records. |
@@ -142,8 +142,10 @@ work and required external records keep their normal rules.
 Preserve original decisions, versions, observations and limits. Assess their
 current applicability separately; changed outputs do not erase valid history.
 
-- Keep IMPLEMENTED, STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED,
-  LIVE_ENV_VERIFIED, CUSTOMER_ACCEPTED and CLOSED distinct.
+- Keep these distinct: the [task state](docs/WORKFLOW.md#task-states)
+  IMPLEMENTED; the [verification kinds](docs/WORKFLOW.md#verification-and-completion)
+  STATIC_VERIFIED, INTEGRATION_VERIFIED, BROWSER_VERIFIED and
+  LIVE_ENV_VERIFIED; CUSTOMER_ACCEPTED; and CLOSED for a named subject.
 - Failed, unrun, partial, ambiguous or stale evidence is not PASS. Documents
   do not prove product success, and a check against a stand-in proves only
   that stand-in.

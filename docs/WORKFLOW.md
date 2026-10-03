@@ -71,6 +71,28 @@ This establishes the starting state and its limits. It grants no authority and
 does not replace [work-item readiness](#scope-decisions-and-work-item-readiness)
 or the [collaboration basis](COLLABORATION.md#collaboration-basis).
 
+## Task states
+
+Record a task's current state with these meanings. Equivalent project or
+tracker labels are acceptable once the overview states their mapping. The state
+describes the task's own progress. Its execution mode, blockers and evidence
+stay with their owners and are linked.
+
+| State | Meaning |
+|---|---|
+| PLANNED | Defined and not started. |
+| IN_PROGRESS | Work is underway, including rework after a failed completion check. |
+| BLOCKED | Work cannot start or continue until a named prerequisite, input or decision arrives, including a pause. Link where the blocker is recorded; a parent-specific question may stay in the task under [open items](DATA_MODEL.md#open-items). |
+| IMPLEMENTED | The task's changes are made, but its completion checks have not all run. Link what keeps a check from running. |
+| DONE | The task's declared completion checks passed on an identified version, with linked evidence. |
+| CANCELLED | An actual owner decision cancelled the task or excluded it from scope. Link that decision. |
+
+DONE covers only the task's own completion checks. It does not establish a
+plan's outcome, another verification kind, acceptance or closure. A failed
+completion check returns the task to IN_PROGRESS. A later check that overturns
+DONE follows [pass withdrawal](#verification-and-completion). The task then
+returns to the state the evidence supports.
+
 ## Open-item lifecycle
 
 Apply this procedure to unresolved items from discovery through maintenance.
@@ -223,7 +245,7 @@ the current instructions before the next action relies on them.
    navigation change. Replace affected duplicate current claims with owner links
    under [summary ownership](DATA_MODEL.md#summary-ownership-and-updates).
 
-A task status change alone requires no parent update or separate status report.
+A task state change alone requires no parent update or separate status report.
 Preserve history through versions or dated records. Follow owning records before
 dependent work; reducing duplicate text does not remove a prerequisite.
 
@@ -315,6 +337,25 @@ Where the claim is about real behavior, run the check against the real artifact
 and record which one. State what the check covered. Where a subject has
 repeated or multiple instances, name the instances actually examined; a spot
 check is not a whole-subject result.
+
+**Record which kind each check establishes.** The kinds are distinct, not steps
+on one scale. A browser check need not establish integration, and an
+integration check need not exercise a user interface.
+
+| Kind | Established by | Does not establish |
+|---|---|---|
+| STATIC_VERIFIED | Checks that do not run the product, such as compilation, static analysis and document or link checks. | Behavior, integration or live-environment success. |
+| INTEGRATION_VERIFIED | Running the connected components together in a check environment. | Behavior in a real user interface, or in the live environment. |
+| BROWSER_VERIFIED | Exercising the product through a real browser or user interface. | Live-environment data, configuration or load. |
+| LIVE_ENV_VERIFIED | Checking in the live environment or one declared equivalent to it. | Customer acceptance. |
+
+Each kind holds only for its subject, version and environment, and only for
+what the check observed. Equivalent project labels are fine where their mapping
+is stated. IMPLEMENTED is a [task state](#task-states). CUSTOMER_ACCEPTED is the
+authorized customer's acceptance of an identified candidate. CLOSED is the
+closure of a named subject, such as an open item, a release or a project. None
+of these three is a verification kind. Name the subject whenever CLOSED is
+reported.
 
 **Check visible and interactive results early.** For product changes affecting
 appearance or interaction, inspect the actual product rendering and exercise
@@ -430,8 +471,8 @@ coverage judgments.
 |---|---|
 | Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
 | Stage summary | Derive the current stage and active work from owning records reached through the overview. Identify stale copied summaries as discrepancies. |
-| Requirement trace | One row per in-scope requirement. The row shows the covering design/contract and plan, plus the tasks with their statuses. It also shows verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
-| Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
+| Requirement trace | One row per in-scope requirement. The row shows the covering design/contract and plan, plus the tasks with their [states](#task-states). It also shows verification records with each [verification kind](#verification-and-completion) reached and its subject version, acceptance, and blocking open items. Unrun, failed, partial or stale verification is reported as such, not as a weaker pass. |
+| Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with at least one task and every non-cancelled task DONE; with evidence of each verification kind; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
 | Gaps and discrepancies | Requirements without covering design or work. Work, contracts or verification missing their requirement/source trace under the item-boundary rules. Unresolved links or IDs. Summaries that contradict owning records. Evidence whose subject version predates later changes to that subject. Open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
