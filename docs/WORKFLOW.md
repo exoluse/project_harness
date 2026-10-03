@@ -89,9 +89,16 @@ stay with their owners and are linked.
 
 DONE covers only the task's own completion checks. It does not establish a
 plan's outcome, another verification kind, acceptance or closure. A failed
-completion check returns the task to IN_PROGRESS. A later check that overturns
-DONE follows [pass withdrawal](#verification-and-completion). The task then
-returns to the state the evidence supports.
+completion check returns the task to IN_PROGRESS, or to BLOCKED when the
+correction belongs to [another item](#fixes-across-work-item-boundaries). A
+later check that overturns DONE follows
+[pass withdrawal](#verification-and-completion). The task then returns to the
+state the evidence supports.
+
+Where a designated tracker cannot express a state, such as IMPLEMENTED versus
+DONE in a tracker with only open and closed, the mapping names the states it
+merges. Reports then derive the finer state from the linked evidence and mark
+it as derived. A closed item without linked passing checks is not DONE.
 
 ## Open-item lifecycle
 
@@ -472,7 +479,7 @@ coverage judgments.
 | Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
 | Stage summary | Derive the current stage and active work from owning records reached through the overview. Identify stale copied summaries as discrepancies. |
 | Requirement trace | One row per in-scope requirement. The row shows the covering design/contract and plan, plus the tasks with their [states](#task-states). It also shows verification records with each [verification kind](#verification-and-completion) reached and its subject version, acceptance, and blocking open items. Unrun, failed, partial or stale verification is reported as such, not as a weaker pass. |
-| Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with at least one task and every non-cancelled task DONE; with evidence of each verification kind; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
+| Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with at least one non-cancelled task and every non-cancelled task DONE; with evidence of each verification kind; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
 | Gaps and discrepancies | Requirements without covering design or work. Work, contracts or verification missing their requirement/source trace under the item-boundary rules. Unresolved links or IDs. Summaries that contradict owning records. Evidence whose subject version predates later changes to that subject. Open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
@@ -570,15 +577,17 @@ material delta when it does not. Check actual dependencies and ownership, fix,
 verify and report the outcome. Urgency does not create consent.
 
 Production rollback/redeployment, data repair, destructive actions and credential
-access retain their specific human and external controls. Keep failed attempts
+access keep the decisions and controls that
+[Security](SECURITY.md#five-high-risk-boundaries) sets for each. Keep failed attempts
 and the actual recovery history.
 
 ## Starting over
 
 Reset requires an explicit current user request. Prepare a dry run describing
 the exact target paths, affected committed/uncommitted records, recoverable
-copies and preserved decision history. Apply the applicable destructive-operation
-human/external boundary. Never reset to silence diagnostics.
+copies and preserved decision history. Apply the destructive-operation boundary
+in [Security](SECURITY.md#five-high-risk-boundaries). Never reset to silence
+diagnostics.
 
 Verify recoverability, including uncommitted records, before destructive work.
 

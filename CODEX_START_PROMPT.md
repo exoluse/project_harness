@@ -35,8 +35,9 @@ reads one `AGENTS.md` per directory from the project root down to the working
 directory and has no documented import syntax. The root file therefore names
 the [harness copy](docs/DATA_MODEL.md#harness-copy). It tells the session to
 read the policy and this adapter there, such as `harness/AGENTS.md` and
-`harness/CODEX_START_PROMPT.md`, before acting. It also holds the project entry
-or routes to the file that does.
+`harness/CODEX_START_PROMPT.md`, before acting. Address that line to Codex,
+since a root `CLAUDE.md` may import the same file. The root file also holds the
+project entry or routes to the file that does.
 
 Codex stops adding instruction files once their combined size reaches
 `project_doc_max_bytes`, 32 KiB by default. A short root entry file stays well

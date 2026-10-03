@@ -47,7 +47,8 @@ import that file as well with `@AGENTS.md`. Claude Code reads a root
 Otherwise write the project entry in the root `CLAUDE.md` below the import.
 
 An import that resolves outside the working directory asks for approval once
-and stays disabled if declined. Keep the copy inside the project.
+and stays disabled if declined. Keep the copy inside the project and start
+sessions at the project root, so the copy stays inside the working directory.
 
 Last checked: 2026-10-03 against the Claude Code
 [memory documentation](https://code.claude.com/docs/en/memory).

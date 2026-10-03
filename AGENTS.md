@@ -18,9 +18,9 @@ documents.
    [CLAUDE.md](CLAUDE.md) for Claude Code,
    [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md) for Codex. A tool may load
    only the policy or only its adapter by itself, so read both. A current
-   supplied copy counts. In an adopting project both sit unchanged in its
-   [harness copy](docs/DATA_MODEL.md#harness-copy), and the project's own root
-   entry file routes here. Where the project keeps
+   supplied copy counts. In an adopting project that uses the
+   [harness copy](docs/DATA_MODEL.md#harness-copy) layout, both sit there
+   unchanged, and the project's own root entry file routes here. Where the project keeps
    [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files),
    read those covering the paths this work touches.
 2. Identify the objective, stopping point and existing decisions. Classify the
