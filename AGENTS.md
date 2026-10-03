@@ -180,8 +180,7 @@ published-history rewrites need separate explicit authorization.
 ## High-risk and external control
 
 These actions need a specific authorized human decision for the actual subject,
-version and effect, with independently controlled approval and execution under
-[Security](docs/SECURITY.md):
+version and effect:
 
 - production deployment;
 - production data change;
@@ -190,8 +189,11 @@ version and effect, with independently controlled approval and execution under
 - final customer acceptance, which needs the authorized customer's
   attributable sign-off.
 
-Routine development authority never covers them; preserve stronger external
-controls. Classify actual effects under
+Production deployment and production data changes also need approval and
+execution the agent cannot control. Each boundary's control is set in
+[Security](docs/SECURITY.md#five-high-risk-boundaries). Routine development
+authority never covers these actions; preserve stronger external controls.
+Classify actual effects under
 [development action boundaries](docs/SECURITY.md#classifying-development-actions).
 An authenticated tool may use its credential internally within covered work.
 Opening a credential file, dumping environment variables or otherwise reading a

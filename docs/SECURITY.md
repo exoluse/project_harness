@@ -8,7 +8,7 @@ credential protection and independently enforced controls to the affected work.
 | Boundary | Required decision and control |
 |---|---|
 | Production deployment | Authorized human decision for the candidate, environment and operation; externally controlled release execution/approval. |
-| Production data change | Authorized human decision for the data scope and effects, with recovery/verification appropriate to the change. |
+| Production data change | Authorized human decision for the data scope and effects; externally controlled execution/approval, with recovery/verification appropriate to the change. |
 | Destructive operation | Explicit current authorization for exact targets/effects, a reviewed dry run where applicable and recoverable copies when possible. |
 | Secret/protected-credential access | Explicit authority for the purpose and access scope, using the protected system's access controls. |
 | Final customer acceptance | Attributable sign-off by the authorized customer for the identified candidate and acceptance scope. |
@@ -17,6 +17,19 @@ A routine development decision is not a substitute for these specific decisions.
 Prepare the concrete action, impact, prerequisites, verification and recovery
 information before seeking a decision. Existing valid approvals may be reused
 only for the same covered subject and conditions.
+
+The decision comes from a person with authority over the subject. A current
+message from that person is a valid decision when it names the actual subject,
+version and effect. Record it as the decision source under
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision). The agent never
+approves for itself.
+
+Production deployment and production data changes also need externally
+controlled execution under the
+[independent controls](#independently-controlled-approval-and-execution) below.
+For the other boundaries, the agent may act after the decision, through the
+controls the target already has. Existing protections, such as protected
+branches, still apply.
 
 ## Classifying development actions
 
@@ -87,8 +100,9 @@ for that actual effect; existing tool access does not supply it.
 
 ## Independently controlled approval and execution
 
-Use a control the agent cannot approve for itself: protected CI/environment
-approval, a human-signed request/change record, or an authorized human operator.
+Where a boundary requires externally controlled execution, use a control the
+agent cannot approve for itself: protected CI/environment approval, a
+human-signed request/change record, or an authorized human operator.
 Record the authentic approval/execution receipt and applicable version without
 copying protected authority material into the repository. Never forge a receipt,
 rewrite a signature or fabricate a claimed attempt.
