@@ -172,7 +172,9 @@ function checkFile(file, cache, options, report) {
     if (!statSync(destination).isFile()) continue;
     linked.add(pathKey(destination));
     if (anchor === '') continue;
-    if (!anchorsOf(destination, cache).has(anchor.toLowerCase())) {
+    // Heading slugs are lowercase; an explicit id or name keeps its case.
+    const anchors = anchorsOf(destination, cache);
+    if (!anchors.has(anchor) && !anchors.has(anchor.toLowerCase())) {
       report.errors.push([file, lineAt(text, index), `missing anchor: ${target}`]);
     }
   }
