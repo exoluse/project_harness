@@ -19,16 +19,16 @@ and product documents, then writes:
 | Design | Current components, interfaces, data flow and risks, with source/version references. |
 | Remaining-work plan | Actual gaps, tasks, dependencies, alternatives, risk and verification. |
 
-These are information types, not a limit of one file per type. For a project
-with sign-in and search features, an overview groups each feature's
-requirements, designs, plans, tasks and verification links, stored in the
-[default folders](DATA_MODEL.md#folders-by-document-kind) under `project-docs/`
-where the project has no established layout.
+These are information types, not a limit of one file per type. Take a project
+with sign-in and search features. An overview groups each feature's
+requirements, designs, plans, tasks and verification links. Where the project
+has no established layout, these documents are stored in the
+[default folders](DATA_MODEL.md#folders-by-document-kind) under `project-docs/`.
 
 Illustrative item trace: requirement `REQ-001` connects to design `DES-001`,
 API contract `API-001`, screen specification `SCR-PC-001` and implementation
-plan `PLAN-001`; work items might be `TASK-API-001` and `TASK-PC-001`, stored
-as `requirements/REQ-001.md`, `contracts/API-001-sign-in.md`,
+plan `PLAN-001`. Work items might be `TASK-API-001` and `TASK-PC-001`. The item
+files might be stored as `requirements/REQ-001.md`, `contracts/API-001-sign-in.md`,
 `tasks/TASK-API-001.md` and so on. A later search requirement gets the next
 available `REQ` serial, not another `REQ-001` in a different file. Retain the
 actual project's established IDs and meanings during intake. These syntax
@@ -123,8 +123,8 @@ Project entry links lead to this work document. It is the next session's entry p
   failures and unrun checks visible, separate from planned checks and old results.
 
 This needs no additional DOC, REQ, DES, PLAN or VER file just to fill those roles.
-If scope expands to a new export requirement or work assigned to several
-writers, establish a separate overview under the
+Suppose scope expands to a new export requirement or to work assigned to
+several writers. In that case, establish a separate overview under the
 [expansion rule](DATA_MODEL.md#minimum-documentation-for-a-small-change) before
 that work starts. This example demonstrates documentation scope, not product
 success.
@@ -155,9 +155,9 @@ contract/version link and the corresponding planned zero-result check. Once
 checked and incorporated, no separate OI or state history is needed. The check
 is still planned; a contract definition does not establish product success.
 
-Consider a variant of the fictional count correction: the inspected contract
-does not say whether a missing `total` means an empty result or an invalid
-response. This changes the earlier example's known inputs; the agent cannot
+Consider a variant of the fictional count correction. Here the inspected
+contract does not say whether a missing `total` means an empty result or an
+invalid response. This changes the earlier example's known inputs; the agent cannot
 assume zero. Keep the question in the owning work document unless investigation
 or shared use needs a separate item under the normal boundary rules. The
 following states and decisions are illustrative, not actual events.
@@ -169,31 +169,32 @@ following states and decisions are illustrative, not actual events.
 | Sources cannot settle intent | WAITING. Present the owner with alternatives, evidence and the affected scope. Record whose answer is needed and revisit on response or at the needed-by point. Independent work may continue; do not silently implement a zero fallback. |
 | Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Link that answer and retain the former uncertainty; this settles intent, not proof of product behavior. |
 | Answer incorporated | Update affected owning definitions, such as the contract, display design, work steps and planned missing-total check; retain applicable definitions unchanged. Assess implementation authority and other prerequisites. Once those propagation checks are recorded, close this question as resolved. Product implementation and testing remain separate work with their actual states. |
-| Later contradictory input | If a revised contract invalidates the answer, reopen the same question as OPEN, preserve the old decision and closure, record the new version and next action, and reassess the affected plan and dependent work. |
+| Later contradictory input | If a revised contract invalidates the answer, reopen the same question as OPEN. On reopening, preserve the old decision and closure, record the new version and next action, and reassess the affected plan and dependent work. |
 
-When checking and incorporating the answer finish together, one closure entry
-can link the checked owner response/version, the updated contract, design, task
-and planned check, and state: "CLOSED: missing total uses the invalid-response
-state; the planning gap is removed; implementation and product verification
-remain pending." This is a fictional record shape, not an actual decision or
-test result.
+Checking and incorporating the answer may finish together. In that case, one
+closure entry can link the checked owner response/version and the updated
+contract, design, task and planned check. That entry can also state: "CLOSED:
+missing total uses the invalid-response state; the planning gap is removed;
+implementation and product verification remain pending." This is a fictional
+record shape, not an actual decision or test result.
 
 ## 2. Prepare one concrete implementation decision
 
-A clear direct request such as “Fix the empty search result count to show zero
-and check non-empty results” supplies the scope decision under the
-[clear-request criteria](APPROVALS.md#clear-implementation-requests). Record the
-request and derived scope, then proceed when prerequisites are ready; no second
-proceed response is needed. When a request leaves an uncovered material choice,
-present the concrete proposal and record the actual response, such as “Proceed
-with this scope,” with its source. Do not copy these examples as real decisions.
+Consider a clear direct request: “Fix the empty search result count to show
+zero and check non-empty results.” Such a request supplies the scope decision
+under the [clear-request criteria](APPROVALS.md#clear-implementation-requests).
+Record the request and derived scope, then proceed when prerequisites are
+ready; no second proceed response is needed. A request may instead leave an
+uncovered material choice. In that case, present the concrete proposal and
+record the actual response, such as “Proceed with this scope,” with its source.
+Do not copy these examples as real decisions.
 
 ## 3. Implement across several plans
 
 Within a feature, one plan may group frontend and API task links in sections;
 each separately managed task has its own file. A new production data migration
 or changed acceptance criterion is a material delta with its own applicable
-authority; task splitting or reordering within scope is not.
+authority. Task splitting or reordering within scope is not.
 
 When an API task finishes and its UI task comes next, the API task owns its
 execution status and links the actual verification. The plan's resumption

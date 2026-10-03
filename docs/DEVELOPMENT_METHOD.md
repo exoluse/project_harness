@@ -131,10 +131,10 @@ a gap. Keep the requested stopping point and actual implementation authority.
    Include shared changes and integration work across task boundaries. Check
    for cycles, missing providers and incompatible assumptions. Separate work
    that can proceed from work blocked on a specific input or decision.
-6. **Plan verification with the work.** For every acceptance detail and material
-   failure/risk, specify the scenario or input, expected observable result,
-   check method, environment/fixtures and responsible work item. Include
-   integration and affected regression checks. Apply
+6. **Plan verification with the work.** Cover every acceptance detail and
+   material failure/risk. For each, specify the scenario or input, expected
+   observable result, check method, environment/fixtures and responsible work
+   item. Include integration and affected regression checks. Apply
    [claim-based verification](WORKFLOW.md#verification-and-completion) to ensure
    the checks can distinguish a correct result from the relevant failure. Use the
    [recorded project conventions](DATA_MODEL.md#suggested-information) or known
@@ -244,26 +244,32 @@ Classify remaining unknowns explicitly:
   not complete the dependent implementation plan. Do not hide this gap as
   "TBD during implementation."
 - A later execution prerequisite, such as an environment becoming available
-  or a specific deployment permission, may remain open when its required
-  state, resolution owner/action, needed-by point and dependent work are clear
-  and it does not conceal an unresolved scope/design choice. Planning completion
-  does not mark that work execution-ready.
+  or a specific deployment permission, may remain open when two conditions
+  hold. First, its required state, resolution owner/action, needed-by point and
+  dependent work are clear. Second, it does not conceal an unresolved
+  scope/design choice. Planning completion does not mark that work
+  execution-ready.
 - A routine local implementation choice may remain open when its constraints
   and observable result are fixed and it cannot change the reviewed commitments.
 
 Track follow-up under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle).
-These planning dispositions describe impact, not lifecycle states: an OPEN or
-WAITING execution prerequisite can be compatible with a complete plan, while
-an unresolved consequential design choice cannot. Check resolution evidence
+These planning dispositions describe impact, not lifecycle states. An OPEN or
+WAITING execution prerequisite can be compatible with a complete plan. An
+unresolved consequential design choice cannot. Check resolution evidence
 and its propagation into the affected plan before removing that planning gap.
 Deferral or a status label alone does not satisfy a planning completion check.
 
 Collect findings from these checks in the current plan/work note, fix actual
 gaps and recheck affected coverage and dependencies. Reuse unaffected review
-evidence. Do not restart the entire plan for wording preferences, stop after
-an arbitrary retry count, or declare completion because a checklist was filled
-without checking its linked content. If essential input is unavailable, report
-the incomplete scope and needed input honestly. Subsequent source/scope changes
+evidence. Do not:
+
+- restart the entire plan for wording preferences;
+- stop after an arbitrary retry count;
+- declare completion because a checklist was filled without checking its
+  linked content.
+
+If essential input is unavailable, report the incomplete scope and needed input
+honestly. Subsequent source/scope changes
 reopen the affected coverage checks under the existing change rules.
 
 ### Testing product assumptions
@@ -300,8 +306,8 @@ editing. Record analysis boundaries, available sources, actual progress,
 known verification/deployment status and the observed build, test and check
 conventions under [project conventions](DATA_MODEL.md#suggested-information).
 Existing documents and tools remain inputs; resolve conflicting project rules
-explicitly. Material kept for communication, superseded by a later decision or
-scheduled for replacement is designated under
+explicitly. Some material is kept for communication, superseded by a later
+decision or scheduled for replacement. Such material is designated under
 [non-authoritative inputs](#non-authoritative-inputs) rather than treated as a
 source of requirements.
 
@@ -327,8 +333,8 @@ static recovery does not require executing it.
 
 Follow user priorities subject to real dependencies. Explain a material
 tradeoff when priority and feasibility conflict. Refine plan-level grouping,
-ordering and dependencies in the plan, and a separately managed task in its
-owning task file; the plan updates its links rather than holding a second
+ordering and dependencies in the plan. Refine a separately managed task in its
+owning task file. The plan updates its links rather than holding a second
 definition.
 
 ## Baselines and review boundaries
@@ -345,7 +351,7 @@ dependencies.
 
 ## Input precedence
 
-Work inputs conflict routinely: a current instruction, a received
+Work inputs conflict routinely. A current instruction, a received
 specification, an approved contract, the code as it runs, provisional material
 and the agent's own proposal rarely agree. Where the owning project records no
 precedence of its own, rank them:
@@ -363,8 +369,8 @@ The ladder decides which input to follow so bounded work continues; it does not
 hide the conflict. Record the divergence where the losing input is owned, and
 apply the [change cycle](#change-cycle-and-propagation) when the correct
 reading changes a commitment. A lower rank does not overtake a higher one by
-being newer, more detailed or easier to implement: detail found only in
-provisional material does not become a requirement, and current behavior that
+being newer, more detailed or easier to implement. Detail found only in
+provisional material does not become a requirement. Current behavior that
 contradicts an approved contract is a defect to report, not a specification to
 preserve.
 
@@ -372,17 +378,20 @@ The ladder ranks inputs, not authority, and it ranks what to follow rather than
 what is true. It does not settle a
 [material change](APPROVALS.md#material-changes), a high-risk action, a missing
 required input, or contradictory evidence about whether something actually
-works; those remain [real blockers](../AGENTS.md#history-evidence-and-real-blockers)
+works. Those remain [real blockers](../AGENTS.md#history-evidence-and-real-blockers)
 for the scope they affect. Where applying the ladder would decide one of them,
 stop and resolve it as an [open item](WORKFLOW.md#open-item-lifecycle) instead.
 
 ## Non-authoritative inputs
 
-A project can designate an input as non-authoritative for development: material
-kept for communication, reporting or reference, a source that a later decision
-has superseded, or an implementation the current work replaces. Record the
-designation, the material it covers and its owner once in the owning overview
-or plan, and keep the material itself in place.
+A project can designate an input as non-authoritative for development:
+
+- material kept for communication, reporting or reference;
+- a source that a later decision has superseded; or
+- an implementation the current work replaces.
+
+Record the designation, the material it covers and its owner once in the owning
+overview or plan, and keep the material itself in place.
 
 A non-authoritative input is not a requirement, scope boundary, acceptance
 criterion or verification evidence. Do not derive work from it, synchronize
@@ -391,9 +400,9 @@ conflict or blocker. It becomes a work subject only when the user explicitly
 requests work on that material, in its own context.
 
 The designation is bounded. It does not apply to an input the project still
-depends on: a contract, an external control, an authorized customer statement
-and a current owning instruction stay binding wherever they are kept, and
-history keeps its value as history under
+depends on. A contract, an external control, an authorized customer statement
+and a current owning instruction stay binding wherever they are kept. History
+keeps its value as history under
 [baselines](#baselines-and-review-boundaries). Where actual reliance is
 unclear, resolve it as an [open item](WORKFLOW.md#open-item-lifecycle) instead
 of assuming either reading.
@@ -417,8 +426,8 @@ Assign required corrections under [fixes across work-item boundaries](WORKFLOW.m
    dependencies, effort/schedule, verification and delivery.
 3. Update affected owning definitions into a reviewable current version. Keep
    requirements, design, plans, tasks and verification in their owning files
-   or the sections allowed by compact documentation;
-   implementers must not have to reconstruct current instructions from a chain
+   or the sections allowed by compact documentation.
+   Implementers must not have to reconstruct current instructions from a chain
    of change notes. Mark uncovered commitments as proposed until an actual
    decision covers them. Preserve prior versions and identify affected and
    reusable work.
@@ -433,10 +442,14 @@ Assign required corrections under [fixes across work-item boundaries](WORKFLOW.m
    Reassess affected [open items](WORKFLOW.md#open-item-lifecycle), propagate
    resolutions and reopen items whose basis no longer holds.
 
-Propagation is complete when affected definitions, references and summaries are
-current, required checks for the requested stage are accounted for, and remaining
-blockers/obligations have owners and next actions. Review actual results before
-claiming implementation complete; planned or failed checks are not passes.
+Propagation is complete when all of these hold:
+
+- affected definitions, references and summaries are current;
+- required checks for the requested stage are accounted for;
+- remaining blockers/obligations have owners and next actions.
+
+Review actual results before claiming implementation complete; planned or
+failed checks are not passes.
 Do not revisit unaffected documents without a new impact, contradictory evidence
 or a required project check. Reuse follows
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
@@ -460,8 +473,8 @@ Update only affected owners and summaries, following their ownership and the
 actual editing scope. In a report-only request, describe the needed amendments
 and current discrepancy without editing files. If another writer must apply an
 update, record the pending change and follow
-[coordination waits](COLLABORATION.md#coordination-waits); do not present the old
-definition as current or claim propagation complete.
+[coordination waits](COLLABORATION.md#coordination-waits). In that case, do not
+present the old definition as current or claim propagation complete.
 
 ### Discoveries during implementation
 

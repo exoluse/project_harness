@@ -6,8 +6,8 @@ paths, exceptions and validation under
 definitions.
 
 This file is long; do not load it whole. Pick the sections for the work from
-the table below and read only those, locating each by its heading text
-(for example, search for `## Item IDs` and read to the next `## ` heading).
+the table below and read only those. Locate each by its heading text: for
+example, search for `## Item IDs` and read to the next `## ` heading.
 Follow a link into another section only when the rule being applied depends on
 it. Every section that applies to the work remains mandatory; a section that
 does not apply is not required reading.
@@ -25,7 +25,7 @@ does not apply is not required reading.
 | Keep a consumer-required name, or write project or subtree instruction files | [Required-name exceptions](#required-name-exceptions), [Project instruction files](#project-instruction-files), [Path-scoped instruction files](#path-scoped-instruction-files) |
 
 Reference existing non-Markdown records, product files such as `package.json`
-and original evidence such as logs in their own formats; do not convert or
+and original evidence such as logs in their own formats. Do not convert or
 delete them automatically. Summarize verification in Markdown and link those
 original artifacts.
 
@@ -56,15 +56,19 @@ binding.
 | Project note | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
 | Project conventions | Build, test and static-check commands, verification environments, integration/branch model and quality criteria that are actually decided or observed, with their source/version. Record each when it is decided or found at intake, not as a placeholder; verification records reference them. |
 
-Other records take their content from the rules that own them: requirements and
-design from the [stage contract](DEVELOPMENT_METHOD.md#stage-contract), plans
-and tasks from [plans and tasks](#plans-and-tasks), decisions from
-[Approvals](APPROVALS.md#preparing-and-recording-one-decision), open items from
-[open items](#open-items), verification from
-[verification](WORKFLOW.md#verification-and-completion), change trace from the
-[change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation), intake from
-[existing-project intake](DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering)
-and handoffs from [transfer](COLLABORATION.md#transfer-and-integration).
+Other records take their content from the rules that own them:
+
+- requirements and design from the
+  [stage contract](DEVELOPMENT_METHOD.md#stage-contract);
+- plans and tasks from [plans and tasks](#plans-and-tasks);
+- decisions from [Approvals](APPROVALS.md#preparing-and-recording-one-decision);
+- open items from [open items](#open-items);
+- verification from [verification](WORKFLOW.md#verification-and-completion);
+- change trace from the
+  [change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation);
+- intake from
+  [existing-project intake](DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering);
+- handoffs from [transfer](COLLABORATION.md#transfer-and-integration).
 
 ## Document organization
 
@@ -223,9 +227,13 @@ not mandatory headings or front matter.
 ### Starting or resuming from the task
 
 Use the task document as the entry point. Its opening description makes the
-current basis easy to find: the scoped outcome, the relevant requirement and
-design sections, the governing decision and input versions, the completion
-checks, and the next action or blocker.
+current basis easy to find:
+
+- the scoped outcome;
+- the relevant requirement and design sections;
+- the governing decision and input versions;
+- the completion checks;
+- the next action or blocker.
 
 Link existing owners and sections. Do not copy their content or build another
 index. Where no task is needed yet, the selected plan or stage-output document
@@ -261,7 +269,7 @@ declaration when it turns out to carry the result, and reassess the item when
 it contradicts an input already declared.
 
 **Shared paths.** Where another item also owns or consumes a declared path,
-record it as shared and state how this item may touch it: normally
+record it as shared and state how this item may touch it. The normal answer is
 consume-only, with any unavoidable registration or integration edit named as
 such.
 
@@ -306,10 +314,10 @@ item's general text. One authorized part does not make the whole item
 implementable.
 
 **Stop conditions.** Record the conditions that stop the item before they
-occur — the inputs, contracts, fixtures, authority and scope boundaries whose
-absence or change makes continuing unsafe or meaningless. Declared stop
-conditions make a stop recognizable while the work runs rather than only in
-hindsight.
+occur. These are the inputs, contracts, fixtures, authority and scope
+boundaries whose absence or change makes continuing unsafe or meaningless.
+Declared stop conditions make a stop recognizable while the work runs rather
+than only in hindsight.
 
 They do not replace the
 [real blockers](../AGENTS.md#history-evidence-and-real-blockers), which stop
@@ -335,9 +343,9 @@ retains one ID, one owning file and one writer.
 Assess completion of the planned outcome against its scope and criteria, using
 task outcomes and applicable combined verification. Planning itself ends when
 the plan and task definitions satisfy the completion checks for the selected
-[planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth); it does not
-require those tasks to have executed. Planning-only work records intended
-checks without claiming execution.
+[planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth). Planning
+completion does not require those tasks to have executed. Planning-only work
+records intended checks without claiming execution.
 
 **Parent and child plans.** A parent plan may organize child plans, such as
 area or work-stream plans. The parent owns the cross-plan goal, the scope split
@@ -385,9 +393,9 @@ and [verification](WORKFLOW.md#verification-and-completion).
 ## Item IDs
 
 **Which documents get an ID.** Apply identity rules to every Markdown
-deliverable within the [ID scope](#id-scope), whatever its subject:
-specifications, research, guides, meeting notes, reviews, reports, handoffs or
-kinds not listed here.
+deliverable within the [ID scope](#id-scope), whatever its subject. Such
+deliverables include specifications, research, guides, meeting notes, reviews,
+reports, handoffs and kinds not listed here.
 
 - A document representing one primary item uses that item's ID.
 - A collection can use a document ID such as `DOC-001`.
@@ -411,11 +419,11 @@ segment only when the project needs it. The
 not a closed vocabulary or allocated IDs.
 
 In the starter formats, `NNN` is a three-digit serial starting at `001`. A
-final `NN` is a child serial starting at `01`, and the child's `NNN` copies its
+final `NN` is a child serial starting at `01`. The child's `NNN` copies its
 parent's serial: `OD` details an `OI`, and `CT` and `BT` check an `API`.
 Starter `surface` values are `PC`, `MOB` and `AD` (desktop, mobile and
 administrator screens). Starter `work` values are `PC`, `MOB`, `API`, `ADMIN`
-and `COMMON` (desktop UI, mobile UI, backend, admin UI and shared work); a
+and `COMMON` (desktop UI, mobile UI, backend, admin UI and shared work). A
 cross-component task uses `COMMON` and describes its scope in the body.
 Register others, such as `DB` or `AI`, when the work needs them. A
 classification describes work scope; it does not assign a person or authority.
@@ -573,10 +581,10 @@ it is not one combined file per kind.
 | Separately managed dictionaries | `DOC-NNN` | `dictionaries/` |
 
 Choose the folder by the document's purpose, not its ID prefix alone.
-For example, a `DOC` overview and a `DOC` dictionary belong in different folders;
-a deployment guide belongs in `guides/`, even when its ID also uses `DOC`.
-These are placement defaults, not required deliverables or new ID allocations.
-Use [item boundaries](#independent-items-and-supporting-detail) to decide whether
+For example, a `DOC` overview and a `DOC` dictionary belong in different folders.
+As another example, a deployment guide belongs in `guides/`, even when its ID
+also uses `DOC`. These are placement defaults, not required deliverables or new
+ID allocations. Use [item boundaries](#independent-items-and-supporting-detail) to decide whether
 content needs its own file. A folder row does not require splitting supporting
 detail out of its owner or the [compact documentation rules](#minimum-documentation-for-a-small-change).
 
@@ -617,9 +625,9 @@ once, then reuse that record with subsequent allocation changes. When creating
 the first overview, include its own ID in this check and record the basis there.
 No pre-existing registry is necessary.
 
-**One writer.** For a single writer without delegated ranges or outstanding
-reservations, the allocation section needs only each allocation scope, its next
-serial, and a link to that shared checked basis.
+**One writer.** Take the case of a single writer without delegated ranges or
+outstanding reservations. In that case, the allocation section needs only each
+allocation scope, its next serial and a link to that shared checked basis.
 
 - Advance the serial when allocating. Never move it backward or fill earlier
   gaps.
@@ -675,10 +683,10 @@ baseline notes for rows checked together:
 | Disposition | Used serials or owning-document links, retired serials, and remaining reserved/available numbers. Record gaps explicitly rather than assuming everything below the largest number was used. |
 
 These are required contents, not fixed column spellings or a new machine schema.
-For example, a hypothetical `TASK-API` range `001` through `020` owned by writer
-A may state: used `001` and `003`, retired `002`, remaining `004` through `020`
-reserved for A. Its row must also link the actual checked basis. This example
-does not allocate IDs in this harness repository.
+For example, take a hypothetical `TASK-API` range `001` through `020` owned by
+writer A. Its row may state: used `001` and `003`, retired `002`, remaining
+`004` through `020` reserved for A. Its row must also link the actual checked
+basis. This example does not allocate IDs in this harness repository.
 
 Do not create a second registry or a new document per allocation.
 
@@ -728,7 +736,7 @@ Resolve collisions before integration; integration fixes the resulting IDs.
 
 Record the old ID with its source version/path and the new ID in the owning
 plan/work note. Preserve original decisions, signed payloads and verification
-artifacts with their original references; link them through that mapping and
+artifacts with their original references. Link them through that mapping and
 assess their applicability rather than rewriting them or inventing a new PASS.
 Repair known external references through their authorized owner; unresolved
 ambiguous references block affected integration. Use forward edits, preserving
@@ -747,17 +755,19 @@ files under [document paths](#document-paths).
 
 A requirement states an intended behavior, outcome or constraint. Assign a
 separate REQ when it expresses a separately meaningful commitment whose scope
-and fulfillment need their own assessment, such as search and exporting search
-results. Requirements may depend on one another; technical independence is
-not required. A shared security or performance constraint can also be a
-requirement when it has its own scope and fulfillment criteria.
+and fulfillment need their own assessment. Search and the export of search
+results are two such commitments. Requirements may depend on one another;
+technical independence is not required. A shared security or performance
+constraint can also be a requirement when it has its own scope and fulfillment
+criteria.
 
 Keep the conditions, rationale, examples, parent-specific acceptance criteria
 and check methods that explain one requirement with that requirement. A
 separately executable assertion or test does not alone make a new requirement.
 Stages, algorithms, code files and test commands are not requirement boundaries.
-If an acceptance criterion actually needs its own acceptance disposition, use
-an AC item linked to its requirement rather than relabeling it as a new REQ.
+When an acceptance criterion actually needs its own acceptance disposition,
+use an AC item linked to its requirement. Do not relabel such a criterion as a
+new REQ.
 
 Before assigning a new REQ, check existing requirements. A correction that
 restores an already specified behavior references the existing REQ; adding a
@@ -776,12 +786,16 @@ requirement, design, plan, task and verification files under
 [document organization](#document-organization), reusing shared definitions
 without creating a copy for every requirement.
 
-Give related work a separate ID/file when the actual work needs a separately
-assigned or delivered output, its own completion/decision status, or a shared
-definition maintained across requirements. Keep implementation steps and
-supporting explanations in their owning item. Merely being able to assign a
-step to someone else, run a test separately or link a paragraph is insufficient.
-Small size or a common owner does not remove a real separate work boundary.
+Give related work a separate ID/file when the actual work needs any of these:
+
+- a separately assigned or delivered output;
+- its own completion/decision status;
+- a shared definition maintained across requirements.
+
+Keep implementation steps and supporting explanations in their owning item.
+Merely being able to assign a step to someone else, run a test separately or
+link a paragraph is insufficient. Small size or a common owner does not remove
+a real separate work boundary.
 
 Expected behavior and acceptance criteria belong to the requirement; actual
 check results belong to the verification document referencing it. Work documents
@@ -877,7 +891,7 @@ do not create an ID-named duplicate just to satisfy the ordinary layout.
 Independently managed content still has one owning definition; use links to
 other item documents rather than duplicating them into an entry file.
 
-For example, when a consumer requires a root `AGENTS.md`, retain that path,
+For example, suppose a consumer requires a root `AGENTS.md`. Retain that path,
 record its document ID and the consumer requirement in the index, and add the
 ID to its body if compatible. A normal requirements document continues to use
 `requirements/REQ-001.md` under the chosen document root. The agent assesses
@@ -886,16 +900,21 @@ required name does not need an additional approval ceremony.
 
 ### Project instruction files
 
-A project's own root instruction file — the `AGENTS.md`, `CLAUDE.md` or tool
-adapter a session loads before it reads anything else — is the one document
+A project's own root instruction file is the `AGENTS.md`, `CLAUDE.md` or tool
+adapter a session loads before it reads anything else. It is the one document
 whose cost is paid in every session. Use it for what the work cannot start
-without and what rarely changes: the stack and runtime versions actually in
-use, the real build/test/static-check commands and the environments they run
-in, the top-level code and document layout, the conventions a writer would
-otherwise violate, and any material the project has designated
-[non-authoritative](DEVELOPMENT_METHOD.md#non-authoritative-inputs). These are
-the [project conventions](#suggested-information) placed where they are needed;
-record each when it is decided or found at intake, not as a placeholder.
+without and what rarely changes:
+
+- the stack and runtime versions actually in use;
+- the real build/test/static-check commands and the environments they run in;
+- the top-level code and document layout;
+- the conventions a writer would otherwise violate;
+- any material the project has designated
+  [non-authoritative](DEVELOPMENT_METHOD.md#non-authoritative-inputs).
+
+These are the [project conventions](#suggested-information) placed where they
+are needed. Record each when it is decided or found at intake, not as a
+placeholder.
 
 Add a short entry pointer to the project overview and the owning
 [resumption state](#resumption-state) for work in progress. Keep separate pointers
@@ -922,7 +941,7 @@ review reports missing entry information without creating files.
 
 Keep owning content out of it. An entry file that accumulates requirement
 decisions, item-level instructions or verification gates becomes a second
-owning definition that drifts from the first, and every session loads it in
+owning definition that drifts from the first. Every session also loads it in
 full, including the sessions it has nothing to do with. Move such content to
 the item that owns it and link it, under
 [summary ownership](#summary-ownership-and-updates). The entry file carries no
@@ -932,19 +951,19 @@ records that own them.
 ### Path-scoped instruction files
 
 A project may keep an instruction file next to the area it governs, such as a
-subtree's own `AGENTS.md` or tool adapter, so that rules for one part of a
-repository do not have to sit in the root file every session loads. Where they
-exist, read the ones covering the paths the current work touches, closest path
-first, in addition to the root policy and adapter, and name the applicable ones
-among a work item's inputs.
+subtree's own `AGENTS.md` or tool adapter. The purpose is that rules for one
+part of a repository need not sit in the root file every session loads. Where
+these files exist, read the ones covering the paths the current work touches,
+in addition to the root policy and adapter. Start with the file closest to those
+paths, and name the applicable ones among a work item's inputs.
 
 A path-scoped file adds detail for its subtree. It cannot weaken the root
-policy, a contract or an external control; where it appears to, the root
+policy, a contract or an external control. Where it appears to, the root
 governs and the conflict is resolved rather than followed. Keep each rule in
 one file at the narrowest path covering its subject instead of copying it into
-several, and record these paths and their scope in the overview so a session
-can tell which apply without scanning the tree. They keep the name their
-consumer requires under the [exceptions above](#required-name-exceptions).
+several. Record these paths and their scope in the overview so a session can
+tell which apply without scanning the tree. They keep the name their consumer
+requires under the [exceptions above](#required-name-exceptions).
 
 ## Document validation
 
@@ -955,10 +974,10 @@ the affected scope and reusable evidence.
 
 | Check | Evidence to verify |
 |---|---|
-| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition; requirement boundaries describe distinct commitments, supporting conditions remain with their requirement, and separately managed work references the REQs it covers. For compact work, check linked existing owners, distinct planned/actual results and any required split. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
-| Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis, do not collide with retained/retired IDs or reservations, and fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
+| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition. Requirement boundaries describe distinct commitments, and supporting conditions remain with their requirement. Separately managed work references the REQs it covers. For compact work, check linked existing owners, distinct planned/actual results and any required split. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
+| Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis. Also verify that they do not collide with retained/retired IDs or reservations, and that they fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
 | Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
-| Area overviews and trackers | Root and area overview entries resolve and hold only their owned content; designated tracker information has no parallel Markdown record; tracker references carry a resolvable key/link, and relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
+| Area overviews and trackers | Root and area overview entries resolve and hold only their owned content. Designated tracker information has no parallel Markdown record. Tracker references carry a resolvable key/link. Relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
 | Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
@@ -981,15 +1000,17 @@ An open item is an unresolved question, decision, prerequisite, contradiction
 or finding that needs follow-up to establish scope, readiness or completion.
 It can arise at any stage. Routine work already defined by a task does not
 need a second issue merely because it is unfinished. A failed check stays
-in its owning verification record, linked from the work; its unresolved impact
-still needs the follow-up information below when work continues or is handed off.
+in its owning verification record, linked from the work. The failed check's
+unresolved impact still needs the follow-up information below when work
+continues or is handed off.
 
-A question answered and checked within the same work session, with no remaining
-follow-up or independent management boundary, needs only the question, answer
-and authoritative source/evidence with its relevant version in the owning work
-note. Incorporate any affected definition/check there or link the updated owner.
-No separate OI, owner/timing fields or transition log is required for that
-completed clarification. This shortcut does not supply human decisions or
+Some questions are answered and checked within the same work session, with no
+remaining follow-up or independent management boundary. Such a question needs
+only these in the owning work note: the question, the answer and the
+authoritative source/evidence with its relevant version. Incorporate any
+affected definition/check there or link the updated owner. No separate OI,
+owner/timing fields or transition log is required for that completed
+clarification. This shortcut does not supply human decisions or
 product verification: actual authority, evidence and material-change rules
 still apply. If the answer leaves a dependency, unresolved impact or handoff,
 use the follow-up content below.
@@ -998,7 +1019,7 @@ Use the existing [item boundaries](#independent-items-and-supporting-detail).
 Keep a parent-specific question and its history in the owning requirement,
 design, plan or task when it needs no separate management boundary. A separately
 assigned investigation, decision or shared issue with its own completion status
-owns the appropriate ID/file, such as an `ISSUE` or `RISK`; retain existing IDs
+owns the appropriate ID/file, such as an `ISSUE` or `RISK`. Retain existing IDs
 and reference actual decisions and resolution tasks rather than duplicating
 them. Moving work between plans does not create a new identity for the same
 issue. Small size alone does not exempt independently managed items.
@@ -1051,7 +1072,7 @@ link the tracker item instead.
 
 The tracker key identifies an item the tracker owns. It needs no harness ID or
 allocation. A registered document-ID format may embed that key as its serial
-under [allocation reuse](#allocation-and-validation-reuse); the document then
+under [allocation reuse](#allocation-and-validation-reuse). The document then
 has one ID, and the tracker supplies its number.
 
 Some such items need a detailed Markdown definition, such as task implementation
@@ -1064,9 +1085,9 @@ with attributable version history, reference the item and its version there
 instead.
 
 Where a decision, readiness assessment, completion claim or handoff relies on
-tracker state, record the key and the observed state in the owning Markdown
-record, with its date or version. That records what was relied on. It is not a
-mirror to maintain.
+tracker state, record the key and the observed state. Put them in the owning
+Markdown record, with the observed state's date or version. That records what
+was relied on. It is not a mirror to maintain.
 
 These are external effects, and they need matching authorization under
 [Security](SECURITY.md#authenticated-tools-and-protected-values):

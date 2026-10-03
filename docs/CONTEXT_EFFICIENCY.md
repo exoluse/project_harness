@@ -40,7 +40,7 @@ reason. Split a section with subheadings or a table once it accumulates more
 than about five rules. The number of rules decides this, not the length.
 
 A spine rule that [AGENTS.md](../AGENTS.md) already carries needs no
-restatement in a detailed document: that file is loaded in every session, so
+restatement in a detailed document. That file is loaded in every session, so
 the obligation is always reachable before the affected action. Restate it only
 where the owning section changes what it means. This is a way to say the same
 thing in less text, not permission to drop an obligation whose only statement
@@ -53,21 +53,26 @@ that heading anchors resolve and that `Last checked:` dates are recent. It needs
 Node and no packages, reads Markdown and writes nothing; a governed project can
 point it at its own document root. The checker is an optional way to supply
 part of the required [document validation](DATA_MODEL.md#document-validation).
-After changing guidance and before a completion claim that relies on links,
-verify the affected targets and anchors with this checker or an equivalent
-tool or manual check. Record the method, scope, result and limits in the
+Verify the affected targets and anchors after changing guidance and before a
+completion claim that relies on links. Use this checker or an equivalent tool
+or manual check. Record the method, scope, result and limits in the
 existing work record; policy maintenance uses the Git/conversation trace.
 
-For files named `<ID>.md` or `<ID>-<slug>.md` it also reports two files owning
-one ID (an error), an ID-only heading that repeats an ID defined elsewhere, a
-filename description that is not two lowercase hyphenated words, a filename ID
-absent from the body, and, when a directory is scanned, an ID-named file that
-no scanned document links to. It takes the unlinked document linking to the
-most items as the project overview. It reads the ID from the filename alone:
-it does not know the project's format table, folder mapping, allocation record,
-delegated ranges or retired IDs, and it skips files with other names, including
-harness guidance and [required-name files](DATA_MODEL.md#required-name-exceptions).
-Scope the scanned path when retained historical copies share an ID.
+For files named `<ID>.md` or `<ID>-<slug>.md` it also reports:
+
+- two files owning one ID (an error);
+- an ID-only heading that repeats an ID defined elsewhere;
+- a filename description that is not two lowercase hyphenated words;
+- a filename ID absent from the body;
+- when a directory is scanned, an ID-named file that no scanned document links
+  to.
+
+It takes the unlinked document linking to the most items as the project
+overview. It reads the ID from the filename alone. It does not know the
+project's format table, folder mapping, allocation record, delegated ranges or
+retired IDs. It skips files with other names, including harness guidance and
+[required-name files](DATA_MODEL.md#required-name-exceptions). Scope the
+scanned path when retained historical copies share an ID.
 
 A pass covers only these checks: content, ID format and allocation, trace
 coverage and meaning still need their own review. If the checker is unavailable
@@ -80,13 +85,16 @@ Model availability, selection options and tool configuration syntax change
 outside this repository. Tool-specific details live in the adapters and the
 [tool-level control snippets](SECURITY.md#tool-level-supporting-controls). Mark
 each such passage with `Last checked: YYYY-MM-DD` and the official source it
-was checked against. Recheck against that source when the checker warns that
-the date is older than 90 days, when a model or tool release is known, or
-before recommending the passage to an adopter. Change the date only after
-actually checking; an unverified passage keeps its old date.
-The date does not establish current model availability. Resolve models under
-[model selection](#model-selection-and-delegation) instead of keeping a fixed
-generation-to-tier mapping in policy.
+was checked against. Recheck against that source in any of these cases:
+
+- when the checker warns that the date is older than 90 days;
+- when a model or tool release is known;
+- before recommending the passage to an adopter.
+
+Change the date only after actually checking; an unverified passage keeps its
+old date. The date does not establish current model availability. Resolve
+models under [model selection](#model-selection-and-delegation) instead of
+keeping a fixed generation-to-tier mapping in policy.
 
 ## Reuse and verification
 
@@ -106,15 +114,21 @@ under [allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse).
 
 Completion, handover or push requires reviewing evidence coverage and the actual
 diff. It does not alone invalidate a successful check. After adding a check
-receipt to a note, inspect that edit and any links/IDs it introduces; do not
+receipt to a note, inspect that edit and any links/IDs it introduces. Do not
 repeat unaffected checks merely to record their result again. Preserve the
 original result and identify what the incremental check covers.
 
-Broaden verification when a baseline is absent/unreliable, intervening changes
-are unknown, criteria or validation rules change, a failure suggests wider
-impact, or project/CI controls require it. Unchanged files are reusable only to
-the extent the baseline still covers them. A scan of changed files alone does
-not prove project-wide uniqueness without a reliable allocation baseline.
+Broaden verification when any of these holds:
+
+- a baseline is absent/unreliable;
+- intervening changes are unknown;
+- criteria or validation rules change;
+- a failure suggests wider impact;
+- project/CI controls require it.
+
+Unchanged files are reusable only to the extent the baseline still covers them.
+A scan of changed files alone does not prove project-wide uniqueness without a
+reliable allocation baseline.
 
 ### Check scope and scheduling
 

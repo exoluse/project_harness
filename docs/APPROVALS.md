@@ -49,7 +49,7 @@ invent message IDs, dates, signatures or assent. Ordinary language suffices.
 
 An explicit proceed response covers the unchanged presented implementation and
 verification. One decision can cover multiple plans/tasks. One item can equally
-carry several decisions taken at different times; record each against the
+carry several decisions taken at different times. Record each against the
 sub-scope it covers under [plans and tasks](DATA_MODEL.md#plans-and-tasks)
 rather than restating the item's overall mode. A supplied document,
 issue or exploratory request alone is not approval of an unreviewed change.
@@ -153,18 +153,19 @@ work only when it remains authorized and outside the requested stop boundary.
    or data repair. Those actions retain their own scope and applicable
    [external controls](SECURITY.md).
 4. Withdrawing a granted verification or acceptance result is a separate act
-   from withdrawing a permission, and follows
-   [verification and completion](WORKFLOW.md#verification-and-completion): the
-   overturned result is named, dependent work returns to its prior state, and
-   the condition for restoring it is recorded. A decision that rested on the
-   withdrawn result loses its basis and is reassessed under
+   from withdrawing a permission. Withdrawing such a result follows
+   [verification and completion](WORKFLOW.md#verification-and-completion).
+   Under that procedure, the overturned result is named, dependent work
+   returns to its prior state, and the condition for restoring it is recorded.
+   A decision that rested on the withdrawn result loses its basis and is
+   reassessed under
    [coverage and currentness](#coverage-and-currentness).
 5. Before resuming, check the current request, still-valid decisions, changed
    files/environment, dependencies and ownership. Reuse decisions that still
    cover the work. A clear resume request can itself supply the scope decision;
    clarify only uncovered scope or material changes. A withdrawn permission is
    usable again only when the current decision restores it and any required
-   external control is satisfied; the old record alone cannot restore it.
+   external control is satisfied. The old record alone cannot restore it.
 
 For example, withdrawing deployment approval blocks further deployment work
 and its dependents, while separately authorized development may continue. A request

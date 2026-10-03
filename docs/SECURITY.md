@@ -31,18 +31,26 @@ remain binding.
 
 Routine development edits may include removing or replacing versioned source
 within the requested change, or cleaning disposable local build/test outputs.
-These use the existing development decision when the exact targets and
-ownership are understood, relevant source versions are preserved, and the
-action causes no loss of unique work or material shared/operational effect.
+These use the existing development decision when all of these hold:
+
+- the exact targets and ownership are understood;
+- relevant source versions are preserved;
+- the action causes no loss of unique work or material shared/operational
+  effect.
+
 For generated outputs, verify that they can be recreated from available inputs
 and contain no unique user data or evidence needed for the work. A name such
 as `tmp`, `build` or `test` does not establish disposability.
 
-Treat an operation as destructive when it risks losing unique or unknown work,
-removing retained records/evidence, rewriting published history, or destroying
-data/resources with material shared or operational effects. A backup helps
-recovery; it does not itself authorize those effects. Production data changes
-and deployments retain their own boundaries even when reversible.
+Treat an operation as destructive when it risks any of these:
+
+- losing unique or unknown work;
+- removing retained records/evidence;
+- rewriting published history;
+- destroying data/resources with material shared or operational effects.
+
+A backup helps recovery; it does not itself authorize those effects. Production
+data changes and deployments retain their own boundaries even when reversible.
 
 | Example | Required treatment |
 |---|---|
@@ -125,10 +133,16 @@ Derive the entries from the project's actual paths and commands:
 
 - **Block** reads of files that hold protected values.
 - **Prompt** rather than block for commands whose effect depends on the
-  target: pushes including force and tag pushes, branch deletion, hard reset,
-  clean, recursive deletion, and the project's deploy and data commands. The
-  [classification rules](#classifying-development-actions) do not judge an
-  action by its command name, so a blanket block would also stop routine
+  target:
+  - pushes, including force and tag pushes;
+  - branch deletion;
+  - hard reset;
+  - clean;
+  - recursive deletion;
+  - the project's deploy and data commands.
+
+  The [classification rules](#classifying-development-actions) do not judge an
+  action by its command name. A blanket block would therefore also stop routine
   covered cleanup; a prompt puts the actual command before the human.
 - **Cover every shell the tool exposes.** A rule for one shell tool does not
   match another.
@@ -175,9 +189,11 @@ itself; the tool's sandbox supplies that enforcement.
 
 Codex, as sandbox and approval settings in `config.toml` and command rules in
 a `rules/` folder next to it, such as `.codex/rules/project.rules`. Three limits
-apply: project-scoped `.codex/` files load only after the user trusts the
-project, rules govern commands that run outside the sandbox, and the rules
-format is marked experimental.
+apply:
+
+- project-scoped `.codex/` files load only after the user trusts the project;
+- rules govern commands that run outside the sandbox;
+- the rules format is marked experimental.
 
 ```toml
 approval_policy = "on-request"

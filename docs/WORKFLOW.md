@@ -8,9 +8,9 @@ Follow [AGENTS.md](../AGENTS.md) for the current workflow and authority.
    relevant project notes. Resolve a request stated in plain words to its
    owning items through the overview and plans and state that resolution. Start
    from the selected item's [current basis](DATA_MODEL.md#plans-and-tasks)
-   when its owning document is already known;
-   present candidates before editing when several items could match, and do
-   not create a new item merely because no description matched.
+   when its owning document is already known. Present candidates before
+   editing when several items could match. Do not create a new item merely
+   because no description matched.
 2. Establish the current input versions and preserve existing progress.
 3. Produce the requested stage outputs. For planning, pass the completion
    checks of the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth).
@@ -56,12 +56,16 @@ checkout you are about to write in.
    hand the item back with it recorded. Existing work outside the declared
    scope does not block the item.
 
-Record what the inspection established where the work is owned: the revision
-the work starts from, the uncommitted paths that were already there, and the
-outcome for any overlap with the declared write scope. Without it, a later
-session cannot separate this item's diff from work it inherited, and the next
-writer re-derives those facts from a tree that has since moved. A few lines in
-the item or its progress note are enough; this needs no separate document.
+Record what the inspection established where the work is owned:
+
+- the revision the work starts from;
+- the uncommitted paths that were already there;
+- the outcome for any overlap with the declared write scope.
+
+Without this record, a later session cannot separate this item's diff from work
+it inherited. The next writer would re-derive those facts from a tree that has
+since moved. A few lines in the item or its progress note are enough; this needs
+no separate document.
 
 This establishes the starting state and its limits. It grants no authority and
 does not replace [work-item readiness](#scope-decisions-and-work-item-readiness)
@@ -86,9 +90,10 @@ Record a concrete question or finding when it needs follow-up. Identify its
 source/version, affected work, resolution criterion, accountable owner, next
 action, needed-by point and next review trigger. Reuse unambiguous parent values
 under the Information model instead of copying them. If ownership is not yet known,
-state that it is unassigned and identify the assignment needed; do not pretend
-that a named team or external provider has accepted responsibility. Resolve
-accountability before starting dependent work that requires it.
+state that it is unassigned and identify the assignment needed. In that case,
+do not pretend that a named team or external provider has accepted
+responsibility. Resolve accountability before starting dependent work that
+requires it.
 
 Distinguish an unresolved scope/design choice from an execution prerequisite
 and a bounded local implementation choice under the
@@ -178,20 +183,29 @@ dependency arrives, or relevant scope, input, environment, evidence or ownership
 changes. Reuse unchanged assessments; no fixed polling loop or repeated full
 project scan is required.
 
-When a needed-by point is missed or an item has no feasible next action, surface
-the actual impact and needed decision/input to the user or authorized owner,
-and update the action, responsibility and review trigger. Report unassigned
-or unreachable owners explicitly. Do not invent a deadline extension, silently
-defer the work, or contact external parties without applicable authorization.
-Continue independent covered work while the affected work remains blocked.
+When a needed-by point is missed or an item has no feasible next action:
 
-Reopen a RESOLVED or CLOSED item when new evidence contradicts its answer, the
-same failure recurs, a relied-on decision is withdrawn, or changed assumptions
-invalidate its resolution/disposition. Retain its identity and prior closure;
-record the new source/version, reason, current state (OPEN, IN_PROGRESS or
-WAITING), owner, action and affected dependents. Reassess their readiness and
-stop affected work as necessary. A genuinely different issue follows the normal
-item-boundary rules and links the earlier one instead of overwriting its history.
+- surface the actual impact and needed decision/input to the user or
+  authorized owner;
+- update the action, responsibility and review trigger.
+
+Report unassigned or unreachable owners explicitly. Do not invent a deadline
+extension, silently defer the work, or contact external parties without
+applicable authorization. Continue independent covered work while the affected
+work remains blocked.
+
+Reopen a RESOLVED or CLOSED item when any of these occurs:
+
+- new evidence contradicts its answer;
+- the same failure recurs;
+- a relied-on decision is withdrawn;
+- changed assumptions invalidate its resolution/disposition.
+
+Retain its identity and prior closure; record the new source/version, reason,
+current state (OPEN, IN_PROGRESS or WAITING), owner, action and affected
+dependents. Reassess their readiness and stop affected work as necessary. A
+genuinely different issue follows the normal item-boundary rules and links the
+earlier one instead of overwriting its history.
 
 ## Updating current work state
 
@@ -353,9 +367,8 @@ acceptance did not hold.
 - Keep both the original evidence and the finding that overturned it.
 - Correct every record and summary that still reports the withdrawn result.
 - Return work that was allowed to start or close on that basis to its state
-  before it, under
-  [cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption)
-  where a decision rested on it.
+  before it. Where a decision rested on it, do so under
+  [cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption).
 - Record what would restore it: which check, at what scope, by whom.
 
 Dependent work waits behind that condition, and the condition is a real blocker
@@ -365,9 +378,9 @@ standing under
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 **A closed record is extended, not rewritten.** Work already recorded as
-complete sometimes must take in something it did not cover — a dependent path
-the frozen scope missed, a file the check turned out to require. Append a dated
-amendment stating:
+complete sometimes must take in something it did not cover. Examples are a
+dependent path the frozen scope missed or a file the check turned out to
+require. Append a dated amendment stating:
 
 - what is added;
 - why it belongs to the closed work;
@@ -384,7 +397,7 @@ paragraph above.
 
 A status request such as "how far is this project" or "how much of the
 requirements are traced" is an analysis request. It authorizes reading the
-project records and producing the report; it does not authorize document
+project records and producing the report. It does not authorize document
 edits, and it does not require the user to name IDs, paths or stages. Derive
 every statement from the owning records at a stated version; never estimate
 progress from titles, labels or file counts alone.
@@ -400,15 +413,15 @@ progress from titles, labels or file counts alone.
    owning requirement, design, plan, task, verification and open-item records
    for the scope. Read designated
    [external tracker](DATA_MODEL.md#external-work-trackers) state where it
-   owns work status; if the tracker is unreachable, report that state as
+   owns work status. If the tracker is unreachable, report that state as
    unknown rather than reusing a Markdown copy.
 4. Under [summary ownership](DATA_MODEL.md#summary-ownership-and-updates),
    owning records prevail over overview or plan summaries. Report the owning
    fact and list the disagreement as a discrepancy.
 
 Mechanical scans (link resolution, ID and status collection) may be
-delegated under [model selection](CONTEXT_EFFICIENCY.md#model-selection-and-delegation);
-the accountable agent interprets the result and makes the stage and
+delegated under [model selection](CONTEXT_EFFICIENCY.md#model-selection-and-delegation).
+The accountable agent interprets the result and makes the stage and
 coverage judgments.
 
 ### Report content
@@ -417,16 +430,16 @@ coverage judgments.
 |---|---|
 | Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
 | Stage summary | Derive the current stage and active work from owning records reached through the overview. Identify stale copied summaries as discrepancies. |
-| Requirement trace | One row per in-scope requirement: covering design/contract, plan, tasks with their statuses, verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
-| Coverage | Counts derived from the trace with stated denominators: requirements in scope; with an owning design; with a plan; with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion) and never added to a pass count; a withdrawn pass is reported as withdrawn, with the condition for restoring it. |
-| Gaps and discrepancies | Requirements without covering design or work; work, contracts or verification missing their requirement/source trace under the item-boundary rules; unresolved links or IDs; summaries that contradict owning records; evidence whose subject version predates later changes to that subject; open items past their needed-by point. |
+| Requirement trace | One row per in-scope requirement. The row shows the covering design/contract and plan, plus the tasks with their statuses. It also shows verification records with the highest evidence level and its subject version, acceptance, and blocking open items. Use the [evidence levels](../AGENTS.md#history-evidence-and-real-blockers); unrun, failed, partial or stale verification is reported as such, not as a lower pass. |
+| Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with all tasks complete; with evidence at each level; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
+| Gaps and discrepancies | Requirements without covering design or work. Work, contracts or verification missing their requirement/source trace under the item-boundary rules. Unresolved links or IDs. Summaries that contradict owning records. Evidence whose subject version predates later changes to that subject. Open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
 For a [compact work document](DATA_MODEL.md#minimum-documentation-for-a-small-change),
 trace its owning sections and linked sources. Missing separate role files are
-not a gap under those rules. If no independent REQ was established,
-report the bounded outcome and its evidence without counting it as full
-feature/requirement coverage or inventing a requirement to fill the report.
+not a gap under those rules. If no independent REQ was established, report the
+bounded outcome and its evidence. In that case, do not count it as full
+feature/requirement coverage or invent a requirement to fill the report.
 
 Progress numbers describe record states, not effort or schedule. State what
 each count measures; a task-completion ratio is not a requirement-level
@@ -437,11 +450,13 @@ denominator.
 ### After the report
 
 The report is conversation output. If the user asks to keep it, store it as
-a dated snapshot with its baseline version, for example in the project note or
-a handoff record; it is historical and not a parallel current status. Repairing
-links, updating summaries or recording discrepancies as open items is separate
-work that follows the usual [request authority](../AGENTS.md#authority-and-decisions);
-propose it with the report and perform it when requested. Handoff notes reuse
+a dated snapshot with its baseline version. The project note or a handoff
+record, for example, can hold it. The snapshot is historical and not a
+parallel current status.
+Repairing links, updating summaries or recording discrepancies as open items is
+separate work. It follows the usual
+[request authority](../AGENTS.md#authority-and-decisions). Propose it with the
+report and perform it when requested. Handoff notes reuse
 the same basis under [transfer](COLLABORATION.md#transfer-and-integration).
 
 ### Recurring reports
@@ -471,7 +486,7 @@ instead of deriving one for the occasion.
 
 Track the report's own state, such as drafted, ready and delivered. An
 unfinished issue is then not submitted, and a delivered one is not quietly
-changed; a correction after delivery is a new statement to its reader.
+changed. A correction after delivery is a new statement to its reader.
 
 Keep each issue as a dated record with its basis version, and leave it as
 history. A past issue is not rewritten to match later facts. The current

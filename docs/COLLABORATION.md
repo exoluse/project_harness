@@ -30,22 +30,25 @@ assigned integration owner. Record relevant ownership, mapping and allocation
 changes before affected work continues. Existing Markdown notes are sufficient;
 these principles add no separate approval or registry service.
 
-When each writer uses a separate worktree or clone on their own branch,
-integrates through reviewed merges, and a designated
-[external work tracker](DATA_MODEL.md#external-work-trackers)
-owns assignment, that arrangement satisfies the ownership agreement: the
-tracker assignee and the branch identify the writer, and whoever merges a
-change is its integration owner. Shared documents such as the overview and
-contracts may then change through the same reviewed merge; no separate owner
-table is needed in the overview. Record the arrangement once in the overview.
-Writers sharing one checkout or one allocation record still need the explicit
-assignments above.
+An arrangement in which all of these hold satisfies the ownership agreement:
+
+- each writer uses a separate worktree or clone on their own branch;
+- each writer integrates through reviewed merges;
+- a designated [external work tracker](DATA_MODEL.md#external-work-trackers)
+  owns assignment.
+
+In that arrangement, the tracker assignee and the branch identify the writer,
+and whoever merges a change is its integration owner. Shared documents such as
+the overview and contracts may then change through the same reviewed merge; no
+separate owner table is needed in the overview. Record the arrangement once in
+the overview. Writers sharing one checkout or one allocation record still need
+the explicit assignments above.
 
 ## Concurrent writers
 
 Agree owners and non-overlapping paths and logical resources before concurrent
 editing. Prefer isolated worktrees when practical. Shared project notes or the
-team's coordination tool can record ownership, baseline, scope and status; a
+team's coordination tool can record ownership, baseline, scope and status. A
 tool that owns assignment or status follows [external work trackers](DATA_MODEL.md#external-work-trackers).
 
 Do not edit another writer's active scope. Account for shared schemas, generated
@@ -56,11 +59,13 @@ isolation this rule applies at merge: resolve conflicts preserving both sides
 and never overwrite the other change silently.
 
 Concurrency is bounded by the checkout, not only by the writer. In one working
-tree, keep one writing participant active at a time: their edits, and any
-command that rewrites files, merge into a single uncommitted state that no one
-can attribute afterwards. Read-only work — review, analysis, search and checks
-that write nothing into the tree — may run alongside it. Give each concurrent
-writer a separate worktree or clone with its own working directory and index.
+tree, keep one writing participant active at a time. Within that tree, every
+participant's edits and any command that rewrites files merge into a single
+uncommitted state that no one can attribute afterwards. Read-only work —
+review, analysis, search and checks that write nothing into the tree — may run
+alongside the active writer. Give each
+concurrent writer a separate worktree or clone with its own working directory
+and index.
 Separate branch names within one checkout do not isolate uncommitted changes.
 The ownership agreement above still applies at merge.
 
@@ -90,30 +95,35 @@ hide a failure, change actual readiness or establish integration success.
 The accountable agent may start subagents without separate user authorization
 when delegation serves the current request, and chooses their capability under
 [model selection](CONTEXT_EFFICIENCY.md#model-selection-and-delegation).
-Delegation is a working method, not a default. It adds no authority: delegated
-work stays within the accountable agent's current scope, and edits, product-code
+Delegation is a working method, not a default. It adds no authority. Delegated
+work stays within the accountable agent's current scope. Edits, product-code
 execution, external effects and high-risk actions keep their own requirements.
 Writing subagents follow the [collaboration basis](#collaboration-basis) with
-non-overlapping ownership, including the one-writer limit per working tree in
-[concurrent writers](#concurrent-writers): where subagents share a checkout,
+non-overlapping ownership. This includes the one-writer limit per working tree
+in [concurrent writers](#concurrent-writers). Where subagents share a checkout,
 run one writing subagent at a time and use read-only subagents for parallel
 work. User instructions or tool rules that limit or prohibit delegation remain
 binding.
 
 ## Transfer and integration
 
-At transfer, identify the actual owner, objective and stopping point,
-input/output versions, dirty work, completed work and changed paths, applicable
-decisions, checks run with their results, failed or unrun checks, limits,
-outstanding obligations and next action. Apply
-[current-state updates](WORKFLOW.md#updating-current-work-state) before the
-receiver relies on the entry pointers. A Markdown handoff is sufficient when
+At transfer, identify:
+
+- the actual owner, objective and stopping point;
+- input/output versions;
+- dirty work, completed work and changed paths;
+- applicable decisions;
+- checks run with their results, and failed or unrun checks;
+- limits, outstanding obligations and next action.
+
+Apply [current-state updates](WORKFLOW.md#updating-current-work-state) before
+the receiver relies on the entry pointers. A Markdown handoff is sufficient when
 the delivery contract accepts it.
 
 The recipient checks applicability and permissions in the new environment. A
 handoff or a Git transfer does not by itself establish current permissions,
-decision provenance or protected credentials, and it does not widen the
-original decision.
+decision provenance or protected credentials. It does not widen the original
+decision either.
 
 Carry links to retained open items with their current state, blocking impact,
 resolution criterion, owner, next action and needed-by/review trigger. Include
@@ -128,10 +138,10 @@ Verification should address the actual integration impact, rather than rerunning
 unaffected checks solely because ownership or document layout changed.
 
 Stage by explicit path. A whole-tree or whole-directory stage takes whatever
-else the checkout holds, including work that was already there and files
-outside the item's declared scope, and the resulting commit no longer shows who
-changed what. Stage the paths the work actually changed, confirm the staged set
-before committing, and leave another writer's uncommitted files unstaged,
+else the checkout holds. That includes work that was already there and files
+outside the item's declared scope. The resulting commit no longer shows who
+changed what. Stage the paths the work actually changed, and confirm the staged
+set before committing. Leave another writer's uncommitted files unstaged,
 uncommitted and unreverted, handing them back under
 [concurrent writers](#concurrent-writers). Where a tool stages automatically,
 inspect the staged set and unstage what the item did not change.
