@@ -56,7 +56,7 @@ binding.
 
 | Information | Minimum useful content |
 |---|---|
-| Project note | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
+| Project overview | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
 | Project entry | Stack and runtime versions, build, test and static-check commands with the environment each runs in, the top-level code layout and writer rules no other record owns. The project's [root instruction file](#project-instruction-files) owns these. |
 | Project conventions | Integration/branch model, quality criteria and shared verification environments, such as staging or a live-equivalent environment. The project overview owns these. |
 
@@ -1075,7 +1075,8 @@ Use the existing [item boundaries](#independent-items-and-supporting-detail).
 Keep a parent-specific question and its history in the owning requirement,
 design, plan or task when it needs no separate management boundary. A separately
 assigned investigation, decision or shared issue with its own completion status
-owns the appropriate ID/file, such as an `ISSUE` or `RISK`. Retain existing IDs
+owns its own ID/file: an `OI` by default, or a registered kind such as `RISK`
+where the project tracks that kind separately. Retain existing IDs
 and reference actual decisions and resolution tasks rather than duplicating
 them. Moving work between plans does not create a new identity for the same
 issue. Small size alone does not exempt independently managed items.

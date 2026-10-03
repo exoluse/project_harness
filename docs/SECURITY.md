@@ -164,7 +164,7 @@ Derive the entries from the project's actual paths and commands:
 The snippets below show shape only; tool syntax changes, so confirm the current
 documentation before adopting them.
 
-Last checked: 2026-09-18 against the
+Last checked: 2026-10-03 against the
 [Claude Code permissions](https://code.claude.com/docs/en/permissions),
 [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
 and [Codex rules](https://learn.chatgpt.com/docs/agent-configuration/rules.md)
@@ -177,9 +177,9 @@ PowerShell tool, which Bash rules do not match:
 {
   "permissions": {
     "deny": [
-      "Read(.env)",
-      "Read(.env.*)",
-      "Read(secrets/**)"
+      "Read(./**/.env)",
+      "Read(./**/.env.*)",
+      "Read(./secrets/**)"
     ],
     "ask": [
       "Bash(git push *)",
@@ -197,8 +197,10 @@ PowerShell tool, which Bash rules do not match:
 }
 ```
 
-`Read` deny rules cover the built-in file tools and the file commands the tool
-recognizes in a shell. They do not cover a subprocess that opens the file
+`Read` patterns use gitignore syntax relative to the working directory. A bare
+`Read(.env)` matches only the top-level file; `./**/.env` also covers nested
+ones. `Read` deny rules cover the built-in file tools and the file commands the
+tool recognizes in a shell. They do not cover a subprocess that opens the file
 itself; the tool's sandbox supplies that enforcement.
 
 Codex, as sandbox and approval settings in `config.toml` and command rules in

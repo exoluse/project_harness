@@ -53,7 +53,7 @@ above.
 ## Concurrent writers
 
 Agree owners and non-overlapping paths and logical resources before concurrent
-editing. Prefer isolated worktrees when practical. Shared project notes or the
+editing. Prefer isolated worktrees when practical. Shared project documents or the
 team's coordination tool can record ownership, baseline, scope and status. A
 tool that owns assignment or status follows [external work trackers](DATA_MODEL.md#external-work-trackers).
 

@@ -69,6 +69,11 @@ For files named `<ID>.md` or `<ID>-<slug>.md` it also reports:
 - when a directory is scanned, an ID-named file that no scanned document links
   to.
 
+On a case-insensitive filesystem, such as the Windows default, it accepts a
+link whose letter case differs from the file's. Such a link breaks on
+case-sensitive hosts such as GitHub. Compare new link targets with the tracked
+filenames, such as `git ls-files`, before publishing them.
+
 It takes the unlinked document linking to the most items as the project
 overview. It reads the ID from the filename alone. It does not know the
 project's format table, folder mapping, allocation record, delegated ranges or

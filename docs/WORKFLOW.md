@@ -5,7 +5,7 @@ Follow [AGENTS.md](../AGENTS.md) for the current workflow and authority.
 ## The path as it runs today
 
 1. Identify the requested outcome, stage/stopping point, existing decisions and
-   relevant project notes. Resolve a request stated in plain words to its
+   relevant project records. Resolve a request stated in plain words to its
    owning items through the overview and plans and state that resolution. Start
    from the selected item's [current basis](DATA_MODEL.md#plans-and-tasks)
    when its owning document is already known. Present candidates before
@@ -491,9 +491,9 @@ denominator.
 ### After the report
 
 The report is conversation output. If the user asks to keep it, store it as
-a dated snapshot with its baseline version. The project note or a handoff
-record, for example, can hold it. The snapshot is historical and not a
-parallel current status.
+a dated snapshot with its baseline version. A report document or a handoff
+record, for example, can hold it; the overview does not, since it repeats no
+child status. The snapshot is historical and not a parallel current status.
 Repairing links, updating summaries or recording discrepancies as open items is
 separate work. It follows the usual
 [request authority](../AGENTS.md#authority-and-decisions). Propose it with the

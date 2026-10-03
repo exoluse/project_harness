@@ -113,7 +113,7 @@ Compact planning is the default for bounded, reversible low-risk work with a cle
 
 ## What documents record
 
-**Start with the overview for the whole project, or the task document for work already identified.** Work items own execution state, authority, immediate next action and prerequisites; verification records own check results. Plans manage order, dependencies and resumption positions. Overviews and parent plans link these owners without repeating task statuses or pass counts.
+**Start with the overview for the whole project, or the task document for work already identified.** Work items own execution state, the current execution mode with a link to the decision behind it, immediate next action and prerequisites; verification records own check results. Plans manage order, dependencies and resumption positions. Overviews and parent plans link these owners without repeating task statuses or pass counts.
 
 Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from their evidence. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; retained reports are dated snapshots.
 
