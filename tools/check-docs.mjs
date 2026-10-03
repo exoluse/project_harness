@@ -7,19 +7,32 @@
 // Usage: node tools/check-docs.mjs [--max-age <days>] [path ...]
 //   path       Files or directories to scan (default: current directory).
 //   --max-age  Warn when a "Last checked: YYYY-MM-DD" date is older (default 90).
-// Exit code: 1 when a link or anchor does not resolve or two scanned files own
-// the same ID, otherwise 0. Warnings never change the exit code.
+// Exit code: 1 when a link or anchor does not resolve, a link's path differs in
+// letter case from the name on disk, or two scanned files own the same ID,
+// otherwise 0. Warnings never change the exit code.
+// Tests: node --test tools/check-docs.test.mjs
 //
 // ID checks read the ID from the filename, so files with other names, such as
 // harness guidance and required-name files, are not examined. They know nothing
 // of a project's format table, allocation record or retired IDs.
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { basename, dirname, extname, join, relative, resolve, sep } from 'node:path';
+import {
+  basename,
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  normalize,
+  relative,
+  resolve,
+  sep,
+} from 'node:path';
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.venv', '.harness']);
 const LINK = /!?\[((?:[^\[\]]|\[[^\]]*\])*)\]\(\s*(<[^>]*>|[^()\s]+(?:\([^()]*\)[^()\s]*)*)(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g;
-const REFERENCE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/gm;
+// Link reference definitions; a footnote definition (`[^1]: text`) is not one.
+const REFERENCE = /^ {0,3}\[(?!\^)[^\]]+\]:\s*(<[^>]*>|\S+)/gm;
 const HEADING = /^ {0,3}#{1,6}[ \t]+(.*?)[ \t]*#*[ \t]*$/;
 const EXPLICIT_ID = /<[a-zA-Z][^>]*\s(?:id|name)\s*=\s*["']([^"']+)["']/g;
 const LAST_CHECKED = /Last checked:\s*(\d{4})-(\d{2})-(\d{2})/g;
@@ -146,6 +159,44 @@ function pathKey(path) {
   return process.platform === 'win32' ? path.toLowerCase() : path;
 }
 
+const entriesCache = new Map();
+
+function entriesOf(directory) {
+  if (!entriesCache.has(directory)) {
+    let names = [];
+    try {
+      names = readdirSync(directory);
+    } catch {
+      // An unreadable directory leaves nothing to compare.
+    }
+    entriesCache.set(directory, names);
+  }
+  return entriesCache.get(directory);
+}
+
+// A case-insensitive filesystem resolves a link whose letter case differs from
+// the file name, and the link then breaks on GitHub or Linux. Resolve `..` as
+// a browser does, then compare each segment the link names with the names on
+// disk. Returns the first differing segment and its name on disk, or null.
+function caseMismatch(fromDirectory, pathPart) {
+  if (isAbsolute(pathPart)) return null;
+  let current = fromDirectory;
+  for (const segment of normalize(pathPart).split(/[\\/]/)) {
+    if (segment === '' || segment === '.') continue;
+    if (segment === '..') {
+      current = dirname(current);
+      continue;
+    }
+    const names = entriesOf(current);
+    if (!names.includes(segment)) {
+      const actual = names.find((name) => name.toLowerCase() === segment.toLowerCase());
+      return actual === undefined ? null : [segment, actual];
+    }
+    current = join(current, segment);
+  }
+  return null;
+}
+
 // Returns what the ID checks need: the file's ID, the Markdown files it links
 // to and its ID-only headings, which mark item definitions.
 function checkFile(file, cache, options, report) {
@@ -168,11 +219,20 @@ function checkFile(file, cache, options, report) {
       report.errors.push([file, lineAt(text, index), `missing target: ${target}`]);
       continue;
     }
+    const mismatch = pathPart === '' ? null : caseMismatch(dirname(file), pathPart);
+    if (mismatch) {
+      report.errors.push([
+        file,
+        lineAt(text, index),
+        `letter case differs from disk: ${target} ("${mismatch[0]}" is "${mismatch[1]}" on disk)`,
+      ]);
+    }
     if (extname(destination).toLowerCase() !== '.md') continue;
     if (!statSync(destination).isFile()) continue;
     linked.add(pathKey(destination));
     if (anchor === '') continue;
-    // Heading slugs are lowercase; an explicit id or name keeps its case.
+    // A fragment matches as written or lowercased. Heading slugs are lowercase;
+    // an explicit id or name is kept as written.
     const anchors = anchorsOf(destination, cache);
     if (!anchors.has(anchor) && !anchors.has(anchor.toLowerCase())) {
       report.errors.push([file, lineAt(text, index), `missing anchor: ${target}`]);
@@ -251,6 +311,9 @@ function checkIds(scanned, options, report) {
   // Incoming links are only known when a directory was scanned. The unlinked
   // document that links to the most items is taken as the project overview.
   if (!options.scannedDirectory) return;
+  // A lone scanned file has no document that could link it: it is the
+  // overview, such as a compact work document serving that role.
+  if (scanned.size === 1) return;
   const idFiles = new Set();
   const incoming = new Set();
   for (const [file, { id, linked }] of scanned) {

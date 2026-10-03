@@ -49,12 +49,13 @@ is here.
 ### Document checker
 
 `node tools/check-docs.mjs [path ...]` checks that relative link targets exist,
-that heading anchors resolve and that `Last checked:` dates are recent. It needs
-Node and no packages, reads Markdown and writes nothing; a governed project can
-point it at its own document root. In an adopting project, run it from the
-[harness copy](DATA_MODEL.md#harness-copy), such as
-`node harness/tools/check-docs.mjs project-docs`. The checker is an optional way to supply
-part of the required [document validation](DATA_MODEL.md#document-validation).
+that heading and HTML anchors resolve and that `Last checked:` dates are recent.
+It needs Node and no packages, reads Markdown and writes nothing; a governed
+project can point it at its own document root. In an adopting project, run it
+from the [harness copy](DATA_MODEL.md#harness-copy), such as
+`node harness/tools/check-docs.mjs project-docs`. The checker is an optional
+way to supply part of the required
+[document validation](DATA_MODEL.md#document-validation).
 Verify the affected targets and anchors after changing guidance and before a
 completion claim that relies on links. Use this checker or an equivalent tool
 or manual check. Record the method, scope, result and limits in the
@@ -69,17 +70,30 @@ For files named `<ID>.md` or `<ID>-<slug>.md` it also reports:
 - when a directory is scanned, an ID-named file that no scanned document links
   to.
 
-On a case-insensitive filesystem, such as the Windows default, it accepts a
-link whose letter case differs from the file's. Such a link breaks on
-case-sensitive hosts such as GitHub. Compare new link targets with the tracked
-filenames, such as `git ls-files`, before publishing them.
+It reports a link path whose letter case differs from the name on disk. GitHub
+matches paths case-sensitively. Such a link breaks there even when a
+case-insensitive filesystem, such as the Windows default, finds the file. On
+such a filesystem the name on disk can also differ from the name Git tracks.
+Compare new link targets with the tracked filenames, such as `git ls-files`,
+before publishing them.
+
+A fragment matches an anchor as written or lowercased. Heading anchors are
+lowercase, so they match a fragment of any case. Hosts differ in how they treat
+the case of HTML `id` and `name` values. Lowercase values linked in lowercase
+avoid that difference.
 
 It takes the unlinked document linking to the most items as the project
-overview. It reads the ID from the filename alone. It does not know the
-project's format table, folder mapping, allocation record, delegated ranges or
-retired IDs. It skips files with other names, including harness guidance and
+overview. A lone scanned file, such as a compact work document serving as the
+overview, is not reported as unlinked. It reads the ID from the filename alone.
+It does not know the project's format table, folder mapping, allocation record,
+delegated ranges or retired IDs. It skips files with other names, including
+harness guidance and
 [required-name files](DATA_MODEL.md#required-name-exceptions). Scope the
 scanned path when retained historical copies share an ID.
+
+After changing the checker, run its regression tests with
+`node --test tools/check-docs.test.mjs`. They write their fixtures to a
+temporary directory, not to the repository.
 
 A pass covers only these checks: content, ID format and allocation, trace
 coverage and meaning still need their own review. If the checker is unavailable
