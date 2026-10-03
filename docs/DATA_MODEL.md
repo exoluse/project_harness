@@ -1005,9 +1005,11 @@ The `AGENTS.md` and `CLAUDE.md` inside the copy are the governing policy and
 its adapter. They are not path-scoped rules for the copy's folder.
 
 A project that copied the harness into its own root keeps that layout until a
-requested reorganization moves it. Until then, sync it by comparing each
-harness file with the commit it came from and carrying local edits forward.
-Record the harness commit the files then match. Before a move, compare each
+requested reorganization moves it. Until then, a sync applies the harness
+changes between the recorded source commit and the new one. Merge changed files
+with their local edits, and remove or rename files the harness removed or
+renamed. Where the project entry is kept, record the new source commit and the
+files that still carry local edits. Before a move, compare each
 harness file with the harness commit it came from, so that every local edit is
 relocated rather than lost. The move places the harness files in the copy folder
 and the local content in project-owned entry files or records. It repairs

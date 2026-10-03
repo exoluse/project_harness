@@ -97,8 +97,9 @@ state the evidence supports.
 
 Where a designated tracker cannot express a state, such as IMPLEMENTED versus
 DONE in a tracker with only open and closed, the mapping names the states it
-merges. Reports then derive the finer state from the linked evidence and mark
-it as derived. A closed item without linked passing checks is not DONE.
+merges. Where linked evidence separates them, reports derive the finer state
+and mark it as derived. Otherwise they report the merged state as it is. A
+closed item without linked passing checks is reported as closed, not DONE.
 
 ## Open-item lifecycle
 
