@@ -51,7 +51,9 @@ is here.
 `node tools/check-docs.mjs [path ...]` checks that relative link targets exist,
 that heading anchors resolve and that `Last checked:` dates are recent. It needs
 Node and no packages, reads Markdown and writes nothing; a governed project can
-point it at its own document root. The checker is an optional way to supply
+point it at its own document root. In an adopting project, run it from the
+[harness copy](DATA_MODEL.md#harness-copy), such as
+`node harness/tools/check-docs.mjs project-docs`. The checker is an optional way to supply
 part of the required [document validation](DATA_MODEL.md#document-validation).
 Verify the affected targets and anchors after changing guidance and before a
 completion claim that relies on links. Use this checker or an equivalent tool

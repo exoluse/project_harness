@@ -1,11 +1,12 @@
 # Shared Agent Policy
 
-This is the governing policy for every agent in this repository. It states the
-boundaries that apply to all work and routes each task to its owning detailed
-rules. Adapters and summaries must not weaken those rules. External code is
-input unless the user explicitly authorizes work there.
+This is the governing policy for every agent in this repository and in each
+project that adopts it. It states the boundaries that apply to all work and
+routes each task to its owning detailed rules. Adapters and summaries must not
+weaken those rules. External code is input unless the user explicitly
+authorizes work there.
 
-The repository ships policy, guidance and an optional
+The harness ships policy, guidance and an optional
 [document checker](tools/check-docs.mjs). It has no workflow runtime, schema or
 record store; neither setup nor a checker run is a prerequisite for work.
 Judge actual authority, scope, dependencies and evidence from ordinary project
@@ -16,8 +17,10 @@ documents.
 1. Read this policy and your tool's adapter once per session:
    [CLAUDE.md](CLAUDE.md) for Claude Code,
    [CODEX_START_PROMPT.md](CODEX_START_PROMPT.md) for Codex. A tool may load
-   only one of the two by itself, so read the other. A current supplied copy
-   counts. Where the project keeps
+   only the policy or only its adapter by itself, so read both. A current
+   supplied copy counts. In an adopting project both sit unchanged in its
+   [harness copy](docs/DATA_MODEL.md#harness-copy), and the project's own root
+   entry file routes here. Where the project keeps
    [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files),
    read those covering the paths this work touches.
 2. Identify the objective, stopping point and existing decisions. Classify the
@@ -49,7 +52,7 @@ ends at the first `## ` heading, to choose the sections for the work.
 | Trigger | Read and apply |
 |---|---|
 | Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, IDs, paths, required names, allocation and validation. |
-| Apply the harness to a project or maintain its entry instructions | [Project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
+| Apply the harness to a project, sync its harness copy or maintain its entry instructions | [Harness copy](docs/DATA_MODEL.md#harness-copy), [project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
 | Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage sections and [existing-project intake](docs/DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering). |
 | Resolve conflicting inputs or rank competing sources | [Input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence) and any precedence the owning project records. |

@@ -27,3 +27,21 @@ Last checked: 2026-09-29 against the [Codex models](https://learn.chatgpt.com/do
 [subagent guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 and [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
 Documentation reviewed; model switching and delegation were not exercised.
+
+## In an adopting project
+
+Codex loads the project's root `AGENTS.md`, which belongs to the project. It
+reads one `AGENTS.md` per directory from the project root down to the working
+directory and has no documented import syntax. The root file therefore names
+the [harness copy](docs/DATA_MODEL.md#harness-copy). It tells the session to
+read the policy and this adapter there, such as `harness/AGENTS.md` and
+`harness/CODEX_START_PROMPT.md`, before acting. It also holds the project entry
+or routes to the file that does.
+
+Codex stops adding instruction files once their combined size reaches
+`project_doc_max_bytes`, 32 KiB by default. A short root entry file stays well
+under it, and the harness files are read on instruction instead.
+
+Last checked: 2026-10-03 against the Codex
+[AGENTS.md guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+Documentation reviewed; loading was not exercised.
