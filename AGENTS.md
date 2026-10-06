@@ -69,7 +69,7 @@ ends at the first `## ` heading, to choose the sections for the work.
 | Configure agent tool permissions or sandboxing for a project | [Tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls). |
 | Plan checks, reuse evidence or determine recheck scope | [Verification reuse and scheduling](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification), [verification methods](docs/WORKFLOW.md#verification-and-completion) and applicable project checks. |
 | Handle a hotfix or incident, or reset project records | [Hotfixes and incidents](docs/WORKFLOW.md#hotfixes-and-incidents) or [starting over](docs/WORKFLOW.md#starting-over), with the applicable Security boundary. |
-| Select a model for reasoning or implementation, or delegate work | [Model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation), [subagent delegation](docs/COLLABORATION.md#subagent-delegation) and the relevant adapter's selection instructions. |
+| Select a model for reasoning or implementation, keep a project model roster, or delegate work | [Model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation), [subagent delegation](docs/COLLABORATION.md#subagent-delegation) and the relevant adapter's selection instructions. |
 | Maintain this harness's guidance | [Policy maintenance](#harness-policy-maintenance) and [guidance maintenance](docs/CONTEXT_EFFICIENCY.md#maintaining-policy-guidance). |
 | Interpret former runtime records | [Former runtime records](docs/WORKFLOW.md#former-runtime-records). |
 

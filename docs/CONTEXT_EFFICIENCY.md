@@ -203,7 +203,7 @@ The accountable agent is the session that received the request and reports its r
 | Strongest available | Problem and requirement definition; analysis and root-cause diagnosis; design and planning; substantive review; authority, scope, risk and open-item decisions; planning completion, verification interpretation, handover and closure judgments | The accountable agent retains decisions and final conclusions. Substantive delegated reasoning or drafting uses the same capability tier. |
 | Advanced | Difficult implementation of settled designs, such as complex algorithms, concurrency, performance-sensitive changes or integration across components | Use the strongest model when the implementation difficulty requires it. Review against the governing design and checks. |
 | Standard | Ordinary feature implementation, bounded fixes and tests using established behavior and contracts | Review the output against the defined outcome and checks. |
-| Lightweight | Simple, low-risk edits with a prescribed approach; mechanical checks, file location and factual extraction without interpretation | Keep the assignment bounded and verify its result. Interpretation returns to the strongest tier. |
+| Lightweight | Simple, low-risk edits with a prescribed approach; mechanical checks and file location; factual extraction and recording of settled decisions or observed results, without interpretation | Keep the assignment bounded and verify its result. A higher tier checks any value it derives, such as a date or an estimate. Interpretation returns to the strongest tier. |
 
 Assess implementation complexity, coupling, uncertainty and failure impact.
 File count or task length alone does not determine the tier. Requirements,
@@ -233,7 +233,8 @@ tool-specific selection mechanism. Do not hard-code model generations into tiers
    request only model and reasoning settings the actual interface supports.
 4. Reuse the selection basis while it remains current. Reassess when availability,
    capabilities, constraints or task difficulty change, or a selection fails.
-   No repeated catalog search or separate model registry is required.
+   No repeated catalog search is required. A
+   [project model roster](#project-model-roster), where kept, records this basis.
 
 The accountable agent selects implementation and subagent models without another
 approval within those constraints. Record a material substitution and its basis
@@ -241,13 +242,49 @@ in the existing work note or handoff when later work relies on it. Do not silent
 replace a required strong model with a weaker default. A supported alternative
 may be used only when it meets the work's capability and constraint requirements.
 
+### Project model roster
+
+A project may designate which models each tier uses. Keep this roster in the
+[project entry](DATA_MODEL.md#suggested-information), which every session reads
+first. Where a roster exists, it is the selection basis for the steps above.
+
+For each tier, record:
+
+- the permitted models, by the identifiers the tool accepts;
+- whether the tier runs as the main session or through delegation;
+- the basis, such as provider descriptions or project evidence, with its date.
+
+Before listing a model, confirm with a short run that the tool and account
+accept it. A model shown in a client's model list can still be refused.
+
+Select only from the roster. An unlisted model, or a tier below what the work
+requires, needs the project owner's decision. A roster change is a project
+decision, recorded where the roster lives.
+
+Pin the main session to a strongest-tier model through tool configuration; the
+adapters give the setting. Reassess the roster in any of these cases:
+
+- a model or tool release is known;
+- a listed model fails or is refused;
+- project results show a tier's work falling short.
+
 ### Accountability and tool limits
 
-The user or tool configuration selects the main session model. If it cannot
-meet the reasoning requirement, state the gap and recommend a suitable model
-change through the client's supported control. Do not claim to have switched
-models without tool evidence. Continue independent work that the current model
-can handle; leave the affected judgment pending when no suitable model is available.
+The user or tool configuration selects the main session model. Before
+strongest-tier work, check that model:
+
+- where a roster exists, compare the effective model with its strongest tier,
+  when the tool reports the model;
+- otherwise, assess it against current capability descriptions.
+
+A weaker model may not recognize its own gap. The roster and a configuration
+pin are the dependable controls; this check is a backstop.
+
+If the main model cannot meet the reasoning requirement, state the gap and
+recommend a suitable model change through the client's supported control. Do
+not claim to have switched models without tool evidence. Continue independent
+work that the current model can handle; leave the affected judgment pending
+when no suitable model is available.
 
 Whether and how to delegate follows
 [subagent delegation](COLLABORATION.md#subagent-delegation). Delegation is optional;

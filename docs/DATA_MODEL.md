@@ -60,7 +60,7 @@ binding.
 | Information | Minimum useful content |
 |---|---|
 | Project overview | Objective, baseline, shared conventions and links to owning decisions, work and resumption positions. |
-| Project entry | Stack and runtime versions, build, test and static-check commands with where each runs (such as locally or in CI), the top-level code layout and writer rules no other record owns. The project's [root instruction file](#project-instruction-files) owns these. |
+| Project entry | Stack and runtime versions, build, test and static-check commands with where each runs (such as locally or in CI), the top-level code layout, writer rules no other record owns and any [model roster](CONTEXT_EFFICIENCY.md#project-model-roster). The project's [root instruction file](#project-instruction-files) owns these. |
 | Project conventions | Integration/branch model, quality criteria and shared verification environments, such as staging or a live-equivalent environment. The project overview owns these. |
 
 Record entry and convention facts that are actually decided or observed, with
@@ -929,7 +929,9 @@ without and that rarely change:
 - the real build/test/static-check commands and where each runs, such as
   locally or in CI;
 - the top-level code layout;
-- writer rules that no other record owns.
+- writer rules that no other record owns;
+- the [model roster](CONTEXT_EFFICIENCY.md#project-model-roster), where the
+  project designates one.
 
 Where several tools are used, keep the project entry in one of their files and
 let the others route to it. Where a project has no root instruction file yet,
@@ -957,6 +959,12 @@ the entry route against the project's actual state:
 - The stack, actual check commands and top-level code layout are recorded
   here, and the overview's conventions are linked. Mark undecided entries
   honestly; do not invent commands to complete setup.
+- Each recorded check runs where the entry says it runs. For a check agents
+  run, try it in the agent's sandbox. Where it cannot run there, record where
+  it runs and who runs it.
+- Where the project keeps a model roster, each listed model was confirmed in
+  the actual tool and account. Tool configuration pins the main session to a
+  strongest-tier model.
 - The project's landing README introduces the project and links its overview.
   Link the harness usage guide separately, preserving existing guidance and
   required entry names when integrating it.

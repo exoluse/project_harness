@@ -33,6 +33,19 @@ Last checked: 2026-09-29 against the Claude Code
 and [model configuration](https://code.claude.com/docs/en/model-config) documentation.
 Documentation reviewed; model switching and delegation were not exercised.
 
+To pin a project's main session under its
+[model roster](docs/CONTEXT_EFFICIENCY.md#project-model-roster), set `model` in
+the project's `.claude/settings.json`. The `--model` flag and the
+`ANTHROPIC_MODEL` variable take precedence over it. A subagent uses the model
+given in the Agent call first. Otherwise it uses the `model` in its definition,
+then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main session's model. An
+`availableModels` allowlist applies only in managed settings; elsewhere the
+roster sets the limit.
+
+Last checked: 2026-10-06 against the Claude Code
+[model configuration](https://code.claude.com/docs/en/model-config) documentation.
+Documentation reviewed; pinning was not exercised.
+
 ## In an adopting project
 
 The project's root `CLAUDE.md` belongs to the project. It imports this adapter

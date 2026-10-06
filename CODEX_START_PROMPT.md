@@ -28,6 +28,20 @@ Last checked: 2026-09-29 against the [Codex models](https://learn.chatgpt.com/do
 and [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
 Documentation reviewed; model switching and delegation were not exercised.
 
+To pin the main session under a project's
+[model roster](docs/CONTEXT_EFFICIENCY.md#project-model-roster), set `model` in
+`config.toml`. A trusted project's `.codex/config.toml` can set it too; Codex
+does not load project config for an untrusted project. `agents.default_subagent_model`
+sets the default for spawned agents, and an explicit spawn model overrides it.
+A model in the client's model list can still be refused for the account.
+Confirm each roster model with a short `codex exec` run before listing it.
+
+Last checked: 2026-10-06 against the Codex
+[configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+With Codex CLI 0.155.0 on a ChatGPT account, a model in the local model list
+was refused with HTTP 400, and a short `codex exec` run accepted another.
+Explicit spawn models were exercised; project-scoped pinning was not.
+
 ## In an adopting project
 
 Codex loads the project's root `AGENTS.md`, which belongs to the project. It
