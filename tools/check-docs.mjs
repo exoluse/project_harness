@@ -4,9 +4,11 @@
 // No dependencies. Its output is evidence for what it checked; it grants no
 // authority and replaces no review.
 //
-// Usage: node tools/check-docs.mjs [--max-age <days>] [path ...]
-//   path       Files or directories to scan (default: current directory).
-//   --max-age  Warn when a "Last checked: YYYY-MM-DD" date is older (default 90).
+// Usage: node tools/check-docs.mjs [--max-age <days>] [--allow-bare-ids] [path ...]
+//   path              Files or directories to scan (default: current directory).
+//   --max-age         Warn when a "Last checked: YYYY-MM-DD" date is older (default 90).
+//   --allow-bare-ids  Do not warn about `<ID>.md` files without a description,
+//                     for projects whose established files predate the rule.
 // Exit code: 1 when a link or anchor does not resolve, a link's path differs in
 // letter case from the name on disk, or two scanned files own the same ID,
 // otherwise 0. Warnings never change the exit code.
@@ -43,7 +45,7 @@ const ID_ONLY = new RegExp(`^${ID}$`);
 const SLUG = /^[a-z]+-[a-z]+$/;
 
 function parseArgs(argv) {
-  const options = { maxAge: 90, paths: [], scannedDirectory: false };
+  const options = { maxAge: 90, allowBareIds: false, paths: [], scannedDirectory: false };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--max-age') {
       options.maxAge = Number(argv[i + 1]);
@@ -51,6 +53,8 @@ function parseArgs(argv) {
       if (!Number.isFinite(options.maxAge)) {
         throw new Error('--max-age needs a number of days');
       }
+    } else if (argv[i] === '--allow-bare-ids') {
+      options.allowBareIds = true;
     } else {
       options.paths.push(argv[i]);
     }
@@ -260,6 +264,13 @@ function checkFile(file, cache, options, report) {
   const named = basename(file).match(ID_FILENAME);
   if (!named) return { id: null, linked, definitions };
   const [, id, slug] = named;
+  if (slug === undefined && !options.allowBareIds) {
+    report.warnings.push([
+      file,
+      1,
+      `filename has no description after its ID: name new files ${id}-<word>-<word>.md`,
+    ]);
+  }
   if (slug !== undefined && !SLUG.test(slug)) {
     report.warnings.push([
       file,

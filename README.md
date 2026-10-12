@@ -53,25 +53,25 @@
 
 ```text
 project-docs/
-  overview/DOC-001.md            # 개요: 목표, 폴더 매핑, ID 형식·배정, 규약, 항목 색인
+  overview/DOC-001-project-overview.md   # 개요: 목표, 폴더 매핑, ID 형식·배정, 규약, 항목 색인
   requirements/
-    REQ-001.md                  # 요구사항 하나에 파일 하나
-    REQ-002.md
-  designs/DES-001.md             # 공유 설계
-  contracts/API-001.md           # API 계약
-  screens/SCR-PC-001.md          # 화면 명세
-  plans/PLAN-001.md              # 구현 순서와 작업 링크
+    REQ-001-user-search.md               # 요구사항 하나에 파일 하나
+    REQ-002-csv-export.md
+  designs/DES-001-search-index.md        # 공유 설계
+  contracts/API-001-user-search.md       # API 계약
+  screens/SCR-PC-001-search-page.md      # 화면 명세
+  plans/PLAN-001-user-admin.md           # 구현 순서와 작업 링크
   tasks/
-    TASK-API-001.md              # 영역별 작업
-    TASK-API-002.md
-  verifications/VER-001.md       # 검증 기록
-  verifications/contracts/CT-API-001-01.md  # 독립 관리하는 계약 검사
-  open-items/OI-001.md           # 미결사항
-  decisions/DEC-001.md           # 결정
-  decisions/architecture/ADR-001.md        # 아키텍처 결정
+    TASK-API-001-search-endpoint.md      # 영역별 작업
+    TASK-API-002-csv-download.md
+  verifications/VER-001-user-search.md   # 검증 기록
+  verifications/contracts/CT-API-001-01-search-response.md  # 독립 관리하는 계약 검사
+  open-items/OI-001-export-limit.md      # 미결사항
+  decisions/DEC-001-csv-encoding.md      # 결정
+  decisions/architecture/ADR-001-search-storage.md  # 아키텍처 결정
 ```
 
-조사·가이드·회의록·리뷰·보고서·변경·인계 등은 [기본 폴더 표](docs/DATA_MODEL.md#folders-by-document-kind)에서 위치를 찾습니다. 새 종류는 용도에 맞는 폴더를 정해 매핑에 추가합니다. 기능별 관계는 개요와 문서 링크로 연결합니다. 파일을 구별하기 어려워지면 새 문서에 `TASK-UI-025-popup-migration.md`처럼 설명을 붙이거나, 종류 폴더 안을 업무 영역별로 나눕니다.
+조사·가이드·회의록·리뷰·보고서·변경·인계 등은 [기본 폴더 표](docs/DATA_MODEL.md#folders-by-document-kind)에서 위치를 찾습니다. 새 종류는 용도에 맞는 폴더를 정해 매핑에 추가합니다. 기능별 관계는 개요와 문서 링크로 연결합니다. 새 파일 이름에는 ID 뒤에 다루는 주제를 영어 소문자 두 단어로 붙입니다(예: `TASK-UI-025-popup-migration.md`). 버전·상태·날짜는 넣지 않고, 한국어 제목은 본문 첫 제목에 씁니다. 이미 있는 파일 이름은 그대로 둡니다. 종류 폴더가 커져 찾기 어려우면 업무 영역별로 나눕니다.
 
 ## 어떻게 진행되는가
 

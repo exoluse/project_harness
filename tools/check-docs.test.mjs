@@ -162,7 +162,26 @@ test('ID-named files: duplicate owners fail; slug and body problems warn', () =>
   assert.match(out, /error {3}a\/REQ-001\.md:1: ID REQ-001 has another owning file: b\/REQ-001-login-form\.md/);
   assert.match(out, /REQ-002-login\.md:1: filename description "login" is not two lowercase words/);
   assert.match(out, /REQ-003\.md:1: ID REQ-003 from the filename does not appear in the body/);
+  assert.match(out, /REQ-003\.md:1: filename has no description after its ID/);
   assert.doesNotMatch(out, /no scanned document links here/);
+});
+
+test('a filename without a description warns unless bare IDs are allowed', () => {
+  const directory = fixture({
+    'overview/DOC-001-project-overview.md':
+      '# DOC-001\n\n[a](../requirements/REQ-001.md) [b](../requirements/REQ-002-user-search.md) ' +
+      '[c](../verifications/CT-API-001-01-search-response.md)\n',
+    'requirements/REQ-001.md': '# REQ-001\n',
+    'requirements/REQ-002-user-search.md': '# REQ-002\n',
+    'verifications/CT-API-001-01-search-response.md': '# CT-API-001-01\n',
+  });
+  const strict = check(directory, '.');
+  assert.equal(strict.status, 0);
+  assert.match(strict.out, /requirements\/REQ-001\.md:1: filename has no description after its ID/);
+  assert.match(strict.out, /0 errors, 1 warnings/);
+  const allowed = check(directory, '--allow-bare-ids', '.');
+  assert.equal(allowed.status, 0);
+  assert.match(allowed.out, /0 errors, 0 warnings/);
 });
 
 test('an unlinked ID-named file warns, except the overview', () => {
@@ -179,7 +198,9 @@ test('an unlinked ID-named file warns, except the overview', () => {
 });
 
 test('a lone scanned ID-named file is taken as the overview', () => {
-  const directory = fixture({ 'tasks/TASK-001.md': '# TASK-001\n\nCompact work document.\n' });
+  const directory = fixture({
+    'tasks/TASK-001-search-count.md': '# TASK-001\n\nCompact work document.\n',
+  });
   const { status, out } = check(directory, '.');
   assert.equal(status, 0);
   assert.match(out, /0 errors, 0 warnings/);

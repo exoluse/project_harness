@@ -28,11 +28,12 @@ has no established layout, these documents are stored in the
 Illustrative item trace: requirement `REQ-001` connects to design `DES-001`,
 API contract `API-001`, screen specification `SCR-PC-001` and implementation
 plan `PLAN-001`. Work items might be `TASK-API-001` and `TASK-PC-001`. The item
-files might be stored as `requirements/REQ-001.md`, `contracts/API-001-sign-in.md`,
-`tasks/TASK-API-001.md` and so on. A later search requirement gets the next
-available `REQ` serial, not another `REQ-001` in a different file. Retain the
-actual project's established IDs and meanings during intake. These syntax
-examples do not allocate IDs or establish evidence.
+files might be stored as `requirements/REQ-001-sign-in.md`,
+`contracts/API-001-sign-in.md`, `tasks/TASK-API-001-session-token.md` and so
+on. A later search requirement gets the next available `REQ` serial, not
+another `REQ-001` in a different file. Retain the actual project's established
+IDs and meanings during intake. These syntax examples do not allocate IDs or
+establish evidence.
 
 At this planning-only stopping point, record intended checks in the plans;
 actual verification reports are written when those checks are performed.
@@ -97,7 +98,7 @@ Prepare one work document that also serves as the overview under
 [compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change).
 Its ID and path below are illustrative, not an allocation:
 
-| Owning section in `tasks/TASK-001.md` | Bounded content |
+| Owning section in `tasks/TASK-001-search-count.md` | Bounded content |
 |---|---|
 | Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used, initial allocation basis/counter, and observed check commands/environment while the project has no root instruction file to own them. Other features remain outside this analysis. |
 | Work and evidence | Current basis and writer, source/expected behavior, approach, steps and checks, findings and actual verification as described below. Keep each definition once; no separate overview or eligibility report is needed. |

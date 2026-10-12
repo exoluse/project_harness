@@ -65,10 +65,16 @@ For files named `<ID>.md` or `<ID>-<slug>.md` it also reports:
 
 - two files owning one ID (an error);
 - an ID-only heading that repeats an ID defined elsewhere;
+- a filename without the required description after its ID;
 - a filename description that is not two lowercase hyphenated words;
 - a filename ID absent from the body;
 - when a directory is scanned, an ID-named file that no scanned document links
   to.
+
+Established `<ID>.md` files stay valid under
+[document paths](DATA_MODEL.md#document-paths). Where many remain,
+`--allow-bare-ids` drops the missing-description warning so that other
+warnings stay visible. The checker cannot tell new files from established ones.
 
 It reports a link path whose letter case differs from the name on disk. GitHub
 matches paths case-sensitively. Such a link breaks there even when a

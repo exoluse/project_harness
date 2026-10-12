@@ -53,25 +53,25 @@ Place each item's Markdown file in its document-kind folder. This shows part of 
 
 ```text
 project-docs/
-  overview/DOC-001.md            # overview: objective, folder mapping, ID formats and allocation, conventions, item index
+  overview/DOC-001-project-overview.md   # overview: objective, folder mapping, ID formats and allocation, conventions, item index
   requirements/
-    REQ-001.md                  # one file per requirement
-    REQ-002.md
-  designs/DES-001.md             # shared design
-  contracts/API-001.md           # API contract
-  screens/SCR-PC-001.md          # screen specification
-  plans/PLAN-001.md              # implementation order and task links
+    REQ-001-user-search.md               # one file per requirement
+    REQ-002-csv-export.md
+  designs/DES-001-search-index.md        # shared design
+  contracts/API-001-user-search.md       # API contract
+  screens/SCR-PC-001-search-page.md      # screen specification
+  plans/PLAN-001-user-admin.md           # implementation order and task links
   tasks/
-    TASK-API-001.md              # tasks per area
-    TASK-API-002.md
-  verifications/VER-001.md       # verification records
-  verifications/contracts/CT-API-001-01.md  # separately managed contract check
-  open-items/OI-001.md           # open items
-  decisions/DEC-001.md           # decision
-  decisions/architecture/ADR-001.md        # architecture decision
+    TASK-API-001-search-endpoint.md      # tasks per area
+    TASK-API-002-csv-download.md
+  verifications/VER-001-user-search.md   # verification records
+  verifications/contracts/CT-API-001-01-search-response.md  # separately managed contract check
+  open-items/OI-001-export-limit.md      # open items
+  decisions/DEC-001-csv-encoding.md      # decision
+  decisions/architecture/ADR-001-search-storage.md  # architecture decision
 ```
 
-Use the [default folder table](docs/DATA_MODEL.md#folders-by-document-kind) for research, guides, meeting notes, reviews, reports, changes and handoffs. Add a suitable folder mapping for each new kind. Connect feature relationships through the overview and document links. When files become hard to distinguish, add descriptions to new filenames, such as `TASK-UI-025-popup-migration.md`, or subdivide kind folders by work area.
+Use the [default folder table](docs/DATA_MODEL.md#folders-by-document-kind) for research, guides, meeting notes, reviews, reports, changes and handoffs. Add a suitable folder mapping for each new kind. Connect feature relationships through the overview and document links. Name each new file with its ID followed by two lowercase English words for its subject, such as `TASK-UI-025-popup-migration.md`. Leave versions, states and dates out of the name, and put the full title in the body. Existing filenames stay as they are. When a kind folder grows hard to scan, subdivide it by work area.
 
 ## Development flow
 

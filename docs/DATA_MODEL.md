@@ -525,17 +525,24 @@ omitting identity requirements.
 ## Document paths
 
 Except for [required-name files](#required-name-exceptions), every new project
-Markdown document uses `<document-root>/<classification-path>/<ID>.md` or
-`<document-root>/<classification-path>/<ID>-<slug>.md`. The ID portion exactly
-matches the owning document ID, including the tokens, separators and number
-widths in the project's format table. The optional slug is a short description
-for readability, not part of identity, allocation or parent relationships.
+Markdown document uses `<document-root>/<classification-path>/<ID>-<slug>.md`.
+The ID portion exactly matches the owning document ID, including the tokens,
+separators and number widths in the project's format table. The slug names the
+item's subject, so a reader can tell files apart without opening them. It is
+not part of identity, allocation or parent relationships.
 
-When present, the slug consists of exactly two lowercase ASCII words joined
-by one hyphen (`kebab-case`), matching `[a-z]+-[a-z]+`. Use a hyphen between
-the complete ID and the slug, for example `API-024-service-context.md`.
-Descriptions such as `service-context` or `admin-login` are optional; a single
-word, additional words, digits, spaces or underscores within the slug are invalid.
+The slug consists of exactly two lowercase ASCII words joined by one hyphen
+(`kebab-case`), matching `[a-z]+-[a-z]+`. Use a hyphen between the complete ID
+and the slug, for example `API-024-service-context.md` or
+`TASK-UI-025-popup-migration.md`. A single word, additional words, digits,
+spaces, underscores and non-ASCII letters are invalid in the slug. Write the
+full title, in any language, in the body.
+
+Name the subject the item keeps for its lifetime, such as `account-lock` or
+`cloud-save`. Leave out versions, states and dates, such as `final`, `draft` or
+`fixed`. Those change while the identity stays, and a renamed file needs every
+link to it repaired.
+
 Identify the complete ID from its registered format, including any parent/child
 segments, rather than treating the last hyphen or number as its boundary.
 Verify that the ID and slug have an unambiguous interpretation under the
@@ -545,10 +552,10 @@ Show the ID without the slug near the top of the body and in stable ID anchors.
 Keep the full title and context in the body and overview. Reference links use
 the ID as their label and the actual owning filename/anchor as their target.
 An ID in the body or directory alone does not satisfy the filename rule.
-When IDs alone make new files hard to distinguish, prefer a descriptive slug,
-such as `TASK-UI-025-popup-migration.md`. Apply the syntax above and preserve
-established filenames unless their reorganization is authorized.
-For example, `overview/DOC-001.md` and `overview/DOC-001-project-overview.md` are
+
+Established `<ID>.md` filenames remain valid. Do not rename them merely to add
+a slug; that is a reorganization and needs a matching request. For example,
+`overview/DOC-001.md` and `overview/DOC-001-project-overview.md` are
 alternative names for the same identity; `overview.md` needs a required-name
 exception. Keep one current owning file per ID across all folders: a different
 slug, or adding/removing a slug, does not create another item. Do not keep both
@@ -619,8 +626,9 @@ Folder changes preserve IDs and repair overview/item links; they do not
 authorize historical-record migration. Do not create empty type folders or
 placeholder files before they are needed. Group feature relationships through
 the overview and owning documents, independently of the physical layout.
-For example, `plans/PLAN-001.md` links to a task at `tasks/TASK-API-001.md`
-and an input contract at `contracts/API-001.md`.
+For example, `plans/PLAN-001-user-search.md` links to a task at
+`tasks/TASK-API-001-search-endpoint.md` and an input contract at
+`contracts/API-001-user-search.md`.
 
 ## Allocation and validation reuse
 
@@ -911,7 +919,7 @@ other item documents rather than duplicating them into an entry file.
 For example, suppose a tool requires a skill the project ships at
 `skills/report/SKILL.md`. Retain that path, record its document ID and the
 consumer requirement in the index, and add the ID to its body if compatible. A normal requirements document continues to use
-`requirements/REQ-001.md` under the chosen document root. The agent assesses
+`requirements/REQ-001-user-search.md` under the chosen document root. The agent assesses
 and documents the exception within the already authorized task; preserving a
 required name does not need an additional approval ceremony.
 
@@ -1053,7 +1061,7 @@ the affected scope and reusable evidence.
 | Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis. Also verify that they do not collide with retained/retired IDs or reservations, and that they fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
 | Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
 | Area overviews and trackers | Root and area overview entries resolve and hold only their owned content. Designated tracker information has no parallel Markdown record. Tracker references carry a resolvable key/link. Relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
-| Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, optional slug syntax and unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
+| Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, the slug's presence and syntax on new files, unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
 | Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. Distinguish dated history from current instructions. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
