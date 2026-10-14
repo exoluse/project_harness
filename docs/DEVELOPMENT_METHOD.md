@@ -72,9 +72,10 @@ Use the detailed procedure for the affected scope when it introduces:
 For compact work, use the existing work document and linked definitions under
 [compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change):
 
-1. Before editing, state the request/source and baseline, expected result,
-   affected paths, chosen approach and ordered edit/check steps. Name actual
-   check commands or targets and their environment; reference existing details.
+1. Before editing, note that the work follows a user request. State the baseline,
+   expected result and affected paths. Describe the chosen approach and ordered
+   edit/check steps. Name actual check commands or targets and their environment;
+   reference existing details.
 2. Compare that short plan with the governing inputs and affected consumers.
    Confirm that the checks can detect the relevant wrong result under
    [claim-based verification](WORKFLOW.md#verification-and-completion).
@@ -341,7 +342,8 @@ definition.
 ## Baselines and review boundaries
 
 Use commits, versioned documents or dated snapshots sufficient to identify
-the basis for dependent work. Preserve the actual request/decision and its scope.
+the basis for dependent work. Preserve the decided scope and its request or
+decision basis under [Approvals](APPROVALS.md#preparing-and-recording-one-decision).
 Do not require hashes or a fixed record format solely for ceremony.
 
 A changed version requires an applicability assessment of existing decisions
@@ -422,7 +424,7 @@ or effects are uncertain. Group unaffected content with a common reuse basis;
 do not require a separate impact report or an N/A row for every project document.
 Assign required corrections under [fixes across work-item boundaries](WORKFLOW.md#fixes-across-work-item-boundaries).
 
-1. Preserve the prior baseline and trace the request.
+1. Preserve the prior baseline and record the request or decision basis.
 2. Assess feasibility, alternatives, uncertainty and effects on behavior, data,
    dependencies, effort/schedule, verification and delivery.
 3. Update affected owning definitions into a reviewable current version. Keep
@@ -461,12 +463,13 @@ needed only when an agreed project or external process requires it.
 ### Conversation decisions and current instructions
 
 When the owner settles a question or changes a prior decision in conversation,
-record the actual source and covered change under
+note that the change follows the owner's decision and record its covered scope
+under
 [Approvals](APPROVALS.md#preparing-and-recording-one-decision). Identify which
 earlier instruction is superseded; retain its history without presenting it as
 current. Update the affected owning definitions and the work item's current
 basis before the next action that relies on the decision, and before handoff
-or completion. A transcript excerpt in a change log alone is insufficient when
+or completion. A request note in a change log alone is insufficient when
 the current requirement, design or work instructions still say something else.
 Unaccepted suggestions remain proposals.
 

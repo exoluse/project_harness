@@ -273,7 +273,9 @@ When a material commitment changes, such as behavior, cost, data handling or use
 
 For a correction, reuse applicable content and update affected owners. Changes to shared functions or APIs require checking consumers, tests and requirements. [Corrections across tasks](docs/WORKFLOW.md#fixes-across-work-item-boundaries) link to owning work; deferred corrections retain responsibility, a next action and a needed-by point. Update the overview when its own scope, dependencies or navigation change.
 
-When a decision is settled in conversation, retain its source and what it supersedes, then update the current owning instructions before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
+Do not copy or quote user prompts or replies into documents. A brief note such as "Performed at the user's request" records the request basis. Keep the decided scope and constraints in the work content, and explain technical rationale separately. See [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
+
+When a decision is settled in conversation, note that the user decided it and what it supersedes, then update the current owning instructions before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
 Concurrent agents use a separate worktree or clone for each writer, and a single working tree runs one writing agent at a time; see [collaboration](docs/COLLABORATION.md#concurrent-writers). Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue.
 

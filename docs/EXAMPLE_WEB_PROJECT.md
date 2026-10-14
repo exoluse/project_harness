@@ -60,7 +60,7 @@ A short work note can contain:
 
 | Content | Example |
 |---|---|
-| Basis and outcome | Link the actual request, source revision, requirement and API contract. Preserve valid zero; keep established loading/error behavior. |
+| Basis and outcome | Note that the correction follows a user request. Link the source revision, requirement and API contract. Preserve valid zero; keep established loading/error behavior. |
 | Steps and boundary | Identify formatter/caller paths, inspect affected consumers, remove the incorrect fallback and run the relevant component checks. The API and persistent data remain outside the change. |
 | Planned checks | Name the actual runner and environment. Render totals 0, 1 and 17, including 17 with only ten returned rows; expect the displayed total to remain 0, 1 and 17. Reuse existing cases and add missing regression coverage only. |
 | Results after execution | Record the tested candidate, commands, observed results and limits here or link the existing verification owner. |
@@ -105,10 +105,11 @@ Its ID and path below are illustrative, not an allocation:
 
 Project entry links lead to this work document. It is the next session's entry point:
 
-- **Current basis and expected behavior:** link the actual request, source
-  revision and inspected API definition. State the bounded zero/nonzero count
-  expectation and the existing loading/error behavior; do not claim confirmed
-  requirements for all search behavior. Link the other sections and overview.
+- **Current basis and expected behavior:** note that the correction follows a
+  user request. Link the source revision and inspected API definition. State the
+  bounded zero/nonzero count expectation and the existing loading/error behavior;
+  do not claim confirmed requirements for all search behavior. Link the other
+  sections and overview.
 - **Approach:** identify the response-to-display flow and incorrect fallback;
   preserve valid zero while keeping the API contract. Reference the existing
   contract rather than copying it or creating another API record.
@@ -184,10 +185,11 @@ record shape, not an actual decision or test result.
 Consider a clear direct request: “Fix the empty search result count to show
 zero and check non-empty results.” Such a request supplies the scope decision
 under the [clear-request criteria](APPROVALS.md#clear-implementation-requests).
-Record the request and derived scope, then proceed when prerequisites are
-ready; no second proceed response is needed. A request may instead leave an
-uncovered material choice. In that case, present the concrete proposal and
-record the actual response, such as “Proceed with this scope,” with its source.
+Note that the correction follows a user request and state its derived scope,
+then proceed when prerequisites are ready; no second proceed response is needed.
+A request may instead leave an uncovered material choice. In that case,
+present the concrete proposal and
+record that the owner authorized the proposed scope, without quoting the reply.
 Do not copy these examples as real decisions.
 
 ## 3. Implement across several plans

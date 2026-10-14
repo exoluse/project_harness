@@ -7,9 +7,10 @@ tool check cannot create them.
 ## Who decides and who checks
 
 The owner decides the implementation scope through a sufficiently concrete
-direct request or a response to a proposal. The agent records the actual source
-and checks that each work item remains covered. It makes choices within that
-authority, including explicitly delegated judgment, without inventing an owner decision.
+direct request or a response to a proposal. The agent records the request or
+decision basis and checks that each work item remains covered. It makes choices
+within that authority, including explicitly delegated judgment, without inventing
+an owner decision.
 
 ### Decision requests and delegated judgment
 
@@ -21,8 +22,8 @@ Before asking the owner, distinguish the choice from the authority needed to mak
 | Judgment explicitly delegated for a stated subject and limits | Choose within those limits and record the choice and rationale where it belongs. |
 | Routine implementation or work ordering within established commitments | Choose and proceed; update affected instructions without another approval. |
 
-Keep the actual delegation source with the owning scope decision. State the
-subject, allowed choices or constraints, exclusions and conditions for asking
+Record that the owner delegated judgment with the owning scope decision. State
+the subject, allowed choices or constraints, exclusions and conditions for asking
 again. Use the request and its context; do not invent broader authority from
 phrases such as "use your judgment."
 
@@ -43,9 +44,13 @@ document version, commit or dated reference. Scale detail to the work and link
 existing definitions. Present a proposal for a decision only where the current
 request and existing decisions do not already cover the concrete action.
 
-Record the actual request or response and its source next to that scope or in
-a decision log. Use available message references or an accurate attributed excerpt; do not
-invent message IDs, dates, signatures or assent. Ordinary language suffices.
+Note only that the work follows a user request or decision, next to its scope
+or in a decision log. A note such as "Performed at the user's request" suffices.
+No transcript, message ID or chat link is required for this note.
+Keep the scope, constraints and resulting decisions in their owning sections.
+Record technical rationale separately. Never invent a request, consent, dates
+or signatures. Required approval and acceptance evidence still follows
+[Security](SECURITY.md#five-high-risk-boundaries).
 
 An explicit proceed response covers the unchanged presented implementation and
 verification. One decision can cover multiple plans/tasks. One item can equally
@@ -112,7 +117,7 @@ risk, constraints and checks against the decision. Confirm dependencies,
 ownership and required external permissions.
 
 Keep this readiness assessment once in the owning plan/work note, with the
-actual decision source, assessed scope/version and supporting evidence or
+request or decision basis, assessed scope/version and supporting evidence or
 links. Tasks may inherit it through their parent link when the covered scope
 and shared prerequisites are clear; no separate readiness record is required.
 Before a selected item starts or resumes, check for changes and item-specific
@@ -146,9 +151,10 @@ work only when it remains authorized and outside the requested stop boundary.
    in progress; report an operation that cannot be stopped safely and its known
    effects. A stop request does not prove that an operation has stopped or that
    earlier effects have been undone.
-2. In the existing plan or work note, record the actual request/source, affected
-   scope and version, completed effects, unfinished work and any condition for
-   resumption. Preserve earlier decisions, code, documents and evidence.
+2. In the existing plan or work note, note the owner's cancellation, pause or
+   withdrawal. Record the affected scope and version, completed effects,
+   unfinished work and any condition for resumption. Preserve earlier decisions,
+   code, documents and evidence.
 3. Cancellation, pause or withdrawal alone does not authorize deletion, rollback
    or data repair. Those actions retain their own scope and applicable
    [external controls](SECURITY.md).

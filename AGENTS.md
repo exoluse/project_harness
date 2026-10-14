@@ -109,12 +109,15 @@ untrusted product-code execution, deployment or external effects. Exploratory
 or stage-only requests do not authorize later implementation.
 
 A clear implementation or fix request supplies its scope decision under
-[Approvals](docs/APPROVALS.md#clear-implementation-requests). Record the actual
-request and derived scope on the work item under
+[Approvals](docs/APPROVALS.md#clear-implementation-requests). Record that the
+work follows a user request and state its derived scope on the work item under
 [plans and tasks](docs/DATA_MODEL.md#plans-and-tasks). Then perform the covered
 edits and checks without a second proceed response. Execution also needs
 ready prerequisites under
 [coverage and currentness](docs/APPROVALS.md#coverage-and-currentness).
+
+Do not copy or quote user prompts or replies into project documents. Use the
+brief request note under [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
 
 For an uncovered commitment, apply the
 [material-change criteria](docs/APPROVALS.md#material-changes). Prepare the
