@@ -145,8 +145,10 @@ work and required external records keep their normal rules.
 
 ## History, evidence and real blockers
 
-Preserve original decisions, versions, observations and limits. Assess their
-current applicability separately; changed outputs do not erase valid history.
+Preserve original decisions, versions, observations and limits through version
+history or original records. Keep written history brief under
+[concise history](docs/DEVELOPMENT_METHOD.md#keeping-history-concise).
+Assess current applicability separately; changed outputs do not erase valid history.
 
 - Keep these distinct: the [task state](docs/WORKFLOW.md#task-states)
   IMPLEMENTED; the [verification kinds](docs/WORKFLOW.md#verification-and-completion)

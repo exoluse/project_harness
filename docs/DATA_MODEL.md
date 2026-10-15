@@ -397,8 +397,8 @@ A short ordered reading list is enough; no second status table is needed.
 
 Move the position when work actually moves. A changed task result requires an
 update to its owner, not a rewrite of every entry pointer.
-Preserve past positions through version history or clearly dated history.
-Current navigation must remain distinguishable from that history.
+Keep past positions in version history; no separate position log is needed.
+Without version history, retain only checkpoints needed to resume or assess evidence.
 
 A pointer establishes no permission, readiness or pass. The actual decision
 and evidence govern under [Approvals](APPROVALS.md#preparing-and-recording-one-decision)
@@ -887,9 +887,10 @@ its owned sections satisfy overview references without duplicating task state.
 When authorized work expands beyond these conditions, establish a separate
 overview before starting the affected work. Transfer current shared context,
 conventions and allocations there, and link the original work item. Replace
-live sections with links. For a closed work record, add a dated amendment
-linking the new owner and retain the original context as history. Preserve the
-work item's ID and evidence. Do not combine existing owners or accumulate
+live sections with links. For a closed work record, use a brief amendment
+linking the new owner; preserve the prior context through version history or
+the original record. Preserve the work item's ID and evidence.
+Do not combine existing owners or accumulate
 unrelated work to keep a single file. If scope grows, establish only the new
 independent owners or detailed planning that the change requires before the
 affected work starts. Extend closed
@@ -1067,7 +1068,7 @@ the affected scope and reusable evidence.
 | Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. Distinguish dated history from current instructions. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
 | Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
 | Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must retain evidence and update affected definitions and dependency status; a status change alone is insufficient. |
-| Scope and history | No unauthorized migration or historical relabeling; IDs and prior decision/evidence history are preserved, and unrun verification is not reported as success. |
+| Scope and history | No unauthorized migration or historical relabeling; IDs and prior decisions/evidence remain identifiable. Apply [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise) without duplicating routine edits or state transitions. Unrun verification is not reported as success. |
 | Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
 
 Required-name checks replace ordinary path/name/body checks only to the extent
@@ -1121,7 +1122,7 @@ states merely to fill fields.
 | Next action and timing | Investigation, decision or prerequisite action; provider being awaited, expected output, needed-by milestone/date and next review trigger. Use event-based timing when no date is established. |
 | Resolution criterion | Observable evidence or attributable decision that will answer the question or satisfy the prerequisite, and how it will be checked. |
 | Outcome and propagation | Answer/result, applicable decision/evidence and version, remaining limits, updated owning definitions and dependent-readiness assessment; for deferral/exclusion, the reason, authority and retained obligation. |
-| History | Prior and new state/disposition, reason, actor and actual date or version reference for material transitions, including closure and reopening. Preserve prior answers and failed attempts. |
+| History | For consequential changes, use one brief note with date/version, change and reason, and result or next action under [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise). Reuse the outcome entry and link decisions/evidence; routine transitions need no separate entry. |
 
 These are content requirements, not a fixed schema or a separate registry.
 Compact sections/tables and links suffice. A project overview indexes shared

@@ -139,7 +139,7 @@ Apply the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle) when the recipi
 checks current applicability and dependent-work readiness.
 
 Preserve both sides during integration. Do not silently reset unknown work,
-drop failed attempts or hide a newer failure behind an older success.
+discard recorded failure evidence or hide a newer failure behind an older success.
 Verification should address the actual integration impact, rather than rerunning
 unaffected checks solely because ownership or document layout changed.
 

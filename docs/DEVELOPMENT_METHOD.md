@@ -352,6 +352,29 @@ limits. Reuse unaffected evidence only when it still supports the stated
 criterion, subject and environment. Reverify changed outputs and affected
 dependencies.
 
+### Keeping history concise
+
+Use Git or the existing tracker's version history for routine edits. Keep
+owning documents focused on current instructions and results.
+
+Write a brief history note only when later work needs to understand an
+important change to scope, a decision, a result or a blocking condition.
+Prefer one line or a short paragraph with:
+
+- the date or version;
+- what changed and why;
+- the result or remaining action.
+
+Reuse an existing decision or result entry when it already explains the change.
+Group related changes to the same item in one session into one entry.
+Routine edits, status transitions and repeated attempts need no separate entries.
+Do not create session diaries, separate history files or archive snapshots
+solely for change tracking. Link existing decisions and evidence without copying them.
+
+Required approval records, issued reports and original verification evidence
+keep their formats and retention rules. Without reliable version history,
+preserve the prior decisions and tested baselines that affected work still needs.
+
 ## Input precedence
 
 Work inputs conflict routinely. A current instruction, a received
@@ -457,18 +480,18 @@ Do not revisit unaffected documents without a new impact, contradictory evidence
 or a required project check. Reuse follows
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
-A change section or log may carry this trace. A separate CHANGE/CR record is
+Keep this trace in the existing owning content or a brief note under
+[concise history](#keeping-history-concise). A separate CHANGE/CR record is
 needed only when an agreed project or external process requires it.
 
 ### Conversation decisions and current instructions
 
 When the owner settles a question or changes a prior decision in conversation,
 note that the change follows the owner's decision and record its covered scope
-under
-[Approvals](APPROVALS.md#preparing-and-recording-one-decision). Identify which
-earlier instruction is superseded; retain its history without presenting it as
-current. Update the affected owning definitions and the work item's current
-basis before the next action that relies on the decision, and before handoff
+under [Approvals](APPROVALS.md#preparing-and-recording-one-decision). Identify which
+earlier instruction is superseded; preserve it through version history or its
+original record. Update the affected owning definitions and the work item's
+current basis before the next action that relies on the decision, and before handoff
 or completion. A request note in a change log alone is insufficient when
 the current requirement, design or work instructions still say something else.
 Unaccepted suggestions remain proposals.

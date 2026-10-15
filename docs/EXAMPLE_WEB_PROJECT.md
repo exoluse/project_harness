@@ -162,7 +162,10 @@ contract does not say whether a missing `total` means an empty result or an
 invalid response. This changes the earlier example's known inputs; the agent cannot
 assume zero. Keep the question in the owning work document unless investigation
 or shared use needs a separate item under the normal boundary rules. The
-following states and decisions are illustrative, not actual events.
+following states and decisions illustrate the lifecycle, not a required log
+entry for each event. Update current fields and keep only important changes
+under [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise).
+These are illustrative states and decisions, not actual events.
 
 | Event | State, impact and required record |
 |---|---|

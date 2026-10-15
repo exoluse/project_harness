@@ -118,6 +118,8 @@ Compact planning is the default for bounded, reversible low-risk work with a cle
 
 Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from their evidence. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; retained reports are dated snapshots.
 
+Follow [concise history](docs/DEVELOPMENT_METHOD.md#keeping-history-concise). Routine edits use Git or the existing tracker's version history. Important changes need only a line or short paragraph with the date/version, what changed and why, and the result or next action. Group related changes to the same item; do not append an entry for every state transition or create separate session diaries or history files.
+
 | Document | What you can learn |
 |---|---|
 | Project overview | Overall goals, shared conventions, item index and links to current owning work |

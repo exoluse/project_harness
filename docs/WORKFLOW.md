@@ -144,6 +144,9 @@ Use the following meanings; equivalent project or local-language labels are
 acceptable if their mapping is clear. State describes progress on the item;
 blocking impact and deferral are recorded separately.
 
+Update the current state in place. Routine transitions use version history;
+important changes follow [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise).
+
 | State | Meaning and transition condition |
 |---|---|
 | OPEN | Follow-up is required and no resolution is established. Move to IN_PROGRESS when an identified action starts, or WAITING when a concrete outside input prevents progress. |
@@ -186,7 +189,8 @@ Before CLOSED with a resolved disposition:
 3. Assess each affected dependency. Record what is ready and what remains blocked
    by other items or permissions, with remaining actions and owners. Reuse
    applicable evidence; do not automatically resume canceled or paused work.
-4. Record the closure reason/history and update relevant overview/handoff links
+4. Keep the closure reason with the checked outcome; no separate history entry
+   is needed. Update relevant overview/handoff links
    under [summary ownership and updates](DATA_MODEL.md#summary-ownership-and-updates).
 
 Deferral leaves the item unresolved. Record the rationale, impact, authorized
@@ -231,10 +235,11 @@ Reopen a RESOLVED or CLOSED item when any of these occurs:
 - a relied-on decision is withdrawn;
 - changed assumptions invalidate its resolution/disposition.
 
-Retain its identity and prior closure; record the new source/version, reason,
-current state (OPEN, IN_PROGRESS or WAITING), owner, action and affected
-dependents. Reassess their readiness and stop affected work as necessary. A
-genuinely different issue follows the normal item-boundary rules and links the
+Retain its identity and prior closure through version history or original records.
+Keep one brief reopening note with the new source/version and reason. Update
+the current state (OPEN, IN_PROGRESS or WAITING), owner, action and affected
+dependents in their owning fields. Reassess their readiness and stop affected
+work as necessary. A genuinely different issue follows the normal item-boundary rules and links the
 earlier one instead of overwriting its history.
 
 ## Updating current work state
@@ -254,8 +259,9 @@ the current instructions before the next action relies on them.
    under [summary ownership](DATA_MODEL.md#summary-ownership-and-updates).
 
 A task state change alone requires no parent update or separate status report.
-Preserve history through versions or dated records. Follow owning records before
-dependent work; reducing duplicate text does not remove a prerequisite.
+Use version history and [brief notes](DEVELOPMENT_METHOD.md#keeping-history-concise).
+Follow owning records before dependent work; reducing duplicate text does not
+remove a prerequisite.
 
 ## Fixes across work-item boundaries
 
@@ -426,21 +432,16 @@ observation stays as history with its limits, and unaffected evidence keeps its
 standing under
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
-**A closed record is extended, not rewritten.** Work already recorded as
-complete sometimes must take in something it did not cover. Examples are a
-dependent path the frozen scope missed or a file the check turned out to
-require. Append a dated amendment stating:
+**Extend closed work with a brief amendment.** When additional scope belongs
+to closed work, note what is added, why and which evidence or checks it affects.
+Link the prior subject, criteria and results in version history or existing records.
+Do not copy the old body or list every unchanged fact.
 
-- what is added;
-- why it belongs to the closed work;
-- what did not change, naming the subject, criteria and evidence already
-  recorded.
-
-Editing the original body instead leaves a record that no longer describes what
-was done and checked at the time. It also hides the extension from the review
-that would have examined it. An amendment that moves the subject, the criteria
-or the result is not an amendment. It is a new check, or a withdrawal under the
-paragraph above.
+Current work instructions and navigation may be updated when their reviewed
+prior version remains identifiable. If version history is unavailable or the
+document is an original evidence record, retain the closed body and append the
+brief amendment. Changed subjects or criteria need applicable new checks;
+an overturned result follows pass withdrawal above.
 
 ## Status and trace reporting
 
@@ -579,8 +580,8 @@ verify and report the outcome. Urgency does not create consent.
 
 Production rollback/redeployment, data repair, destructive actions and credential
 access keep the decisions and controls that
-[Security](SECURITY.md#five-high-risk-boundaries) sets for each. Keep failed attempts
-and the actual recovery history.
+[Security](SECURITY.md#five-high-risk-boundaries) sets for each. Retain failure
+evidence and recovery decisions; summarize related attempts in one brief note.
 
 ## Starting over
 
