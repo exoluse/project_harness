@@ -144,8 +144,8 @@ Use the following meanings; equivalent project or local-language labels are
 acceptable if their mapping is clear. State describes progress on the item;
 blocking impact and deferral are recorded separately.
 
-Update the current state in place. Routine transitions use version history;
-important changes follow [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise).
+Update the current state in place; version history carries the transitions
+under [current state only](DEVELOPMENT_METHOD.md#current-state-only).
 
 | State | Meaning and transition condition |
 |---|---|
@@ -160,15 +160,15 @@ intermediate activity. Resolution review and closure may happen in the same
 session, with their actual checks recorded. No separate reviewer or human
 approval is required solely for these labels; actual decision and high-risk
 boundaries still apply. Failed resolution checks return the item to OPEN,
-IN_PROGRESS or WAITING as appropriate, preserving the failed evidence.
+IN_PROGRESS or WAITING as appropriate, with the failed check as its current
+outcome.
 
 When resolution checking, propagation and dependent-readiness review finish
-together, one dated/versioned entry may record the answer/evidence, affected
-owner links, readiness outcome and final CLOSED disposition. That entry covers
-both resolution and closure; do not copy the evidence into a separate entry for
-each label. Inherit unambiguous parent values under
+together, record the answer/evidence and its version, affected owner links,
+readiness outcome and final CLOSED disposition once in the item's outcome. Do
+not repeat the evidence for each label. Inherit unambiguous parent values under
 [Open items](DATA_MODEL.md#open-items). If propagation or a closure check remains,
-retain RESOLVED with the remaining action; grouping the record does not waive
+keep RESOLVED with the remaining action; recording them together does not waive
 either condition. See the [worked example](EXAMPLE_WEB_PROJECT.md#open-item-lifecycle-example).
 
 ### Resolution, closure and dependent work
@@ -189,9 +189,9 @@ Before CLOSED with a resolved disposition:
 3. Assess each affected dependency. Record what is ready and what remains blocked
    by other items or permissions, with remaining actions and owners. Reuse
    applicable evidence; do not automatically resume canceled or paused work.
-4. Keep the closure reason with the checked outcome; no separate history entry
-   is needed. Update relevant overview/handoff links
-   under [summary ownership and updates](DATA_MODEL.md#summary-ownership-and-updates).
+4. Keep the closure reason with the checked outcome. Update relevant
+   overview/handoff links under
+   [summary ownership and updates](DATA_MODEL.md#summary-ownership-and-updates).
 
 Deferral leaves the item unresolved. Record the rationale, impact, authorized
 scope/timing decision when needed, accountable owner, next action and review
@@ -235,12 +235,12 @@ Reopen a RESOLVED or CLOSED item when any of these occurs:
 - a relied-on decision is withdrawn;
 - changed assumptions invalidate its resolution/disposition.
 
-Retain its identity and prior closure through version history or original records.
-Keep one brief reopening note with the new source/version and reason. Update
-the current state (OPEN, IN_PROGRESS or WAITING), owner, action and affected
+Keep its identity; version history keeps the prior closure. Record the new
+source/version and reason in the item's subject and source, and update the
+current state (OPEN, IN_PROGRESS or WAITING), owner, action and affected
 dependents in their owning fields. Reassess their readiness and stop affected
-work as necessary. A genuinely different issue follows the normal item-boundary rules and links the
-earlier one instead of overwriting its history.
+work as necessary. A genuinely different issue follows the normal item-boundary
+rules and links the earlier item instead of rewriting it.
 
 ## Updating current work state
 
@@ -258,8 +258,9 @@ the current instructions before the next action relies on them.
    navigation change. Replace affected duplicate current claims with owner links
    under [summary ownership](DATA_MODEL.md#summary-ownership-and-updates).
 
-A task state change alone requires no parent update or separate status report.
-Use version history and [brief notes](DEVELOPMENT_METHOD.md#keeping-history-concise).
+A task state change alone requires no parent update, separate status report
+or note; version history carries it under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only).
 Follow owning records before dependent work; reducing duplicate text does not
 remove a prerequisite.
 
@@ -286,8 +287,8 @@ or an existing [open item](#open-item-lifecycle):
 "Outside this task" identifies a boundary but does not dispose of the defect.
 Keep dependent work blocked where the correction is a prerequisite; independent
 covered work can continue. Report missing assignments under the open-item
-lifecycle. Extend closed records under [verification and completion](#verification-and-completion)
-and preserve their original scope and results.
+lifecycle. Extend closed records under
+[verification and completion](#verification-and-completion).
 
 ## Verification and completion
 
@@ -328,8 +329,9 @@ state that the project has not decided them. Track that under the
 dependent work or handoff relies on it. Do not invent one.
 
 **Keep completion evidence reproducible.** Identify the actual tested output,
-including uncommitted changes. Without Git, reference a preserved tested snapshot
-or equivalent versioned artifact; a pre-edit backup identifies only the earlier baseline.
+including uncommitted changes. Without Git, reference a kept copy of the tested
+output or equivalent versioned artifact; a pre-edit backup identifies only the
+earlier baseline.
 
 For automated checks, retain or link the command, custom check code and relevant
 inputs/configuration. Include random seeds when they determine the case sequence.
@@ -339,8 +341,9 @@ results so another reviewer can assess the claim. Exact replay of human behavior
 is not required.
 
 An unavailable one-off script or unidentified tested output limits what later
-work can establish. Preserve the observation, state the missing evidence and
-obtain the required check before relying on it for completion or reuse.
+work can establish. Record the observation with the missing evidence as its
+limit, and obtain the required check before relying on it for completion or
+reuse.
 
 **Check the actual subject of the claim.** A stand-in — a synthetic fixture, a
 copied sample, a mock of the component under test, a hand-built approximation —
@@ -419,7 +422,8 @@ independent check, an audit or a discovered defect shows that a granted pass or
 acceptance did not hold.
 
 - Name the subjects whose pass is withdrawn.
-- Keep both the original evidence and the finding that overturned it.
+- Replace the pass with the current disposition and the finding that overturned
+  it; version history keeps the withdrawn evidence.
 - Correct every record and summary that still reports the withdrawn result.
 - Return work that was allowed to start or close on that basis to its state
   before it. Where a decision rested on it, do so under
@@ -427,21 +431,14 @@ acceptance did not hold.
 - Record what would restore it: which check, at what scope, by whom.
 
 Dependent work waits behind that condition, and the condition is a real blocker
-rather than a preference. A withdrawal is not an erasure. The original
-observation stays as history with its limits, and unaffected evidence keeps its
-standing under
+rather than a preference. Unaffected evidence keeps its standing under
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
-**Extend closed work with a brief amendment.** When additional scope belongs
-to closed work, note what is added, why and which evidence or checks it affects.
-Link the prior subject, criteria and results in version history or existing records.
-Do not copy the old body or list every unchanged fact.
-
-Current work instructions and navigation may be updated when their reviewed
-prior version remains identifiable. If version history is unavailable or the
-document is an original evidence record, retain the closed body and append the
-brief amendment. Changed subjects or criteria need applicable new checks;
-an overturned result follows pass withdrawal above.
+**Extend closed work in place.** When additional scope belongs to closed work,
+update its subject, criteria, state and planned checks to the current scope;
+version history keeps the closed version. Do not describe the addition as a
+change or list unchanged facts. Changed subjects or criteria need applicable
+new checks; an overturned result follows pass withdrawal above.
 
 ## Status and trace reporting
 
@@ -499,10 +496,10 @@ denominator.
 
 ### After the report
 
-The report is conversation output. If the user asks to keep it, store it as
-a dated snapshot with its baseline version. A report document or a handoff
-record, for example, can hold it; the overview does not, since it repeats no
-child status. The snapshot is historical and not a parallel current status.
+The report is conversation output. If the user asks to keep it, store it with
+its baseline version. A report document or a handoff record, for example, can
+hold it; the overview does not, since it repeats no child status. A kept report
+is a deliverable, not a parallel current status.
 Repairing links, updating summaries or recording discrepancies as open items is
 separate work. It follows the usual
 [request authority](../AGENTS.md#authority-and-decisions). Propose it with the
@@ -538,9 +535,9 @@ Track the report's own state, such as drafted, ready and delivered. An
 unfinished issue is then not submitted, and a delivered one is not quietly
 changed. A correction after delivery is a new statement to its reader.
 
-Keep each issue as a dated record with its basis version, and leave it as
-history. A past issue is not rewritten to match later facts. The current
-position stays in the owning records and the
+Each issue states its basis version. A delivered issue is a deliverable, not a
+status record, and is not rewritten to match later facts. The current position
+stays in the owning records and the
 [resumption state](DATA_MODEL.md#resumption-state), not in the latest report.
 Where readers expect a fixed form, keep one template with those records; the
 form serves the reader and does not change what counts as established.
@@ -580,16 +577,17 @@ verify and report the outcome. Urgency does not create consent.
 
 Production rollback/redeployment, data repair, destructive actions and credential
 access keep the decisions and controls that
-[Security](SECURITY.md#five-high-risk-boundaries) sets for each. Retain failure
-evidence and recovery decisions; summarize related attempts in one brief note.
+[Security](SECURITY.md#five-high-risk-boundaries) sets for each. Record the
+failure evidence and recovery decisions in the incident's owning record;
+attempts need no log.
 
 ## Starting over
 
 Reset requires an explicit current user request. Prepare a dry run describing
 the exact target paths, affected committed/uncommitted records, recoverable
-copies and preserved decision history. Apply the destructive-operation boundary
-in [Security](SECURITY.md#five-high-risk-boundaries). Never reset to silence
-diagnostics.
+copies and the version history that remains. Apply the destructive-operation
+boundary in [Security](SECURITY.md#five-high-risk-boundaries). Never reset to
+silence diagnostics.
 
 Verify recoverability, including uncommitted records, before destructive work.
 
@@ -602,8 +600,8 @@ work. Management records are ordinary project documents under the
 A project adopted from the earlier runtime-required process may still hold
 `.harness/` records, signed payloads, baselines and snapshots. Preserve them:
 they retain their original format, meaning and evidentiary value, and they are
-historical input rather than current authority. Record mutation, migration,
-conversion or deletion needs its own matching task authority under
+input from the earlier process rather than current authority. Record mutation,
+migration, conversion or deletion needs its own matching task authority under
 [Security](SECURITY.md#classifying-development-actions); no such migration is
 implied by this repository dropping its tooling. Never forge records, rewrite
 signed payloads, install authority markers by hand or fabricate past attempts.

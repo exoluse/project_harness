@@ -93,12 +93,12 @@ Each stage has defined inputs and outputs. You do not approve every stage — on
 | Requirements | Discovery results and supporting evidence | Intended outcomes, acceptance criteria, priorities, source trace | Whether these are the right requirements |
 | Design | Requirements at a fixed version, and constraints | Components, interfaces, data, alternatives, risks, requirement coverage | Which alternative to take |
 | Planning | Original scope sources, requirements, design, current progress | Work order, exception handling, verification methods and unknown dispositions at the selected depth | Only where a choice is left open |
-| Implementation | A concrete scope decision, ready inputs and permissions | Code and document changes, with deviations from the plan recorded | What to implement this time |
+| Implementation | A concrete scope decision, ready inputs and permissions | Code and document changes, with the plan and task updated to what was actually done | What to implement this time |
 | Verification | Candidate version, criteria, check environment | Actual results, failures, limits of applicability | How far to verify |
 | Acceptance | The candidate and its verification | The authorized customer's acceptance or feedback | Whether to accept — never done on your behalf |
 | Delivery | Release scope, operational prerequisites, permissions | The deployed version and post-delivery checks | Approval to go to production |
 | Closure | All contributing work, evidence, outstanding obligations | An honest disposition per item, and acceptance, delivery, handover and maintenance obligations settled | When to declare closure |
-| Maintenance | The released baseline, new requests and incidents | Traced changes and recheck results, with earlier observations preserved | The next request |
+| Maintenance | The released baseline, new requests and incidents | Traced changes and recheck results | The next request |
 
 **Moving between stages.** Work stops at the requested stage. A planning-only request ends with the plan; a request to implement a concrete scope continues through ready implementation and verification work, and the same scope does not require approval again at every step. Planning is finished when it passes its completion checks, not when a document exists: the original sources are reflected in the plan, the detail is concrete enough that the implementer does not have to guess consequential behavior, and every unknown has a disposition. Listing open questions is not a pass. Starting implementation additionally needs a scope decision and ready prerequisites.
 
@@ -110,15 +110,15 @@ Compact planning is the default for bounded, reversible low-risk work with a cle
 
 **What needs its own approval.** Production deployment, production data changes, destructive operations, access to secrets and protected credentials, and final customer acceptance are never covered by development authority. These five are confirmed separately even when you do not mention them, and acceptance requires the authorized customer's own sign-off.
 
-**Existing projects** start from their actual progress. The agent distinguishes implemented behavior from remaining work and uses existing documents, IDs and history, keeping behavior observed in code, inferred intent, requirements confirmed by the customer and open unknowns apart from each other.
+**Existing projects** start from their actual progress. The agent distinguishes implemented behavior from remaining work and uses existing documents, IDs and version history, keeping behavior observed in code, inferred intent, requirements confirmed by the customer and open unknowns apart from each other.
 
 ## What documents record
 
 **Start with the overview for the whole project, or the task document for work already identified.** Work items own execution state, the current execution mode with a link to the decision behind it, immediate next action and prerequisites; verification records own check results. Plans manage order, dependencies and resumption positions. Overviews and parent plans link these owners without repeating task statuses or pass counts.
 
-Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from their evidence. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; retained reports are dated snapshots.
+Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from their evidence. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; a kept report is a deliverable at its basis version, not a current status record.
 
-Follow [concise history](docs/DEVELOPMENT_METHOD.md#keeping-history-concise). Routine edits use Git or the existing tracker's version history. Important changes need only a line or short paragraph with the date/version, what changed and why, and the result or next action. Group related changes to the same item; do not append an entry for every state transition or create separate session diaries or history files.
+Documents hold only the current state. Under [current state only](docs/DEVELOPMENT_METHOD.md#current-state-only), update definitions, decisions, results, open items and positions in place; Git or the existing tracker's version history carries the past. Do not write change notes, dated history entries, superseded decisions or instructions, session diaries, separate history files or archive snapshots. Where current work depends on the past, link the commit or version.
 
 | Document | What you can learn |
 |---|---|
@@ -277,7 +277,7 @@ For a correction, reuse applicable content and update affected owners. Changes t
 
 Do not copy or quote user prompts or replies into documents. A brief note such as "Performed at the user's request" records the request basis. Keep the decided scope and constraints in the work content, and explain technical rationale separately. See [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
 
-When a decision is settled in conversation, note that the user decided it and what it supersedes, then update the current owning instructions before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
+When a decision is settled in conversation, note that the user decided it and replace the instruction it supersedes in its owner before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
 Concurrent agents use a separate worktree or clone for each writer, and a single working tree runs one writing agent at a time; see [collaboration](docs/COLLABORATION.md#concurrent-writers). Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue.
 
@@ -326,7 +326,7 @@ The policy requires these to be kept distinct. A record carries the actual metho
 
 **Beyond verification.** Planning complete means the planning completion checks passed; it is not authority to execute. CUSTOMER_ACCEPTED means the authorized customer explicitly accepted a specific candidate version; it does not complete handover or maintenance obligations. CLOSED always names what was closed: an open item, a release or the project. Project closure means all contributing work and the acceptance, delivery, handover and maintenance obligations are settled.
 
-A subject examined without passing, one that cannot be checked because a required input is missing, one needing rework and one the criteria do not apply to each carry their own disposition and stay out of pass counts. When a later check overturns an earlier pass, the pass is withdrawn explicitly and its history is preserved. See [verification and completion](docs/WORKFLOW.md#verification-and-completion) and [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
+A subject examined without passing, one that cannot be checked because a required input is missing, one needing rework and one the criteria do not apply to each carry their own disposition and stay out of pass counts. When a later check overturns an earlier pass, the pass is withdrawn explicitly and replaced by the current disposition with the overturning finding. See [verification and completion](docs/WORKFLOW.md#verification-and-completion) and [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 ### Example result report
 

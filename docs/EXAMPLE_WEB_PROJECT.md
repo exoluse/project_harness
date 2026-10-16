@@ -154,7 +154,7 @@ First consider a question answered by the inspected, authoritative contract
 during the same session: "Is zero a valid total?" The owning note can record
 "Yes; `total` is a non-negative integer, including zero," with the actual
 contract/version link and the corresponding planned zero-result check. Once
-checked and incorporated, no separate OI or state history is needed. The check
+checked and incorporated, no separate OI is needed. The check
 is still planned; a contract definition does not establish product success.
 
 Consider a variant of the fictional count correction. Here the inspected
@@ -162,9 +162,9 @@ contract does not say whether a missing `total` means an empty result or an
 invalid response. This changes the earlier example's known inputs; the agent cannot
 assume zero. Keep the question in the owning work document unless investigation
 or shared use needs a separate item under the normal boundary rules. The
-following states and decisions illustrate the lifecycle, not a required log
-entry for each event. Update current fields and keep only important changes
-under [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise).
+following states and decisions illustrate the lifecycle, not a log; the item
+holds only its current fields under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only).
 These are illustrative states and decisions, not actual events.
 
 | Event | State, impact and required record |
@@ -172,13 +172,13 @@ These are illustrative states and decisions, not actual events.
 | Gap discovered | OPEN. Link the response contract/version and contradictory or missing definition. The planning agent owns follow-up; the product/API decision owner must settle intended behavior. The affected display plan cannot be completed. Resolution requires an authoritative contract or attributable owner decision defining the missing-total behavior. |
 | Investigation starts | IN_PROGRESS. Inspect authorized contract sources and callers; record what they establish and any remaining ambiguity. Needed-by point: before finalizing the display/state design. Next review: after that inspection, or sooner if a relevant input changes. |
 | Sources cannot settle intent | WAITING. Present the owner with alternatives, evidence and the affected scope. Record whose answer is needed and revisit on response or at the needed-by point. Independent work may continue; do not silently implement a zero fallback. |
-| Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Link that answer and retain the former uncertainty; this settles intent, not proof of product behavior. |
+| Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Link that answer; this settles intent, not proof of product behavior. |
 | Answer incorporated | Update affected owning definitions, such as the contract, display design, work steps and planned missing-total check; retain applicable definitions unchanged. Assess implementation authority and other prerequisites. Once those propagation checks are recorded, close this question as resolved. Product implementation and testing remain separate work with their actual states. |
-| Later contradictory input | If a revised contract invalidates the answer, reopen the same question as OPEN. On reopening, preserve the old decision and closure, record the new version and next action, and reassess the affected plan and dependent work. |
+| Later contradictory input | If a revised contract invalidates the answer, reopen the same question as OPEN. On reopening, record the new contract version, reason and next action, and reassess the affected plan and dependent work; version history keeps the old decision and closure. |
 
-Checking and incorporating the answer may finish together. In that case, one
-closure entry can link the checked owner response/version and the updated
-contract, design, task and planned check. That entry can also state: "CLOSED:
+Checking and incorporating the answer may finish together. In that case, the
+item's outcome can link the checked owner response/version and the updated
+contract, design, task and planned check. It can also state: "CLOSED:
 missing total uses the invalid-response state; the planning gap is removed;
 implementation and product verification remain pending." This is a fictional
 record shape, not an actual decision or test result.
@@ -207,8 +207,8 @@ execution status and links the actual verification. The plan's resumption
 record points to the UI task. The overview retains its plan link without copying
 either task's status. Apply [current-state updates](WORKFLOW.md#updating-current-work-state)
 so an old "awaiting implementation approval" instruction cannot survive as the
-current basis after a covered implementation request. Keep the original
-planning-only decision in dated history.
+current basis after a covered implementation request. Replace it; version
+history keeps the planning-only decision.
 
 ## 4. Verify and handle feedback
 
@@ -227,7 +227,7 @@ For a displayed total, use the contract's expected value rather than calling
 the formatter under test to calculate the expectation. Both choices follow
 [claim-based verification](WORKFLOW.md#verification-and-completion).
 
-For feedback, preserve the previous candidate and observations. Obtain a
+For feedback, record the candidate version and the observations. Obtain a
 decision for a material delta when needed, then reverify the affected outputs.
 
 ## 5. Accept, deliver and close

@@ -19,12 +19,12 @@ for bounded work. Sprints are optional.
 | Requirements | Discovery and attributable evidence | Outcomes, acceptance criteria, priorities and trace are clear enough for the requested scope. |
 | Design | Versioned requirements and constraints | Components, interfaces, data, alternatives, risks and requirement coverage are described. |
 | Planning | Original scope sources, requirements, design and current progress | Source coverage, detailed work, integration order and verification pass the planning completion checks; unresolved prerequisites have an explicit disposition. |
-| Implementation | Concrete scope decision, ready inputs and permissions | Covered work is implemented; changes and deviations are recorded. |
+| Implementation | Concrete scope decision, ready inputs and permissions | Covered work is implemented; the plan and task state what was actually done. |
 | Verification | Candidate version, criteria and check environment | Actual results, failures, applicability and limits are recorded for the declared [verification kinds](WORKFLOW.md#verification-and-completion). |
 | Acceptance | Candidate and applicable verification | The authorized customer gives attributable acceptance or feedback for the stated candidate. |
 | Delivery | Release scope, operational prerequisites and permits | Delivery is performed within authority; deployed version and applicable post-delivery checks are recorded. |
 | Closure | Contributions from all plans, evidence and obligations | Required work has an honest disposition; acceptance, delivery, handover and maintenance obligations are satisfied as applicable. |
-| Maintenance | Released baseline and new requests/incidents | Authorized changes are traced, implemented and reverified; prior observations are preserved. |
+| Maintenance | Released baseline and new requests/incidents | Authorized changes are traced, implemented and reverified. |
 
 A documentation-only engagement can close with its document deliverables;
 it does not claim product implementation, production delivery or customer
@@ -289,7 +289,7 @@ the affected decision. Record the following in the owning plan or task:
 - The responsible work and when the evidence is needed.
 
 Schedule the check before expanding work that depends on the unconfirmed
-assumption. An actual decision may defer it; preserve that decision, the risk
+assumption. An actual decision may defer it; record that decision, the risk
 and the later checkpoint. Do not present an estimate or agent preference as
 observed user experience.
 
@@ -302,10 +302,10 @@ distinguishes agent review, observed use and customer acceptance.
 
 ## Existing project intake and reverse engineering
 
-Preserve the intake commit or snapshot and identify dirty/unknown work before
-editing. Record analysis boundaries, available sources, actual progress,
-known verification/deployment status and the observed stack and build, test
-and check commands under the
+Record the intake commit, or keep a versioned copy without Git, and identify
+dirty/unknown work before editing. Record analysis boundaries, available
+sources, actual progress, known verification/deployment status and the
+observed stack and build, test and check commands under the
 [project entry and conventions](DATA_MODEL.md#suggested-information).
 Existing documents and tools remain inputs; resolve conflicting project rules
 explicitly. Some material is kept for communication, superseded by a later
@@ -341,39 +341,40 @@ definition.
 
 ## Baselines and review boundaries
 
-Use commits, versioned documents or dated snapshots sufficient to identify
-the basis for dependent work. Preserve the decided scope and its request or
+Use commits or versioned copies sufficient to identify the basis for
+dependent work. Preserve the decided scope and its request or
 decision basis under [Approvals](APPROVALS.md#preparing-and-recording-one-decision).
 Do not require hashes or a fixed record format solely for ceremony.
 
 A changed version requires an applicability assessment of existing decisions
-and evidence. Preserve past observations as history, including their original
-limits. Reuse unaffected evidence only when it still supports the stated
-criterion, subject and environment. Reverify changed outputs and affected
-dependencies.
+and evidence. Replace or remove evidence that no longer applies; version
+history keeps the earlier observation. Reuse unaffected evidence only when it
+still supports the stated criterion, subject and environment. Reverify changed
+outputs and affected dependencies.
 
-### Keeping history concise
+### Current state only
 
-Use Git or the existing tracker's version history for routine edits. Keep
-owning documents focused on current instructions and results.
+Project documents hold only the current state. Keep each owning document at
+the definitions, decisions, results, open items and positions in force, and
+update it in place. Version history, in Git or the designated tracker, carries
+the past.
 
-Write a brief history note only when later work needs to understand an
-important change to scope, a decision, a result or a blocking condition.
-Prefer one line or a short paragraph with:
+Write no history into project documents:
 
-- the date or version;
-- what changed and why;
-- the result or remaining action.
+- no change notes or dated history entries;
+- no superseded decision, instruction or result kept beside the current one;
+- no reopening, withdrawal or amendment notes;
+- no session diaries, separate history files or archive snapshots.
 
-Reuse an existing decision or result entry when it already explains the change.
-Group related changes to the same item in one session into one entry.
-Routine edits, status transitions and repeated attempts need no separate entries.
-Do not create session diaries, separate history files or archive snapshots
-solely for change tracking. Link existing decisions and evidence without copying them.
+Where current work depends on the past, link the commit or version instead of
+describing it. A reason that still governs current work is part of the current
+state; keep it with its decision. Link existing decisions and evidence without
+copying them.
 
-Required approval records, issued reports and original verification evidence
-keep their formats and retention rules. Without reliable version history,
-preserve the prior decisions and tested baselines that affected work still needs.
+Records an external process requires, such as approval records, issued reports
+and delivered verification evidence, keep that process's format and retention
+rules. Without version history, the versioned copy kept at
+[startup](../AGENTS.md#startup-and-context) is the only earlier version.
 
 ## Input precedence
 
@@ -404,7 +405,7 @@ The ladder ranks inputs, not authority, and it ranks what to follow rather than
 what is true. It does not settle a
 [material change](APPROVALS.md#material-changes), a high-risk action, a missing
 required input, or contradictory evidence about whether something actually
-works. Those remain [real blockers](../AGENTS.md#history-evidence-and-real-blockers)
+works. Those remain [real blockers](../AGENTS.md#current-state-evidence-and-real-blockers)
 for the scope they affect. Where applying the ladder would decide one of them,
 stop and resolve it as an [open item](WORKFLOW.md#open-item-lifecycle) instead.
 
@@ -427,11 +428,11 @@ requests work on that material, in its own context.
 
 The designation is bounded. It does not apply to an input the project still
 depends on. A contract, an external control, an authorized customer statement
-and a current owning instruction stay binding wherever they are kept. History
-keeps its value as history under
-[baselines](#baselines-and-review-boundaries). Where actual reliance is
-unclear, resolve it as an [open item](WORKFLOW.md#open-item-lifecycle) instead
-of assuming either reading.
+and a current owning instruction stay binding wherever they are kept. An
+earlier version that dependent work still names as its
+[baseline](#baselines-and-review-boundaries) stays identifiable in version
+history. Where actual reliance is unclear, resolve it as an
+[open item](WORKFLOW.md#open-item-lifecycle) instead of assuming either reading.
 
 ## Change cycle and propagation
 
@@ -447,7 +448,7 @@ or effects are uncertain. Group unaffected content with a common reuse basis;
 do not require a separate impact report or an N/A row for every project document.
 Assign required corrections under [fixes across work-item boundaries](WORKFLOW.md#fixes-across-work-item-boundaries).
 
-1. Preserve the prior baseline and record the request or decision basis.
+1. Identify the prior baseline and record the request or decision basis.
 2. Assess feasibility, alternatives, uncertainty and effects on behavior, data,
    dependencies, effort/schedule, verification and delivery.
 3. Update affected owning definitions into a reviewable current version. Keep
@@ -455,8 +456,8 @@ Assign required corrections under [fixes across work-item boundaries](WORKFLOW.m
    or the sections allowed by compact documentation.
    Implementers must not have to reconstruct current instructions from a chain
    of change notes. Mark uncovered commitments as proposed until an actual
-   decision covers them. Preserve prior versions and identify affected and
-   reusable work.
+   decision covers them. Identify affected and reusable work; version history
+   keeps the prior version.
 4. Reuse current authority for covered refinements; obtain one actual owner
    decision for a material delta. Do not ask again for the same scope under
    different record labels.
@@ -480,21 +481,21 @@ Do not revisit unaffected documents without a new impact, contradictory evidence
 or a required project check. Reuse follows
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
-Keep this trace in the existing owning content or a brief note under
-[concise history](#keeping-history-concise). A separate CHANGE/CR record is
+Keep this trace in the owning plan or work document while the change is in
+progress; once propagation is complete, the current definitions carry it under
+[current state only](#current-state-only). A separate CHANGE/CR record is
 needed only when an agreed project or external process requires it.
 
 ### Conversation decisions and current instructions
 
 When the owner settles a question or changes a prior decision in conversation,
 note that the change follows the owner's decision and record its covered scope
-under [Approvals](APPROVALS.md#preparing-and-recording-one-decision). Identify which
-earlier instruction is superseded; preserve it through version history or its
-original record. Update the affected owning definitions and the work item's
-current basis before the next action that relies on the decision, and before handoff
-or completion. A request note in a change log alone is insufficient when
-the current requirement, design or work instructions still say something else.
-Unaccepted suggestions remain proposals.
+under [Approvals](APPROVALS.md#preparing-and-recording-one-decision). Replace
+the superseded instruction in its owner; version history keeps it. Update the
+affected owning definitions and the work item's current basis before the next
+action that relies on the decision, and before handoff or completion. A request
+note alone is insufficient when the current requirement, design or work
+instructions still say something else. Unaccepted suggestions remain proposals.
 
 Update only affected owners and summaries, following their ownership and the
 actual editing scope. In a report-only request, describe the needed amendments
@@ -506,7 +507,7 @@ present the old definition as current or claim propagation complete.
 ### Discoveries during implementation
 
 Implementation can reveal that a planned approach or assumption is wrong. Apply
-the change cycle to the affected work, preserve the observation and reopen its
+the change cycle to the affected work, record the observation and reopen its
 planning/readiness assessment when needed. Use the
 [unknown dispositions](#planning-completion-checks) to distinguish these cases:
 

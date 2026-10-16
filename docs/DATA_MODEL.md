@@ -51,8 +51,8 @@ others. Classify by purpose, not filename or folder: a framework overview
 explains how to use the harness; a project overview tracks a project's outcomes
 and work. A project document does not become exempt by being called a guide
 or exception. Examples in harness guidance remain illustrative, not allocations.
-Preserve existing historical IDs; this distinction does not authorize stripping
-them from records. Explicit contract or external identity requirements remain
+Keep existing IDs; this distinction does not authorize stripping them from
+records. Explicit contract or external identity requirements remain
 binding.
 
 ## Suggested information
@@ -127,11 +127,13 @@ the relevant input versions.
 
 When adding a new unit, add its index entry and relevant dependency links.
 When scope changes, update the owning detail, affected links and overview
-summary while preserving prior decisions and evidence. New work uses these
-boundaries even when earlier work lives in a large file; reference that baseline.
+summary, keeping the decisions and evidence that still apply. New work uses
+these boundaries even when earlier work lives in a large file; reference that
+baseline.
 Do not automatically split, move or rewrite existing records merely to adopt
-the layout. Any authorized reorganization must preserve reviewed versions and
-repair links. A requested stage still ends at its own outputs.
+the layout. Any authorized reorganization must keep IDs and repair links;
+version history keeps the reviewed versions. A requested stage still ends at
+its own outputs.
 
 ### Summary ownership and updates
 
@@ -157,15 +159,15 @@ providers. Completing a child does not establish that condition.
 
 For a progress request, read the owners and derive the answer at that time under
 [status reporting](WORKFLOW.md#status-and-trace-reporting).
-Retained reports are dated snapshots with their source versions.
-A required current view must be derived from owning records when refreshed;
-an old snapshot cannot supply current readiness.
+A kept report is a deliverable at its source version, not a current view.
+Derive a required current view from the owning records each time it is
+refreshed; a report cannot supply current readiness.
 
 Update an overview or parent when its own scope, dependency, navigation or
 decision changes. A child status change alone requires no parent edit.
 When affected work exposes an old duplicate current claim, replace it with an
-owner link and preserve its history. Do not rewrite dated historical reports
-to match later events or launch an unrelated document migration.
+owner link. Do not rewrite a delivered report to match later events or launch
+an unrelated document migration.
 
 Before relying on a current fact, follow its owner link. Resolve discrepancies
 under [current-state updates](WORKFLOW.md#updating-current-work-state).
@@ -206,7 +208,7 @@ Root overview edits follow its assigned owner under the
 root changes through that owner or an agreed transfer. New areas can start with
 their own overview. Moving existing index entries or allocations out of an
 established overview is a reorganization. It needs a matching request, preserves
-IDs, history and reviewed versions, and repairs links.
+IDs and repairs links.
 
 ## Plans and tasks
 
@@ -334,7 +336,7 @@ Declared stop conditions make a stop recognizable while the work runs rather
 than only in hindsight.
 
 They do not replace the
-[real blockers](../AGENTS.md#history-evidence-and-real-blockers), which stop
+[real blockers](../AGENTS.md#current-state-evidence-and-real-blockers), which stop
 affected work whether or not the item listed them. An unlisted condition is not
 permission to continue past it.
 
@@ -397,8 +399,7 @@ A short ordered reading list is enough; no second status table is needed.
 
 Move the position when work actually moves. A changed task result requires an
 update to its owner, not a rewrite of every entry pointer.
-Keep past positions in version history; no separate position log is needed.
-Without version history, retain only checkpoints needed to resume or assess evidence.
+Version history keeps past positions; keep no position log.
 
 A pointer establishes no permission, readiness or pass. The actual decision
 and evidence govern under [Approvals](APPROVALS.md#preparing-and-recording-one-decision)
@@ -481,7 +482,7 @@ provisional IDs may collide temporarily, under
 Before allocating a child, verify its parent's owning definition and format
 mapping, and link the parent in the body. Matching numbers imply no other
 relationship. A parent segment records identity, not a mutable dependency: where
-current coverage changes, preserve the ID and record the new links and history.
+current coverage changes, preserve the ID and update the links.
 An actual replacement or split follows the identity rules below. Parent detail
 that needs no independent management can remain a section without a new ID.
 
@@ -507,11 +508,11 @@ IDs may be renumbered for an allocation collision, under
 deleted or retired IDs.
 
 For a split or merge, record the old item's disposition and the links to the new
-items, without overwriting its decision or evidence history. Identity alone does
+items; version history keeps its earlier content. Identity alone does
 not identify a reviewed version, prove approval or establish a passed check.
 
-**Existing and historical IDs.** Existing IDs and historical records remain
-valid; link to older material without bulk retroactive relabeling. This includes
+**Existing IDs and records.** Existing IDs and existing records remain valid;
+link to older material without bulk retroactive relabeling. This includes
 five-digit IDs and existing `TYPE-AREA` conventions. Earlier harness examples
 used `API` for backend plans and `SCR` for screen plans; retain those meanings
 wherever they are already established.
@@ -563,7 +564,7 @@ filename forms as duplicate owning files.
 
 Preserve the ID when changing a slug. Do not automatically rename files when
 titles change. When a filename changes within authorized work, update the
-overview/index path and all affected links, and retain version history.
+overview/index path and all affected links.
 The rule covers all document kinds, including overviews, shared specifications,
 research, reports, changes and handoffs.
 
@@ -623,7 +624,7 @@ without asking the user to classify each document. Apply each mapping
 consistently within its recorded scope.
 
 Folder changes preserve IDs and repair overview/item links; they do not
-authorize historical-record migration. Do not create empty type folders or
+authorize migrating existing records. Do not create empty type folders or
 placeholder files before they are needed. Group feature relationships through
 the overview and owning documents, independently of the physical layout.
 For example, `plans/PLAN-001-user-search.md` links to a task at
@@ -641,7 +642,7 @@ overview and maintain the allocation there only. Folder names stay contextual;
 writers must be able to discover one authoritative location for each scope.
 
 **The checked basis.** Establish an initial basis by checking project-wide
-definitions, retained and retired IDs, allocation history and outstanding
+definitions, retained and retired IDs, earlier allocations and outstanding
 reservations. Record the checked version and scope, the result and any limits
 once, then reuse that record with subsequent allocation changes. When creating
 the first overview, include its own ID in this check and record the basis there.
@@ -659,8 +660,8 @@ allocation scope, its next serial and a link to that shared checked basis.
   range reservation or gap-disposition table is required.
 
 For example, `TASK-API: next 004` means `001` through `003` cannot be newly
-allocated, whether used, retired or skipped. Preserve their actual history
-without inventing a disposition for unused gaps. Where prior allocations are
+allocated, whether used, retired or skipped. Do not invent a disposition for
+unused gaps. Where prior allocations are
 uncertain, reconcile them before choosing the serial.
 
 **Concurrent writers.** Record the allocation arrangement once in the allocation
@@ -681,7 +682,7 @@ Two arrangements need no range or owner record:
   [branch allocation](#branch-allocation-and-collision-repair).
 
 These exceptions replace the range table. They do not replace the checked
-allocation basis or the history rules.
+allocation basis or the identity rules.
 
 **Areas and delegated ranges.** With [area overviews](#area-overviews), the root
 allocation section delegates non-overlapping serial ranges per allocation scope
@@ -757,10 +758,10 @@ filename, body, anchors, current references and any provisional child IDs derive
 from it, update the counter and check the resulting links and uniqueness.
 Resolve collisions before integration; integration fixes the resulting IDs.
 
-Record the old ID with its source version/path and the new ID in the owning
-plan/work note. Preserve original decisions, signed payloads and verification
-artifacts with their original references. Link them through that mapping and
-assess their applicability rather than rewriting them or inventing a new PASS.
+Where decisions, signed payloads or verification artifacts still carry the old
+ID, record the old ID with its source version/path and the new ID in the owning
+plan/work note. Do not rewrite those artifacts; link them through that mapping
+and assess their applicability rather than inventing a new PASS.
 Repair known external references through their authorized owner; unresolved
 ambiguous references block affected integration. Use forward edits, preserving
 published history. This exception does not permit renumbering established items
@@ -795,9 +796,9 @@ new REQ.
 Before assigning a new REQ, check existing requirements. A correction that
 restores an already specified behavior references the existing REQ; adding a
 test for it does not create another REQ. Revise the same requirement under its
-existing ID when its identity remains the same, preserving prior versions and
-decisions. A new commitment or an actual split/merge follows the existing
-[identity and history rules](#item-ids). Identity does not authorize a material
+existing ID when its identity remains the same; version history keeps the prior
+version. A new commitment or an actual split/merge follows the existing
+[identity rules](#item-ids). Identity does not authorize a material
 change to the requirement or acceptance criteria.
 
 ### Related work and supporting detail
@@ -859,7 +860,7 @@ of that work document. Keep planned checks separate from actual results.
 Do not create separate DES, PLAN or VER files solely to fill those roles.
 An independently managed requirement or shared definition still has its own
 owner under [item boundaries](#independent-items-and-supporting-detail).
-Existing owners and required contractual files retain their roles and history.
+Existing owners and required contractual files retain their roles.
 
 The work note holds what the
 [compact procedure](DEVELOPMENT_METHOD.md#choosing-planning-depth) records
@@ -887,9 +888,8 @@ its owned sections satisfy overview references without duplicating task state.
 When authorized work expands beyond these conditions, establish a separate
 overview before starting the affected work. Transfer current shared context,
 conventions and allocations there, and link the original work item. Replace
-live sections with links. For a closed work record, use a brief amendment
-linking the new owner; preserve the prior context through version history or
-the original record. Preserve the work item's ID and evidence.
+live sections with links. In a closed work record, link the new owner; version
+history keeps the prior context. Preserve the work item's ID and evidence.
 Do not combine existing owners or accumulate
 unrelated work to keep a single file. If scope grows, establish only the new
 independent owners or detailed planning that the change requires before the
@@ -1030,7 +1030,7 @@ files that still carry local edits. Before a move, compare each
 harness file with the harness commit it came from, so that every local edit is
 relocated rather than lost. The move places the harness files in the copy folder
 and the local content in project-owned entry files or records. It repairs
-project links into the moved files and preserves history.
+project links into the moved files.
 
 ### Path-scoped instruction files
 
@@ -1065,10 +1065,10 @@ the affected scope and reusable evidence.
 | Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, the slug's presence and syntax on new files, unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
-| Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. Distinguish dated history from current instructions. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
+| Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. No superseded instruction or history note remains beside the current one. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
 | Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
-| Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must retain evidence and update affected definitions and dependency status; a status change alone is insufficient. |
-| Scope and history | No unauthorized migration or historical relabeling; IDs and prior decisions/evidence remain identifiable. Apply [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise) without duplicating routine edits or state transitions. Unrun verification is not reported as success. |
+| Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must record its evidence and update affected definitions and dependency status; a status change alone is insufficient. |
+| Scope and current state | No unauthorized migration or relabeling of existing records; IDs stay unchanged. Documents hold only the current state under [current state only](DEVELOPMENT_METHOD.md#current-state-only): no history notes, superseded text or snapshots. Unrun verification is not reported as success. |
 | Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
 
 Required-name checks replace ordinary path/name/body checks only to the extent
@@ -1100,8 +1100,8 @@ still apply. If the answer leaves a dependency, unresolved impact or handoff,
 use the follow-up content below.
 
 Use the existing [item boundaries](#independent-items-and-supporting-detail).
-Keep a parent-specific question and its history in the owning requirement,
-design, plan or task when it needs no separate management boundary. A separately
+Keep a parent-specific question in the owning requirement, design, plan or
+task when it needs no separate management boundary. A separately
 assigned investigation, decision or shared issue with its own completion status
 owns its own ID/file: an `OI` by default, or a registered kind such as `RISK`
 where the project tracks that kind separately. Retain existing IDs
@@ -1122,7 +1122,6 @@ states merely to fill fields.
 | Next action and timing | Investigation, decision or prerequisite action; provider being awaited, expected output, needed-by milestone/date and next review trigger. Use event-based timing when no date is established. |
 | Resolution criterion | Observable evidence or attributable decision that will answer the question or satisfy the prerequisite, and how it will be checked. |
 | Outcome and propagation | Answer/result, applicable decision/evidence and version, remaining limits, updated owning definitions and dependent-readiness assessment; for deferral/exclusion, the reason, authority and retained obligation. |
-| History | For consequential changes, use one brief note with date/version, change and reason, and result or next action under [concise history](DEVELOPMENT_METHOD.md#keeping-history-concise). Reuse the outcome entry and link decisions/evidence; routine transitions need no separate entry. |
 
 These are content requirements, not a fixed schema or a separate registry.
 Compact sections/tables and links suffice. A project overview indexes shared
@@ -1149,7 +1148,7 @@ project overview, or in the relevant [area overview](#area-overviews):
 | Owned information | Kinds of information whose authoritative record is the tracker; everything else stays in Markdown. |
 | Identity and references | Key format and how Markdown documents reference items (key with a resolvable link). |
 | Agent operations | Operations the agent may perform as routine parts of covered work, such as creating in-scope items, updating status or assignment, and adding links or comments. |
-| Required content | Where the tracker holds content this model requires, such as an open item's resolution criterion, next action and history (fields, templates or comments). |
+| Required content | Where the tracker holds content this model requires, such as an open item's resolution criterion and next action (fields, templates or comments). |
 
 For each designated kind, the tracker is the single authoritative record. Do not
 keep a parallel Markdown list or a copy of its status, assignment or history;

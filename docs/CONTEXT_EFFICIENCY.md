@@ -95,7 +95,7 @@ It does not know the project's format table, folder mapping, allocation record,
 delegated ranges or retired IDs. It skips files with other names, including
 harness guidance and
 [required-name files](DATA_MODEL.md#required-name-exceptions). Scope the
-scanned path when retained historical copies share an ID.
+scanned path where a project's earlier records keep a copy sharing an ID.
 
 After changing the checker, run its regression tests with
 `node --test tools/check-docs.test.mjs`. They write their fixtures to a
@@ -142,8 +142,9 @@ under [allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse).
 Completion, handover or push requires reviewing evidence coverage and the actual
 diff. It does not alone invalidate a successful check. After adding a check
 receipt to a note, inspect that edit and any links/IDs it introduces. Do not
-repeat unaffected checks merely to record their result again. Preserve the
-original result and identify what the incremental check covers.
+repeat unaffected checks merely to record their result again. Keep the
+original result where it still applies and identify what the incremental check
+covers.
 
 Broaden verification when any of these holds:
 
@@ -186,8 +187,9 @@ required scope and timing.
 Run resource-heavy suites one at a time unless adequate capacity for overlap
 has been established. For repeated timeouts, investigate product behavior,
 test reliability and resource contention before choosing the rerun scope.
-A focused rerun can test the diagnosis; preserve the original failures and
-state what the later execution actually establishes.
+A focused rerun can test the diagnosis. The original failures stand until a
+check of their scope passes; state what the later execution actually
+establishes.
 
 Once the relevant required checks pass, proceed with the work. Repeat or broaden
 checks only when changed inputs, unresolved failures, uncertain evidence or

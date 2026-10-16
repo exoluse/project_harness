@@ -136,19 +136,20 @@ project records or external systems.
   actual decisions, verification and limits.
 - Add no change notes, decision records, policy-work indexes or archive
   snapshots merely to document these edits.
-- Preserve existing historical files and links unless cleanup is explicitly
-  requested. Add documentation only as a requested deliverable or needed
-  guidance.
+- Preserve existing files and links unless cleanup is explicitly requested.
+  Add documentation only as a requested deliverable or needed guidance.
 
 Commit messages record the reason and relevant verification. Actual project
 work and required external records keep their normal rules.
 
-## History, evidence and real blockers
+## Current state, evidence and real blockers
 
-Preserve original decisions, versions, observations and limits through version
-history or original records. Keep written history brief under
-[concise history](docs/DEVELOPMENT_METHOD.md#keeping-history-concise).
-Assess current applicability separately; changed outputs do not erase valid history.
+Project documents hold only the current state: the definitions, decisions,
+results, open items and positions in force. Update them in place and write no
+history into them, under
+[current state only](docs/DEVELOPMENT_METHOD.md#current-state-only). Version
+history carries the past; link a commit or version where current work depends
+on it.
 
 - Keep these distinct: the [task state](docs/WORKFLOW.md#task-states)
   IMPLEMENTED; the [verification kinds](docs/WORKFLOW.md#verification-and-completion)
@@ -165,7 +166,7 @@ Assess current applicability separately; changed outputs do not erase valid hist
 These stop affected work and its dependents: missing authority, unsafe actions,
 unresolved required inputs, unreliable decision provenance, contradictory
 current evidence and ownership conflicts. Stop globally only for a global
-condition; unrelated drafts or stale history do not stop valid work. Keep
+condition; unrelated drafts or stale records do not stop valid work. Keep
 failures visible, and never hide a newer failure behind an older success.
 
 Track unresolved questions and findings through the

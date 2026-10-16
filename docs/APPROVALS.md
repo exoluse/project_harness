@@ -135,10 +135,9 @@ commitments, risk, assumptions, conditions or authority under the
 [material-change criteria](#material-changes) need a prepared delta
 and an actual owner decision before affected implementation.
 
-Preserve prior versions and decisions as history. Changed outputs can limit
-current applicability without making the past decision fictitious. Check
-history integrity separately from current coverage; never widen an old
-signature or copy evidence into a new PASS without assessment.
+Record the decision in force in its owner; version history keeps prior
+versions and decisions. Never widen an earlier decision's scope or copy
+evidence into a new PASS without assessment.
 
 ## Cancellation, withdrawal and resumption
 
@@ -153,8 +152,8 @@ work only when it remains authorized and outside the requested stop boundary.
    earlier effects have been undone.
 2. In the existing plan or work note, note the owner's cancellation, pause or
    withdrawal. Record the affected scope and version, completed effects,
-   unfinished work and any condition for resumption. Preserve earlier decisions,
-   code, documents and evidence.
+   unfinished work and any condition for resumption. Leave code, documents and
+   evidence in place.
 3. Cancellation, pause or withdrawal alone does not authorize deletion, rollback
    or data repair. Those actions retain their own scope and applicable
    [external controls](SECURITY.md).
