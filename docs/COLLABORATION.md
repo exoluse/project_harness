@@ -91,8 +91,9 @@ writer's scope or making an unrecorded allocation.
 | Git integration turn | The queued integration operation and work requiring its result. Independent work may continue without concurrent shared-index/branch operations or unauthorized shared-file edits. |
 
 Record pending shared updates once with the owner and needed-by point in the
-existing handoff/task note. Apply [summary currentness](DATA_MODEL.md#summary-ownership-and-updates)
-before a decision, dependent start/resumption, handoff or completion claim
+existing task. Apply
+[summary currentness](DATA_MODEL.md#summary-ownership-and-updates) before a
+decision, dependent start/resumption, handoff or completion claim
 relies on the summary. Surface blockers promptly; pending reflection cannot
 hide a failure, change actual readiness or establish integration success.
 
@@ -113,7 +114,7 @@ binding.
 
 ## Transfer and integration
 
-At transfer, identify:
+At transfer, state the following in the commit message:
 
 - the actual owner, objective and stopping point;
 - input/output versions;
@@ -122,9 +123,11 @@ At transfer, identify:
 - checks run with their results, and failed or unrun checks;
 - limits, outstanding obligations and next action.
 
-Apply [current-state updates](WORKFLOW.md#updating-current-work-state) before
-the receiver relies on the entry pointers. A Markdown handoff is sufficient when
-the delivery contract accepts it.
+Where the work is not committed, keep these with the
+[current position](DATA_MODEL.md#resumption-state) until it is. Apply
+[current-state updates](WORKFLOW.md#updating-current-work-state) before the
+receiver relies on the entry pointers. A handoff document that a delivery
+contract requires keeps that contract's format.
 
 The recipient checks applicability and permissions in the new environment. A
 handoff or a Git transfer does not by itself establish current permissions,

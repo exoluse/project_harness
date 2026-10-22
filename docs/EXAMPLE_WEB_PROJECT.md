@@ -35,8 +35,9 @@ another `REQ-001` in a different file. Retain the actual project's established
 IDs and meanings during intake. These syntax examples do not allocate IDs or
 establish evidence.
 
-At this planning-only stopping point, record intended checks in the plans;
-actual verification reports are written when those checks are performed.
+At this planning-only stopping point, record intended checks in the plans.
+Actual results are reported, and go to the commit message, when those checks
+run.
 
 For example, finding pagination code supports “the current implementation has a
 pagination path.” It does not establish that pagination is a confirmed business
@@ -60,16 +61,18 @@ A short work note can contain:
 
 | Content | Example |
 |---|---|
-| Basis and outcome | Note that the correction follows a user request. Link the source revision, requirement and API contract. Preserve valid zero; keep established loading/error behavior. |
+| Outcome | Link the requirement and API contract. Preserve valid zero; keep established loading/error behavior. |
 | Steps and boundary | Identify formatter/caller paths, inspect affected consumers, remove the incorrect fallback and run the relevant component checks. The API and persistent data remain outside the change. |
 | Planned checks | Name the actual runner and environment. Render totals 0, 1 and 17, including 17 with only ten returned rows; expect the displayed total to remain 0, 1 and 17. Reuse existing cases and add missing regression coverage only. |
-| Results after execution | Record the tested candidate, commands, observed results and limits here or link the existing verification owner. |
+| Results after execution | Put the tested candidate, commands, observed results and limits in the commit message. Keep a failure that still stands here. |
 
 Before editing, compare those steps and checks with the source contract and
 affected consumers. A missing/null total outside that contract needs
 investigation; do not invent a zero fallback.
-Keep findings in this note without an eligibility report or separate review log.
-Unchanged requirement, design and overview files need no edit.
+Fix the findings, and keep only unresolved ones in this note; no eligibility
+report or separate review log is needed. Unchanged requirement, design and
+overview files need no edit. Once the work is done, delete the note; the commit
+message notes that the correction followed a user request.
 
 A requested help-text addition with supplied wording can use the same compact
 path. A new public export contract triggers detailed planning for that scope.
@@ -101,35 +104,37 @@ Its ID and path below are illustrative, not an allocation:
 | Owning section in `tasks/TASK-001-search-count.md` | Bounded content |
 |---|---|
 | Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used, initial allocation basis/counter, and observed check commands/environment while the project has no root instruction file to own them. Other features remain outside this analysis. |
-| Work and evidence | Current basis and writer, source/expected behavior, approach, steps and checks, findings and actual verification as described below. Keep each definition once; no separate overview or eligibility report is needed. |
+| Work and evidence | Current basis and writer, source/expected behavior, approach, steps and checks, unresolved findings and failures that still stand, as described below. Keep each definition once; no separate overview or eligibility report is needed. |
 
 Project entry links lead to this work document. It is the next session's entry point:
 
-- **Current basis and expected behavior:** note that the correction follows a
-  user request. Link the source revision and inspected API definition. State the
-  bounded zero/nonzero count expectation and the existing loading/error behavior;
-  do not claim confirmed requirements for all search behavior. Link the other
-  sections and overview.
+- **Current basis and expected behavior:** link the inspected API definition.
+  State the bounded zero/nonzero count expectation and the existing
+  loading/error behavior; do not claim confirmed requirements for all search
+  behavior. Link the other sections and overview.
 - **Approach:** identify the response-to-display flow and incorrect fallback;
   preserve valid zero while keeping the API contract. Reference the existing
   contract rather than copying it or creating another API record.
 - **Plan and execution:** state the writer, affected formatter/caller paths,
-  exclusions, impact/readiness assessment, ordered edit/check steps and status.
+  exclusions, ordered edit/check steps and status.
   Plan the compact example's zero, nonzero, paginated-total and applicable
   loading/error checks with the actual runner/environment found in the project.
-- **Findings, when needed:** keep consequential findings and remaining prerequisites
+- **Findings, when needed:** keep unresolved findings and remaining prerequisites
   with the steps and checks. Compare those steps with the request and contract
   before implementation; no separate planning-review record is needed.
-- **Actual verification:** add the candidate, actual commands/environment,
-  expected/observed results, artifacts and limits only when checks run. Keep
-  failures and unrun checks visible, separate from planned checks and old results.
+- **Actual verification:** put the candidate, actual commands/environment,
+  expected/observed results, artifacts and limits in the commit message when
+  checks run. Keep failures that still stand and unrun checks here, separate
+  from planned checks.
 
-This needs no additional DOC, REQ, DES, PLAN or VER file just to fill those roles.
-Suppose scope expands to a new export requirement or to work assigned to
-several writers. In that case, establish a separate overview under the
-[expansion rule](DATA_MODEL.md#minimum-documentation-for-a-small-change) before
-that work starts. This example demonstrates documentation scope, not product
-success.
+When the correction is done, delete the work sections; the project context
+stays as the overview. The commit message notes that the correction followed a
+user request. This needs no additional DOC, REQ, DES, PLAN or VER file just to
+fill those roles. Suppose scope expands to a new export requirement or to work
+assigned to several writers. In that case, establish a separate overview under
+the [expansion rule](DATA_MODEL.md#minimum-documentation-for-a-small-change)
+before that work starts. This example demonstrates documentation scope, not
+product success.
 
 ### Detailed planning example
 
@@ -151,10 +156,10 @@ it does not add work to the original display correction.
 ### Open-item lifecycle example
 
 First consider a question answered by the inspected, authoritative contract
-during the same session: "Is zero a valid total?" The owning note can record
-"Yes; `total` is a non-negative integer, including zero," with the actual
-contract/version link and the corresponding planned zero-result check. Once
-checked and incorporated, no separate OI is needed. The check
+during the same session: "Is zero a valid total?" The answer goes into the
+owning definition: `total` is a non-negative integer, including zero, with the
+corresponding planned zero-result check. The commit message names the contract
+version. No note or separate OI is needed. The check
 is still planned; a contract definition does not establish product success.
 
 Consider a variant of the fictional count correction. Here the inspected
@@ -172,27 +177,28 @@ These are illustrative states and decisions, not actual events.
 | Gap discovered | OPEN. Link the response contract/version and contradictory or missing definition. The planning agent owns follow-up; the product/API decision owner must settle intended behavior. The affected display plan cannot be completed. Resolution requires an authoritative contract or attributable owner decision defining the missing-total behavior. |
 | Investigation starts | IN_PROGRESS. Inspect authorized contract sources and callers; record what they establish and any remaining ambiguity. Needed-by point: before finalizing the display/state design. Next review: after that inspection, or sooner if a relevant input changes. |
 | Sources cannot settle intent | WAITING. Present the owner with alternatives, evidence and the affected scope. Record whose answer is needed and revisit on response or at the needed-by point. Independent work may continue; do not silently implement a zero fallback. |
-| Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Link that answer; this settles intent, not proof of product behavior. |
-| Answer incorporated | Update affected owning definitions, such as the contract, display design, work steps and planned missing-total check; retain applicable definitions unchanged. Assess implementation authority and other prerequisites. Once those propagation checks are recorded, close this question as resolved. Product implementation and testing remain separate work with their actual states. |
-| Later contradictory input | If a revised contract invalidates the answer, reopen the same question as OPEN. On reopening, record the new contract version, reason and next action, and reassess the affected plan and dependent work; version history keeps the old decision and closure. |
+| Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Record that answer and its source in the item; this settles intent, not proof of product behavior. |
+| Answer incorporated | Update affected owning definitions, such as the contract, display design, work steps and planned missing-total check; retain applicable definitions unchanged. Assess implementation authority and other prerequisites. Once those propagation checks pass, close the question and delete it. Product implementation and testing remain separate work with their actual states. |
+| Later contradictory input | If a revised contract invalidates the answer, restore the same question from version history as OPEN. Record the new contract version, reason and next action, and reassess the affected plan and dependent work. |
 
-Checking and incorporating the answer may finish together. In that case, the
-item's outcome can link the checked owner response/version and the updated
-contract, design, task and planned check. It can also state: "CLOSED:
-missing total uses the invalid-response state; the planning gap is removed;
-implementation and product verification remain pending." This is a fictional
-record shape, not an actual decision or test result.
+Checking and incorporating the answer may finish together. Then one change
+updates the contract, design, task and planned check and deletes the question.
+Its commit message can state: "Closed the missing-total question: a missing
+total uses the invalid-response state; implementation and product verification
+remain pending." This is a fictional record shape, not an actual decision or
+test result.
 
 ## 2. Prepare one concrete implementation decision
 
 Consider a clear direct request: “Fix the empty search result count to show
 zero and check non-empty results.” Such a request supplies the scope decision
 under the [clear-request criteria](APPROVALS.md#clear-implementation-requests).
-Note that the correction follows a user request and state its derived scope,
-then proceed when prerequisites are ready; no second proceed response is needed.
-A request may instead leave an uncovered material choice. In that case,
-present the concrete proposal and
-record that the owner authorized the proposed scope, without quoting the reply.
+State its derived scope, and note in the commit message that the correction
+follows a user request. Then proceed when prerequisites are ready; no second
+proceed response is needed. A request may instead leave an uncovered material
+choice. In that case, present the concrete proposal, record the authorized
+scope as a decision, and note in the commit message that the owner authorized
+it, without quoting the reply.
 Do not copy these examples as real decisions.
 
 ## 3. Implement across several plans
@@ -202,13 +208,14 @@ each separately managed task has its own file. A new production data migration
 or changed acceptance criterion is a material delta with its own applicable
 authority. Task splitting or reordering within scope is not.
 
-When an API task finishes and its UI task comes next, the API task owns its
-execution status and links the actual verification. The plan's resumption
-record points to the UI task. The overview retains its plan link without copying
-either task's status. Apply [current-state updates](WORKFLOW.md#updating-current-work-state)
-so an old "awaiting implementation approval" instruction cannot survive as the
-current basis after a covered implementation request. Replace it; version
-history keeps the planning-only decision.
+When an API task finishes and its UI task comes next, the API task file is
+deleted and its commit message carries the actual verification. The plan's
+resumption record points to the UI task. The overview retains its plan link
+without copying either task's status. Apply
+[current-state updates](WORKFLOW.md#updating-current-work-state) so an old
+"awaiting implementation approval" instruction cannot survive as the current
+basis after a covered implementation request. Replace it; version history keeps
+the planning-only decision.
 
 ## 4. Verify and handle feedback
 
@@ -217,7 +224,7 @@ flow after API and UI integration. Run required release coverage at its required
 checkpoint, reusing applicable evidence under [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling).
 For a shared dialog change, inspect one real product dialog in representative
 states before migrating all dialogs. A narrow viewport and long error message
-can expose clipping that an element-existence assertion misses. Record the
+can expose clipping that an element-existence assertion misses. Report the
 states actually examined; other dialogs still need their applicable checks.
 
 For a claim that an error message is readable, an assertion that its element
@@ -227,14 +234,16 @@ For a displayed total, use the contract's expected value rather than calling
 the formatter under test to calculate the expectation. Both choices follow
 [claim-based verification](WORKFLOW.md#verification-and-completion).
 
-For feedback, record the candidate version and the observations. Obtain a
-decision for a material delta when needed, then reverify the affected outputs.
+For feedback, keep the observations that need work, with the candidate version,
+as failures or open questions. Obtain a decision for a material delta when
+needed, then reverify the affected outputs.
 
 ## 5. Accept, deliver and close
 
 Where the contract requires acceptance, the authorized customer accepts the
 identified candidate. Production deployment uses its specific human decision
 and an independently controlled deployment boundary. A development decision or
-agent test report replaces neither. A release inventory aggregates the frontend/API work, actual
-decisions, current evidence, delivery, handover and maintenance obligations
-from every contributing plan.
+agent test report replaces neither. A release inventory, built at closure,
+aggregates the frontend/API work, actual decisions, evidence from the commit
+messages, delivery, handover and maintenance obligations from every
+contributing plan.

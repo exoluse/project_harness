@@ -7,10 +7,10 @@ tool check cannot create them.
 ## Who decides and who checks
 
 The owner decides the implementation scope through a sufficiently concrete
-direct request or a response to a proposal. The agent records the request or
-decision basis and checks that each work item remains covered. It makes choices
-within that authority, including explicitly delegated judgment, without inventing
-an owner decision.
+direct request or a response to a proposal. The agent notes the request or
+decision basis in the commit message and checks that each work item remains
+covered. It makes choices within that authority, including explicitly delegated
+judgment, without inventing an owner decision.
 
 ### Decision requests and delegated judgment
 
@@ -44,8 +44,8 @@ document version, commit or dated reference. Scale detail to the work and link
 existing definitions. Present a proposal for a decision only where the current
 request and existing decisions do not already cover the concrete action.
 
-Note only that the work follows a user request or decision, next to its scope
-or in a decision log. A note such as "Performed at the user's request" suffices.
+Note only that the work follows a user request or decision, in the commit
+message. A note such as "Performed at the user's request" suffices.
 No transcript, message ID or chat link is required for this note.
 Keep the scope, constraints and resulting decisions in their owning sections.
 Record technical rationale separately. Never invent a request, consent, dates
@@ -116,15 +116,12 @@ Before covered work begins, assess the actual outcome, actions, paths/data,
 risk, constraints and checks against the decision. Confirm dependencies,
 ownership and required external permissions.
 
-Keep this readiness assessment once in the owning plan/work note, with the
-request or decision basis, assessed scope/version and supporting evidence or
-links. Tasks may inherit it through their parent link when the covered scope
-and shared prerequisites are clear; no separate readiness record is required.
-Before a selected item starts or resumes, check for changes and item-specific
-dependencies or blockers. Record only those differences and any new assessment
-needed, rather than repeating the shared checklist or unchanged confirmations.
-Changed inputs, failed checks, ownership conflicts or unavailable permissions
-reopen the affected assessment; an old ready label does not establish readiness.
+Record only what the assessment finds missing, as blockers or open questions
+in the owning plan or task. A passed assessment needs no record; the commit
+message can state its basis. Before a selected item starts or resumes, check
+for changes and item-specific dependencies or blockers. Changed inputs, failed
+checks, ownership conflicts or unavailable permissions reopen the affected
+assessment; an old ready label does not establish readiness.
 Use [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification) to determine
 which supporting checks remain applicable. Harness policy maintenance uses
 the Git/conversation basis specified in [AGENTS](../AGENTS.md#harness-policy-maintenance).
@@ -150,10 +147,10 @@ work only when it remains authorized and outside the requested stop boundary.
    in progress; report an operation that cannot be stopped safely and its known
    effects. A stop request does not prove that an operation has stopped or that
    earlier effects have been undone.
-2. In the existing plan or work note, note the owner's cancellation, pause or
-   withdrawal. Record the affected scope and version, completed effects,
-   unfinished work and any condition for resumption. Leave code, documents and
-   evidence in place.
+2. In the existing plan or work note, record the owner's cancellation, pause or
+   withdrawal as the decision in force. Record the affected scope and version,
+   effects that remain in place and any condition for resumption. Leave code,
+   product documents and evidence in place.
 3. Cancellation, pause or withdrawal alone does not authorize deletion, rollback
    or data repair. Those actions retain their own scope and applicable
    [external controls](SECURITY.md).

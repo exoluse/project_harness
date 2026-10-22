@@ -26,8 +26,8 @@ does not apply is not required reading.
 
 Reference existing non-Markdown records, product files such as `package.json`
 and original evidence such as logs in their own formats. Do not convert or
-delete them automatically. Summarize verification in Markdown and link those
-original artifacts.
+delete them automatically. Summarize verification in the commit message, or in
+Markdown for a failure that still stands, and link those original artifacts.
 
 ## ID scope
 
@@ -80,7 +80,8 @@ Other records take their content from the rules that own them:
   [change cycle](DEVELOPMENT_METHOD.md#change-cycle-and-propagation);
 - intake from
   [existing-project intake](DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering);
-- handoffs from [transfer](COLLABORATION.md#transfer-and-integration).
+- contract-required handoff documents from
+  [transfer](COLLABORATION.md#transfer-and-integration).
 
 ## Document organization
 
@@ -119,7 +120,7 @@ Record the chosen boundaries and rationale briefly in the overview or work note.
 
 Every unit links back to its overview and applicable shared specifications.
 Connect requirements and acceptance criteria to the covering design, planned
-work and actual verification. Use item IDs with file or anchor links, optionally
+work and planned checks. Use item IDs with file or anchor links, optionally
 in a compact trace table.
 Links may be many-to-many: several plans can implement one requirement, and a
 shared design can support several features. State cross-unit dependencies and
@@ -149,8 +150,8 @@ Keep each current fact in one owning location, within a file as well as across f
 - Plans own order, dependencies and overall completion criteria.
 - Work items own execution state, execution mode, immediate next action and
   dependency links. Shared decisions may be inherited by reference.
-- Verification records own actual check results; open items own unresolved
-  findings, their follow-up and resolution.
+- Verification records own planned checks and failures that still stand; open
+  items own unresolved questions until their answer is in its owner.
 
 Designated tracker ownership follows [external work trackers](#external-work-trackers).
 [Compact work](#minimum-documentation-for-a-small-change) may keep otherwise
@@ -243,7 +244,9 @@ Its owning task file is named under the project's ID convention and records:
 Supply or link the implementation details and verification scenarios required
 by the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth).
 Resolve ownership before concurrent execution. These are content requirements,
-not mandatory headings or front matter.
+not mandatory headings or front matter. A task file lasts until the task is
+done or cancelled, under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only).
 
 ### Starting or resuming from the task
 
@@ -281,8 +284,8 @@ that extension needs a decision the work does not have.
 
 **Declared inputs.** Declare the inputs the item reads as deliberately as the
 targets it writes. Name the governing instructions, requirement and design
-sections, contracts, source files and prior outputs the result depends on, with
-the versions read. A missing, unreadable or changed input is then recognizable
+sections, contracts, source files and prior outputs the result depends on. A
+missing, unreadable or changed input is then recognizable
 as a stop condition rather than a surprise mid-execution.
 
 Reading something outside that set is not a violation. Add it to the
@@ -325,13 +328,13 @@ authorized at different times. Keep the item's own mode at the narrowest
 current standing, and record each authorized sub-scope separately:
 
 - what it covers;
-- the decision and date that authorized it;
+- the decision that authorized it;
 - its own write scope and exclusions;
 - its completion checks.
 
 A later authorization does not widen the earlier ones or lift the item's own
-mode. A finished sub-scope stays recorded rather than being folded into the
-item's general text. One authorized part does not make the whole item
+mode. Delete a sub-scope once it is finished; the commit message carries its
+checks. One authorized part does not make the whole item
 implementable.
 
 **Stop conditions.** Record the conditions that stop the item before they
@@ -355,8 +358,9 @@ further on actual output, assignment and completion boundaries under the
 [boundary criteria](#independent-items-and-supporting-detail).
 
 **Where status lives.** Keep task definitions and execution status in their
-owning files, and link the actual check results from the verification
-documents. Plans hold order, dependencies and navigation links. Apply
+owning files. Passed check results are in commit messages, and failures that
+still stand in the verification documents. Plans hold order, dependencies and
+navigation links. Apply
 [summary ownership and updates](#summary-ownership-and-updates) instead of
 copying detailed task states into each parent. A task shared by several plans
 retains one ID, one owning file and one writer.
@@ -397,12 +401,15 @@ across plans or [areas](#area-overviews); it links each plan's position.
 A standalone work item may hold its own position without a separate plan.
 
 Link the current item's execution mode, immediate next action, prerequisites
-and blockers instead of restating them. Link the last established checkpoint's
-evidence and any release, acceptance or closure conditions in their owning records.
+and blockers instead of restating them. Link any release, acceptance or closure
+conditions in their owning records; the commit history holds the last
+checkpoint's evidence. While the current item's work is uncommitted, also keep
+its starting state and handoff notes here until the commit. Without Git, keep
+the latest checks and request basis here too.
 If this document owns one of those facts, keep it once and link its section.
 A short ordered reading list is enough; no second status table is needed.
 
-Move the position when work actually moves. A changed task result requires an
+Move the position when work actually moves. A changed task state requires an
 update to its owner, not a rewrite of every entry pointer.
 Version history keeps past positions; keep no position log.
 
@@ -661,8 +668,8 @@ allocation scope, its next serial and a link to that shared checked basis.
   gaps.
 - The initial serial must exceed every used, retired or previously allocated
   serial in that scope.
-- Existing owning document links identify issued items. No per-allocation owner,
-  range reservation or gap-disposition table is required.
+- The next serial records what was issued, including items since deleted. No
+  per-allocation owner, range reservation or gap-disposition table is required.
 
 For example, `TASK-API: next 004` means `001` through `003` cannot be newly
 allocated, whether used, retired or skipped. Do not invent a disposition for
@@ -826,10 +833,11 @@ Merely being able to assign a step to someone else, run a test separately or
 link a paragraph is insufficient. Small size or a common owner does not remove
 a real separate work boundary.
 
-Expected behavior and acceptance criteria belong to the requirement; actual
-check results belong to the verification document referencing it. Work documents
-link those results. Do not duplicate authoritative definitions
-or evidence. A failed check is a result, not by itself a new tracked item.
+Expected behavior and acceptance criteria belong to the requirement. Planned
+checks and failures that still stand belong to the verification document
+referencing it; passed results go to the commit message. Do not duplicate
+authoritative definitions or evidence. A failed check is a result, not by
+itself a new tracked item.
 
 Discovery, research, project overviews and other work can precede or support
 requirements. Use the appropriate document type and actual objective/source
@@ -847,7 +855,7 @@ when separately managed; requirements do not replace every other identity.
 | An acceptance criterion is separately tracked with its own disposition | Its own `AC` file, linked to the parent requirement. |
 | A backend plan includes tasks managed as separate outputs | Each task has its own file under the project ID convention; the plan contains links and sequence/dependency information. |
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
-| A small correction restores an existing requirement | Reuse the requirement's linked files, put changed detail and results in their respective owners, and keep source/change trace in the owning plan/work note. |
+| A small correction restores an existing requirement | Reuse the requirement's linked files and put changed detail in its owners. Keep change trace in the work note only while the change is in progress; the commit message carries the results. |
 | A bounded correction has no management definitions to reuse | Under the conditions below, one work document can own the correction's missing definitions and serve as its overview. |
 
 Ordinary prose, navigation and explanatory headings need no independent ID.
@@ -861,7 +869,8 @@ existing owning work document and link applicable requirements and contracts.
 Update another owning definition only when its facts or instructions change.
 
 Missing local approach, plan and verification definitions may live in sections
-of that work document. Keep planned checks separate from actual results.
+of that work document. Keep planned checks separate from failures that still
+stand; passing results go to the commit message.
 Do not create separate DES, PLAN or VER files solely to fill those roles.
 An independently managed requirement or shared definition still has its own
 owner under [item boundaries](#independent-items-and-supporting-detail).
@@ -869,9 +878,10 @@ Existing owners and required contractual files retain their roles.
 
 The work note holds what the
 [compact procedure](DEVELOPMENT_METHOD.md#choosing-planning-depth) records
-before, during and after the work. Link existing verification records instead
-of copying them. Task declarations still apply; references to existing
-instructions satisfy them.
+before and during the work. Delete it once the work is done, under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only). Link existing
+verification records instead of copying them. Task declarations still apply;
+references to existing instructions satisfy them.
 
 Reuse the overview and its folder/ID conventions where they exist.
 If no management records exist to reuse, one work document may also serve as
@@ -889,17 +899,18 @@ actually needed. Hold known check commands and environments here only while the
 project has no root instruction file to own them. The normal identity,
 allocation and validation rules still apply. Entry links point to this document;
 its owned sections satisfy overview references without duplicating task state.
+When the work is done, delete its work sections; the project context, including
+the allocation basis, stays as the overview.
 
 When authorized work expands beyond these conditions, establish a separate
 overview before starting the affected work. Transfer current shared context,
 conventions and allocations there, and link the original work item. Replace
-live sections with links. In a closed work record, link the new owner; version
-history keeps the prior context. Preserve the work item's ID and evidence.
+live sections with links. Preserve the work item's ID.
 Do not combine existing owners or accumulate
 unrelated work to keep a single file. If scope grows, establish only the new
 independent owners or detailed planning that the change requires before the
-affected work starts. Extend closed
-work under [verification and completion](WORKFLOW.md#verification-and-completion).
+affected work starts. Add scope to finished work under
+[verification and completion](WORKFLOW.md#verification-and-completion).
 
 ## Required-name exceptions
 
@@ -1063,17 +1074,17 @@ the affected scope and reusable evidence.
 
 | Check | Evidence to verify |
 |---|---|
-| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition. Requirement boundaries describe distinct commitments, and supporting conditions remain with their requirement. Separately managed work references the REQs it covers. For compact work, check linked existing owners, distinct planned/actual results and any required split. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
+| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition. Requirement boundaries describe distinct commitments, and supporting conditions remain with their requirement. Separately managed work references the REQs it covers. For compact work, check linked existing owners, planned checks kept apart from failures that still stand, and any required split. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
 | Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis. Also verify that they do not collide with retained/retired IDs or reservations, and that they fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
 | Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
-| Area overviews and trackers | Root and area overview entries resolve and hold only their owned content. Designated tracker information has no parallel Markdown record. Tracker references carry a resolvable key/link. Relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
+| Area overviews and trackers | Root and area overview entries resolve and hold only their owned content. Designated tracker information has no parallel Markdown record. Tracker references carry a resolvable key/link. Relied-on tracker state is recorded with the decision that depends on it, or in the commit message for a completion or handoff. |
 | Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, the slug's presence and syntax on new files, unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
 | Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. No project link points at a removed or renamed anchor. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
 | Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. No superseded instruction or history note remains beside the current one. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
 | Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
-| Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must record its evidence and update affected definitions and dependency status; a status change alone is insufficient. |
-| Scope and current state | No unauthorized migration or relabeling of existing records; IDs stay unchanged. Documents hold only the current state under [current state only](DEVELOPMENT_METHOD.md#current-state-only): no history notes, overturned decisions, superseded text or snapshots. Decisions, contracts and failure records still in force remain. Unrun verification is not reported as success. |
+| Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). A closed item is deleted only after its answer is in the affected definitions and its dependents are reassessed; a status change alone is insufficient. |
+| Scope and current state | No unauthorized migration or relabeling of existing records; IDs stay unchanged. Documents hold only what [current state only](DEVELOPMENT_METHOD.md#current-state-only) allows: decisions in force, blocking questions, failures that still stand and positions. No process notes, history, overturned decisions, finished tasks or answered questions remain. Unrun verification is not reported as success. |
 | Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
 
 Required-name checks replace ordinary path/name/body checks only to the extent
@@ -1094,15 +1105,13 @@ unresolved impact still needs the follow-up information below when work
 continues or is handed off.
 
 Some questions are answered and checked within the same work session, with no
-remaining follow-up or independent management boundary. Such a question needs
-only these in the owning work note: the question, the answer and the
-authoritative source/evidence with its relevant version. Incorporate any
-affected definition/check there or link the updated owner. No separate OI,
-owner/timing fields or transition log is required for that completed
-clarification. This shortcut does not supply human decisions or
-product verification: actual authority, evidence and material-change rules
-still apply. If the answer leaves a dependency, unresolved impact or handoff,
-use the follow-up content below.
+remaining follow-up or independent management boundary. Put its answer into
+the affected definition or check, and give the authoritative source with its
+relevant version in the commit message. No note, separate OI, owner/timing
+fields or transition log is required for that completed clarification. This
+shortcut does not supply human decisions or product verification: actual
+authority, evidence and material-change rules still apply. If the answer leaves
+a dependency, unresolved impact or handoff, use the follow-up content below.
 
 Use the existing [item boundaries](#independent-items-and-supporting-detail).
 Keep a parent-specific question in the owning requirement, design, plan or
@@ -1126,8 +1135,11 @@ states merely to fill fields.
 | Impact | Affected requirements, criteria, plans/tasks and dependents; what cannot be planned, started or completed, and what can proceed independently. |
 | Next action and timing | Investigation, decision or prerequisite action; provider being awaited, expected output, needed-by milestone/date and next review trigger. Use event-based timing when no date is established. |
 | Resolution criterion | Observable evidence or attributable decision that will answer the question or satisfy the prerequisite, and how it will be checked. |
-| Outcome and propagation | Answer/result, applicable decision/evidence and version, remaining limits, updated owning definitions and dependent-readiness assessment; for deferral/exclusion, the reason, authority and retained obligation. |
+| Answer | For a RESOLVED item, the checked answer with its source and version, until they are in the owning definitions. |
+| Deferral | For a deferred item, the reason, authority and retained obligation. |
 
+Once its answer is in the owning definitions, the item is closed and deleted
+under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle).
 These are content requirements, not a fixed schema or a separate registry.
 Compact sections/tables and links suffice. A project overview indexes shared
 or blocking items where needed for navigation; detailed tracking has one owner.
@@ -1168,15 +1180,15 @@ Some such items need a detailed Markdown definition, such as task implementation
 detail. That document keeps its own document ID and records the key. The tracker
 owns status and assignment; the document owns the detailed definition.
 
-Requirements, acceptance criteria, design, decisions and verification evidence
-stay in versioned Markdown. Where the project already keeps them in a system
-with attributable version history, reference the item and its version there
-instead.
+Requirements, acceptance criteria, design and decisions stay in versioned
+Markdown, and passed-check evidence in commit messages. Where the project
+already keeps them in a system with attributable version history, reference
+the item and its version there instead.
 
-Where a decision, readiness assessment, completion claim or handoff relies on
-tracker state, record the key and the observed state. Put them in the owning
-Markdown record, with the observed state's date or version. That records what
-was relied on. It is not a mirror to maintain.
+Where a decision relies on tracker state, record the key and the observed state
+with that decision, with the observed state's date or version. A completion
+claim or handoff that relies on it states them in the commit message. That
+records what was relied on; it is not a mirror to maintain.
 
 These are external effects, and they need matching authorization under
 [Security](SECURITY.md#authenticated-tools-and-protected-values):

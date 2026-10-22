@@ -4,7 +4,7 @@
 
 **A working framework for managing software projects with AI agents, connecting customer requirements to detailed plans, implementation and verification.**
 
-The aim is to define behavior and implementation approaches early enough to reduce guesswork and rework during development. Documents preserve the reasons for the work and its results so another session or contributor can continue it.
+The aim is to define behavior and implementation approaches early enough to reduce guesswork and rework during development. Documents keep the decisions and their reasons, and commit messages keep the results, so another session or contributor can continue the work.
 
 This repository provides policies and guidance for agents. There is no separate harness application to install; each product supplies its own build and test environment.
 
@@ -64,7 +64,7 @@ project-docs/
   tasks/
     TASK-API-001-search-endpoint.md      # tasks per area
     TASK-API-002-csv-download.md
-  verifications/VER-001-user-search.md   # verification records
+  verifications/VER-001-user-search.md   # planned checks and standing failures
   verifications/contracts/CT-API-001-01-search-response.md  # separately managed contract check
   open-items/OI-001-export-limit.md      # open items
   decisions/DEC-001-csv-encoding.md      # decision
@@ -93,7 +93,7 @@ Each stage has defined inputs and outputs. You do not approve every stage — on
 | Requirements | Discovery results and supporting evidence | Intended outcomes, acceptance criteria, priorities, source trace | Whether these are the right requirements |
 | Design | Requirements at a fixed version, and constraints | Components, interfaces, data, alternatives, risks, requirement coverage | Which alternative to take |
 | Planning | Original scope sources, requirements, design, current progress | Work order, exception handling, verification methods and unknown dispositions at the selected depth | Only where a choice is left open |
-| Implementation | A concrete scope decision, ready inputs and permissions | Code and document changes, with the plan and task updated to what was actually done | What to implement this time |
+| Implementation | A concrete scope decision, ready inputs and permissions | Code and document changes, a plan showing what remains, and a commit message stating what was done | What to implement this time |
 | Verification | Candidate version, criteria, check environment | Actual results, failures, limits of applicability | How far to verify |
 | Acceptance | The candidate and its verification | The authorized customer's acceptance or feedback | Whether to accept — never done on your behalf |
 | Delivery | Release scope, operational prerequisites, permissions | The deployed version and post-delivery checks | Approval to go to production |
@@ -102,7 +102,7 @@ Each stage has defined inputs and outputs. You do not approve every stage — on
 
 **Moving between stages.** Work stops at the requested stage. A planning-only request ends with the plan; a request to implement a concrete scope continues through ready implementation and verification work, and the same scope does not require approval again at every step. Planning is finished when it passes its completion checks, not when a document exists: the original sources are reflected in the plan, the detail is concrete enough that the implementer does not have to guess consequential behavior, and every unknown has a disposition. Listing open questions is not a pass. Starting implementation additionally needs a scope decision and ready prerequisites.
 
-Compact planning is the default for bounded, reversible low-risk work with a clear outcome, including corrections and small additions using established contracts. Record the basis, expected result, paths, steps and checks in the work document, review them and proceed; no separate exception justification or planning-review log is needed. Public contract, data lifecycle or access-policy changes, coordinated independent outputs and high-risk external effects require detailed planning for the affected scope. See [planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth).
+Compact planning is the default for bounded, reversible low-risk work with a clear outcome, including corrections and small additions using established contracts. Record the expected result, paths, steps and checks in the work document, review them and proceed; no separate exception justification or planning-review log is needed. Public contract, data lifecycle or access-policy changes, coordinated independent outputs and high-risk external effects require detailed planning for the affected scope. See [planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth).
 
 **Models suited to the work.** Definition, analysis, design, planning, decisions and verification judgments use the strongest suitable model currently available. Implementation models vary with difficulty and failure impact; analysis or design judgments discovered during development return to a strong model. Concrete models are selected from the execution environment using current evidence, respecting explicit model pins and usage constraints. Where a project designates the models each tier may use, selection stays within that roster. See [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation).
 
@@ -114,11 +114,11 @@ Compact planning is the default for bounded, reversible low-risk work with a cle
 
 ## What documents record
 
-**Start with the overview for the whole project, or the task document for work already identified.** Work items own execution state, the current execution mode with a link to the decision behind it, immediate next action and prerequisites; verification records own check results. Plans manage order, dependencies and resumption positions. Overviews and parent plans link these owners without repeating task statuses or pass counts.
+**Start with the overview for the whole project, or the task document for work already identified.** Work items own execution state, the current execution mode with a link to the decision behind it, immediate next action and prerequisites; verification records own planned checks and failures that still stand. Passing results go to the commit message. Plans manage order, dependencies and resumption positions. Overviews and parent plans link these owners without repeating task statuses or pass counts.
 
-Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from their evidence. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; a kept report is a deliverable at its basis version, not a current status record.
+Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from the commit message. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; a kept report is a deliverable at its basis version, not a current status record.
 
-Documents hold only the current state. Under [current state only](docs/DEVELOPMENT_METHOD.md#current-state-only), update definitions, decisions, contracts, results, open items and positions in place; Git or the existing tracker's version history carries the past. Delete overturned decisions and superseded instructions, and keep the decisions, contracts and failure records still in force, however old. Do not write change notes, dated history entries, session diaries, separate history files or archive snapshots; where current work depends on the past, link the commit or version. Each fact lives in one document, and other places link to it. Keep an anchor that other documents link to, or repair those links in the same change.
+Documents hold only what later work needs and cannot recover from the code or Git history: the decisions in force (requirements, designs, contracts, plans and tasks), open questions that block work, failures that still stand and the current position of work spanning sessions. See [current state only](docs/DEVELOPMENT_METHOD.md#current-state-only). The request basis, checks run and their results, the starting state and handoff notes go in the commit message instead. When work stays uncommitted past a session, the starting state and handoff notes stay with the current position; without Git, all of them do. Overturned decisions, finished or cancelled tasks, and open questions whose answer is in its owner are deleted. Do not write change notes, dated history entries, session diaries, history files or snapshots; Git or the existing tracker's version history carries the past. Each fact lives in one document, and other places link to it. Keep an anchor that other documents link to, or repair those links in the same change.
 
 | Document | What you can learn |
 |---|---|
@@ -126,9 +126,9 @@ Documents hold only the current state. Under [current state only](docs/DEVELOPME
 | Requirements | Customer outcomes and the conditions for satisfying them |
 | Design | How screens, APIs and data behave and connect |
 | Plan | Implementation order, dependencies, verification methods, completion criteria and the current resumption point for work spanning sessions |
-| Task | Owner, what the work may currently produce, the inputs it reads and the paths it shares with other work, concrete execution steps, declared stop conditions, completion checks written as actual commands, and progress |
-| Verification | Which version was checked, the method, actual results and limitations |
-| Open items and decisions | Questions still to settle, their impact and next action, and actual decisions |
+| Task | Owner, what the work may currently produce, the inputs it reads and the paths it shares with other work, concrete execution steps, declared stop conditions, completion checks written as actual commands, and progress; deleted once done or cancelled |
+| Verification | What to check and how, and failures that still stand; passing results are in the commit message |
+| Open items and decisions | Questions still to settle, their impact and next action (deleted once the answer is in its owner), and actual decisions |
 
 Independently managed requirements and shared designs or contracts have their own linked documents. For bounded low-risk work, [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change) keeps missing local approach, plan and verification definitions in distinct sections of the work document. Existing owners stay in place and are updated only when their facts change.
 
@@ -208,7 +208,7 @@ The agent first states which task it is. Documents of other areas and shared con
 > Fix 〈the lock notice not appearing after failed sign-ins〉.
 > Report the cause and affected scope first, then after the fix check 〈before lock, at lock and after unlock〉.
 
-The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. One writer handling one compact item without management records can use a single work document that also serves as its overview, subject to the [compact documentation conditions](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change). Distinguish project context, expected behavior, approach, steps and actual verification there. Additional independent items or concurrent writers require a separate overview. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
+The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. One writer handling one compact item without management records can use a single work document that also serves as its overview, subject to the [compact documentation conditions](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change). Distinguish project context, expected behavior, approach, steps and failures that still stand there; the commit message carries the actual verification. Additional independent items or concurrent writers require a separate overview. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
 
 **Revise the plan during development**
 
@@ -275,9 +275,9 @@ When a material commitment changes, such as behavior, cost, data handling or use
 
 For a correction, reuse applicable content and update affected owners. Changes to shared functions or APIs require checking consumers, tests and requirements. [Corrections across tasks](docs/WORKFLOW.md#fixes-across-work-item-boundaries) link to owning work; deferred corrections retain responsibility, a next action and a needed-by point. Update the overview when its own scope, dependencies or navigation change.
 
-Do not copy or quote user prompts or replies into documents. A brief note such as "Performed at the user's request" records the request basis. Keep the decided scope and constraints in the work content, and explain technical rationale separately. See [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
+Do not copy or quote user prompts or replies into documents or commit messages. A brief note such as "Performed at the user's request" in the commit message records the request basis. Keep the decided scope and constraints in the work content, and explain technical rationale separately. See [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
 
-When a decision is settled in conversation, note that the user decided it and replace the instruction it supersedes in its owner before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
+When a decision is settled in conversation, replace the instruction it supersedes in its owner before the next action that depends on it; the commit message notes that the user decided it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
 Concurrent agents use a separate worktree or clone for each writer, and a single working tree runs one writing agent at a time; see [collaboration](docs/COLLABORATION.md#concurrent-writers). Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue.
 
@@ -301,19 +301,19 @@ Look for three things in a result report:
 2. **Observed results:** what was checked, against which version and environment, and what passed or failed.
 3. **Remaining work:** unrun checks, unresolved issues, required decisions and next actions.
 
-Planning completion, implementation, verification, customer acceptance and project closure are distinct. Prepared documents or existing code do not by themselves establish working behavior or customer acceptance. Failed, unrun and partial checks are reported as such. Once decided, the project's build, test and check commands and where each runs (locally or in CI) are recorded in its root entry file. Shared verification environments, such as staging, are recorded in the overview, and verification records refer to both.
+Planning completion, implementation, verification, customer acceptance and project closure are distinct. Prepared documents or existing code do not by themselves establish working behavior or customer acceptance. Failed, unrun and partial checks are reported as such. Once decided, the project's build, test and check commands and where each runs (locally or in CI) are recorded in its root entry file. Shared verification environments, such as staging, are recorded in the overview, and verification results refer to both.
 
 Checks run against the subject the claim names and are chosen from the intended result and the failure they must detect. A result from a stand-in — a fixture, a copied sample, a mock — is evidence about that stand-in, and element existence alone cannot establish readability in the rendered product. For UI and graphics, a representative result in the actual product is checked before a shared treatment is extended, and [product assumptions](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions) such as enjoyment or usability get a planned check before dependent work expands. See [verification and completion](docs/WORKFLOW.md#verification-and-completion).
 
-If work is blocked, the report identifies the cause and affected scope. A handoff states what the next contributor should do and which inputs are needed.
+If work is blocked, the report identifies the cause and affected scope. A handoff states in the commit message what was done and which inputs are needed; the next action stays in the work item.
 
 You can check document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. In an adopting project, run it from the harness copy, such as `node harness/tools/check-docs.mjs project-docs`. It needs only Node and changes no files; its scope is described under [document checker](docs/CONTEXT_EFFICIENCY.md#document-checker).
 
 ### States and verification kinds
 
-The policy requires these to be kept distinct. A record carries the actual method, environment, subject version, result and limits alongside each label, so the label alone is never the judgment. The definitions are in [task states](docs/WORKFLOW.md#task-states) and [verification and completion](docs/WORKFLOW.md#verification-and-completion).
+The policy requires these to be kept distinct. A report or commit message carries the actual method, environment, subject version, result and limits alongside each label, so the label alone is never the judgment. The definitions are in [task states](docs/WORKFLOW.md#task-states) and [verification and completion](docs/WORKFLOW.md#verification-and-completion).
 
-**Task states.** A task is PLANNED, IN_PROGRESS, BLOCKED, IMPLEMENTED (changes made, completion checks not all run), DONE (its own completion checks passed) or CANCELLED. DONE does not mean acceptance or closure.
+**Task states.** A task is PLANNED, IN_PROGRESS, BLOCKED, IMPLEMENTED (changes made, completion checks not all run), DONE (its own completion checks passed) or CANCELLED. DONE does not mean acceptance or closure. A done or cancelled task's document is deleted.
 
 **Verification kinds.** These are separate kinds, not steps on one scale. A browser check does not imply an integration check.
 
@@ -326,7 +326,7 @@ The policy requires these to be kept distinct. A record carries the actual metho
 
 **Beyond verification.** Planning complete means the planning completion checks passed; it is not authority to execute. CUSTOMER_ACCEPTED means the authorized customer explicitly accepted a specific candidate version; it does not complete handover or maintenance obligations. CLOSED always names what was closed: an open item, a release or the project. Project closure means all contributing work and the acceptance, delivery, handover and maintenance obligations are settled.
 
-A subject examined without passing, one that cannot be checked because a required input is missing, one needing rework and one the criteria do not apply to each carry their own disposition and stay out of pass counts. When a later check overturns an earlier pass, the pass is withdrawn explicitly and replaced by the current disposition with the overturning finding. See [verification and completion](docs/WORKFLOW.md#verification-and-completion) and [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
+A subject examined without passing, one that cannot be checked because a required input is missing, one needing rework and one the criteria do not apply to each carry their own disposition and stay out of pass counts. When a later check overturns an earlier pass, the pass is withdrawn explicitly, and the overturning finding stays in the owning document as a failure that still stands. See [verification and completion](docs/WORKFLOW.md#verification-and-completion) and [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 ### Example result report
 

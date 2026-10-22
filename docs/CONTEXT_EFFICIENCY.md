@@ -59,8 +59,8 @@ way to supply part of the required
 [document validation](DATA_MODEL.md#document-validation).
 Verify the affected targets and anchors after changing guidance and before a
 completion claim that relies on links. Use this checker or an equivalent tool
-or manual check. Record the method, scope, result and limits in the
-existing work record; policy maintenance uses the Git/conversation trace.
+or manual check. Put the method, scope, result and limits in the commit
+message, as policy maintenance does.
 
 For files named `<ID>.md` or `<ID>-<slug>.md` it also reports:
 
@@ -141,11 +141,9 @@ Validate new definitions against the verified project-wide ID allocation basis
 under [allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse).
 
 Completion, handover or push requires reviewing evidence coverage and the actual
-diff. It does not alone invalidate a successful check. After adding a check
-receipt to a note, inspect that edit and any links/IDs it introduces. Do not
-repeat unaffected checks merely to record their result again. Keep the
-original result where it still applies and identify what the incremental check
-covers.
+diff. It does not alone invalidate a successful check. Do not repeat
+unaffected checks merely to restate their result. Rely on the original result
+where it still applies, and state what the incremental check covers.
 
 Broaden verification when any of these holds:
 
@@ -194,7 +192,7 @@ establishes.
 
 Once the relevant required checks pass, proceed with the work. Repeat or broaden
 checks only when changed inputs, unresolved failures, uncertain evidence or
-project controls justify it. A note recording a result or a handoff alone does
+project controls justify it. Recording a result or handing off work alone does
 not justify another full run.
 
 ## Model selection and delegation
@@ -246,8 +244,8 @@ tool-specific selection mechanism. Do not hard-code model generations into tiers
    [project model roster](#project-model-roster), where kept, records this basis.
 
 The accountable agent selects implementation and subagent models without another
-approval within those constraints. Record a material substitution and its basis
-in the existing work note or handoff when later work relies on it. Do not silently
+approval within those constraints. State a material substitution and its basis
+in the commit message when later work relies on it. Do not silently
 replace a required strong model with a weaker default. A supported alternative
 may be used only when it meets the work's capability and constraint requirements.
 

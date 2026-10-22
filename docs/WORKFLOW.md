@@ -16,8 +16,8 @@ Follow [AGENTS.md](../AGENTS.md) for the current workflow and authority.
    checks of the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth).
    Stop there for a stage-only request.
 4. For implementation, establish the scope decision under [Approvals](APPROVALS.md).
-5. Apply [work-item readiness](#scope-decisions-and-work-item-readiness), reusing
-   the owning assessment and recording changed facts and real blockers.
+5. Apply [work-item readiness](#scope-decisions-and-work-item-readiness),
+   recording only real blockers.
 6. Apply [starting execution in a working tree](#starting-execution-in-a-working-tree)
    before the first edit. Execute covered work and verify the changed
    deliverables against the agreed criteria.
@@ -26,18 +26,17 @@ Follow [AGENTS.md](../AGENTS.md) for the current workflow and authority.
 
 ## Scope decisions and work-item readiness
 
-[Approvals](APPROVALS.md#coverage-and-currentness) owns readiness criteria,
-recording and reuse. When selecting or resuming work, use that assessment and
-review the [open items](#open-item-lifecycle) affecting the selected scope,
-including unresolved owner or provider responsibilities. Where the work records
-a [resumption state](DATA_MODEL.md#resumption-state), enter from it. It names
-the position and links to checkpoint evidence, blockers and the first documents
-to read. Confirm it against the owning records before
-relying on it, and correct it where it has fallen behind. Update the owning
-assessment for changed facts; do not maintain another readiness checklist here
-or require a new approval solely because the work item changes.
-Use [current-state updates](#updating-current-work-state) to reconcile the
-selected item's instructions and navigation.
+[Approvals](APPROVALS.md#coverage-and-currentness) owns readiness criteria.
+When selecting or resuming work, check them and review the
+[open items](#open-item-lifecycle) affecting the selected scope, including
+unresolved owner or provider responsibilities. Where the work records a
+[resumption state](DATA_MODEL.md#resumption-state), enter from it. It names the
+position, blockers and the first documents to read.
+Confirm it against the owning records before relying on it, and correct it
+where it has fallen behind. Record only the blockers the check finds; keep no
+readiness checklist, and require no new approval solely because the work item
+changes. Use [current-state updates](#updating-current-work-state) to
+reconcile the selected item's instructions and navigation.
 
 ## Starting execution in a working tree
 
@@ -56,16 +55,16 @@ checkout you are about to write in.
    hand the item back with it recorded. Existing work outside the declared
    scope does not block the item.
 
-Record what the inspection established where the work is owned:
+State what the inspection established, and carry it into the commit message:
 
 - the revision the work starts from;
 - the uncommitted paths that were already there;
 - the outcome for any overlap with the declared write scope.
 
-Without this record, a later session cannot separate this item's diff from work
-it inherited. The next writer would re-derive those facts from a tree that has
-since moved. A few lines in the item or its progress note are enough; this needs
-no separate document.
+Without these facts, a later session cannot separate this item's diff from work
+it inherited. Where the work stays uncommitted past the session, keep them with
+the [current position](DATA_MODEL.md#resumption-state) until the commit; this
+needs no separate document.
 
 This establishes the starting state and its limits. It grants no authority and
 does not replace [work-item readiness](#scope-decisions-and-work-item-readiness)
@@ -84,16 +83,19 @@ stay with their owners and are linked.
 | IN_PROGRESS | Work is underway, including rework after a failed completion check. |
 | BLOCKED | Work cannot start or continue until a named prerequisite, input or decision arrives, including a pause. Link where the blocker is recorded; a parent-specific question may stay in the task under [open items](DATA_MODEL.md#open-items). |
 | IMPLEMENTED | The task's changes are made, but its completion checks have not all run. Link what keeps a check from running. |
-| DONE | The task's declared completion checks passed on an identified version, with linked evidence. |
-| CANCELLED | An actual owner decision cancelled the task or excluded it from scope. Link that decision. |
+| DONE | The task's declared completion checks passed on an identified version. |
+| CANCELLED | An actual owner decision cancelled the task or excluded it from scope. The plan, or the overview for a standalone task, records that decision. |
 
 DONE covers only the task's own completion checks. It does not establish a
 plan's outcome, another verification kind, acceptance or closure. A failed
 completion check returns the task to IN_PROGRESS, or to BLOCKED when the
-correction belongs to [another item](#fixes-across-work-item-boundaries). A
-later check that overturns DONE follows
-[pass withdrawal](#verification-and-completion). The task then returns to the
-state the evidence supports.
+correction belongs to [another item](#fixes-across-work-item-boundaries).
+
+Delete a DONE or CANCELLED task under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only), which also
+says where its checks go. A later check that overturns DONE follows
+[pass withdrawal](#verification-and-completion). The task then returns from
+version history in the state the evidence supports.
 
 Where a designated tracker cannot express a state, such as IMPLEMENTED versus
 DONE in a tracker with only open and closed, the mapping names the states it
@@ -110,7 +112,7 @@ designated [external tracker](DATA_MODEL.md#external-work-trackers); it does
 not require a tracker, background monitor or additional approval stage.
 
 For a clarification answered, checked and incorporated in the same session
-without remaining follow-up, use the short question/answer/evidence note under
+without remaining follow-up, put the answer in its owner under
 [Open items](DATA_MODEL.md#open-items). The tracking steps below apply when
 follow-up remains; do not manufacture a lifecycle for a completed clarification.
 
@@ -153,23 +155,22 @@ under [current state only](DEVELOPMENT_METHOD.md#current-state-only).
 | IN_PROGRESS | Investigation or resolution work is actually underway with an owner and next action. Move to WAITING for a named dependency, or RESOLVED when evidence satisfies the recorded resolution criterion. |
 | WAITING | A specific answer, dependency, assignment or permission is outstanding. Record who/what is awaited and when to revisit it. Return to IN_PROGRESS when useful resolution work resumes, or RESOLVED if the received evidence directly satisfies the criterion. |
 | RESOLVED | The answer/result meets the item's resolution criterion with attributable evidence or a valid decision. Propagation and dependent-readiness checks may still remain; this state alone does not unblock work. |
-| CLOSED | The resolution has been checked, affected definitions/statuses updated and the closure disposition recorded, or a justified non-resolution closure below has been completed. This does not establish product acceptance or project closure. |
+| CLOSED | The resolution has been checked and the affected definitions and statuses updated, or a justified non-resolution closure below has been completed. Delete the item at this point; a tracker item is closed instead. This does not establish product acceptance or project closure. |
 
 An immediately answered item may go from OPEN to RESOLVED without invented
 intermediate activity. Resolution review and closure may happen in the same
-session, with their actual checks recorded. No separate reviewer or human
-approval is required solely for these labels; actual decision and high-risk
-boundaries still apply. Failed resolution checks return the item to OPEN,
-IN_PROGRESS or WAITING as appropriate, with the failed check as its current
-outcome.
+session, with their actual checks in the commit message. No separate reviewer
+or human approval is required solely for these labels; actual decision and
+high-risk boundaries still apply. Failed resolution checks return the item to
+OPEN, IN_PROGRESS or WAITING as appropriate; record the failed check in the
+item as a failure that still stands.
 
 When resolution checking, propagation and dependent-readiness review finish
-together, record the answer/evidence and its version, affected owner links,
-readiness outcome and final CLOSED disposition once in the item's outcome. Do
-not repeat the evidence for each label. Inherit unambiguous parent values under
-[Open items](DATA_MODEL.md#open-items). If propagation or a closure check remains,
-keep RESOLVED with the remaining action; recording them together does not waive
-either condition. See the [worked example](EXAMPLE_WEB_PROJECT.md#open-item-lifecycle-example).
+together, put the answer in its owners and delete the item in one change. The
+commit message carries the answer's source and version. If propagation or a
+closure check remains, keep RESOLVED with the remaining action; finishing them
+together does not waive either condition. See the
+[worked example](EXAMPLE_WEB_PROJECT.md#open-item-lifecycle-example).
 
 ### Resolution, closure and dependent work
 
@@ -182,16 +183,17 @@ not prove the dependent work's success. Do not store protected values as evidenc
 
 Before CLOSED with a resolved disposition:
 
-1. Record the checked answer/result, method or decision source, version and limits.
-2. Update or link the affected owning requirements, design, plan, tasks and checks.
-   Apply [material-change rules](APPROVALS.md#material-changes) before performing
+1. Put the checked answer or result in the affected owning requirements, design,
+   plan, tasks and checks. Apply
+   [material-change rules](APPROVALS.md#material-changes) before performing
    work beyond existing authority; resolving a question is not implementation.
-3. Assess each affected dependency. Record what is ready and what remains blocked
-   by other items or permissions, with remaining actions and owners. Reuse
-   applicable evidence; do not automatically resume canceled or paused work.
-4. Keep the closure reason with the checked outcome. Update relevant
-   overview/handoff links under
+2. Assess each affected dependency. Record what remains blocked by other items
+   or permissions, with remaining actions and owners. Reuse applicable evidence;
+   do not automatically resume canceled or paused work.
+3. Repair the links that pointed to the item, including overview links under
    [summary ownership and updates](DATA_MODEL.md#summary-ownership-and-updates).
+   Put the answer's method or decision source, version and limits in the commit
+   message.
 
 Deferral leaves the item unresolved. Record the rationale, impact, authorized
 scope/timing decision when needed, accountable owner, next action and review
@@ -202,11 +204,11 @@ claim unless the actual authorized scope has changed.
 
 Close without resolution only for an evidenced duplicate, a demonstrated
 non-applicable item or an actual authorized cancellation/exclusion of the
-obligation. Record that disposition explicitly rather than saying "resolved,"
-link the surviving item or decision, and check effects on dependents and
-retained obligations. A duplicate's dependents follow the surviving item;
-deleting the duplicate reference cannot remove their blocker. An agent cannot
-exclude a requirement to produce a clean report.
+obligation. State that disposition in the commit message rather than saying
+"resolved." Point dependents to the surviving item or decision, and check
+effects on retained obligations. A duplicate's dependents follow the surviving
+item; deleting the duplicate reference cannot remove their blocker. An agent
+cannot exclude a requirement to produce a clean report.
 
 ### Review, escalation and reopening
 
@@ -235,12 +237,12 @@ Reopen a RESOLVED or CLOSED item when any of these occurs:
 - a relied-on decision is withdrawn;
 - changed assumptions invalidate its resolution/disposition.
 
-Keep its identity; version history keeps the prior closure. Record the new
+A CLOSED item returns from version history with its identity. Record the new
 source/version and reason in the item's subject and source, and update the
 current state (OPEN, IN_PROGRESS or WAITING), owner, action and affected
 dependents in their owning fields. Reassess their readiness and stop affected
 work as necessary. A genuinely different issue follows the normal item-boundary
-rules and links the earlier item instead of rewriting it.
+rules and links the commit that closed the earlier item instead of restoring it.
 
 ## Updating current work state
 
@@ -251,9 +253,10 @@ the current instructions before the next action relies on them.
    next action and evidence. Resolve superseded instructions in their owner under
    [conversation decisions](DEVELOPMENT_METHOD.md#conversation-decisions-and-current-instructions).
    Keep unresolved discrepancies visible; a navigation pointer cannot settle them.
-2. Record a changed result or next action once in its owner. If work moves,
+2. Record a changed next action once in its owner. A changed result goes to the
+   commit message, unless it is a failure that still stands. If work moves,
    move the [resumption position](DATA_MODEL.md#resumption-state) and its reading
-   links. Reference blockers and evidence instead of copying their current state.
+   links. Reference blockers instead of copying their current state.
 3. Change parent or entry documents only when their own scope, dependencies or
    navigation change. Replace affected duplicate current claims with owner links
    under [summary ownership](DATA_MODEL.md#summary-ownership-and-updates).
@@ -287,15 +290,18 @@ or an existing [open item](#open-item-lifecycle):
 "Outside this task" identifies a boundary but does not dispose of the defect.
 Keep dependent work blocked where the correction is a prerequisite; independent
 covered work can continue. Report missing assignments under the open-item
-lifecycle. Extend closed records under
+lifecycle. Add scope to finished work under
 [verification and completion](#verification-and-completion).
 
 ## Verification and completion
 
-Choose checks that establish the declared result. Record the subject version,
+Choose checks that establish the declared result. Report the subject version,
 the method and environment, the expected and observed result, the relevant
-artifacts and the limits. Apply [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling)
-to their execution scope, timing and resource use.
+artifacts and the limits. The commit message carries them; a failure that still
+stands also stays in its owning document under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only). Apply
+[check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling) to their
+execution scope, timing and resource use.
 
 **Start from the claim.** For each material outcome, identify the observable
 result and a plausible failure the check must distinguish. Keep this reasoning
@@ -323,7 +329,7 @@ environment it runs in. Reference the
 [project entry and conventions](DATA_MODEL.md#suggested-information) where
 they exist.
 
-Where none is recorded, record the command and environment actually used, and
+Where none is recorded, report the command and environment actually used, and
 state that the project has not decided them. Track that under the
 [open-item lifecycle](#open-item-lifecycle) once a verification claim,
 dependent work or handoff relies on it. Do not invent one.
@@ -341,7 +347,7 @@ results so another reviewer can assess the claim. Exact replay of human behavior
 is not required.
 
 An unavailable one-off script or unidentified tested output limits what later
-work can establish. Record the observation with the missing evidence as its
+work can establish. Report the observation with the missing evidence as its
 limit, and obtain the required check before relying on it for completion or
 reuse.
 
@@ -385,8 +391,9 @@ layering, small viewports or long labels. Check applicable visibility, clipping,
 readability, content meaning and interaction criteria.
 
 Inspect the rendered result; element existence or capture generation alone
-does not establish its visual quality. Record the artifact version, states and
-instances examined, findings and limits in the owning verification record.
+does not establish its visual quality. Report the artifact version, states and
+instances examined, findings and limits; a failing finding stays in the owning
+verification record.
 An agent's visual review remains distinct from required human review or customer
 acceptance. Use the dispositions below when a required check cannot run.
 
@@ -422,11 +429,12 @@ independent check, an audit or a discovered defect shows that a granted pass or
 acceptance did not hold.
 
 - Name the subjects whose pass is withdrawn.
-- Replace the pass with the current disposition and the finding that overturned
-  it; version history keeps the withdrawn evidence.
-- Correct every record and summary that still reports the withdrawn result.
+- Record the finding that overturned it in the subject's owning document, as a
+  failure that still stands.
+- Correct every document that still claims the withdrawn result.
 - Return work that was allowed to start or close on that basis to its state
-  before it. Where a decision rested on it, do so under
+  before it; a deleted task returns from version history. Where a decision
+  rested on it, do so under
   [cancellation and resumption](APPROVALS.md#cancellation-withdrawal-and-resumption).
 - Record what would restore it: which check, at what scope, by whom.
 
@@ -434,11 +442,11 @@ Dependent work waits behind that condition, and the condition is a real blocker
 rather than a preference. Unaffected evidence keeps its standing under
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
-**Extend closed work in place.** When additional scope belongs to closed work,
-update its subject, criteria, state and planned checks to the current scope;
-version history keeps the closed version. Do not describe the addition as a
-change or list unchanged facts. Changed subjects or criteria need applicable
-new checks; an overturned result follows pass withdrawal above.
+**Add scope to finished work as new work.** A finished task is deleted, so
+additional scope becomes a new task that links the same requirement and
+contracts. Update those owners where their criteria change. Changed subjects or
+criteria need applicable new checks; an overturned result follows pass
+withdrawal above.
 
 ## Status and trace reporting
 
@@ -458,7 +466,8 @@ progress from titles, labels or file counts alone.
 3. Start from the [project overview](DATA_MODEL.md#document-organization) and
    applicable [area overviews](DATA_MODEL.md#area-overviews), then read the
    owning requirement, design, plan, task, verification and open-item records
-   for the scope. Read designated
+   for the scope. Take finished work and passed checks from the commit messages
+   since the scope's baseline. Read designated
    [external tracker](DATA_MODEL.md#external-work-trackers) state where it
    owns work status. If the tracker is unreachable, report that state as
    unknown rather than reusing a Markdown copy.
@@ -477,8 +486,8 @@ coverage judgments.
 |---|---|
 | Basis | Scope, overview version/commit, date, dirty work, records read and records not read or not resolvable. |
 | Stage summary | Derive the current stage and active work from owning records reached through the overview. Identify stale copied summaries as discrepancies. |
-| Requirement trace | One row per in-scope requirement. The row shows the covering design/contract and plan, plus the tasks with their [states](#task-states). It also shows verification records with each [verification kind](#verification-and-completion) reached and its subject version, acceptance, and blocking open items. Unrun, failed, partial or stale verification is reported as such, not as a weaker pass. |
-| Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with at least one non-cancelled task and every non-cancelled task DONE; with evidence of each verification kind; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
+| Requirement trace | One row per in-scope requirement. The row shows the covering design/contract and plan, plus the remaining tasks with their [states](#task-states). It also shows each [verification kind](#verification-and-completion) reached and its subject version, from the commit messages. It shows acceptance, failures that still stand and blocking open items. Unrun, failed, partial or stale verification is reported as such, not as a weaker pass. |
+| Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with its planned work finished, meaning no remaining task and the finished work shown in version history; with evidence of each verification kind; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
 | Gaps and discrepancies | Requirements without covering design or work. Work, contracts or verification missing their requirement/source trace under the item-boundary rules. Unresolved links or IDs. Summaries that contradict owning records. Evidence whose subject version predates later changes to that subject. Open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
@@ -497,8 +506,8 @@ denominator.
 ### After the report
 
 The report is conversation output. If the user asks to keep it, store it with
-its baseline version. A report document or a handoff record, for example, can
-hold it; the overview does not, since it repeats no child status. A kept report
+its baseline version. A report document, for example, can hold it; the
+overview does not, since it repeats no child status. A kept report
 is a deliverable, not a parallel current status.
 Repairing links, updating summaries or recording discrepancies as open items is
 separate work. It follows the usual
@@ -557,7 +566,8 @@ required outcomes, work dispositions, decisions, applicable evidence, actual
 customer acceptance, delivery status, outstanding
 [reporting obligations](#recurring-reports), handover and maintenance
 obligations.
-Use a release inventory or existing project document.
+Use a release inventory or existing project document; a release inventory is a
+deliverable at its basis version.
 
 Every required item must be complete or have an explicit disposition consistent
 with the agreed scope. Deployment alone is not closure. Do not omit unfinished
@@ -570,16 +580,19 @@ satisfy an outstanding required obligation.
 
 ## Hotfixes and incidents
 
-Record the incident, affected version, smallest feasible repair scope, risk and
-verification. Reuse valid authority where it covers the repair; prepare a
+Record the incident, affected version, smallest feasible repair scope and risk
+in its owning record. Reuse valid authority where it covers the repair; prepare a
 material delta when it does not. Check actual dependencies and ownership, fix,
 verify and report the outcome. Urgency does not create consent.
 
 Production rollback/redeployment, data repair, destructive actions and credential
 access keep the decisions and controls that
-[Security](SECURITY.md#five-high-risk-boundaries) sets for each. Record the
-failure evidence and recovery decisions in the incident's owning record;
-attempts need no log.
+[Security](SECURITY.md#five-high-risk-boundaries) sets for each. Keep the
+failure evidence and recovery decisions in the incident's record; attempts need
+no log. Once a check of the repair passes, move recovery decisions still in
+force to their owners and delete the record, unless an external process
+requires an incident report. The commit message carries the repair's
+verification.
 
 ## Starting over
 

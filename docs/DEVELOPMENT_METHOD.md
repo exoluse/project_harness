@@ -19,17 +19,17 @@ for bounded work. Sprints are optional.
 | Requirements | Discovery and attributable evidence | Outcomes, acceptance criteria, priorities and trace are clear enough for the requested scope. |
 | Design | Versioned requirements and constraints | Components, interfaces, data, alternatives, risks and requirement coverage are described. |
 | Planning | Original scope sources, requirements, design and current progress | Source coverage, detailed work, integration order and verification pass the planning completion checks; unresolved prerequisites have an explicit disposition. |
-| Implementation | Concrete scope decision, ready inputs and permissions | Covered work is implemented; the plan and task state what was actually done. |
-| Verification | Candidate version, criteria and check environment | Actual results, failures, applicability and limits are recorded for the declared [verification kinds](WORKFLOW.md#verification-and-completion). |
+| Implementation | Concrete scope decision, ready inputs and permissions | Covered work is implemented; the plan shows what remains, and the commit message states what was done. |
+| Verification | Candidate version, criteria and check environment | Actual results, applicability and limits are stated for the declared [verification kinds](WORKFLOW.md#verification-and-completion); failures that still stand stay in their owning documents. |
 | Acceptance | Candidate and applicable verification | The authorized customer gives attributable acceptance or feedback for the stated candidate. |
-| Delivery | Release scope, operational prerequisites and permits | Delivery is performed within authority; deployed version and applicable post-delivery checks are recorded. |
+| Delivery | Release scope, operational prerequisites and permits | Delivery is performed within authority; the release inventory records the deployed version and applicable post-delivery checks. |
 | Closure | Contributions from all plans, evidence and obligations | Required work has an honest disposition; acceptance, delivery, handover and maintenance obligations are satisfied as applicable. |
 | Maintenance | Released baseline and new requests/incidents | Authorized changes are traced, implemented and reverified. |
 
 A documentation-only engagement can close with its document deliverables;
 it does not claim product implementation, production delivery or customer
-acceptance. Stage readiness is a documented assessment, not another human
-approval at every row.
+acceptance. Stage readiness is an assessment, not another human approval at
+every row.
 
 ## Stage-by-stage or continuous execution
 
@@ -72,16 +72,16 @@ Use the detailed procedure for the affected scope when it introduces:
 For compact work, use the existing work document and linked definitions under
 [compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change):
 
-1. Before editing, note that the work follows a user request. State the baseline,
-   expected result and affected paths. Describe the chosen approach and ordered
-   edit/check steps. Name actual check commands or targets and their environment;
-   reference existing details.
+1. Before editing, state the expected result and affected paths. Describe the
+   chosen approach and ordered edit/check steps. Name actual check commands or
+   targets and their environment; reference existing details.
 2. Compare that short plan with the governing inputs and affected consumers.
    Confirm that the checks can detect the relevant wrong result under
    [claim-based verification](WORKFLOW.md#verification-and-completion).
-   Keep findings and unresolved prerequisites in the same work note.
-3. Perform covered work when ready. Record actual results and limits there or
-   in the existing verification owner. A planning-only request stops before execution.
+   Fix the gaps found; keep unresolved prerequisites in the same work note.
+3. Perform covered work when ready. Report actual results and limits, and put
+   them in the commit message; a failure that still stands stays in the work
+   note. A planning-only request stops before execution.
 
 Use existing authority and readiness under [Approvals](APPROVALS.md#coverage-and-currentness).
 Do not add an eligibility report, separate planning-review log, coverage matrix
@@ -148,10 +148,11 @@ a gap. Keep the requested stopping point and actual implementation authority.
    before extending the treatment to the remaining instances.
 7. **Audit from the sources and hand off.** Apply all completion checks below
    against the original inputs, linked definitions and candidate plan. Repair
-   omissions and check their effects. Record the reviewed versions, coverage,
-   actual findings, dispositions and remaining execution prerequisites in the
-   plan/work note. Report completion only for the scope that passed; a narrower
-   completed subset does not complete the original request.
+   omissions and check their effects. Keep unresolved findings and remaining
+   execution prerequisites in the plan as open questions. Put the reviewed
+   versions and coverage result in the commit message. Report completion only
+   for the scope that passed; a narrower completed subset does not complete the
+   original request.
 
 ### Required implementation detail
 
@@ -212,7 +213,7 @@ layout already presents the same information clearly:
 4. Ordered work links or owned work steps, dependencies and integration.
 5. Verification scenarios, expected results, environment and coverage links.
 6. Risks/unknowns, resolution work, owner and readiness impact.
-7. Planning review results, remaining prerequisites and next action.
+7. Unresolved findings, remaining prerequisites and next action.
 
 This is a writing aid, not a mandatory set of documents. The
 [Information model](DATA_MODEL.md#plans-and-tasks) governs ownership and file
@@ -260,9 +261,9 @@ unresolved consequential design choice cannot. Check resolution evidence
 and its propagation into the affected plan before removing that planning gap.
 Deferral or a status label alone does not satisfy a planning completion check.
 
-Collect findings from these checks in the current plan/work note, fix actual
-gaps and recheck affected coverage and dependencies. Reuse unaffected review
-evidence. Do not:
+Fix the actual gaps these checks find, and recheck affected coverage and
+dependencies. Keep only unresolved findings, as open questions in the plan.
+Reuse unaffected review evidence. Do not:
 
 - restart the entire plan for wording preferences;
 - stop after an arbitrary retry count;
@@ -342,8 +343,9 @@ definition.
 ## Baselines and review boundaries
 
 Use commits or versioned copies sufficient to identify the basis for
-dependent work. Preserve the decided scope and its request or
-decision basis under [Approvals](APPROVALS.md#preparing-and-recording-one-decision).
+dependent work. Keep the decided scope in its owner and the request basis in
+the commit message, under
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision).
 Do not require hashes or a fixed record format solely for ceremony.
 
 A changed version requires an applicability assessment of existing decisions
@@ -355,18 +357,27 @@ changed outputs and affected dependencies.
 
 ### Current state only
 
-Project documents hold only the current state. Keep each owning document at
-the definitions, decisions, contracts, results, open items and positions in
-force, and update it in place. Version history, in Git or the designated
-tracker, carries the past.
+Project documents hold only what later work needs and cannot recover from the
+code or version history:
+
+- decisions in force, with any reason that still governs current work;
+- open questions that block work;
+- failures that still stand;
+- the current position of work that spans sessions.
+
+Requirements, designs, contracts, plans and tasks are decisions. Update each
+document in place. Version history, in Git or the designated tracker, carries
+the past; link the commit or version where current work depends on it.
 
 | Content | Handling |
 |---|---|
-| History | Write none: no change notes or dated entries; no reopening, withdrawal or amendment notes; no session diaries, history files or archive snapshots. Where current work depends on the past, link the commit or version instead of describing it. |
+| The request basis, checks run and their results, the starting state and handoff notes | Put them in the commit message when the work is committed, and report them until then. Where work stays uncommitted past a session, keep the starting state and handoff notes with the [current position](DATA_MODEL.md#resumption-state) until the commit. Without Git, keep all of them there instead. |
+| History | Write none: no change notes or dated entries; no reopening, withdrawal or amendment notes; no session diaries, history files or archive snapshots. |
 | A decision overturned by a later one | Delete it and record the decision in force in its place. Where no new decision replaces it, record the owner's cancellation or withdrawal as the decision in force. Update what relied on it under the [change cycle](#change-cycle-and-propagation). |
-| A superseded instruction, contract or result | Replace it with the current one. An overturned pass follows [pass withdrawal](WORKFLOW.md#verification-and-completion). |
-| A decision or contract in force | Keep it, however old, with any reason that still governs current work. |
-| A failure record | Keep it while the failure still holds or a decision in force rests on it. A failed check holds until a later check of its scope passes, or until an actual owner decision removes its subject from scope. So does a finding that overturned a pass. Incidents and open items keep the failure they record, even once closed. |
+| A superseded instruction or contract | Replace it with the current one. |
+| A finished or cancelled task | Delete it once its completion checks pass, or once its plan, or the overview for a standalone task, records its cancellation. Before deleting it, move any decision later work still needs to its owner. A work document that also serves as the overview keeps its project context. |
+| An answered open question | Put the answer in its owning definitions, then delete the question under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle). |
+| A failure | Keep it while it still stands or a decision in force rests on it. A failed check stands until a later check of its scope passes, or until an actual owner decision removes its subject from scope. The same holds for a finding that overturned a pass and for an incident not yet repaired. |
 | A record an external process requires | Keep that process's format and retention rules. Examples are approval records, issued reports and delivered verification evidence. |
 
 Without version history, the versioned copy kept at
@@ -444,7 +455,7 @@ or effects are uncertain. Group unaffected content with a common reuse basis;
 do not require a separate impact report or an N/A row for every project document.
 Assign required corrections under [fixes across work-item boundaries](WORKFLOW.md#fixes-across-work-item-boundaries).
 
-1. Identify the prior baseline and record the request or decision basis.
+1. Identify the prior baseline and the request or decision basis.
 2. Assess feasibility, alternatives, uncertainty and effects on behavior, data,
    dependencies, effort/schedule, verification and delivery.
 3. Update affected owning definitions into a reviewable current version. Keep
@@ -458,12 +469,12 @@ Assign required corrections under [fixes across work-item boundaries](WORKFLOW.m
    decision for a material delta. Do not ask again for the same scope under
    different record labels.
 5. Implement covered work when its real prerequisites are ready.
-6. Verify changed outputs and affected dependencies; retain applicable evidence
-   and document the applicability assessment.
-7. Update progress, remaining obligations and handover information under the
+6. Verify changed outputs and affected dependencies. Reuse applicable evidence,
+   and state the applicability assessment in the commit message.
+7. Update remaining obligations and the current position under the
    [summary update rules](DATA_MODEL.md#summary-ownership-and-updates).
    Reassess affected [open items](WORKFLOW.md#open-item-lifecycle), propagate
-   resolutions and reopen items whose basis no longer holds.
+   answers and reopen items whose basis no longer holds.
 
 Propagation is complete when all of these hold:
 
@@ -478,19 +489,21 @@ or a required project check. Reuse follows
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
 Keep this trace in the owning plan or work document while the change is in
-progress; once propagation is complete, the current definitions carry it under
-[current state only](#current-state-only). A separate CHANGE/CR record is
-needed only when an agreed project or external process requires it.
+progress. Delete it once propagation is complete; the current definitions and
+the commit message carry it under [current state only](#current-state-only).
+A separate CHANGE/CR record is needed only when an agreed project or external
+process requires it.
 
 ### Conversation decisions and current instructions
 
 When the owner settles a question or changes a prior decision in conversation,
-note that the change follows the owner's decision and record its covered scope
-under [Approvals](APPROVALS.md#preparing-and-recording-one-decision). Replace
-the superseded instruction in its owner; version history keeps it. Update the
-affected owning definitions and the work item's current basis before the next
-action that relies on the decision, and before handoff or completion. A request
-note alone is insufficient when the current requirement, design or work
+record the decision and its covered scope in its owner under
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision). The commit
+message notes that it follows the owner's decision. Replace the superseded
+instruction in its owner; version history keeps it. Update the affected owning
+definitions and the work item's current basis before the next action that
+relies on the decision, and before handoff or completion. A commit-message note
+alone is insufficient when the current requirement, design or work
 instructions still say something else. Unaccepted suggestions remain proposals.
 
 Update only affected owners and summaries, following their ownership and the

@@ -111,15 +111,17 @@ untrusted product-code execution, deployment or external effects. Exploratory
 or stage-only requests do not authorize later implementation.
 
 A clear implementation or fix request supplies its scope decision under
-[Approvals](docs/APPROVALS.md#clear-implementation-requests). Record that the
-work follows a user request and state its derived scope on the work item under
-[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks). Then perform the covered
-edits and checks without a second proceed response. Execution also needs
-ready prerequisites under
+[Approvals](docs/APPROVALS.md#clear-implementation-requests). State its derived
+scope on the work item under
+[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks), and note in the commit
+message that the work follows a user request. Then perform the covered edits
+and checks without a second proceed response. Execution also needs ready
+prerequisites under
 [coverage and currentness](docs/APPROVALS.md#coverage-and-currentness).
 
-Do not copy or quote user prompts or replies into project documents. Use the
-brief request note under [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
+Do not copy or quote user prompts or replies into project documents or commit
+messages. Use the brief request note under
+[decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
 
 For an uncovered commitment, apply the
 [material-change criteria](docs/APPROVALS.md#material-changes). Prepare the
@@ -146,13 +148,16 @@ work and required external records keep their normal rules.
 
 ## Current state, evidence and real blockers
 
-Project documents hold only the current state: the definitions, decisions,
-contracts, results, open items and positions in force. Update them in place
-and write no history into them, under
-[current state only](docs/DEVELOPMENT_METHOD.md#current-state-only). Delete a
-decision once a later decision overturns it. Keep what is still in force,
-however old, including failures that still stand. Version history carries the
-past; link a commit or version where current work depends on it.
+Project documents hold only what later work needs and cannot recover from the
+code or version history. These are the decisions in force, open questions that
+block work, failures that still stand and the current position. Requirements,
+designs, contracts, plans and tasks count as decisions. Update them in place
+under [current state only](docs/DEVELOPMENT_METHOD.md#current-state-only).
+Delete a decision once a later decision overturns it, a task once it is done
+or cancelled, and an open question once its answer is in its owner. The commit
+message carries the request basis, the starting state, the checks run and their
+results, and handoff notes. Version history carries the past; link a commit
+where current work depends on it.
 
 - Keep these distinct: the [task state](docs/WORKFLOW.md#task-states)
   IMPLEMENTED; the [verification kinds](docs/WORKFLOW.md#verification-and-completion)
@@ -225,7 +230,7 @@ Before completion, release, handover or push, review the actual diff, evidence
 coverage and limits. Check changed deliverables and affected dependencies,
 reusing applicable evidence under
 [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
-Product checks name the actual command and environment and record the subject
+Product checks name the actual command and environment and state the subject
 version, expected and observed result and limits under
 [verification](docs/WORKFLOW.md#verification-and-completion). Documentation
 needs content, format and [link/trace checks](docs/DATA_MODEL.md#document-validation).
