@@ -135,6 +135,11 @@ the layout. Any authorized reorganization must keep IDs and repair links;
 version history keeps the reviewed versions. A requested stage still ends at
 its own outputs.
 
+Before removing or renaming a heading or anchor, search the project for links
+to it. Repair them in the same change, or keep the anchor. Keep it where a link
+lies outside the work's editing scope. An explicit HTML anchor can keep an old
+fragment working after its heading changes.
+
 ### Summary ownership and updates
 
 Keep each current fact in one owning location, within a file as well as across files:
@@ -1064,11 +1069,11 @@ the affected scope and reusable evidence.
 | Area overviews and trackers | Root and area overview entries resolve and hold only their owned content. Designated tracker information has no parallel Markdown record. Tracker references carry a resolvable key/link. Relied-on tracker state is recorded where a decision, completion or handoff depends on it. |
 | Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, the slug's presence and syntax on new files, unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
 | Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
-| Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
+| Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. No project link points at a removed or renamed anchor. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
 | Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. No superseded instruction or history note remains beside the current one. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
 | Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
 | Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Closure/reopening must record its evidence and update affected definitions and dependency status; a status change alone is insufficient. |
-| Scope and current state | No unauthorized migration or relabeling of existing records; IDs stay unchanged. Documents hold only the current state under [current state only](DEVELOPMENT_METHOD.md#current-state-only): no history notes, superseded text or snapshots. Unrun verification is not reported as success. |
+| Scope and current state | No unauthorized migration or relabeling of existing records; IDs stay unchanged. Documents hold only the current state under [current state only](DEVELOPMENT_METHOD.md#current-state-only): no history notes, overturned decisions, superseded text or snapshots. Decisions, contracts and failure records still in force remain. Unrun verification is not reported as success. |
 | Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
 
 Required-name checks replace ordinary path/name/body checks only to the extent

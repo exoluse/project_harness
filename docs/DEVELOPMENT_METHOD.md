@@ -348,32 +348,28 @@ Do not require hashes or a fixed record format solely for ceremony.
 
 A changed version requires an applicability assessment of existing decisions
 and evidence. Replace or remove evidence that no longer applies; version
-history keeps the earlier observation. Reuse unaffected evidence only when it
-still supports the stated criterion, subject and environment. Reverify changed
-outputs and affected dependencies.
+history keeps the earlier observation. Keep a failure that still stands, under
+[current state only](#current-state-only). Reuse unaffected evidence only when
+it still supports the stated criterion, subject and environment. Reverify
+changed outputs and affected dependencies.
 
 ### Current state only
 
 Project documents hold only the current state. Keep each owning document at
-the definitions, decisions, results, open items and positions in force, and
-update it in place. Version history, in Git or the designated tracker, carries
-the past.
+the definitions, decisions, contracts, results, open items and positions in
+force, and update it in place. Version history, in Git or the designated
+tracker, carries the past.
 
-Write no history into project documents:
+| Content | Handling |
+|---|---|
+| History | Write none: no change notes or dated entries; no reopening, withdrawal or amendment notes; no session diaries, history files or archive snapshots. Where current work depends on the past, link the commit or version instead of describing it. |
+| A decision overturned by a later one | Delete it and record the decision in force in its place. Where no new decision replaces it, record the owner's cancellation or withdrawal as the decision in force. Update what relied on it under the [change cycle](#change-cycle-and-propagation). |
+| A superseded instruction, contract or result | Replace it with the current one. An overturned pass follows [pass withdrawal](WORKFLOW.md#verification-and-completion). |
+| A decision or contract in force | Keep it, however old, with any reason that still governs current work. |
+| A failure record | Keep it while the failure still holds or a decision in force rests on it. A failed check holds until a later check of its scope passes, or until an actual owner decision removes its subject from scope. So does a finding that overturned a pass. Incidents and open items keep the failure they record, even once closed. |
+| A record an external process requires | Keep that process's format and retention rules. Examples are approval records, issued reports and delivered verification evidence. |
 
-- no change notes or dated history entries;
-- no superseded decision, instruction or result kept beside the current one;
-- no reopening, withdrawal or amendment notes;
-- no session diaries, separate history files or archive snapshots.
-
-Where current work depends on the past, link the commit or version instead of
-describing it. A reason that still governs current work is part of the current
-state; keep it with its decision. Link existing decisions and evidence without
-copying them.
-
-Records an external process requires, such as approval records, issued reports
-and delivered verification evidence, keep that process's format and retention
-rules. Without version history, the versioned copy kept at
+Without version history, the versioned copy kept at
 [startup](../AGENTS.md#startup-and-context) is the only earlier version.
 
 ## Input precedence

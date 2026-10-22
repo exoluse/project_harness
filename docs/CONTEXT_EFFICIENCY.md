@@ -15,7 +15,8 @@ they do not maintain another detailed procedure or checklist.
 When changing guidance, inspect the affected summaries, examples and links in
 both README languages and relevant adapters. When shortening it, confirm that
 each removed obligation remains in its owning rule and can be reached before
-the affected action. Preserve incoming anchors or repair their references.
+the affected action. Preserve incoming anchors, or repair their references in
+the same change.
 Do not achieve a shorter entry by making required detail optional or adding
 another summary that readers must always load. Use the policy-maintenance
 Git/diff trace; no separate review record or numeric length target is required.

@@ -78,8 +78,10 @@ ends at the first `## ` heading, to choose the sections for the work.
 Project documents follow the [Information model](docs/DATA_MODEL.md).
 
 - Keep one project overview linking the independently managed items.
-- Give each item one owning Markdown file, and link shared definitions
-  instead of copying them.
+- Give each item one owning Markdown file. Keep each fact in one owning
+  document, and link to it elsewhere instead of copying it.
+- Keep an anchor that other documents link to, or repair those links in the
+  same change.
 - Keep no parallel JSON or other machine-readable management copy. No fixed
   schema or front matter is required.
 
@@ -145,11 +147,12 @@ work and required external records keep their normal rules.
 ## Current state, evidence and real blockers
 
 Project documents hold only the current state: the definitions, decisions,
-results, open items and positions in force. Update them in place and write no
-history into them, under
-[current state only](docs/DEVELOPMENT_METHOD.md#current-state-only). Version
-history carries the past; link a commit or version where current work depends
-on it.
+contracts, results, open items and positions in force. Update them in place
+and write no history into them, under
+[current state only](docs/DEVELOPMENT_METHOD.md#current-state-only). Delete a
+decision once a later decision overturns it. Keep what is still in force,
+however old, including failures that still stand. Version history carries the
+past; link a commit or version where current work depends on it.
 
 - Keep these distinct: the [task state](docs/WORKFLOW.md#task-states)
   IMPLEMENTED; the [verification kinds](docs/WORKFLOW.md#verification-and-completion)
