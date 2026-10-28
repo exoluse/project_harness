@@ -102,7 +102,8 @@ a gap. Keep the requested stopping point and actual implementation authority.
    source versions, actual decisions, existing progress and analysis boundaries.
    Read the relevant original requests, specifications and constraints. Extract
    each obligation and its supporting conditions into a source-linked inventory
-   in the owning documents. Separate confirmed requirements, observed behavior,
+   in the owning documents. Conversational requests need their resulting obligations,
+   not a prompt reference. Separate confirmed requirements, observed behavior,
    inferred needs, proposals and unknowns. Include exclusions and unresolved
    contradictions; do not infer that uninspected inputs are covered.
 2. **Define observable outcomes.** For each requirement, specify acceptance
@@ -343,8 +344,7 @@ definition.
 ## Baselines and review boundaries
 
 Use commits or versioned copies sufficient to identify the basis for
-dependent work. Keep the decided scope in its owner and the request basis in
-the commit message, under
+dependent work. Keep the decided scope in its owner under
 [Approvals](APPROVALS.md#preparing-and-recording-one-decision).
 Do not require hashes or a fixed record format solely for ceremony.
 
@@ -375,7 +375,7 @@ link the commit or version where current work depends on it.
 
 | Content | Handling |
 |---|---|
-| The request basis, checks run and their results, the starting state and handoff notes | Put them in the commit message when the work is committed, and report them until then. Where work stays uncommitted past a session, keep the starting state and handoff notes with the [current position](DATA_MODEL.md#resumption-state) until the commit. Without Git, keep all of them there instead. |
+| Checks run and their results, the starting state and handoff notes | Put them in the commit message when the work is committed, and report them until then. Where work stays uncommitted past a session, keep the starting state and handoff notes with the [current position](DATA_MODEL.md#resumption-state) until the commit. Without Git, keep all of them there instead. |
 | History | Write none: no change notes or dated entries; no reopening, withdrawal or amendment notes; no session diaries, history files or archive snapshots. |
 | A decision overturned by a later one | Delete it and record the decision in force in its place. Where no new decision replaces it, record the owner's cancellation or withdrawal as the decision in force. Update what relied on it under the [change cycle](#change-cycle-and-propagation). |
 | A superseded instruction or contract | Replace it with the current one. |
@@ -459,7 +459,7 @@ or effects are uncertain. Group unaffected content with a common reuse basis;
 do not require a separate impact report or an N/A row for every project document.
 Assign required corrections under [fixes across work-item boundaries](WORKFLOW.md#fixes-across-work-item-boundaries).
 
-1. Identify the prior baseline and the request or decision basis.
+1. Identify the prior baseline and the applicable decided scope.
 2. Assess feasibility, alternatives, uncertainty and effects on behavior, data,
    dependencies, effort/schedule, verification and delivery.
 3. Update affected owning definitions into a reviewable current version. Keep
@@ -502,13 +502,11 @@ process requires it.
 
 When the owner settles a question or changes a prior decision in conversation,
 record the decision and its covered scope in its owner under
-[Approvals](APPROVALS.md#preparing-and-recording-one-decision). The commit
-message notes that it follows the owner's decision. Replace the superseded
-instruction in its owner; version history keeps it. Update the affected owning
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision).
+Replace the superseded instruction in its owner; version history keeps it. Update the affected owning
 definitions and the work item's current basis before the next action that
-relies on the decision, and before handoff or completion. A commit-message note
-alone is insufficient when the current requirement, design or work
-instructions still say something else. Unaccepted suggestions remain proposals.
+relies on the decision, and before handoff or completion.
+A commit message cannot replace the current owning instructions. Unaccepted suggestions remain proposals.
 
 Update only affected owners and summaries, following their ownership and the
 actual editing scope. In a report-only request, describe the needed amendments

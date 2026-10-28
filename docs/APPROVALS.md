@@ -7,9 +7,8 @@ tool check cannot create them.
 ## Who decides and who checks
 
 The owner decides the implementation scope through a sufficiently concrete
-direct request or a response to a proposal. The agent notes the request or
-decision basis in the commit message and checks that each work item remains
-covered. It makes choices within that authority, including explicitly delegated
+direct request or a response to a proposal. The agent checks that each work
+item remains covered. It makes choices within that authority, including explicitly delegated
 judgment, without inventing an owner decision.
 
 ### Decision requests and delegated judgment
@@ -44,12 +43,13 @@ document version, commit or dated reference. Scale detail to the work and link
 existing definitions. Present a proposal for a decision only where the current
 request and existing decisions do not already cover the concrete action.
 
-Note only that the work follows a user request or decision, in the commit
-message. A note such as "Performed at the user's request" suffices.
-No transcript, message ID or chat link is required for this note.
 Keep the scope, constraints and resulting decisions in their owning sections.
-Record technical rationale separately. Never invent a request, consent, dates
-or signatures. Required approval and acceptance evidence still follows
+Routine decisions need no account of the request or conversation that produced them.
+No transcript, message ID, chat link or request-origin note is required in
+documents or commit messages.
+Keep technical rationale only when needed to apply or verify the decision.
+Never invent a request, consent, dates or signatures.
+Required approval and acceptance evidence still follows
 [Security](SECURITY.md#five-high-risk-boundaries).
 
 An explicit proceed response covers the unchanged presented implementation and

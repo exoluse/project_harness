@@ -27,7 +27,8 @@ documents.
    work as analysis/specification, policy maintenance or
    implementation/verification/delivery. Discussing a defect does not
    authorize unrelated edits or deletion.
-3. Inspect Git status before writing. Apply
+3. Inspect Git status before writing. Prefer investigating the affected scope
+   before modifying a file. Apply
    [starting execution](docs/WORKFLOW.md#starting-execution-in-a-working-tree)
    before a work item's first edit. Without Git, inspect targets and keep a
    versioned copy before replacing them. Protect user and unknown work and
@@ -115,14 +116,13 @@ or stage-only requests do not authorize later implementation.
 A clear implementation or fix request supplies its scope decision under
 [Approvals](docs/APPROVALS.md#clear-implementation-requests). State its derived
 scope on the work item under
-[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks), and note in the commit
-message that the work follows a user request. Then perform the covered edits
-and checks without a second proceed response. Execution also needs ready
+[plans and tasks](docs/DATA_MODEL.md#plans-and-tasks). Then perform the covered
+edits and checks without a second proceed response. Execution also needs ready
 prerequisites under
 [coverage and currentness](docs/APPROVALS.md#coverage-and-currentness).
 
 Do not copy or quote user prompts or replies into project documents or commit
-messages. Use the brief request note under
+messages. Routine request-origin notes are not required under
 [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
 
 For an uncovered commitment, apply the
@@ -145,7 +145,7 @@ project records or external systems.
 - Preserve existing files and links unless cleanup is explicitly requested.
   Add documentation only as a requested deliverable or needed guidance.
 
-Commit messages record the reason and relevant verification. Actual project
+Commit messages record the covered changes and relevant verification. Actual project
 work and required external records keep their normal rules.
 
 ## Current state, evidence and real blockers
@@ -160,8 +160,7 @@ designs, contracts, plans and tasks count as decisions. Update them in place
 under [current state only](docs/DEVELOPMENT_METHOD.md#current-state-only).
 Delete a decision once a later decision overturns it, a task once it is done
 or cancelled, and an open question once its answer is in its owner. The commit
-message carries the request basis, the starting state, the checks run and their
-results, and handoff notes. Version history carries the past; link a commit
+message carries the starting state, checks run and their results, and handoff notes. Version history carries the past; link a commit
 where current work depends on it.
 
 - Keep these distinct: the [task state](docs/WORKFLOW.md#task-states)

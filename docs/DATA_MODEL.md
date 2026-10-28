@@ -248,7 +248,7 @@ current basis easy to find:
 
 - the scoped outcome;
 - the relevant requirement and design sections;
-- the governing decision and input versions;
+- the current decided scope and input versions;
 - the completion checks;
 - the next action or blocker.
 
@@ -311,9 +311,10 @@ Naming a check does not run it; see
 specification only, review output only, or implementation and its checks.
 
 The mode states the consequence of the actual decision recorded under
-[Approvals](APPROVALS.md#preparing-and-recording-one-decision), and names that
-decision. It is not a permission the item grants itself, and widening it is a
-separate decision. Where the item and the actual decision disagree, the
+[Approvals](APPROVALS.md#preparing-and-recording-one-decision).
+State the decided limits directly or link their owning definition;
+a reference to the originating conversation is unnecessary.
+The mode is not a permission the item grants itself; widening it is a separate decision. Where the item and the actual decision disagree, the
 decision governs and the item is corrected.
 
 **Authorized sub-scopes.** A long-running item can hold several scopes
@@ -321,7 +322,7 @@ authorized at different times. Keep the item's own mode at the narrowest
 current standing, and record each authorized sub-scope separately:
 
 - what it covers;
-- the decision that authorized it;
+- the applicable scope decision or its owning definition;
 - its own write scope and exclusions;
 - its completion checks.
 
@@ -398,7 +399,7 @@ and blockers instead of restating them. Link any release, acceptance or closure
 conditions in their owning records; the commit history holds the last
 checkpoint's evidence. While the current item's work is uncommitted, also keep
 its starting state and handoff notes here until the commit. Without Git, keep
-the latest checks and request basis here too.
+the latest checks here too.
 If this document owns one of those facts, keep it once and link its section.
 A short ordered reading list is enough; no second status table is needed.
 
@@ -890,9 +891,11 @@ unresolved impact still needs the follow-up information below when work
 continues or is handed off.
 
 Some questions are answered and checked within the same work session, with no
-remaining follow-up or independent management boundary. Put its answer into
-the affected definition or check, and give the authoritative source with its
-relevant version in the commit message. No note, separate open item, owner/timing
+remaining follow-up or independent management boundary.
+Put the answer into the affected definition or check.
+For technical evidence, give its source and version in the commit message.
+Routine user answers need no separate attribution under
+[decision recording](APPROVALS.md#preparing-and-recording-one-decision). No note, separate open item, owner/timing
 fields or transition log is required for that completed clarification. This
 shortcut does not supply human decisions or product verification: actual
 authority, evidence and material-change rules still apply. If the answer leaves
@@ -914,12 +917,12 @@ states merely to fill fields.
 
 | Content | What to record in the owning item or linked authoritative section |
 |---|---|
-| Subject and source | The concrete question, missing input or conflicting observations; discovery source and relevant version, distinguishing facts from assumptions. |
+| Subject and source | The concrete question, missing input or conflicting observations. Include technical sources and relevant versions where needed; distinguish facts from assumptions. |
 | State and accountability | Current lifecycle state, accountable follow-up owner, actual resolver/decision authority where different, and any explicitly unassigned responsibility. |
 | Impact | Affected requirements, criteria, plans/tasks and dependents; what cannot be planned, started or completed, and what can proceed independently. |
 | Next action and timing | Investigation, decision or prerequisite action; provider being awaited, expected output, needed-by milestone/date and next review trigger. Use event-based timing when no date is established. |
 | Resolution criterion | Observable evidence or attributable decision that will answer the question or satisfy the prerequisite, and how it will be checked. |
-| Answer | For a RESOLVED item, the checked answer with its source and version, until they are in the owning definitions. |
+| Answer | For a RESOLVED item, the checked answer until it is in the owning definitions. Include sources and versions for technical evidence or specifically required approval records. |
 | Deferral | For a deferred item, the reason, authority and retained obligation. |
 
 Once its answer is in the owning definitions, the item is closed and deleted

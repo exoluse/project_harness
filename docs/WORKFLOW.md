@@ -55,7 +55,17 @@ checkout you are about to write in.
    hand the item back with it recorded. Existing work outside the declared
    scope does not block the item.
 
-State what the inspection established, and carry it into the commit message:
+Prefer investigating a file's relevant scope before modifying it:
+
+- owning definitions and applicable instructions;
+- callers, consumers or incoming document references;
+- dependencies and affected checks.
+
+Scale the investigation to the expected impact and reuse findings that remain current.
+Expand it when new dependencies or uncertainty appear.
+The investigation does not authorize edits outside the covered scope.
+
+State what the checkout inspection established, and carry it into the commit message:
 
 - the revision the work starts from;
 - the uncommitted paths that were already there;
@@ -167,8 +177,8 @@ item as a failure that still stands.
 
 When resolution checking, propagation and dependent-readiness review finish
 together, put the answer in its owners and delete the item in one change. The
-commit message carries the answer's source and version. If propagation or a
-closure check remains, keep RESOLVED with the remaining action; finishing them
+commit message carries the source and version of technical evidence.
+Routine user answers need no request-origin note. If propagation or a closure check remains, keep RESOLVED with the remaining action; finishing them
 together does not waive either condition. See the
 [worked example](EXAMPLE_WEB_PROJECT.md#open-item-lifecycle-example).
 
@@ -192,8 +202,9 @@ Before CLOSED with a resolved disposition:
    do not automatically resume canceled or paused work.
 3. Repair the links that pointed to the item, including overview links under
    [summary ownership and updates](DATA_MODEL.md#summary-ownership-and-updates).
-   Put the answer's method or decision source, version and limits in the commit
-   message.
+   Put technical evidence's method, source version and limits in the commit message.
+   For routine user answers, record the decided content without a request-origin note.
+   Required approval evidence follows [decision recording](APPROVALS.md#preparing-and-recording-one-decision).
 
 Deferral leaves the item unresolved. Record the rationale, impact, authorized
 scope/timing decision when needed, accountable owner, next action and review

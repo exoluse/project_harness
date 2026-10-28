@@ -70,8 +70,7 @@ affected consumers. A missing/null total outside that contract needs
 investigation; do not invent a zero fallback.
 Fix the findings, and keep only unresolved ones in this note; no eligibility
 report or separate review log is needed. Unchanged requirement, design and
-overview files need no edit. Once the work is done, delete the note; the commit
-message notes that the correction followed a user request.
+overview files need no edit. Once the work is done, delete the note.
 
 A requested help-text addition with supplied wording can use the same compact
 path. A new public export contract triggers detailed planning for that scope.
@@ -127,9 +126,8 @@ Project entry links lead to this work document. It is the next session's entry p
   from planned checks.
 
 When the correction is done, delete the work sections; the project context
-stays as the overview. The commit message notes that the correction followed a
-user request. This needs no additional overview, requirement, design, plan or verification file
-merely to fill those roles. Suppose scope expands to a new export requirement or to work
+stays as the overview. This needs no additional overview, requirement, design,
+plan or verification file merely to fill those roles. Suppose scope expands to a new export requirement or to work
 assigned to several writers. In that case, establish a separate overview under
 the [expansion rule](DATA_MODEL.md#minimum-documentation-for-a-small-change)
 before that work starts. This example demonstrates documentation scope, not
@@ -176,7 +174,7 @@ These are illustrative states and decisions, not actual events.
 | Gap discovered | OPEN. Link the response contract/version and contradictory or missing definition. The planning agent owns follow-up; the product/API decision owner must settle intended behavior. The affected display plan cannot be completed. Resolution requires an authoritative contract or attributable owner decision defining the missing-total behavior. |
 | Investigation starts | IN_PROGRESS. Inspect authorized contract sources and callers; record what they establish and any remaining ambiguity. Needed-by point: before finalizing the display/state design. Next review: after that inspection, or sooner if a relevant input changes. |
 | Sources cannot settle intent | WAITING. Present the owner with alternatives, evidence and the affected scope. Record whose answer is needed and revisit on response or at the needed-by point. Independent work may continue; do not silently implement a zero fallback. |
-| Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Record that answer and its source in the item; this settles intent, not proof of product behavior. |
+| Owner supplies a decision | RESOLVED only after checking its source and scope. Suppose the actual answer in this fictional variant is that a missing total must use the existing invalid-response state. Record the resulting decision in the item; this settles intent, not proof of product behavior. |
 | Answer incorporated | Update affected owning definitions, such as the contract, display design, work steps and planned missing-total check; retain applicable definitions unchanged. Assess implementation authority and other prerequisites. Once those propagation checks pass, close the question and delete it. Product implementation and testing remain separate work with their actual states. |
 | Later contradictory input | If a revised contract invalidates the answer, restore the same question from version history as OPEN. Record the new contract version, reason and next action, and reassess the affected plan and dependent work. |
 
@@ -192,12 +190,10 @@ test result.
 Consider a clear direct request: “Fix the empty search result count to show
 zero and check non-empty results.” Such a request supplies the scope decision
 under the [clear-request criteria](APPROVALS.md#clear-implementation-requests).
-State its derived scope, and note in the commit message that the correction
-follows a user request. Then proceed when prerequisites are ready; no second
-proceed response is needed. A request may instead leave an uncovered material
+State its derived scope. Then proceed when prerequisites are ready;
+no second proceed response is needed. A request may instead leave an uncovered material
 choice. In that case, present the concrete proposal, record the authorized
-scope as a decision, and note in the commit message that the owner authorized
-it, without quoting the reply.
+scope as a decision. No routine request-origin note is needed.
 Do not copy these examples as real decisions.
 
 ## 3. Implement across several plans
