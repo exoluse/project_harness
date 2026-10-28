@@ -51,9 +51,9 @@ ends at the first `## ` heading, to choose the sections for the work.
 
 | Trigger | Read and apply |
 |---|---|
-| Author or check project documents | Determine [ID scope](docs/DATA_MODEL.md#id-scope), then apply the relevant Information model sections for boundaries, IDs, paths, required names, allocation and validation. |
+| Author or check project documents | Apply the relevant Information model sections for [identity scope](docs/DATA_MODEL.md#identity-scope), item boundaries, canonical paths, references, required names and validation. |
 | Apply the harness to a project, sync its harness copy or maintain its entry instructions | [Harness copy](docs/DATA_MODEL.md#harness-copy), [project instruction files](docs/DATA_MODEL.md#project-instruction-files) and, for a subtree, [path-scoped instructions](docs/DATA_MODEL.md#path-scoped-instruction-files). |
-| Split an overview, delegate ID ranges or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [allocation reuse](docs/DATA_MODEL.md#allocation-and-validation-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
+| Split an overview, coordinate shared document paths or use an external tracker | [Area overviews](docs/DATA_MODEL.md#area-overviews), [path checks](docs/DATA_MODEL.md#path-checks-and-verification-reuse) or [external work trackers](docs/DATA_MODEL.md#external-work-trackers). |
 | Prepare stage outputs or recover an existing project | Relevant [Development method](docs/DEVELOPMENT_METHOD.md) stage sections and [existing-project intake](docs/DEVELOPMENT_METHOD.md#existing-project-intake-and-reverse-engineering). |
 | Resolve conflicting inputs or rank competing sources | [Input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence) and any precedence the owning project records. |
 | Treat material as communication-only, superseded or to be replaced | [Non-authoritative inputs](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs) and the designation recorded in the owning overview or plan. |
@@ -64,7 +64,7 @@ ends at the first `## ` heading, to choose the sections for the work.
 | Record a disposition short of PASS, or withdraw an overturned pass | [Verification and completion](docs/WORKFLOW.md#verification-and-completion) and the owning verification records. |
 | Report project progress or requirement trace coverage | [Status and trace reporting](docs/WORKFLOW.md#status-and-trace-reporting) and the owning project records. |
 | Produce a report the project owes on a schedule | [Recurring reports](docs/WORKFLOW.md#recurring-reports) and the source that owns each figure. |
-| Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and allocations. |
+| Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and path ownership. |
 | Classify data loss, credential access or high-risk/external effects | Relevant [Security](docs/SECURITY.md) boundaries and applicable external controls before acting. |
 | Configure agent tool permissions or sandboxing for a project | [Tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls). |
 | Plan checks, reuse evidence or determine recheck scope | [Verification reuse and scheduling](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification), [verification methods](docs/WORKFLOW.md#verification-and-completion) and applicable project checks. |
@@ -78,6 +78,8 @@ ends at the first `## ` heading, to choose the sections for the work.
 Project documents follow the [Information model](docs/DATA_MODEL.md).
 
 - Keep one project overview linking the independently managed items.
+- Identify new documents by their canonical paths, without sequential IDs.
+  Keep those paths and referenced anchors stable; repair links after authorized moves.
 - Give each item one owning Markdown file. Keep each fact in one owning
   document, and link to it elsewhere instead of copying it.
 - Keep an anchor that other documents link to, or repair those links in the

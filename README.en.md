@@ -19,7 +19,7 @@ The framework helps you keep track of four things throughout a project:
 - **Where the work stands:** completed work, observed results, blockers and next actions.
 - **What a change affects:** related requirements and work that need updates.
 
-Planning depth matched to risk, separate documents for independent items, stable IDs, and the agent's own judgment and verification are core principles. Existing content is reused after checking that it still applies.
+Planning depth matched to risk, separate documents for independent items, stable document paths, and the agent's own judgment and verification are core principles. Existing content is reused after checking that it still applies.
 
 ## Getting started
 
@@ -29,7 +29,7 @@ Planning depth matched to risk, separate documents for independent items, stable
 
 Entry guidance is available for [Codex](CODEX_START_PROMPT.md) and [Claude](CLAUDE.md). When adopting the harness in another project, inspect its existing policies and documents before integrating the relevant guidance.
 
-A first request can look like this. You do not need to specify every document ID or file path yourself.
+A first request can look like this. You do not need to specify every document name or path yourself.
 
 > Use this harness to plan an administrator user-management feature.
 > Administrators should be able to search users and export search results as CSV.
@@ -41,37 +41,37 @@ If the goal is still unclear, start with discovery and requirements. The agent p
 ### Applying it to another project
 
 1. **Bring in the harness copy and write the project's entry files.** Copy this repository's tracked files unchanged into one folder of the project, `harness/` by default, so the policy is versioned with the project. Do not edit that copy; a harness update replaces the folder with a newer commit's files. The project owns its root entry files and keeps only those of the tools it uses: a root `CLAUDE.md` imports the Claude adapter from the copy (for example `@harness/CLAUDE.md`), and a root `AGENTS.md` tells Codex to read the policy and the [Codex adapter](CODEX_START_PROMPT.md) there. One entry file holds what work cannot start without (the stack, the real build and test commands, the top-level code layout, writer rules no other record owns), plus the copy's source commit and a short pointer to the overview and the current resumption point. Where both files exist, the other routes to it. If that file is `AGENTS.md`, the root `CLAUDE.md` also imports it with `@AGENTS.md`, because Claude Code reads a root `AGENTS.md` by itself only when no `CLAUDE.md` exists. Content that an item owns stays with that item; see the [harness copy](docs/DATA_MODEL.md#harness-copy) and [project instruction files](docs/DATA_MODEL.md#project-instruction-files). If the project already has a CLAUDE.md or AGENTS.md, compare the rules, resolve conflicts and keep the project's rules in its own entry files. A project that already copied the harness into its root keeps that layout until you ask to move it. The harness policy never weakens the project's contracts or CI rules. In a large repository, rules for one area can live in a [path-scoped instruction file](docs/DATA_MODEL.md#path-scoped-instruction-files) inside that subtree, read together with the root policy by work that touches those paths. A path-scoped file adds detail; it cannot weaken the root policy or a contract.
-2. **Choose a document root and folders by kind.** For example, place requirements in `requirements/`, plans in `plans/` and tasks in `tasks/` beneath `project-docs/`. Where no convention exists, use the [default folder table](docs/DATA_MODEL.md#folders-by-document-kind) and record the chosen layout in the overview.
-3. **Establish the overview when document work starts.** Reuse an existing overview; otherwise follow [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change), which allows an eligible work document to also serve as the overview. A report-only request creates no files. Record the objective and scope, the document root and type-to-folder mapping, the ID format table (only the kinds needed, from the [starter formats](docs/DATA_MODEL.md#folders-by-document-kind)), the ID allocation section, and the integration and quality conventions already decided. Build, test and check commands go in the root entry file from step 1. An undecided convention is recorded as undecided and settled during design and planning. Material that is not a development basis — customer communication documents, a superseded source, a legacy implementation being replaced — is designated in the overview as a [non-authoritative input](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs): it is not used as requirement, scope or evidence, and its divergence from the product is not raised as a defect or blocker.
+2. **Choose a document root and path conventions.** For example, use feature or area folders such as `user/`, `auth/` and `shared/` beneath `project-docs/`, with filenames describing each subject and role. Preserve established layouts and record the chosen conventions in the overview. See the [path examples](docs/DATA_MODEL.md#folders-by-area-and-purpose).
+3. **Establish the overview when document work starts.** Reuse an existing overview; otherwise follow [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change), which allows an eligible work document to also serve as the overview. A report-only request creates no files. Record the objective and scope, the document root and path conventions, shared-document ownership boundaries, and the integration and quality conventions already decided. Build, test and check commands go in the root entry file from step 1. An undecided convention is recorded as undecided and settled during design and planning. Material that is not a development basis — customer communication documents, a superseded source, a legacy implementation being replaced — is designated in the overview as a [non-authoritative input](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs): it is not used as requirement, scope or evidence, and its divergence from the product is not raised as a defect or blocker.
 4. **An existing project starts from its actual state.** Record the intake commit, analysis scope, what is already implemented and the known verification and deployment status in the overview. Requirements recovered from code are marked as observed or inferred; only what the customer confirmed counts as a confirmed requirement. Existing documents and IDs stay as they are and are referenced.
 5. **Add tool settings when the project has secrets, deployments or shared branches.** Policy text changes what the agent attempts; it does not stop execution. Configure blocked secret-file reads and prompts for risky commands from the [tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls), and keep the actual boundary, such as refusing force pushes, in controls the agent cannot change, like branch protection.
 6. **Write a model roster and pin the main model.** Record in the root entry file which models each tier may use, such as judgment (definition, design, planning, completion), implementation and recording, with the basis and the date checked. Before listing a model, run it briefly in the actual tool and account; a model shown in the tool's list can still be refused for the account. Pin the main session to a judgment-tier model through tool configuration, rather than expecting a model to notice its own gaps. Each tool's adapter gives the setting; the rules are in the [project model roster](docs/CONTEXT_EFFICIENCY.md#project-model-roster).
 
 Before completing adoption, check that each tool's root entry file reaches the policy and its adapter in the harness copy, and the project overview and current resumption point. The project's README introduces the product and links its overview, with a separate link to harness usage guidance. The actual stack, commands and paths must be discoverable. Also check that each recorded check runs where the entry says it runs. For a check agents run, try it in the agent's sandbox; if it cannot run there, record where it runs and who runs it. See the [project entry rules](docs/DATA_MODEL.md#project-instruction-files).
 
-Place each item's Markdown file in its document-kind folder. This shows part of the default layout; create only the folders and files needed. Preserve existing projects' folders and IDs.
+Place each item's Markdown file under its feature or area path. This illustrates a layout; create only needed files. Do not automatically change existing projects' folders, filenames or IDs.
 
 ```text
 project-docs/
-  overview/DOC-001-project-overview.md   # overview: objective, folder mapping, ID formats and allocation, conventions, item index
-  requirements/
-    REQ-001-user-search.md               # one file per requirement
-    REQ-002-csv-export.md
-  designs/DES-001-search-index.md        # shared design
-  contracts/API-001-user-search.md       # API contract
-  screens/SCR-PC-001-search-page.md      # screen specification
-  plans/PLAN-001-user-admin.md           # implementation order and task links
-  tasks/
-    TASK-API-001-search-endpoint.md      # tasks per area
-    TASK-API-002-csv-download.md
-  verifications/VER-001-user-search.md   # planned checks and standing failures
-  verifications/contracts/CT-API-001-01-search-response.md  # separately managed contract check
-  open-items/OI-001-export-limit.md      # open items
-  decisions/DEC-001-csv-encoding.md      # decision
-  decisions/architecture/ADR-001-search-storage.md  # architecture decision
+  overview.md                       # objective, path conventions, item index
+  user/
+    user-search.md                  # search requirement
+    csv-export.md                   # export requirement
+    user-search-design.md           # design
+    user-search-api.md              # API contract
+    user-search-screen.md           # screen specification
+    user-admin-plan.md              # implementation order and task links
+    user-search-api-task.md         # independent task
+    csv-download-task.md
+    user-search-verification.md     # planned checks and standing failures
+    search-response-check.md        # separately managed contract check
+    export-limit-question.md        # open item
+    csv-encoding-decision.md        # decision
+  shared/
+    search-storage-design.md        # shared architecture
 ```
 
-Use the [default folder table](docs/DATA_MODEL.md#folders-by-document-kind) for research, guides, meeting notes, reviews, reports, changes and handoffs. Add a suitable folder mapping for each new kind. Connect feature relationships through the overview and document links. Name each new file with its ID followed by two lowercase English words for its subject, such as `TASK-UI-025-popup-migration.md`. Leave versions, states and dates out of the name, and put the full title in the body. Existing filenames stay as they are. When a kind folder grows hard to scan, subdivide it by work area.
+Do not number new documents or items. Identify documents by their full project-root-relative paths, and referenced sections by paths with stable fragments. New ordinary filenames use lowercase English subject words joined by hyphens, with no fixed word count. Leave mutable versions, states and dates out of names, and put the full title in the body. Research, guides, reviews and reports follow the same [path rules](docs/DATA_MODEL.md#document-paths). Resolve name conflicts by making the subject or role more specific. Connect features through document links.
 
 ## Development flow
 
@@ -134,11 +134,11 @@ Independently managed requirements and shared designs or contracts have their ow
 
 For example, **user search** and **CSV export** are separate requirements. “Display zero when no results match” is a condition within the search requirement. Fixing a search defect continues to reference that requirement.
 
-IDs such as `REQ-001` and `PLAN-001` let you trace an item even when its title or owner changes. Relationships come from document links, not matching or similar numbers. The agent applies numbering and filename rules from the [document standard](docs/DATA_MODEL.md).
+Documents use project-root-relative paths such as `project-docs/user/user-search.md` as identity, without separate numbering. Preserve paths when titles change; repair incoming links during authorized moves or renames. Relationships come from actual links, not similar names. Identify reviewed or tested versions by their commit/version and path. See [item identity](docs/DATA_MODEL.md#item-identity).
 
 ## Example requests
 
-The only required input is which feature and what to do with it. You do not need IDs, file paths, folder names or new numbers. The agent finds the matching documents in the overview and plans and reports which items it resolved to, with their IDs. When several items could match, it presents the candidates before editing; when nothing matches, it says so instead of creating a new item.
+The only required input is which feature and what to do with it. You do not need file paths or folder names. The agent finds the matching documents in the overview and plans and reports which items it resolved to, with their owning paths. When several items could match, it presents the candidates before editing; when nothing matches, it says so instead of creating a new item.
 
 Everything else has a default and is added only when you want something different.
 
@@ -164,12 +164,12 @@ Name the area during planning; later requests can use the item records. A featur
 
 > This project has 〈3〉 people, each using a separate worktree on their own branch and merging through pull requests.
 > The areas are 〈authentication (src/auth), backend API (src/api), screens (web)〉.
-> Task numbers use 〈the GitHub issue number〉, and task assignment and status live in 〈GitHub Issues〉.
-> Record the areas, ID formats, where task status lives and how changes land in the overview.
+> Task assignment and status live in 〈GitHub Issues〉, and documents link the relevant issues.
+> Record the areas, document path conventions, where task status lives and how changes land in the overview.
 
-The agent records the area list, ID format table, tracker designation and change flow in the overview. Later requests use the recorded area, and the designated tracker allocates task numbers. Requirements, open items and other kinds the tracker does not number still need an allocation arrangement for concurrent writers, such as delegated ranges or provisional branch IDs; the agent records that too. With separate worktrees and branches, issue assignees and reviewed pull-request merges as in this example, no separate owner table is needed. Shared documents can change within authorized scope through the same merge process.
+The agent records the area list, path conventions, tracker designation and change flow in the overview. Reference tracker keys as issued; do not add sequence numbers to Markdown documents. With separate worktrees and branches, issue assignees and reviewed pull-request merges as in this example, no separate owner table is needed. Shared documents can change within authorized scope through the same merge process.
 
-With allocation on separate branches, for kinds the tracker does not number or for a team without a tracker, new IDs are provisional until first integration. Fetch cannot prevent simultaneous allocations, so the later-integrated item's provisional ID and references are repaired if they collide, retaining a mapping to earlier records. Established IDs stay unchanged. See the conditions for [branch allocation](docs/DATA_MODEL.md#branch-allocation-and-collision-repair).
+Before integration, check for different items created at one path and duplicate definitions created at different paths. Reconcile ownership and content, choose distinct subject or role names, and repair references under [path collisions and integration](docs/DATA_MODEL.md#branch-path-collisions-and-integration).
 
 **Join and check the current state**
 
@@ -188,7 +188,7 @@ In a small project with a single area, the first line can simply be "tell me the
 
 > Create a new task in the 〈authentication area〉.
 > Content: 〈notify an administrator when an unlock is requested〉. It belongs to the 〈account lockout〉 requirement.
-> Allocate the ID under the area's allocation rule and link it in that plan's task list.
+> Create a descriptive file under the area's path conventions and link it in that plan's task list.
 > Define the task only; do not implement it.
 
 If the behavior is not in any requirement, the agent reports that a requirement change comes first.
@@ -255,7 +255,7 @@ A scheduled report is a deliverable, not a status summary produced on request. I
 **Prepare for integration**
 
 > Prepare my changes for integration.
-> Summarize the diff of changed documents and code, the verification actually run, and checks that failed or did not run, and confirm new IDs and links follow the rules.
+> Summarize the diff of changed documents and code, the verification actually run, and checks that failed or did not run, and confirm document paths, anchors and links follow the rules.
 > Fetch and tell me about conflicts with 〈main〉; push only after I confirm.
 
 **Hand off to another session or contributor**
@@ -332,11 +332,11 @@ A subject examined without passing, one that cannot be checked because a require
 
 After taking the "lock the account after five failed sign-ins" task through verification, the report looks roughly like this.
 
-> **Scope addressed**: TASK-AUTH-003 under REQ-005 (account lockout). Lock counter, lock response and lock notice text. Other tasks in PLAN-002 untouched.
+> **Scope addressed**: `project-docs/auth/account-lock-task.md` under `project-docs/auth/account-lock.md`. Lock counter, lock response and lock notice text. Other tasks in `project-docs/auth/account-lock-plan.md` untouched.
 >
-> **Actually verified**: commit 9f3e21a, local Node 20 environment. `npm test`: 47 passed. Before-lock, at-lock and after-unlock scenarios confirmed by integration tests: INTEGRATION_VERIFIED. No browser check performed. Task state: IMPLEMENTED, because contract test CT-API-001-02 cannot run yet.
+> **Actually verified**: commit 9f3e21a, local Node 20 environment. `npm test`: 47 passed. Before-lock, at-lock and after-unlock scenarios confirmed by integration tests: INTEGRATION_VERIFIED. No browser check performed. Task state: IMPLEMENTED, because contract test `project-docs/auth/lock-response-check.md` cannot run yet.
 >
-> **Remaining**: API-001 still lacks the lock-status response field, recorded as OI-003, follow-up by minsu, needed before the next integration. Unlock notification is out of scope. Next action: run contract test CT-API-001-02 once API-001 is updated.
+> **Remaining**: `project-docs/auth/account-lock-api.md` still lacks the lock-status response field, recorded as `project-docs/auth/lock-response-question.md`, follow-up by minsu, needed before the next integration. Unlock notification is out of scope. Next action: run contract test `project-docs/auth/lock-response-check.md` once `project-docs/auth/account-lock-api.md` is updated.
 
 Three things to check in such a report: whether what was checked is stated as a command and environment, whether any unrun check is hidden, and whether each blocker has an owner and a next action.
 
@@ -350,7 +350,7 @@ This README explains the harness for people using it. Agents apply the relevant 
 |---|---|
 | Overall operating principles | [Shared policy](AGENTS.md) |
 | Planning depth and existing-project analysis | [Development method](docs/DEVELOPMENT_METHOD.md) |
-| Document organization and IDs | [Information model](docs/DATA_MODEL.md) |
+| Document organization and paths | [Information model](docs/DATA_MODEL.md) |
 | Decisions, permissions and protection | [Approvals](docs/APPROVALS.md) · [Security](docs/SECURITY.md) |
 | Open items, progress and closure | [Workflow](docs/WORKFLOW.md) |
 | Concurrent work and handoff | [Collaboration](docs/COLLABORATION.md) |

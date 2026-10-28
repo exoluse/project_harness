@@ -453,7 +453,7 @@ withdrawal above.
 A status request such as "how far is this project" or "how much of the
 requirements are traced" is an analysis request. It authorizes reading the
 project records and producing the report. It does not authorize document
-edits, and it does not require the user to name IDs, paths or stages. Derive
+edits, and it does not require the user to name document paths, tracker keys or stages. Derive
 every statement from the owning records at a stated version; never estimate
 progress from titles, labels or file counts alone.
 
@@ -475,7 +475,7 @@ progress from titles, labels or file counts alone.
    owning records prevail over overview or plan summaries. Report the owning
    fact and list the disagreement as a discrepancy.
 
-Mechanical scans (link resolution, ID and status collection) may be
+Mechanical scans (link resolution, path and status collection) may be
 delegated under [model selection](CONTEXT_EFFICIENCY.md#model-selection-and-delegation).
 The accountable agent interprets the result and makes the stage and
 coverage judgments.
@@ -488,12 +488,12 @@ coverage judgments.
 | Stage summary | Derive the current stage and active work from owning records reached through the overview. Identify stale copied summaries as discrepancies. |
 | Requirement trace | One row per in-scope requirement. The row shows the covering design/contract and plan, plus the remaining tasks with their [states](#task-states). It also shows each [verification kind](#verification-and-completion) reached and its subject version, from the commit messages. It shows acceptance, failures that still stand and blocking open items. Unrun, failed, partial or stale verification is reported as such, not as a weaker pass. |
 | Coverage | Counts derived from the trace with stated denominators. Count separately: requirements in scope; with an owning design; with a plan. Also count: with its planned work finished, meaning no remaining task and the finished work shown in version history; with evidence of each verification kind; accepted. Requirements whose records could not be read count as unresolved, never as covered. Subjects examined without a pass, blocked on a missing input, needing rework or not applicable are reported under their [own disposition](#verification-and-completion). They are never added to a pass count. A withdrawn pass is reported as withdrawn, with the condition for restoring it. |
-| Gaps and discrepancies | Requirements without covering design or work. Work, contracts or verification missing their requirement/source trace under the item-boundary rules. Unresolved links or IDs. Summaries that contradict owning records. Evidence whose subject version predates later changes to that subject. Open items past their needed-by point. |
+| Gaps and discrepancies | Requirements without covering design or work. Work, contracts or verification missing their requirement/source trace under the item-boundary rules. Unresolved paths, section links, retained IDs or tracker references. Summaries that contradict owning records. Evidence whose subject version predates later changes to that subject. Open items past their needed-by point. |
 | Blockers and next action | Real blockers under the [open-item lifecycle](#open-item-lifecycle), affected scope, and the next action for each. |
 
 For a [compact work document](DATA_MODEL.md#minimum-documentation-for-a-small-change),
 trace its owning sections and linked sources. Missing separate role files are
-not a gap under those rules. If no independent REQ was established, report the
+not a gap under those rules. If no independent requirement was established, report the
 bounded outcome and its evidence. In that case, do not count it as full
 feature/requirement coverage or invent a requirement to fill the report.
 

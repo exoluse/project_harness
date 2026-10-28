@@ -22,18 +22,17 @@ and product documents, then writes:
 These are information types, not a limit of one file per type. Take a project
 with sign-in and search features. An overview groups each feature's
 requirements, designs, plans, tasks and verification links. Where the project
-has no established layout, these documents are stored in the
-[default folders](DATA_MODEL.md#folders-by-document-kind) under `project-docs/`.
+has no established layout, group them by feature or area under `project-docs/`,
+using the [path examples](DATA_MODEL.md#folders-by-area-and-purpose).
 
-Illustrative item trace: requirement `REQ-001` connects to design `DES-001`,
-API contract `API-001`, screen specification `SCR-PC-001` and implementation
-plan `PLAN-001`. Work items might be `TASK-API-001` and `TASK-PC-001`. The item
-files might be stored as `requirements/REQ-001-sign-in.md`,
-`contracts/API-001-sign-in.md`, `tasks/TASK-API-001-session-token.md` and so
-on. A later search requirement gets the next available `REQ` serial, not
-another `REQ-001` in a different file. Retain the actual project's established
-IDs and meanings during intake. These syntax examples do not allocate IDs or
-establish evidence.
+An illustrative sign-in trace starts at `project-docs/auth/sign-in.md`.
+It links `auth/sign-in-design.md`, `auth/sign-in-api.md`,
+`auth/sign-in-screen.md` and `auth/sign-in-plan.md` beneath the same document root.
+The plan links independently managed tasks such as `auth/session-token-task.md`
+and `auth/sign-in-ui-task.md`. A search requirement gets a distinct semantic path,
+such as `project-docs/user/user-search.md`, without a sequential ID.
+Retain the actual project's established paths, IDs and meanings during intake.
+These examples do not create project items or establish evidence.
 
 At this planning-only stopping point, record intended checks in the plans.
 Actual results are reported, and go to the commit message, when those checks
@@ -99,11 +98,11 @@ expected behavior, and no shared definition or additional independently managed
 output needs introducing. No project or delivery rule requires separate files.
 Prepare one work document that also serves as the overview under
 [compact documentation](DATA_MODEL.md#minimum-documentation-for-a-small-change).
-Its ID and path below are illustrative, not an allocation:
+Its path below is illustrative:
 
-| Owning section in `tasks/TASK-001-search-count.md` | Bounded content |
+| Owning section in `project-docs/user/search-count-task.md` | Bounded content |
 |---|---|
-| Project context | Bounded objective, intake revision and analysis limits, document root, folder/ID conventions actually used, initial allocation basis/counter, and observed check commands/environment while the project has no root instruction file to own them. Other features remain outside this analysis. |
+| Project context | Bounded objective, intake revision and analysis limits, document root, path conventions and ownership context actually used, and observed check commands/environment while the project has no root instruction file to own them. Other features remain outside this analysis. |
 | Work and evidence | Current basis and writer, source/expected behavior, approach, steps and checks, unresolved findings and failures that still stand, as described below. Keep each definition once; no separate overview or eligibility report is needed. |
 
 Project entry links lead to this work document. It is the next session's entry point:
@@ -129,8 +128,8 @@ Project entry links lead to this work document. It is the next session's entry p
 
 When the correction is done, delete the work sections; the project context
 stays as the overview. The commit message notes that the correction followed a
-user request. This needs no additional DOC, REQ, DES, PLAN or VER file just to
-fill those roles. Suppose scope expands to a new export requirement or to work
+user request. This needs no additional overview, requirement, design, plan or verification file
+merely to fill those roles. Suppose scope expands to a new export requirement or to work
 assigned to several writers. In that case, establish a separate overview under
 the [expansion rule](DATA_MODEL.md#minimum-documentation-for-a-small-change)
 before that work starts. This example demonstrates documentation scope, not
@@ -159,7 +158,7 @@ First consider a question answered by the inspected, authoritative contract
 during the same session: "Is zero a valid total?" The answer goes into the
 owning definition: `total` is a non-negative integer, including zero, with the
 corresponding planned zero-result check. The commit message names the contract
-version. No note or separate OI is needed. The check
+version. No note or separate open item is needed. The check
 is still planned; a contract definition does not establish product success.
 
 Consider a variant of the fictional count correction. Here the inspected

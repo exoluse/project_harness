@@ -62,49 +62,39 @@ completion claim that relies on links. Use this checker or an equivalent tool
 or manual check. Put the method, scope, result and limits in the commit
 message, as policy maintenance does.
 
-For files named `<ID>.md` or `<ID>-<slug>.md` it also reports:
+The generic link, anchor and date checks also apply to documents with semantic
+paths. The checker does not enforce canonical-path identity, ordinary filename
+syntax, unique logical ownership or overview coverage for those documents.
+Review these under [document validation](DATA_MODEL.md#document-validation).
 
-- two files owning one ID (an error);
-- an ID-only heading that repeats an ID defined elsewhere;
-- a filename without the required description after its ID;
-- a filename description that is not two lowercase hyphenated words;
-- a filename ID absent from the body;
-- when a directory is scanned, an ID-named file that no scanned document links
-  to.
+Its additional filename-ID diagnostics apply only to legacy `<ID>.md` or
+`<ID>-<slug>.md` names. They detect duplicate filename IDs, missing body IDs,
+missing descriptions, descriptions outside the former two-word syntax,
+and unlinked ID-named files.
+Repeated legacy ID-only headings can be reported in any scanned Markdown file.
+These are legacy heuristics, not naming requirements for new path-based documents.
+Established numbered files remain valid. `--allow-bare-ids` suppresses the
+missing-description warning; the checker cannot distinguish old files from new ones.
+Assess other legacy naming warnings against retained conventions before reporting a violation.
 
-Established `<ID>.md` files stay valid under
-[document paths](DATA_MODEL.md#document-paths). Where many remain,
-`--allow-bare-ids` drops the missing-description warning so that other
-warnings stay visible. The checker cannot tell new files from established ones.
+The legacy unlinked-file heuristic treats the unlinked document linking to the
+most ID-named items as the overview. It exempts a lone scanned file.
+It does not detect unlinked semantic-path documents or duplicate logical owners.
+Scope scans where earlier records retain copies with the same legacy ID.
 
-It reports a link path whose letter case differs from the name on disk. GitHub
-matches paths case-sensitively. Such a link breaks there even when a
-case-insensitive filesystem, such as the Windows default, finds the file. On
-such a filesystem the name on disk can also differ from the name Git tracks.
-Compare new link targets with the tracked filenames, such as `git ls-files`,
-before publishing them.
-
-A fragment matches an anchor as written or lowercased. Heading anchors are
-lowercase, so they match a fragment of any case. Hosts differ in how they treat
-the case of HTML `id` and `name` values. Lowercase values linked in lowercase
-avoid that difference.
-
-It takes the unlinked document linking to the most items as the project
-overview. A lone scanned file, such as a compact work document serving as the
-overview, is not reported as unlinked. It reads the ID from the filename alone.
-It does not know the project's format table, folder mapping, allocation record,
-delegated ranges or retired IDs. It skips files with other names, including
-harness guidance and
-[required-name files](DATA_MODEL.md#required-name-exceptions). Scope the
-scanned path where a project's earlier records keep a copy sharing an ID.
+The checker reports link paths whose letter case differs from disk names.
+GitHub matches paths case-sensitively even when a local filesystem does not.
+Compare new link targets with tracked names, such as `git ls-files`.
+A fragment matches an anchor as written or lowercased.
+Hosts differ on HTML anchor case; lowercase anchors and links avoid that difference.
 
 After changing the checker, run its regression tests with
 `node --test tools/check-docs.test.mjs`. They write their fixtures to a
 temporary directory, not to the repository.
 
-A pass covers only these checks: content, ID format and allocation, trace
-coverage and meaning still need their own review. If the checker is unavailable
-or not used, perform the applicable checks by another method and state any gaps.
+A pass covers only the checks described above. Content, path conventions,
+logical ownership, trace coverage and meaning still need their own review.
+If the checker is unavailable or not used, perform the applicable checks by another method and state any gaps.
 Required project, contract and CI checks retain their specified tools and scope.
 
 ### Dated tool facts
@@ -136,9 +126,9 @@ Confirm that its tested output and check evidence can be identified under
 [verification and completion](WORKFLOW.md#verification-and-completion).
 Inspect changes since that baseline, then check changed deliverables and their
 affected references/dependencies. For Markdown, include modified text/links,
-new IDs, mapping changes and references to moved, renamed or removed targets.
-Validate new definitions against the verified project-wide ID allocation basis
-under [allocation reuse](DATA_MODEL.md#allocation-and-validation-reuse).
+new owning paths, folder-convention changes and references to moved, renamed or removed targets.
+Validate paths, anchors and logical ownership against the checked baseline and
+subsequent changes under [path checks](DATA_MODEL.md#path-checks-and-verification-reuse).
 
 Completion, handover or push requires reviewing evidence coverage and the actual
 diff. It does not alone invalidate a successful check. Do not repeat
@@ -154,8 +144,8 @@ Broaden verification when any of these holds:
 - project/CI controls require it.
 
 Unchanged files are reusable only to the extent the baseline still covers them.
-A scan of changed files alone does not prove project-wide uniqueness without a
-reliable allocation baseline.
+A scan of changed files alone cannot establish unique project-wide ownership
+without reliable coverage of existing paths and definitions.
 
 ### Check scope and scheduling
 

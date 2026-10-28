@@ -7,20 +7,20 @@ definitions.
 
 This file is long; do not load it whole. Pick the sections for the work from
 the table below and read only those. Locate each by its heading text: for
-example, search for `## Item IDs` and read to the next `## ` heading.
+example, search for `## Item identity` and read to the next `## ` heading.
 Follow a link into another section only when the rule being applied depends on
 it. Every section that applies to the work remains mandatory; a section that
 does not apply is not required reading.
 
 | Work | Sections to read |
 |---|---|
-| Create, name or rename a project document | [ID scope](#id-scope), [Item IDs](#item-ids), [Document paths](#document-paths), the single-writer paragraphs of [Allocation reuse](#allocation-and-validation-reuse), [Document validation](#document-validation) |
+| Create, name or rename a project document | [Identity scope](#identity-scope), [Item identity](#item-identity), [Document paths](#document-paths), [Path checks](#path-checks-and-verification-reuse), [Document validation](#document-validation) |
 | Decide whether something is a separate item | [Item boundaries](#independent-items-and-supporting-detail) |
 | Document bounded low-risk work | [Minimum documentation for a small change](#minimum-documentation-for-a-small-change) |
 | Write or update an overview, plan or task | [Document organization](#document-organization), [Plans and tasks](#plans-and-tasks), [Summary ownership and updates](#summary-ownership-and-updates) |
 | Record or follow up an unresolved question | [Open items](#open-items) |
 | Resume work that spans sessions, or record where it stands | [Resumption state](#resumption-state) |
-| Several teams, delegated ID ranges or an external tracker | [Area overviews](#area-overviews), the range record in [Allocation reuse](#allocation-and-validation-reuse), [External work trackers](#external-work-trackers) |
+| Several teams, shared paths or an external tracker | [Area overviews](#area-overviews), [Path checks](#path-checks-and-verification-reuse), [External work trackers](#external-work-trackers) |
 | Check documents before a completion claim | [Document validation](#document-validation), then the sections its rows name for the changed content |
 | Keep a consumer-required name, write project or subtree instruction files, or adopt or sync the harness copy | [Required-name exceptions](#required-name-exceptions), [Project instruction files](#project-instruction-files), [Harness copy](#harness-copy), [Path-scoped instruction files](#path-scoped-instruction-files) |
 
@@ -29,31 +29,25 @@ and original evidence such as logs in their own formats. Do not convert or
 delete them automatically. Summarize verification in the commit message, or in
 Markdown for a failure that still stands, and link those original artifacts.
 
-## ID scope
+<a id="id-scope"></a>
 
-The harness's own policy, framework overview, exception guidance and agent
-instructions do not receive document or rule IDs. This applies to new guidance
-as well as existing files, including `AGENTS.md`, the harness `README.md` and
-its policy documentation, in this repository and in a project's
-[harness copy](#harness-copy). Use meaningful or consumer-required Markdown
-names; no ID filename, classification-folder mapping or exception-ID registry is
-needed for these guidance files. Maintain them through Git under
-[policy maintenance](../AGENTS.md#harness-policy-maintenance).
+## Identity scope
 
-A project's own root and path-scoped
-[instruction files](#project-instruction-files) receive no ID either. They are
-project records, not harness guidance. The project maintains them within its
-authorized work, not under harness policy maintenance.
+Project Markdown deliverables use their canonical paths as identity under
+[item identity](#item-identity). This includes overviews, requirements, designs,
+plans, tasks, decisions, research and verification.
+Use semantic paths for new work. Do not create sequential document or item IDs.
 
-Actual project deliverables remain subject to the ID rules: project overviews,
-requirements, designs, plans, tasks, decisions, research and verification, among
-others. Classify by purpose, not filename or folder: a framework overview
-explains how to use the harness; a project overview tracks a project's outcomes
-and work. A project document does not become exempt by being called a guide
-or exception. Examples in harness guidance remain illustrative, not allocations.
-Keep existing IDs; this distinction does not authorize stripping them from
-records. Explicit contract or external identity requirements remain
-binding.
+Harness policy, framework overviews, exception guidance and agent instructions
+keep meaningful or consumer-required names. They need no project folder mapping
+or identity registry, here or in a project's [harness copy](#harness-copy).
+Maintain harness guidance under [policy maintenance](../AGENTS.md#harness-policy-maintenance).
+A project's own [instruction files](#project-instruction-files) also keep their
+required paths without an exception entry. The project owns those files.
+
+Preserve existing filenames, IDs and externally required identities.
+This policy change does not authorize migrating existing project records.
+Examples in harness guidance illustrate paths; they do not create project items.
 
 ## Suggested information
 
@@ -86,14 +80,14 @@ Other records take their content from the rules that own them:
 ## Document organization
 
 Use a project overview for shared context and navigation, with independently
-scoped documents grouped in [folders by document kind](#folders-by-document-kind).
+scoped documents grouped by [area and purpose](#folders-by-area-and-purpose).
 The agent records the document root and folder mapping, reusing established
 project conventions. Feature/work units remain logical groups
 in the overview and relationships between items regardless of physical layout.
 A project with several such units must not default to a single accumulating
 file for each document type.
-Each requirement owns its REQ file and links the separate owning design, plan,
-task and verification files needed at the requested stage. Shared definitions
+Each requirement owns its requirement file and links the separate design, plan,
+task and verification owners needed at the requested stage. Shared definitions
 or work keep one owning file linked by all covered requirements. Create files
 when their stage/output is needed, not as placeholders for future stages.
 Bounded low-risk work follows the
@@ -101,8 +95,8 @@ Bounded low-risk work follows the
 
 The overview holds the objective, shared project context, links to shared
 requirements and architecture, baseline, resumption links and an index of units.
-It also states the document and item-ID convention, including agent-selected
-extensions and any allocation ownership. It records the
+It also records document paths, folder conventions and shared ownership
+boundaries. It records the
 [project conventions](#suggested-information) once they are decided or
 observed, and states an undecided convention as such. It links the project
 entry for the stack and check commands.
@@ -120,7 +114,7 @@ Record the chosen boundaries and rationale briefly in the overview or work note.
 
 Every unit links back to its overview and applicable shared specifications.
 Connect requirements and acceptance criteria to the covering design, planned
-work and planned checks. Use item IDs with file or anchor links, optionally
+work and planned checks. Use descriptive file or section links, optionally
 in a compact trace table.
 Links may be many-to-many: several plans can implement one requirement, and a
 shared design can support several features. State cross-unit dependencies and
@@ -132,7 +126,7 @@ summary, keeping the decisions and evidence that still apply. New work uses
 these boundaries even when earlier work lives in a large file; reference that
 baseline.
 Do not automatically split, move or rewrite existing records merely to adopt
-the layout. Any authorized reorganization must keep IDs and repair links;
+the layout. An authorized reorganization repairs path and anchor references;
 version history keeps the reviewed versions. A requested stage still ends at
 its own outputs.
 
@@ -192,19 +186,19 @@ as a readable index or shared edit point. For example:
 Size alone is not the criterion. Record the split and its reason in the project
 overview.
 
-The project overview remains the root. An area overview has its own document
-ID, links back to the root and follows the same organization rules for its area.
+The project overview remains the root. An area overview has its own canonical
+path, links back to the root and follows the same organization rules for its area.
 
 | Content | Owning overview |
 |---|---|
-| Objective, shared constraints and specifications (or links), document root and shared folder mapping, area index, cross-area dependencies, allocation delegations | Project (root) overview |
-| Area unit index, resumption links, area-specific folder extensions, consumption of delegated ID ranges | Area overview |
+| Objective, shared constraints and specifications (or links), document root and shared folder mapping, area index, cross-area dependencies, shared path ownership | Project (root) overview |
+| Area unit index, resumption links, area-specific folder conventions, path ownership | Area overview |
 | Detailed definitions, decisions and evidence | Owning item documents, as without areas |
 
 Each area index entry links the area overview and states its scope, accountable
 owner and material dependencies. Area folder extensions
-must not redefine a shared mapping or prefix. A requirement or design used by
-several areas has one owning definition. Keep it at the root or in a designated
+must not redefine a shared path or duplicate an owning definition.
+A requirement or design used by several areas has one owning definition. Keep it at the root or in a designated
 owning area, and link it from the others. Current-state links lead downward to
 their owners; apply [summary ownership](#summary-ownership-and-updates).
 An area may nest further only when it meets the same split criterion.
@@ -212,9 +206,8 @@ An area may nest further only when it meets the same split criterion.
 Root overview edits follow its assigned owner under the
 [collaboration basis](COLLABORATION.md#collaboration-basis); area writers route
 root changes through that owner or an agreed transfer. New areas can start with
-their own overview. Moving existing index entries or allocations out of an
-established overview is a reorganization. It needs a matching request, preserves
-IDs and repairs links.
+their own overview. Moving existing index entries out of an established overview
+is a reorganization. It needs a matching request and repairs affected links.
 
 ## Plans and tasks
 
@@ -225,14 +218,14 @@ A plan organizes an outcome across work items. It defines:
 - dependencies and a feasible task order;
 - overall completion criteria.
 
-A project can use `PLAN` for general, backend or screen implementation plans.
+A project can use general, backend or screen implementation plans.
 Plans link to the owning task files. API contracts and screen specifications
 are inputs to plans, not plans themselves. Preserve established project
 meanings where they differ.
 
 A task is a concrete output that the actual work assigns and completes as a
 separate unit. Implementation steps serving that output may stay in its file.
-Its owning task file is named under the project's ID convention and records:
+Its owning task file follows the project's path convention and records:
 
 - the expected output, and the accountable writer or that it is unassigned;
 - the affected paths and logical resources, and the inputs the work reads;
@@ -363,7 +356,7 @@ still stand in the verification documents. Plans hold order, dependencies and
 navigation links. Apply
 [summary ownership and updates](#summary-ownership-and-updates) instead of
 copying detailed task states into each parent. A task shared by several plans
-retains one ID, one owning file and one writer.
+retains one canonical path, one owning file and one writer.
 
 Assess completion of the planned outcome against its scope and criteria, using
 task outcomes and applicable combined verification. Planning itself ends when
@@ -383,12 +376,12 @@ recheck a child whose inputs changed. Completing every child does not complete
 the parent outcome while integration work or parent criteria remain.
 
 **Directories and ownership.** Directory ownership and task ownership
-complement each other. Record the document root and type-to-folder mapping in
+complement each other. Record the document root and folder conventions in
 the overview, and the actual edit scope in the task. Two tasks may work in one
 directory when their file and resource boundaries are clear. A folder name or
-document ID alone does not assign work. Use the
+document path alone does not assign work. Use the
 [collaboration basis](COLLABORATION.md#collaboration-basis) to make these
-boundaries and ID allocations visible to concurrent writers.
+boundaries and shared paths visible to concurrent writers.
 
 ### Resumption state
 
@@ -417,381 +410,186 @@ A pointer establishes no permission, readiness or pass. The actual decision
 and evidence govern under [Approvals](APPROVALS.md#preparing-and-recording-one-decision)
 and [verification](WORKFLOW.md#verification-and-completion).
 
-## Item IDs
+<a id="item-ids"></a>
 
-**Which documents get an ID.** Apply identity rules to every Markdown
-deliverable within the [ID scope](#id-scope), whatever its subject. Such
-deliverables include specifications, research, guides, meeting notes, reviews,
-reports, handoffs and kinds not listed here.
+## Item identity
 
-- A document representing one primary item uses that item's ID.
-- A collection can use a document ID such as `DOC-001`.
-- An overview itself also has an identity.
+**Canonical identity.** Identify a document by its project-root-relative path,
+including filename and extension. Use forward slashes, for example
+`project-docs/user/user-search.md`. The project overview records the document
+root and folder conventions. Shorten a displayed path relative to that root
+only when its context is unambiguous.
 
-Choose the identity before creating the file and use it in the index;
-[document paths](#document-paths) defines filename and body placement. A
-document ID is not a substitute for the identities of its independently tracked
-contents. Use the [item-boundary rules](#independent-items-and-supporting-detail)
-to identify those, and apply IDs to new traceable items added to existing
-Markdown. Requirements, acceptance criteria, designs, plans, tasks, decisions,
-findings, changes, risks, issues and verification are examples, not an
-exhaustive list.
+Each independently managed item has one owning document under
+[item boundaries](#independent-items-and-supporting-detail).
+A collection or compact work document may own supporting sections.
+Identify a referenced section by its owning path and stable fragment, such as
+`project-docs/user/user-search.md#acceptance`.
+Use heading anchors or explicit HTML anchors; no separate sequence or item-ID
+registry is required.
 
-**The format table.** Use the project's recorded ID format table. There is no
-mandatory token length, serial width, universal AREA segment or fixed number of
-segments. Prefer simple semantic prefixes, and add a classification or parent
-segment only when the project needs it. The
-[folder table](#folders-by-document-kind) lists starter formats such as
-`REQ-NNN`, `SCR-{surface}-NNN` and `TASK-{work}-NNN`; its rows are examples,
-not a closed vocabulary or allocated IDs.
+**Uniqueness and references.** Keep one current owning definition for each item.
+Different paths must not duplicate the same authoritative definition.
+The same basename may occur in different folders; it is not a project-wide identity.
+Do not create paths differing only in letter case.
+Use exact tracked spelling in links, including on case-insensitive filesystems.
 
-In the starter formats, `NNN` is a three-digit serial starting at `001`. A
-final `NN` is a child serial starting at `01`. The child's `NNN` copies its
-parent's serial: `OD` details an `OI`, and `CT` and `BT` check an `API`.
-Starter `surface` values are `PC`, `MOB` and `AD` (desktop, mobile and
-administrator screens). Starter `work` values are `PC`, `MOB`, `API`, `ADMIN`
-and `COMMON` (desktop UI, mobile UI, backend, admin UI and shared work). A
-cross-component task uses `COMMON` and describes its scope in the body.
-Register others, such as `DB` or `AI`, when the work needs them. A
-classification describes work scope; it does not assign a person or authority.
+Link to the owning file or section using a meaningful label or its path.
+State the document's role, title and scope near the start of its body.
+The path need not be copied into every body heading.
+Relationships come from explicit links, not similar names or shared folders.
+Plans, tasks, contracts and checks link the definitions they actually cover.
+Parent/child relationships also use links, not copied serials or path-derived authority.
 
-The project overview owns the table, or links its one owning dictionary where
-separate management is useful. Record each kind's meaning, exact format, allowed
-classification values, serial width and start, allocation scope and any
-parent-ID rule. A small project can use a few rows in the overview. Create or
-extend a dictionary when needed; no separate file or full catalog is required. A
-separately managed project dictionary follows the ordinary document-ID and path
-rules. Harness guidance remains outside the ID scope.
+**Stable identity.** Keep paths and referenced fragments stable through ordinary
+content or title changes. Do not rename files automatically when titles change.
+Never repurpose a deleted or retired path for an unrelated item.
+A reopened item may return at its former path from version history.
 
-Agents reuse established formats, and add missing kinds or classifications
-within the authorized work without asking for each token. Register an addition
-before allocating against it. Preserve existing meanings, and avoid synonyms or
-overlapping formats that make an ID ambiguous. Different kinds can use different
-axes: screen platform and task work area need not share a code list. Technology,
-audience and feature metadata can stay in the body instead of the ID.
+A path identifies an item, not its reviewed version or verification result.
+For version-dependent decisions, evidence or handoffs, include the commit/version
+and owning path or fragment. Across repositories, also name the repository or project.
+A bare path does not identify an immutable candidate.
 
-**Reading an ID.** Interpret an ID using its whole registered format. In the
-starter formats, `API-001` identifies an API contract, and its method, path,
-version and coverage are specified in the body. `PLAN-001` can plan its
-implementation, and `TASK-API-003` can implement it.
+**Moves, splits and merges.** Within an authorized reorganization, repair overview
+entries, incoming links and referenced fragments in the same change.
+Search references before removing a path or anchor.
+Preserve an anchor or coordinate reference repair when a consumer is outside
+this work's editing scope. Unresolved required references block affected completion.
 
-Task numbers do not derive from plan numbers; record the actual plan,
-requirement, design and contract links. Shared tasks may link to several plans.
-A `FEATURE` groups related items through links. It does not duplicate the
-requirements it groups, and it does not require one item of every type.
+For a split or merge, link successor definitions and update affected trace.
+Where current work depends on a predecessor, identify its version and former path.
+Keep reviewed or signed artifacts unchanged.
+Link them to the current owner where needed and assess whether their evidence applies.
+Version history holds earlier content; create no duplicate owner or archive
+merely to preserve a former path.
 
-**Allocating a serial.** Allocate flat and classified serials project-wide per
-complete prefix, such as `REQ` or `TASK-API`. Two feature folders or parent
-plans cannot each restart `TASK-API-001`. Hierarchical formats allocate the
-child serial per child kind and identified parent, as recorded in the format
-table. Under `CT-API-NNN-NN`, for example, `CT-API-012-01` is a contract test of
-`API-012`, and a backend test `BT-API-012-01` has a separate counter.
-
-Complete IDs are unique project-wide, regardless of folder or checkout. Only new
-provisional IDs may collide temporarily, under
-[branch allocation](#branch-allocation-and-collision-repair).
-
-Before allocating a child, verify its parent's owning definition and format
-mapping, and link the parent in the body. Matching numbers imply no other
-relationship. A parent segment records identity, not a mutable dependency: where
-current coverage changes, preserve the ID and update the links.
-An actual replacement or split follows the identity rules below. Parent detail
-that needs no independent management can remain a section without a new ID.
-
-Search existing definitions, retained and retired IDs and reservations before
-choosing the next unused serial, reusing a verified allocation basis. Concurrent
-writers use non-overlapping ranges, unless the recorded arrangement uses the
-tracker or isolated-branch exceptions under
-[allocation reuse](#allocation-and-validation-reuse). Where the available width
-is exhausted, record a compatible extension for new IDs and check consumers and
-collisions before allocating. Do not wrap counters, reuse IDs or automatically
-pad or rename older records.
-
-**Placing the ID.** Put the ID visibly in the owning heading or table row, and
-provide a stable anchor. An ID-only heading such as `### REQ-001` with a
-descriptive title in the body works, as does an explicit anchor for an
-identified table row. References use the ID as link text and resolve to that
-item's anchor, even within one file.
-
-**Keeping an ID stable.** Keep IDs unchanged when content is revised, renamed,
-reordered or moved, and update links after moves. Only new provisional branch
-IDs may be renumbered for an allocation collision, under
-[branch allocation](#branch-allocation-and-collision-repair). Never reuse
-deleted or retired IDs.
-
-For a split or merge, record the old item's disposition and the links to the new
-items; version history keeps its earlier content. Identity alone does
-not identify a reviewed version, prove approval or establish a passed check.
-
-**Existing IDs and records.** Existing IDs and existing records remain valid;
-link to older material without bulk retroactive relabeling. This includes
-five-digit IDs and existing `TYPE-AREA` conventions. Earlier harness examples
-used `API` for backend plans and `SCR` for screen plans; retain those meanings
-wherever they are already established.
-
-A shorter serial is not permission to reuse the same prefix for a different
-purpose in that project. Use the existing convention, or register a distinct
-unambiguous prefix. A requested migration has its own scope. Externally required
-document formats remain binding; resolve a real conflict rather than silently
-omitting identity requirements.
+**Existing and external identities.** Existing numbered filenames and IDs remain valid.
+Preserve them and their meanings when revising their content.
+New documents use semantic paths; do not continue a counter merely because older
+records are numbered. Existing references may retain their established ID labels.
+Preserve externally required identities. Resolve any conflicting external numbering
+requirement before affected work; do not introduce a harness sequence.
+Keep external tracker keys with resolvable links under
+[external work trackers](#external-work-trackers).
+Do not add a harness sequence or derive a new document ID from a tracker key.
+A requested migration of existing records has its own scope and reference checks.
 
 ## Document paths
 
-Except for [required-name files](#required-name-exceptions), every new project
-Markdown document uses `<document-root>/<classification-path>/<ID>-<slug>.md`.
-The ID portion exactly matches the owning document ID, including the tokens,
-separators and number widths in the project's format table. The slug names the
-item's subject, so a reader can tell files apart without opening them. It is
-not part of identity, allocation or parent relationships.
+Name new ordinary Markdown documents by their enduring subject, without a
+sequential prefix: `<document-root>/<area-or-purpose>/<subject>.md`.
+For example, use `project-docs/user/user-search.md` for a search requirement
+and `project-docs/user/user-search-design.md` for its separately managed design.
+A root overview can be `project-docs/overview.md`.
 
-The slug consists of exactly two lowercase ASCII words joined by one hyphen
-(`kebab-case`), matching `[a-z]+-[a-z]+`. Use a hyphen between the complete ID
-and the slug, for example `API-024-service-context.md` or
-`TASK-UI-025-popup-migration.md`. A single word, additional words, digits,
-spaces, underscores and non-ASCII letters are invalid in the slug. Write the
-full title, in any language, in the body.
+Use lowercase ASCII words separated by hyphens for new ordinary names.
+There is no fixed word count. Digits may express a genuine subject, such as
+`oauth2-login.md`; do not use them as allocation counters.
+Leave mutable versions, statuses and dates out of ordinary names.
+Write the full title, in any language, in the body.
+[Required-name files](#required-name-exceptions) and existing names retain their formats.
 
-Name the subject the item keeps for its lifetime, such as `account-lock` or
-`cloud-save`. Leave out versions, states and dates, such as `final`, `draft` or
-`fixed`. Those change while the identity stays, and a renamed file needs every
-link to it repaired.
+Distinguish independently managed outputs by subject and role.
+Use a role suffix, subfolder or specific output name when needed, such as
+`user-search-plan.md` or `user-search-api-task.md`.
+Do not combine independently managed requirements, designs, tasks or verification
+merely because their paths share a feature name.
+Apply [item boundaries](#independent-items-and-supporting-detail), including
+[compact documentation](#minimum-documentation-for-a-small-change).
 
-Identify the complete ID from its registered format, including any parent/child
-segments, rather than treating the last hyphen or number as its boundary.
-Verify that the ID and slug have an unambiguous interpretation under the
-project's formats before creating the file.
+<a id="folders-by-document-kind"></a>
 
-Show the ID without the slug near the top of the body and in stable ID anchors.
-Keep the full title and context in the body and overview. Reference links use
-the ID as their label and the actual owning filename/anchor as their target.
-An ID in the body or directory alone does not satisfy the filename rule.
+### Folders by area and purpose
 
-Established `<ID>.md` filenames remain valid. Do not rename them merely to add
-a slug; that is a reorganization and needs a matching request. For example,
-`overview/DOC-001.md` and `overview/DOC-001-project-overview.md` are
-alternative names for the same identity; `overview.md` needs a required-name
-exception. Keep one current owning file per ID across all folders: a different
-slug, or adding/removing a slug, does not create another item. Do not keep both
-filename forms as duplicate owning files.
+Group new documents by functional area or feature when no established layout exists.
+Record the document root and folder conventions in the project overview.
+Shared definitions have one designated owning location.
+Existing kind-based folders remain valid; do not migrate them automatically.
 
-Preserve the ID when changing a slug. Do not automatically rename files when
-titles change. When a filename changes within authorized work, update the
-overview/index path and all affected links.
-The rule covers all document kinds, including overviews, shared specifications,
-research, reports, changes and handoffs.
-
-### Folders by document kind
-
-Group new documents by kind beneath the chosen document root, such as
-`project-docs/`. Use the following default mapping where the project has no
-established mapping. Each folder holds the separate files for that kind;
-it is not one combined file per kind.
-
-| Document kind | Starter ID format | Default folder beneath the document root |
-|---|---|---|
-| Project or area overview | `DOC-NNN` | `overview/` |
-| Requirements | `REQ-NNN` | `requirements/` |
-| Separately managed acceptance criteria | Project-registered `AC` format | `requirements/acceptance/` |
-| Feature navigation | `FEATURE-NNN` | `features/` |
-| Design and shared architecture | `DES-NNN` | `designs/` |
-| API contracts | `API-NNN` | `contracts/` |
-| Screen specifications | `SCR-{surface}-NNN` | `screens/` |
-| Plans | `PLAN-NNN` | `plans/` |
-| Tasks | `TASK-{work}-NNN` | `tasks/` |
-| Open items | `OI-NNN` | `open-items/` |
-| Standalone decisions | `DEC-NNN` | `decisions/` |
-| Architecture decisions | `ADR-NNN` | `decisions/architecture/` |
-| Separately managed open-item resolutions | `OD-NNN-NN` | `decisions/open-items/` |
-| Verification records | `VER-NNN` | `verifications/` |
-| Separately managed contract checks | `CT-API-NNN-NN` | `verifications/contracts/` |
-| Separately managed backend checks | `BT-API-NNN-NN` | `verifications/backend/` |
-| Changes | `CHG-NNN` | `changes/` |
-| Handoffs | `HANDOFF-NNN` | `handoffs/` |
-| Research | Project-registered format | `research/` |
-| Guides | Project-registered format | `guides/` |
-| Meeting notes | Project-registered format | `meetings/` |
-| Reviews | Project-registered format | `reviews/` |
-| Progress and recurring reports | Project-registered format | `reports/` |
-| Separately managed dictionaries | `DOC-NNN` | `dictionaries/` |
-
-Choose the folder by the document's purpose, not its ID prefix alone.
-For example, a `DOC` overview and a `DOC` dictionary belong in different folders.
-As another example, a deployment guide belongs in `guides/`, even when its ID
-also uses `DOC`. These are placement defaults, not required deliverables or new
-ID allocations. Use [item boundaries](#independent-items-and-supporting-detail) to decide whether
-content needs its own file. A folder row does not require splitting supporting
-detail out of its owner or the [compact documentation rules](#minimum-documentation-for-a-small-change).
-
-Record the chosen root and kind-to-folder mapping in the project overview.
-Reuse established names and hierarchy, including [area extensions](#area-overviews).
-When no convention exists, start with kind folders directly beneath the root.
-Add subfolders for a surface, subsystem or work area when navigation needs them,
-such as `screens/pc/` or `tasks/backend/`. A feature spanning several kinds links
-their owning files; it does not collect copies in a second folder.
-
-Before creating a document of an unmapped kind, select and record its folder
-within the authorized work. Do not use the root or a miscellaneous folder as
-the fallback for unrelated kinds. The agent makes routine mapping choices
-without asking the user to classify each document. Apply each mapping
-consistently within its recorded scope.
-
-Folder changes preserve IDs and repair overview/item links; they do not
-authorize migrating existing records. Do not create empty type folders or
-placeholder files before they are needed. Group feature relationships through
-the overview and owning documents, independently of the physical layout.
-For example, `plans/PLAN-001-user-search.md` links to a task at
-`tasks/TASK-API-001-search-endpoint.md` and an input contract at
-`contracts/API-001-user-search.md`.
-
-## Allocation and validation reuse
-
-**Where the record lives.** Use an `ID allocation` section, or its
-local-language equivalent, in the actual project overview, including a
-[compact work document serving that role](#minimum-documentation-for-a-small-change).
-That is the default shared allocation record. Where the team already uses
-another shared Markdown location, link its exact file and section from the
-overview and maintain the allocation there only. Folder names stay contextual;
-writers must be able to discover one authoritative location for each scope.
-
-**The checked basis.** Establish an initial basis by checking project-wide
-definitions, retained and retired IDs, earlier allocations and outstanding
-reservations. Record the checked version and scope, the result and any limits
-once, then reuse that record with subsequent allocation changes. When creating
-the first overview, include its own ID in this check and record the basis there.
-No pre-existing registry is necessary.
-
-**One writer.** Take the case of a single writer without delegated ranges or
-outstanding reservations. In that case, the allocation section needs only each
-allocation scope, its next serial and a link to that shared checked basis.
-
-- Advance the serial when allocating. Never move it backward or fill earlier
-  gaps.
-- The initial serial must exceed every used, retired or previously allocated
-  serial in that scope.
-- The next serial records what was issued, including items since deleted. No
-  per-allocation owner, range reservation or gap-disposition table is required.
-
-For example, `TASK-API: next 004` means `001` through `003` cannot be newly
-allocated, whether used, retired or skipped. Do not invent a disposition for
-unused gaps. Where prior allocations are
-uncertain, reconcile them before choosing the serial.
-
-**Concurrent writers.** Record the allocation arrangement once in the allocation
-section before introducing them. Use the shared range record below unless one of
-the two exceptions applies. Returning to a single writer requires reconciling
-prior ranges, reservations and pending branch allocations first; the simple
-counter cannot silently supersede them.
-
-Two arrangements need no range or owner record:
-
-- A registered format may take its serial from a designated
-  [external work tracker](#external-work-trackers) key, such as
-  `TASK-{area}-{issue}`. The tracker then allocates, and the overview records
-  the format and tracker. Kinds without such a format, such as `REQ` or `OI`,
-  still need one of the other arrangements.
-- Writers on separate branches may use a per-scope next serial with provisional
-  IDs and collision repair, under
-  [branch allocation](#branch-allocation-and-collision-repair).
-
-These exceptions replace the range table. They do not replace the checked
-allocation basis or the identity rules.
-
-**Areas and delegated ranges.** With [area overviews](#area-overviews), the root
-allocation section delegates non-overlapping serial ranges per allocation scope
-to areas, and records each delegation's owner and verified basis. The area
-overview's allocation section records consumption within its delegated ranges;
-the root does not repeat it.
-
-Complete IDs stay unique project-wide, and areas do not introduce their own
-prefixes for an existing type. When an area exhausts a range, obtain a new
-delegation from the root allocation owner before allocating further.
-
-**The range record.** For allocation using reserved or delegated ranges, use a
-compact Markdown table with the following minimum information, reusing shared
-baseline notes for rows checked together:
-
-| Field | Required content |
+| Purpose | Illustrative path beneath `project-docs/` |
 |---|---|
-| Allocation scope | Registered complete prefix, such as `TASK-API`; for hierarchical formats, child kind and parent, such as `CT` for `API-012`. |
-| Verified basis | Commit/version and scope checked, including definitions, retained/retired IDs and outstanding reservations; actual check result and any limits. A version alone is not proof of verification. |
-| Allocated range | Inclusive serial bounds assigned within that allocation scope, using its recorded width. |
-| Owner | Writer responsible for consuming the range; identify any agreed transfer. |
-| Disposition | Used serials or owning-document links, retired serials, and remaining reserved/available numbers. Record gaps explicitly rather than assuming everything below the largest number was used. |
+| Project overview | `overview.md` |
+| Area overview | `user/overview.md` |
+| Requirement | `user/user-search.md` |
+| Separately managed acceptance criteria | `user/user-search-acceptance.md` |
+| Design | `user/user-search-design.md` |
+| API contract | `user/user-search-api.md` |
+| Screen specification | `user/user-search-screen.md` |
+| Plan | `user/user-search-plan.md` |
+| Separately managed tasks | `user/user-search-api-task.md`, `user/user-search-ui-task.md` |
+| Verification | `user/user-search-verification.md` |
+| Open question | `user/search-permission-question.md` |
+| Shared architecture | `shared/access-control-design.md` |
+| Research, guides, reviews and reports | An enduring subject name in its owning area or a recorded purpose folder |
 
-These are required contents, not fixed column spellings or a new machine schema.
-For example, take a hypothetical `TASK-API` range `001` through `020` owned by
-writer A. Its row may state: used `001` and `003`, retired `002`, remaining
-`004` through `020` reserved for A. Its row must also link the actual checked
-basis. This example does not allocate IDs in this harness repository.
+These paths illustrate placement, not required deliverables or one file per role.
+Create files only when their independently managed outputs are needed.
+Another requirement or task needs its own meaningful subject or output name,
+not an incremented suffix. Feature relationships may span folders through links.
 
-Do not create a second registry or a new document per allocation.
+Choose and record a new area or purpose folder within authorized work when needed.
+The agent makes routine placement choices without asking the user to classify each document.
+Add deeper folders only when navigation needs them.
+Do not create empty folders, placeholders or duplicate feature indexes.
+Shared conventions belong in the overview; detailed content stays with its owner.
 
-**Consuming a range.** Within an assigned range, consume unused serials and
-record their disposition. Reuse the verified basis plus subsequent allocation
-changes instead of reading every document for each new ID. Folder, feature or
-checkout boundaries do not reset the sequence.
+<a id="allocation-and-validation-reuse"></a>
 
-Exhausted ranges need a new non-overlapping allocation. Check shared allocation
-changes before extending or transferring a range; uncertain, conflicting or
-stale reservations must be reconciled first. A local highest-number search alone
-does not account for other writers or retired IDs.
+## Path checks and verification reuse
 
-**Validating later definitions.** Compare newly defined IDs with that basis and
-with other new definitions, and check changed files plus affected references. For
-delegated ranges, check new definitions against the area's range, and check root
-delegations for overlap whenever they change.
+Before creating a document, inspect the overview and search existing owning paths
+and subjects. Check relevant version history when a proposed path may have prior use.
+Reuse an existing definition when it is the same item.
+Choose a distinct meaningful path for a different item.
+Do not maintain next-number counters, reserved ranges or document-ID dictionaries
+for new work.
 
-Broaden the scan when baseline coverage is missing or unreliable, when
-allocation conflicts appear, or when changes to conventions or validation rules
-affect prior results. Preserve project-wide uniqueness and never reuse retired
-IDs. This changes how evidence is obtained, not the identity or filename
-requirements. See
+Use a checked baseline and subsequent changes to scope later checks.
+For new or moved documents, check path uniqueness, case, ownership and affected links
+against current records and relevant history.
+Searching one folder cannot establish that another folder has no owner for the same item.
+Record check scope, version, result and limits under
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification).
+Create no separate path registry; use the overview, owning files and version history.
 
-### Branch allocation and collision repair
+With concurrent writers, agree actual paths and logical outputs under the
+[collaboration basis](COLLABORATION.md#collaboration-basis).
+Area ownership does not permit duplicating a shared definition.
+Check current shared work before choosing a path.
+A clean local checkout cannot prove another writer has not chosen it.
 
-This exception applies only when the recorded arrangement uses isolated
-branches and reviewed integration. New IDs allocated on those branches are
-provisional until their first integration into the designated integration
-branch. Existing IDs and IDs issued by a tracker or shared reservation remain
-fixed; they do not become provisional when copied to a branch.
+<a id="branch-allocation-and-collision-repair"></a>
 
-Fetch and inspect the integration branch's allocation basis before allocating.
-Choose an unused serial beyond its recorded allocations and the branch's own
-allocations, and advance the local counter. Fetch cannot reveal all concurrent
-unmerged work, so a provisional ID may collide with one on another branch.
-Identify provisional items in decisions, evidence and handoffs by their source
-commit/version and owning path as well as their ID; a bare ID is insufficient.
+### Branch path collisions and integration
 
-Before integration, compare new IDs against the current integration branch,
-retained/retired IDs and reservations. The first integrated item keeps its ID;
-renumber only the later item's provisional ID if it collides. Repair its
-filename, body, anchors, current references and any provisional child IDs derived
-from it, update the counter and check the resulting links and uniqueness.
-Resolve collisions before integration; integration fixes the resulting IDs.
+Before integrating isolated branches, compare new paths, subjects and owner links
+against the current integration branch and other changes being integrated.
+Writers may create the same path for different outputs, or different paths for one output.
+Resolve both cases with the affected owners.
 
-Where decisions, signed payloads or verification artifacts still carry the old
-ID, record the old ID with its source version/path and the new ID in the owning
-plan/work note. Do not rewrite those artifacts; link them through that mapping
-and assess their applicability rather than inventing a new PASS.
-Repair known external references through their authorized owner; unresolved
-ambiguous references block affected integration. Use forward edits, preserving
-published history. This exception does not permit renumbering established items
-or reusing retired IDs.
+For the same item, reconcile content into one owner and repair references.
+For different items, choose distinct subject or role names and repair references.
+Never overwrite another writer's content or append a sequence to avoid deciding ownership.
+
+Keep source versions and former paths where earlier decisions or evidence still rely on them.
+Preserve published history and reviewed artifacts.
+Repair required external references through their authorized owner.
+Unresolved ownership or ambiguous required references block affected integration.
 
 ## Independent items and supporting detail
 
 Requirements are the primary basis for separating product scope. Establish
 what must be satisfied, then organize the design, work and verification needed
-to satisfy it. Each separately identified requirement owns one REQ ID/file;
+to satisfy it. Each independently managed requirement owns one canonical file;
 other independently managed items retain their appropriate types and owning
 files under [document paths](#document-paths).
 
 ### Requirement boundaries
 
-A requirement states an intended behavior, outcome or constraint. Assign a
-separate REQ when it expresses a separately meaningful commitment whose scope
-and fulfillment need their own assessment. Search and the export of search
+A requirement states an intended behavior, outcome or constraint.
+Create a separate requirement for a meaningful commitment needing its own scope
+and fulfillment assessment. Search and the export of search
 results are two such commitments. Requirements may depend on one another;
 technical independence is not required. A shared security or performance
 constraint can also be a requirement when it has its own scope and fulfillment
@@ -802,27 +600,27 @@ and check methods that explain one requirement with that requirement. A
 separately executable assertion or test does not alone make a new requirement.
 Stages, algorithms, code files and test commands are not requirement boundaries.
 When an acceptance criterion actually needs its own acceptance disposition,
-use an AC item linked to its requirement. Do not relabel such a criterion as a
-new REQ.
+use a separate acceptance-criterion document linked to its requirement.
+Do not relabel that criterion as a new requirement.
 
-Before assigning a new REQ, check existing requirements. A correction that
-restores an already specified behavior references the existing REQ; adding a
-test for it does not create another REQ. Revise the same requirement under its
-existing ID when its identity remains the same; version history keeps the prior
+Before creating a requirement, check existing requirements. A correction that
+restores an already specified behavior references the existing requirement;
+adding a test for it does not create another requirement.
+Revise the same requirement at its existing path when it remains the same item; version history keeps the prior
 version. A new commitment or an actual split/merge follows the existing
-[identity rules](#item-ids). Identity does not authorize a material
+[identity rules](#item-identity). Identity does not authorize a material
 change to the requirement or acceptance criteria.
 
 ### Related work and supporting detail
 
 Designs, plans, tasks, changes and verification reference the requirements
 they cover. These relationships may be many-to-many. A shared design or check
-has one owning definition linked to all relevant REQs. Preserve separate
+has one owning definition linked to all relevant requirements. Preserve separate
 requirement, design, plan, task and verification files under
 [document organization](#document-organization), reusing shared definitions
 without creating a copy for every requirement.
 
-Give related work a separate ID/file when the actual work needs any of these:
+Give related work a separate owning file when the actual work needs any of these:
 
 - a separately assigned or delivered output;
 - its own completion/decision status;
@@ -841,24 +639,24 @@ itself a new tracked item.
 
 Discovery, research, project overviews and other work can precede or support
 requirements. Use the appropriate document type and actual objective/source
-without inventing a REQ or approval to fill a link. Link requirements when they
+without inventing a requirement or approval to fill a link. Link requirements when they
 are established. Decisions, issues and other records retain their own types
 when separately managed; requirements do not replace every other identity.
 
 | Situation | Required treatment |
 |---|---|
-| Login and search have distinct requirements, even with the same owner | Separate `REQ` files; the overview groups them by feature. |
-| Search results must be exportable as a file in addition to being searchable | A separate export REQ linked to the search requirement and relevant work. |
-| An empty search result must display a count of zero | A condition/acceptance detail in the search requirement, unless separately managed acceptance requires an AC item. |
-| One requirement has input examples, rationale and parent-specific acceptance details | Sections of that requirement; no new file or independent ID for each explanation. |
-| A fix restores the specified search count, or a regression test checks it | Reference the existing search REQ from the change/work and checks; no new REQ solely for the fix or test. |
-| An acceptance criterion is separately tracked with its own disposition | Its own `AC` file, linked to the parent requirement. |
-| A backend plan includes tasks managed as separate outputs | Each task has its own file under the project ID convention; the plan contains links and sequence/dependency information. |
+| Login and search have distinct requirements, even with the same owner | Separate requirement files; the overview groups them by feature. |
+| Search results must be exportable as a file in addition to being searchable | A separate export requirement linked to the search requirement and relevant work. |
+| An empty search result must display a count of zero | A condition/acceptance detail in the search requirement, unless separately managed acceptance requires an acceptance-criterion item. |
+| One requirement has input examples, rationale and parent-specific acceptance details | Sections of that requirement; no new file or identity for each explanation. |
+| A fix restores the specified search count, or a regression test checks it | Reference the existing search requirement from the change/work and checks; no new requirement solely for the fix or test. |
+| An acceptance criterion is separately tracked with its own disposition | Its own acceptance-criterion file, linked to the parent requirement. |
+| A backend plan includes tasks managed as separate outputs | Each task has its own file under the project path convention; the plan contains links and sequence/dependency information. |
 | Several plans cover the same requirement | Reference the same owning requirement file rather than copy its definition. |
 | A small correction restores an existing requirement | Reuse the requirement's linked files and put changed detail in its owners. Keep change trace in the work note only while the change is in progress; the commit message carries the results. |
 | A bounded correction has no management definitions to reuse | Under the conditions below, one work document can own the correction's missing definitions and serve as its overview. |
 
-Ordinary prose, navigation and explanatory headings need no independent ID.
+Ordinary prose, navigation and explanatory headings need no separate item identity.
 Do not use compact planning or the word "metadata" to conceal
 separately managed items inside a single growing document.
 
@@ -871,7 +669,7 @@ Update another owning definition only when its facts or instructions change.
 Missing local approach, plan and verification definitions may live in sections
 of that work document. Keep planned checks separate from failures that still
 stand; passing results go to the commit message.
-Do not create separate DES, PLAN or VER files solely to fill those roles.
+Do not create separate design, plan or verification files solely to fill those roles.
 An independently managed requirement or shared definition still has its own
 owner under [item boundaries](#independent-items-and-supporting-detail).
 Existing owners and required contractual files retain their roles.
@@ -883,7 +681,7 @@ before and during the work. Delete it once the work is done, under
 verification records instead of copying them. Task declarations still apply;
 references to existing instructions satisfy them.
 
-Reuse the overview and its folder/ID conventions where they exist.
+Reuse the overview and its folder/path conventions where they exist.
 If no management records exist to reuse, one work document may also serve as
 the overview when all of these hold:
 
@@ -892,20 +690,21 @@ the overview when all of these hold:
   needs its own owner.
 - No project or contractual rule requires a separate overview.
 
-Use the work item's ID and kind folder; no additional DOC ID or overview file
-is needed. Keep its bounded objective, baseline and analysis limits near the
-start. Record only the document root, folder/ID conventions and allocation basis
+Use the work item's canonical path; no additional overview file is needed.
+Keep its bounded objective, baseline and analysis limits near the start. Record only the document root, path conventions and ownership context
 actually needed. Hold known check commands and environments here only while the
-project has no root instruction file to own them. The normal identity,
-allocation and validation rules still apply. Entry links point to this document;
+project has no root instruction file to own them.
+The normal identity, path and validation rules still apply.
+Entry links point to this document;
 its owned sections satisfy overview references without duplicating task state.
-When the work is done, delete its work sections; the project context, including
-the allocation basis, stays as the overview.
+When the work is done, delete its work sections.
+The project context stays as the overview.
 
 When authorized work expands beyond these conditions, establish a separate
 overview before starting the affected work. Transfer current shared context,
-conventions and allocations there, and link the original work item. Replace
-live sections with links. Preserve the work item's ID.
+conventions and shared ownership there, and link the original work item. Replace
+live sections with links.
+Preserve the work item's path unless the reorganization covers its move.
 Do not combine existing owners or accumulate
 unrelated work to keep a single file. If scope grows, establish only the new
 independent owners or detailed planning that the change requires before the
@@ -914,31 +713,20 @@ affected work starts. Add scope to finished work under
 
 ## Required-name exceptions
 
-This section applies to project deliverables within the [ID scope](#id-scope).
-The harness's own guidance is excluded there and needs no exception-ID mapping.
+Keep an exact filename or location when a consuming tool, project contract or
+repository entry convention requires it. Examples include `SKILL.md` and a
+repository landing `README.md`. The actual path is the document's identity;
+no substitute ID or duplicate ordinary-name file is required.
 
-Keep an exact filename/location when a consuming tool, project contract or
-repository entry convention requires it. Examples include a tool-required
-`SKILL.md` and a repository landing `README.md`. Project instruction files are
-outside the [ID scope](#id-scope) and need no exception. These files are
-exceptions to the ID-based filename and classification-path requirements, not
-to identity, trace, scope or verification. The exception must have a concrete
-consumer/contract reason; personal filename preference is insufficient.
+For a project deliverable outside ordinary naming or placement conventions,
+link its actual path and consumer/contract reason from the overview or index.
+Instruction files and harness guidance follow [identity scope](#identity-scope)
+and need no exception entry. Identity, trace, scope and verification still apply.
 
-Choose the stable document ID as usual. Put it in the body when permitted by
-the required format, and record its ID, canonical path and exception reason/
-source in the overview/index. If the required body cannot include an ID, the
-index supplies the identity mapping. Link to the actual required-name file;
-do not create an ID-named duplicate just to satisfy the ordinary layout.
-Independently managed content still has one owning definition; use links to
-other item documents rather than duplicating them into an entry file.
-
-For example, suppose a tool requires a skill the project ships at
-`skills/report/SKILL.md`. Retain that path, record its document ID and the
-consumer requirement in the index, and add the ID to its body if compatible. A normal requirements document continues to use
-`requirements/REQ-001-user-search.md` under the chosen document root. The agent assesses
-and documents the exception within the already authorized task; preserving a
-required name does not need an additional approval ceremony.
+For example, a shipped skill may remain at `skills/report/SKILL.md`.
+Link its path and consumer requirement; create no second file under the document root.
+Keep independently managed definitions in their owners.
+The agent preserves required names within authorized work without another approval ceremony.
 
 ### Project instruction files
 
@@ -1063,36 +851,33 @@ governs and the conflict is resolved rather than followed. Keep each rule in
 one file at the narrowest path covering its subject instead of copying it into
 several. Record these paths and their scope in the overview so a session can
 tell which apply without scanning the tree. They keep the name their consumer
-requires and, as instruction files, need no ID or exception entry.
+requires and, as instruction files, need no exception entry.
 
 ## Document validation
 
 Before completing document work, apply these checks to the requested stage.
-Use [allocation reuse](#allocation-and-validation-reuse) and
+Use [path checks](#path-checks-and-verification-reuse) and
 [verification reuse](CONTEXT_EFFICIENCY.md#reuse-and-verification) to determine
 the affected scope and reusable evidence.
 
 | Check | Evidence to verify |
 |---|---|
-| Coverage and ownership | Determine ID scope first. Each in-scope document and independent item has an ID and one owning definition. Requirement boundaries describe distinct commitments, and supporting conditions remain with their requirement. Separately managed work references the REQs it covers. For compact work, check linked existing owners, planned checks kept apart from failures that still stand, and any required split. Check source/objective links for work before requirements are established. Overviews reference owners; harness guidance needs no identity or path-mapping checks. |
-| Identity and allocation | Verify that new definitions are unique against one another and the shared allocation basis. Also verify that they do not collide with retained/retired IDs or reservations, and that they fall within any delegated range. Only provisional branch IDs permit temporary cross-branch collisions under [branch collision checks](#branch-allocation-and-collision-repair); resolve them before integration. Compare IDs independently of slugs or folders, and distinguish definitions, references and illustrative examples. |
-| Project ID convention | Each new ID matches its registered format, classification values, width and allocation scope. For a hierarchical ID, verify the parent mapping, owning parent and body link. Check dictionary extensions and existing meanings without renaming retained IDs. |
-| Area overviews and trackers | Root and area overview entries resolve and hold only their owned content. Designated tracker information has no parallel Markdown record. Tracker references carry a resolvable key/link. Relied-on tracker state is recorded with the decision that depends on it, or in the commit message for a completion or handoff. |
-| Ordinary paths | Each new file matches its document kind's recorded folder mapping and one allowed filename form in [Document paths](#document-paths). Check new kinds against [Folders by document kind](#folders-by-document-kind), including recorded extensions and existing conventions. Check ID/body/anchor agreement, the slug's presence and syntax on new files, unambiguous ID boundaries, one owning file per ID, and updated links after renames. |
-| Required-name files | Verify the actual consumer name/location/format, index ID/path/reason mapping, and body/index ID agreement when the body permits an ID. Otherwise verify the stated body-format restriction. |
-| Links and trace | Overview entries and item/anchor links resolve to the intended owners; requirements, design, planned work and actual evidence cover the requested stage. No project link points at a removed or renamed anchor. The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the resolution part; whether a link reaches the intended owner and the trace coverage still need review. |
-| Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected task states, execution modes, prerequisites, next actions and summaries. No superseded instruction or history note remains beside the current one. For adoption or entry-file changes, check the [project entry route](#project-instruction-files). Link resolution alone does not establish currentness. |
-| Planning detail and omissions | Apply the review for the selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, applicable scenarios, concrete verification and honest unknown dispositions. Compact plans do not require detailed-plan tables. Valid IDs and links alone do not establish an adequate plan. |
-| Open-item trace | For affected open items, verify their [required content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). A closed item is deleted only after its answer is in the affected definitions and its dependents are reassessed; a status change alone is insufficient. |
-| Scope and current state | No unauthorized migration or relabeling of existing records; IDs stay unchanged. Documents hold only what [current state only](DEVELOPMENT_METHOD.md#current-state-only) allows: decisions in force, blocking questions, failures that still stand and positions. No process notes, history, overturned decisions, finished tasks or answered questions remain. Unrun verification is not reported as success. |
-| Document quality | Content is consistent with its inputs, Markdown structure is valid and applicable format/contract requirements are met. |
+| Coverage and ownership | Each independently managed item has one owning document under the boundary rules. Supporting detail stays with its owner. Work links covered requirements or pre-requirement sources. Compact work keeps planned checks apart from standing failures. Overviews link owners. |
+| Path identity | Canonical paths and referenced fragments resolve unambiguously. No case-only path collisions or duplicate owners exist. New paths do not repurpose unrelated retired items. Apply branch collision checks before integration. |
+| Project conventions | New ordinary names use semantic paths under the recorded root and area/purpose conventions. Check role distinctions, tracked case, stable anchors and repaired references after moves. New work has no sequential IDs, counters or reserved ranges. |
+| Existing and required-name files | Preserve established names, IDs and externally required identities. Index required-name deliverables by actual path and consumer constraint. Create no duplicate ordinary-name copies. |
+| Area overviews and trackers | Root and area entries resolve and hold only their owned content. Tracker-owned information has no parallel Markdown record. Tracker references carry resolvable keys/links. Record relied-on state with its decision, or in the commit message for completion or handoff. |
+| Links and trace | Overview and item/section links reach intended owners. Requirements, design, work and evidence cover the requested stage. No required link points to a removed path or anchor. Version-dependent references identify source version and path. Resolution alone does not establish meaning or coverage. |
+| Current instructions and navigation | Apply [current-state updates](WORKFLOW.md#updating-current-work-state) to affected states, execution modes, prerequisites, next actions and summaries. Remove superseded instructions. Check the [project entry route](#project-instruction-files) for adoption or entry-file changes. |
+| Planning detail and omissions | Apply selected [planning depth](DEVELOPMENT_METHOD.md#choosing-planning-depth): source coverage, executable work, scenarios, concrete verification and honest unknown dispositions. Valid paths and links alone do not establish an adequate plan. |
+| Open-item trace | Verify affected open items' [content](#open-items), owning references and [lifecycle disposition](WORKFLOW.md#open-item-lifecycle). Delete closed items only after incorporating answers and reassessing dependents. |
+| Scope and current state | No unauthorized migration of existing records. Keep only decisions in force, blocking questions, standing failures and current positions under [current state only](DEVELOPMENT_METHOD.md#current-state-only). Unrun checks are not success. |
+| Document quality | Content agrees with inputs. Markdown structure and applicable format/contract requirements hold. |
 
-Required-name checks replace ordinary path/name/body checks only to the extent
-required by the documented consumer constraint; identity, links and other checks
-remain applicable. Do not treat every existing descriptive filename as a new
-exception. Existing records keep their names and applicable prior evidence.
-The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply the
-filename-derived part of the identity and path checks.
+The [document checker](CONTEXT_EFFICIENCY.md#document-checker) can supply link
+and anchor resolution checks. Path conventions, unique logical ownership,
+retired-path reuse, trace meaning and content need review beyond that tool.
+Required-name constraints replace ordinary naming checks only to their stated extent.
 
 ## Open items
 
@@ -1107,7 +892,7 @@ continues or is handed off.
 Some questions are answered and checked within the same work session, with no
 remaining follow-up or independent management boundary. Put its answer into
 the affected definition or check, and give the authoritative source with its
-relevant version in the commit message. No note, separate OI, owner/timing
+relevant version in the commit message. No note, separate open item, owner/timing
 fields or transition log is required for that completed clarification. This
 shortcut does not supply human decisions or product verification: actual
 authority, evidence and material-change rules still apply. If the answer leaves
@@ -1117,10 +902,9 @@ Use the existing [item boundaries](#independent-items-and-supporting-detail).
 Keep a parent-specific question in the owning requirement, design, plan or
 task when it needs no separate management boundary. A separately
 assigned investigation, decision or shared issue with its own completion status
-owns its own ID/file: an `OI` by default, or a registered kind such as `RISK`
-where the project tracks that kind separately. Retain existing IDs
-and reference actual decisions and resolution tasks rather than duplicating
-them. Moving work between plans does not create a new identity for the same
+owns a separate semantic path, such as `user/search-permission-question.md`.
+State whether it is a question, risk or other finding in its body. Retain
+existing identities and link actual decisions and resolution tasks without copying them. Moving work between plans does not create a new identity for the same
 issue. Small size alone does not exempt independently managed items.
 
 For items needing continued follow-up, use the following content. Inherit
@@ -1171,14 +955,13 @@ For each designated kind, the tracker is the single authoritative record. Do not
 keep a parallel Markdown list or a copy of its status, assignment or history;
 link the tracker item instead.
 
-The tracker key identifies an item the tracker owns. It needs no harness ID or
-allocation. A registered document-ID format may embed that key as its serial
-under [allocation reuse](#allocation-and-validation-reuse). The document then
-has one ID, and the tracker supplies its number.
+The tracker key and its resolvable link identify an item the tracker owns.
+The tracker supplies any issue number; do not add a harness sequence.
+Tracker identity does not replace a Markdown document's canonical path.
 
 Some such items need a detailed Markdown definition, such as task implementation
-detail. That document keeps its own document ID and records the key. The tracker
-owns status and assignment; the document owns the detailed definition.
+detail. That document uses its own semantic path and links the tracker key.
+The tracker owns status and assignment; the document owns the detailed definition.
 
 Requirements, acceptance criteria, design and decisions stay in versioned
 Markdown, and passed-check evidence in commit messages. Where the project

@@ -5,28 +5,27 @@ writes; it does not create execution authority.
 
 ## Collaboration basis
 
-All participating agents share the same plan/task boundaries, directory mapping,
-ID convention and allocation arrangement, regardless of their tool. Before
-concurrent work, make these clear in the existing overview and linked plan/task
+All participating agents share plan/task boundaries, document roots and path
+conventions, regardless of their tool. Before concurrent work, make these clear in the existing overview and linked plan/task
 documents:
 
 - [plans and tasks](DATA_MODEL.md#plans-and-tasks), with each task's writer and
   actual edit scope;
-- the document root and [folder mapping](DATA_MODEL.md#folders-by-document-kind);
-- the [ID format table](DATA_MODEL.md#item-ids) and the
-  [allocation arrangement](DATA_MODEL.md#allocation-and-validation-reuse).
+- the document root and [folder conventions](DATA_MODEL.md#folders-by-area-and-purpose);
+- [canonical paths](DATA_MODEL.md#item-identity), referenced sections and shared
+  ownership under [path checks](DATA_MODEL.md#path-checks-and-verification-reuse).
 
-Writers on the same requirement link the same REQ; a task assignment or handoff
-does not create another requirement. One directory can contain several writers'
-files when their edit scopes do not overlap. Do not introduce agent-specific
-prefixes for the same document type.
+Writers on the same requirement link the same owning definition.
+A task assignment or handoff does not create another requirement. One directory can contain several writers'
+files when their edit scopes do not overlap. Do not create agent-specific copies
+of the same owning definition.
 
 Include the overview (root and [area overviews](DATA_MODEL.md#area-overviews)
 when used), shared specifications and Git integration in the ownership
 agreement. Identify who edits shared files and who integrates changes; other
 writers hand their changes to that owner or agree a transfer before editing.
 When a checkout is shared, serialize Git index/branch operations through the
-assigned integration owner. Record relevant ownership, mapping and allocation
+assigned integration owner. Record relevant ownership and path-convention
 changes before affected work continues. Existing Markdown notes are sufficient;
 these principles add no separate approval or registry service.
 
@@ -41,14 +40,13 @@ In that arrangement, the tracker assignee and the branch identify the writer,
 and whoever merges a change is its integration owner. Shared documents such as
 the overview and contracts may then change through the same reviewed merge; no
 separate owner table is needed in the overview. Record the arrangement once in
-the overview. Writers sharing one checkout or one allocation record still need
+the overview. Writers sharing one checkout or shared document paths still need
 the explicit assignments above.
 
-The tracker numbers only the kinds whose registered format embeds its key.
-Other kinds, such as requirements and open items, still need a concurrent-writer
-[allocation arrangement](DATA_MODEL.md#allocation-and-validation-reuse), such as
-delegated ranges or provisional branch IDs. Record it with the arrangement
-above.
+The tracker owns its keys and designated assignment or status information.
+Markdown documents use semantic paths and link the tracker items they concern.
+All writers coordinate shared paths and logical outputs; resolve
+[path collisions](DATA_MODEL.md#branch-path-collisions-and-integration) before integration.
 
 ## Concurrent writers
 
@@ -79,13 +77,13 @@ The ownership agreement above still applies at merge.
 
 Identify the awaited input, responsible owner and affected dependent work in
 the existing task/plan or open item. Keep unaffected, authorized work moving
-when its ownership, ID allocation, contracts, inputs and permissions are ready.
+when its path ownership, contracts, inputs and permissions are ready.
 Use the shared assignments; a wait never authorizes taking over another
-writer's scope or making an unrecorded allocation.
+writer's scope or creating a competing owning definition.
 
 | Awaited item | Work that waits |
 |---|---|
-| Ownership or ID allocation | Work requiring that unresolved assignment or new allocation. Existing independently assigned work may continue. |
+| Ownership or path conflict | Work requiring that unresolved assignment or owning path. Existing independently assigned work may continue. |
 | Shared contract or integration output | Consumers that require its unresolved content or version. Work with independent ready inputs may continue. |
 | Progress-summary update | Reflection in the shared document follows its owner; already covered independent work need not wait solely for that edit. Missing decisions or assignments are not mere summary updates. |
 | Git integration turn | The queued integration operation and work requiring its result. Independent work may continue without concurrent shared-index/branch operations or unauthorized shared-file edits. |

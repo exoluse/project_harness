@@ -61,7 +61,7 @@ completion alone cannot create consent or turn missing evidence into a pass.
 Use compact planning by default for bounded, reversible work with a clear
 outcome and no consequential scope/design unknown. This includes corrections
 and small additions using established contracts. File count and a new requirement
-ID alone do not require detailed planning.
+alone do not require detailed planning.
 
 Use the detailed procedure for the affected scope when it introduces:
 
@@ -190,9 +190,9 @@ For detailed planning, keep a coverage table or equivalent linked checklist in
 the existing plan/owning work document. Start from the source inventory, not from the tasks
 already written. Each input obligation and supporting acceptance detail must
 reach the applicable requirement, design, work and planned verification, or
-have a justified disposition. Use existing IDs and section anchors; supporting
-conditions do not need new IDs. Links point to authoritative definitions rather
-than duplicate them. Shared work may cover multiple rows.
+have a justified disposition. Use owning paths and stable section anchors;
+retain existing IDs where present. Supporting conditions need no separate item.
+Links point to authoritative definitions rather than duplicate them. Shared work may cover multiple rows.
 
 | Source/requirement and condition | Design/behavior definition | Work and dependencies | Verification scenario and expected result | Disposition/open item |
 |---|---|---|---|---|
@@ -445,7 +445,7 @@ history. Where actual reliance is unclear, resolve it as an
 
 Apply the [material-change criteria](APPROVALS.md#material-changes) against the
 actual authorized scope. Record the impact assessment once in the owning
-plan/work document and reference it from affected items. Identify the change and baseline, affected item IDs and
+plan/work document and reference it from affected items. Identify the change and baseline, affected owning paths and
 reasons, required updates/work/checks, and the basis for reusing existing content
 or evidence. Follow consumers, shared contracts and dependencies across
 requirements, designs, plans, tasks and verification, including effects on
