@@ -150,6 +150,9 @@ work and required external records keep their normal rules.
 
 ## Current state, evidence and real blockers
 
+State current decisions directly, with only the rationale needed to apply them.
+Do not narrate discussions or the sequence of past changes.
+
 Project documents hold only what later work needs and cannot recover from the
 code or version history. These are the decisions in force, open questions that
 block work, failures that still stand and the current position. Requirements,

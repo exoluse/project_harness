@@ -365,9 +365,13 @@ code or version history:
 - failures that still stand;
 - the current position of work that spans sessions.
 
-Requirements, designs, contracts, plans and tasks are decisions. Update each
-document in place. Version history, in Git or the designated tracker, carries
-the past; link the commit or version where current work depends on it.
+Requirements, designs, contracts, plans and tasks are decisions.
+State their decided outcome, scope and constraints directly.
+Keep rationale concise and limited to what later work needs.
+Link necessary sources instead of reproducing discussions or a decision's history.
+Update the owning document in place when a decision changes.
+Version history, in Git or the designated tracker, carries the past;
+link the commit or version where current work depends on it.
 
 | Content | Handling |
 |---|---|
