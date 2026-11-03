@@ -356,3 +356,7 @@ flowchart LR
 | 병렬 작업과 인계 | [협업](docs/COLLABORATION.md) |
 | 기존 내용과 검증의 재사용 | [효율 지침](docs/CONTEXT_EFFICIENCY.md) |
 | 실제 적용 흐름 | [웹 프로젝트 예시](docs/EXAMPLE_WEB_PROJECT.md) |
+
+## 라이선스
+
+이 프로젝트는 [Apache License, Version 2.0](LICENSE)에 따라 제공됩니다.

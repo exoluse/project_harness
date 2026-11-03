@@ -356,3 +356,7 @@ This README explains the harness for people using it. Agents apply the relevant 
 | Concurrent work and handoff | [Collaboration](docs/COLLABORATION.md) |
 | Reusing content and verification | [Context efficiency](docs/CONTEXT_EFFICIENCY.md) |
 | A worked project flow | [Web project example](docs/EXAMPLE_WEB_PROJECT.md) |
+
+## License
+
+This project is licensed under the [Apache License, Version 2.0](LICENSE).
