@@ -1,362 +1,362 @@
 # Project Harness
 
-**한국어** | [English](README.en.md)
+**English** | [한국어](README.ko.md)
 
-**AI 에이전트와 소프트웨어 프로젝트를 진행할 때, 고객 요구사항부터 상세 계획·개발·검증까지 연결해 관리하는 작업 기준입니다.**
+**A working framework for managing software projects with AI agents, connecting customer requirements to detailed plans, implementation and verification.**
 
-계획 단계에서 동작과 구현 방법을 충분히 구체화해 개발 중의 추측과 재작업을 줄이는 데 목적이 있습니다. 현재 유효한 결정과 필요한 근거만 문서에, 수행 결과는 커밋 메시지에 남겨, 다음 세션이나 다른 담당자가 이어서 진행할 수 있게 합니다.
+The aim is to define behavior and implementation approaches early enough to reduce guesswork and rework during development. Documents keep current decisions and necessary rationale, and commit messages keep the results, so another session or contributor can continue the work.
 
-이 저장소에는 에이전트가 따를 정책과 사용 안내가 들어 있습니다. 별도의 하네스 프로그램을 설치할 필요는 없으며, 제품을 빌드하고 테스트할 환경은 해당 프로젝트에서 준비합니다.
+This repository provides policies and guidance for agents. There is no separate harness application to install; each product supplies its own build and test environment.
 
-[시작하기](#실제로-시작하는-방법) · [진행 방식](#어떻게-진행되는가) · [문서 읽기](#문서는-무엇을-남기는가) · [요청 예시](#이렇게-요청하면-됩니다) · [결과 확인](#무엇을-검증했고-무엇이-완료됐는가)
+[Getting started](#getting-started) · [Development flow](#development-flow) · [Reading the documents](#what-documents-record) · [Example requests](#example-requests) · [Checking results](#verification-and-completion)
 
-## 무엇을 위한 프로젝트인가
+## Purpose
 
-프로젝트를 진행하면서 다음 내용을 계속 확인할 수 있도록 합니다.
+The framework helps you keep track of four things throughout a project:
 
-- **무엇을 만들어야 하는가:** 고객 요구사항과 충족 기준을 정리합니다.
-- **어떻게 만들 것인가:** 설계, 구현 순서, 예외 처리와 검증 방법을 작업에 필요한 수준으로 계획합니다.
-- **어디까지 진행됐는가:** 완료한 작업, 실제 확인한 결과, 막힌 부분과 다음 행동을 연결합니다.
-- **변경하면 어디에 영향이 있는가:** 관련 요구사항과 작업을 찾아 필요한 부분을 갱신합니다.
+- **What to build:** customer requirements and the conditions for satisfying them.
+- **How to build it:** design, implementation order, failure handling and verification methods at the depth the work needs.
+- **Where the work stands:** completed work, observed results, blockers and next actions.
+- **What a change affects:** related requirements and work that need updates.
 
-작업 위험에 맞춘 계획, 독립 항목별 문서 분리, 안정적인 문서 경로, 에이전트의 직접 판단과 검증을 기본으로 합니다. 한 번 정리한 내용은 유효성을 확인해 재사용합니다.
+Planning depth matched to risk, separate documents for independent items, stable document paths, and the agent's own judgment and verification are core principles. Existing content is reused after checking that it still applies.
 
-## 실제로 시작하는 방법
+## Getting started
 
-1. 에이전트가 이 저장소의 [공통 정책](AGENTS.md)과 도구별 시작 안내를 읽도록 합니다.
-2. 만들고 싶은 결과, 자료·코드 위치, 제약과 이번에 어디까지 진행할지를 알려 줍니다. 이미 정한 빌드·테스트 방법이 있으면 함께 알려 주고, 없으면 설계·계획 단계에서 정합니다.
-3. 에이전트가 현재 상태를 확인하고 요청한 범위의 문서와 작업을 준비합니다.
+1. Have the agent read this repository's [shared policy](AGENTS.md) and the entry guidance for its tool.
+2. Describe the intended result, source/code locations, constraints and how far to proceed this time. Mention any build and test approach you have already chosen; otherwise it is decided during design and planning.
+3. The agent checks the current state and prepares the documents and work for that scope.
 
-도구별 시작 안내는 [Codex](CODEX_START_PROMPT.md)와 [Claude](CLAUDE.md)에 있습니다. 다른 프로젝트에 적용할 때는 기존 정책과 문서를 먼저 확인하고 필요한 내용을 통합합니다.
+Entry guidance is available for [Codex](CODEX_START_PROMPT.md) and [Claude](CLAUDE.md). When adopting the harness in another project, inspect its existing policies and documents before integrating the relevant guidance.
 
-처음 요청할 때는 다음 정도면 됩니다. 문서 이름이나 경로를 모두 정해서 전달할 필요는 없습니다.
+A first request can look like this. You do not need to specify every document name or path yourself.
 
-> 이 하네스 정책에 따라 관리자용 사용자 관리 기능을 계획해 줘.
-> 사용자를 검색하고 검색 결과를 CSV로 내려받을 수 있어야 해.
-> 기존 코드와 요구사항은 [자료 위치]에 있어.
-> 기존 로그인과 권한 체계를 유지하고, 이번에는 요구사항·설계·상세 계획까지만 작성해 줘.
+> Use this harness to plan an administrator user-management feature.
+> Administrators should be able to search users and export search results as CSV.
+> Existing code and requirements are at [source location].
+> Keep the existing login and permission model. For now, prepare requirements, design and a detailed plan only.
 
-목표가 아직 모호하다면 조사와 요구사항 정리부터 요청할 수 있습니다. 결정이 필요한 부분은 에이전트가 근거와 선택지를 정리합니다.
+If the goal is still unclear, start with discovery and requirements. The agent prepares evidence and options for decisions that need your input.
 
-### 다른 프로젝트에 적용하기
+### Applying it to another project
 
-1. **하네스 사본을 들여오고 프로젝트 진입 파일을 만듭니다.** 이 저장소에서 버전 관리되는 파일을 수정 없이 프로젝트의 한 폴더(기본값 `harness/`)에 복사해, 정책이 프로젝트와 함께 버전 관리되게 합니다. 이 사본은 고치지 않으며, 하네스를 갱신할 때는 폴더를 새 커밋의 파일로 통째로 교체합니다. 루트 진입 파일은 프로젝트가 소유하며, 사용하는 도구의 파일만 둡니다. 루트 `CLAUDE.md`는 사본의 Claude 어댑터를 가져오고(예: `@harness/CLAUDE.md`), 루트 `AGENTS.md`는 Codex가 사본의 정책과 [Codex 어댑터](CODEX_START_PROMPT.md)를 읽도록 안내합니다. 진입 파일 하나에 작업을 시작할 때 없으면 안 되는 것들(스택, 실제 빌드·테스트 명령, 최상위 코드 배치, 다른 기록이 맡지 않는 작성 규칙)과 사본의 원본 커밋, 개요와 현재 재개 위치를 가리키는 짧은 포인터를 담습니다. 두 파일을 함께 쓰면 다른 하나는 그 파일로 연결합니다. 그 파일이 `AGENTS.md`라면 루트 `CLAUDE.md`에 `@AGENTS.md`도 넣어 가져옵니다. Claude Code는 `CLAUDE.md`가 있으면 루트 `AGENTS.md`를 스스로 읽지 않기 때문입니다. 개별 항목이 소유한 내용은 그 항목에 두며, [하네스 사본](docs/DATA_MODEL.md#harness-copy)과 [프로젝트 지침 파일](docs/DATA_MODEL.md#project-instruction-files)을 따릅니다. 프로젝트에 이미 CLAUDE.md나 AGENTS.md가 있으면 규칙을 비교해 충돌을 해결하고, 프로젝트 규칙은 프로젝트의 진입 파일에 둡니다. 이미 하네스를 루트에 복사해 쓰는 프로젝트는 옮기라고 요청하기 전까지 그 배치를 유지합니다. 하네스 정책이 프로젝트의 계약이나 CI 규칙을 약화시키지는 않습니다. 저장소가 크면 영역별 규칙을 해당 하위 폴더의 [경로 범위 지침 파일](docs/DATA_MODEL.md#path-scoped-instruction-files)에 두고, 그 경로를 다루는 작업에서 루트 정책과 함께 읽게 할 수 있습니다. 하위 지침은 세부를 더할 뿐 루트 정책이나 계약을 약화시키지 못합니다.
-2. **문서 루트와 경로 규약을 정합니다.** 예를 들어 `project-docs/` 아래에 `user/`, `auth/`, `shared/`처럼 기능·영역별 폴더를 두고, 주제와 역할이 드러나는 파일명을 씁니다. 기존 배치는 유지하고, 선택한 규약을 개요에 기록합니다. [경로 예시](docs/DATA_MODEL.md#folders-by-area-and-purpose)를 참고합니다.
-3. **문서 작업을 시작할 때 개요를 마련합니다.** 기존 개요를 재사용하고, 없으면 [간단한 문서화 기준](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change)에 따라 별도 개요 또는 개요 역할을 겸하는 작업 문서를 마련합니다. 보고만 요청한 경우에는 파일을 만들지 않습니다. 개요에는 목표와 범위, 문서 루트와 경로 규약, 공유 문서의 소유 범위, 이미 정해진 통합·품질 규약을 기록합니다. 빌드·테스트·검사 명령은 1단계의 루트 진입 파일에 둡니다. 규약이 아직 없으면 "미정"으로 적고 설계·계획에서 정합니다. 고객 소통용 문서, 대체된 원본, 교체 예정 레거시처럼 개발 근거가 아닌 자료가 있으면 개요에 [비권위 입력](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs)으로 지정합니다. 지정된 자료는 요구사항·범위·증거로 쓰이지 않고, 제품과 달라도 결함이나 차단 사유로 보고되지 않습니다.
-4. **기존 프로젝트면 현재 상태에서 시작합니다.** 인테이크 기준 커밋, 분석 범위, 이미 구현된 부분과 확인된 검증·배포 상태를 개요에 적습니다. 코드를 읽어 복원한 요구사항은 "관찰"과 "추정"으로 표시하고, 고객이 확인한 것만 "확인된 요구사항"으로 둡니다. 기존 문서와 ID는 그대로 두고 참조합니다.
-5. **비밀·배포·공유 브랜치가 있으면 도구 설정을 함께 겁니다.** 정책 문구는 에이전트의 시도를 바꿀 뿐 실행을 막지 못합니다. 비밀 파일 읽기 차단과 위험 명령 확인 창은 [도구 수준 보조 통제](docs/SECURITY.md#tool-level-supporting-controls)를 따라 설정하고, 강제 푸시 금지 같은 실제 경계는 브랜치 보호처럼 에이전트가 바꿀 수 없는 통제에 둡니다.
-6. **모델 지정표를 만들고 메인 모델을 고정합니다.** 판단(정의·설계·계획·완료 판단), 구현, 기록처럼 등급마다 쓸 수 있는 모델을 루트 진입 파일에 적고, 근거와 확인 날짜를 남깁니다. 목록에 넣기 전에 실제 도구와 계정에서 짧게 실행해 봅니다. 도구의 모델 목록에 보여도 계정에서 거부될 수 있습니다. 메인 세션은 도구 설정으로 판단 등급 모델에 고정합니다. 모델이 스스로 능력 부족을 알아차리리라고 기대하지 않기 위해서입니다. 설정 방법은 각 도구의 어댑터에, 기준은 [프로젝트 모델 지정표](docs/CONTEXT_EFFICIENCY.md#project-model-roster)에 있습니다.
+1. **Bring in the harness copy and write the project's entry files.** Copy this repository's tracked files unchanged into one folder of the project, `harness/` by default, so the policy is versioned with the project. Do not edit that copy; a harness update replaces the folder with a newer commit's files. The project owns its root entry files and keeps only those of the tools it uses: a root `CLAUDE.md` imports the Claude adapter from the copy (for example `@harness/CLAUDE.md`), and a root `AGENTS.md` tells Codex to read the policy and the [Codex adapter](CODEX_START_PROMPT.md) there. One entry file holds what work cannot start without (the stack, the real build and test commands, the top-level code layout, writer rules no other record owns), plus the copy's source commit and a short pointer to the overview and the current resumption point. Where both files exist, the other routes to it. If that file is `AGENTS.md`, the root `CLAUDE.md` also imports it with `@AGENTS.md`, because Claude Code reads a root `AGENTS.md` by itself only when no `CLAUDE.md` exists. Content that an item owns stays with that item; see the [harness copy](docs/DATA_MODEL.md#harness-copy) and [project instruction files](docs/DATA_MODEL.md#project-instruction-files). If the project already has a CLAUDE.md or AGENTS.md, compare the rules, resolve conflicts and keep the project's rules in its own entry files. A project that already copied the harness into its root keeps that layout until you ask to move it. The harness policy never weakens the project's contracts or CI rules. In a large repository, rules for one area can live in a [path-scoped instruction file](docs/DATA_MODEL.md#path-scoped-instruction-files) inside that subtree, read together with the root policy by work that touches those paths. A path-scoped file adds detail; it cannot weaken the root policy or a contract.
+2. **Choose a document root and path conventions.** For example, use feature or area folders such as `user/`, `auth/` and `shared/` beneath `project-docs/`, with filenames describing each subject and role. Preserve established layouts and record the chosen conventions in the overview. See the [path examples](docs/DATA_MODEL.md#folders-by-area-and-purpose).
+3. **Establish the overview when document work starts.** Reuse an existing overview; otherwise follow [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change), which allows an eligible work document to also serve as the overview. A report-only request creates no files. Record the objective and scope, the document root and path conventions, shared-document ownership boundaries, and the integration and quality conventions already decided. Build, test and check commands go in the root entry file from step 1. An undecided convention is recorded as undecided and settled during design and planning. Material that is not a development basis — customer communication documents, a superseded source, a legacy implementation being replaced — is designated in the overview as a [non-authoritative input](docs/DEVELOPMENT_METHOD.md#non-authoritative-inputs): it is not used as requirement, scope or evidence, and its divergence from the product is not raised as a defect or blocker.
+4. **An existing project starts from its actual state.** Record the intake commit, analysis scope, what is already implemented and the known verification and deployment status in the overview. Requirements recovered from code are marked as observed or inferred; only what the customer confirmed counts as a confirmed requirement. Existing documents and IDs stay as they are and are referenced.
+5. **Add tool settings when the project has secrets, deployments or shared branches.** Policy text changes what the agent attempts; it does not stop execution. Configure blocked secret-file reads and prompts for risky commands from the [tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls), and keep the actual boundary, such as refusing force pushes, in controls the agent cannot change, like branch protection.
+6. **Write a model roster and pin the main model.** Record in the root entry file which models each tier may use, such as judgment (definition, design, planning, completion), implementation and recording, with the basis and the date checked. Before listing a model, run it briefly in the actual tool and account; a model shown in the tool's list can still be refused for the account. Pin the main session to a judgment-tier model through tool configuration, rather than expecting a model to notice its own gaps. Each tool's adapter gives the setting; the rules are in the [project model roster](docs/CONTEXT_EFFICIENCY.md#project-model-roster).
 
-적용을 마칠 때는 각 도구의 루트 진입 파일에서 하네스 사본의 정책과 어댑터, 프로젝트 개요와 현재 재개 위치에 도달할 수 있는지 확인합니다. 프로젝트 README는 해당 제품을 소개하고 개요로 연결하며, 하네스 사용법은 링크로 안내합니다. 실제 스택·명령·경로를 확인할 수 있어야 합니다. 기록한 검사 명령이 적힌 곳에서 실제로 도는지도 확인합니다. 에이전트가 돌리는 검사라면 에이전트 샌드박스에서 실행해 보고, 돌지 않으면 어디서 누가 돌리는지 적습니다. 세부 기준은 [프로젝트 진입 문서](docs/DATA_MODEL.md#project-instruction-files)를 따릅니다.
+Before completing adoption, check that each tool's root entry file reaches the policy and its adapter in the harness copy, and the project overview and current resumption point. The project's README introduces the product and links its overview, with a separate link to harness usage guidance. The actual stack, commands and paths must be discoverable. Also check that each recorded check runs where the entry says it runs. For a check agents run, try it in the agent's sandbox; if it cannot run there, record where it runs and who runs it. See the [project entry rules](docs/DATA_MODEL.md#project-instruction-files).
 
-항목별 Markdown 파일을 기능·영역별 경로에 둡니다. 다음은 배치 예시이며, 필요한 파일만 만듭니다. 기존 프로젝트의 폴더·파일명·ID는 자동으로 바꾸지 않습니다.
+Place each item's Markdown file under its feature or area path. This illustrates a layout; create only needed files. Do not automatically change existing projects' folders, filenames or IDs.
 
 ```text
 project-docs/
-  overview.md                       # 목표, 경로 규약, 항목 색인
+  overview.md                       # objective, path conventions, item index
   user/
-    user-search.md                  # 검색 요구사항
-    csv-export.md                   # 내보내기 요구사항
-    user-search-design.md           # 설계
-    user-search-api.md              # API 계약
-    user-search-screen.md           # 화면 명세
-    user-admin-plan.md              # 구현 순서와 작업 링크
-    user-search-api-task.md         # 독립 작업
+    user-search.md                  # search requirement
+    csv-export.md                   # export requirement
+    user-search-design.md           # design
+    user-search-api.md              # API contract
+    user-search-screen.md           # screen specification
+    user-admin-plan.md              # implementation order and task links
+    user-search-api-task.md         # independent task
     csv-download-task.md
-    user-search-verification.md     # 검증 계획과 남은 실패
-    search-response-check.md        # 독립 관리하는 계약 검사
-    export-limit-question.md        # 미결사항
-    csv-encoding-decision.md        # 결정
+    user-search-verification.md     # planned checks and standing failures
+    search-response-check.md        # separately managed contract check
+    export-limit-question.md        # open item
+    csv-encoding-decision.md        # decision
   shared/
-    search-storage-design.md        # 공유 아키텍처
+    search-storage-design.md        # shared architecture
 ```
 
-새 문서와 항목에는 순번을 붙이지 않습니다. 문서는 프로젝트 루트 기준 전체 경로로, 본문 항목은 경로와 고정 앵커로 참조합니다. 새 일반 파일명은 주제를 나타내는 영문 소문자를 하이픈으로 연결하며, 단어 수는 고정하지 않습니다. 버전·상태·날짜는 넣지 않고, 한국어 제목은 본문에 씁니다. 조사·가이드·리뷰·보고서도 같은 [경로 기준](docs/DATA_MODEL.md#document-paths)을 따릅니다. 이름이 겹치면 주제나 역할을 구체화하고, 기능 간 관계는 문서 링크로 연결합니다.
+Do not number new documents or items. Identify documents by their full project-root-relative paths, and referenced sections by paths with stable fragments. New ordinary filenames use lowercase English subject words joined by hyphens, with no fixed word count. Leave mutable versions, states and dates out of names, and put the full title in the body. Research, guides, reviews and reports follow the same [path rules](docs/DATA_MODEL.md#document-paths). Resolve name conflicts by making the subject or role more specific. Connect features through document links.
 
-## 어떻게 진행되는가
+## Development flow
 
 ```mermaid
 flowchart LR
-    A["목표·자료 확인"] --> B["요구사항 정리"]
-    B --> C["상세 설계·계획"]
-    C --> D["구현"]
-    D --> E["검증"]
-    E --> F["필요한 인수·전달·인계"]
-    E -->|변경·문제 발견| C
+    A["Review goals and sources"] --> B["Define requirements"]
+    B --> C["Detailed design and plan"]
+    C --> D["Implement"]
+    D --> E["Verify"]
+    E --> F["Applicable acceptance, delivery and handoff"]
+    E -->|Change or issue| C
 ```
 
-각 단계는 무엇을 받아 무엇을 내놓는지가 정해져 있습니다. 단계마다 승인할 필요는 없고, 표의 마지막 열에 있는 것만 결정하면 됩니다.
+Each stage has defined inputs and outputs. You do not approve every stage — only the decisions in the last column.
 
-| 단계 | 들어가는 것 | 나오는 것 | 사용자가 결정하는 것 |
+| Stage | Inputs | Outputs | What you decide |
 |---|---|---|---|
-| 조사 | 목표, 자료, 기존 코드 | 문제 범위, 관련자, 제약, 아직 확인되지 않은 질문 | 어디까지 조사할지 |
-| 요구사항 | 조사 결과와 근거 자료 | 원하는 결과, 충족 기준, 우선순위, 출처 추적 | 이 요구가 맞는지 |
-| 설계 | 버전이 확정된 요구사항과 제약 | 구성 요소, 인터페이스, 데이터, 대안, 위험, 요구사항 커버리지 | 대안 중 무엇으로 갈지 |
-| 계획 | 원본 범위 자료, 요구사항, 설계, 현재 진행 상태 | 선택한 깊이에 맞춘 작업 순서, 예외 처리, 검증 방법, 미확인 사항의 처리 | 남은 선택지가 있을 때만 |
-| 구현 | 구체적인 실행 범위 결정, 준비된 입력과 권한 | 코드·문서 변경, 남은 작업을 보여 주는 계획, 수행 내용을 적은 커밋 메시지 | 이번에 무엇을 구현할지 |
-| 검증 | 후보 버전, 판정 기준, 검사 환경 | 실제 결과, 실패, 적용 한계 | 어느 수준까지 확인할지 |
-| 인수 | 후보 버전과 해당 검증 | 권한 있는 고객의 인수 또는 피드백 | 인수 여부 — 대신 처리하지 않습니다 |
-| 전달 | 릴리스 범위, 운영 선행조건, 권한 | 배포한 버전과 사후 점검 기록 | 운영 반영 승인 |
-| 종료 | 모든 기여 작업, 증거, 남은 의무 | 항목별 처분과 인수·전달·인계·유지보수 의무 처리 | 종료 선언 |
-| 유지보수 | 릴리스된 기준선, 새 요청·장애 | 추적된 변경과 재검증 | 다음 요청 |
+| Discovery | Goals, sources, existing code | Problem boundaries, stakeholders, constraints, unresolved questions | How far to investigate |
+| Requirements | Discovery results and supporting evidence | Intended outcomes, acceptance criteria, priorities, source trace | Whether these are the right requirements |
+| Design | Requirements at a fixed version, and constraints | Components, interfaces, data, alternatives, risks, requirement coverage | Which alternative to take |
+| Planning | Original scope sources, requirements, design, current progress | Work order, exception handling, verification methods and unknown dispositions at the selected depth | Only where a choice is left open |
+| Implementation | A concrete scope decision, ready inputs and permissions | Code and document changes, a plan showing what remains, and a commit message stating what was done | What to implement this time |
+| Verification | Candidate version, criteria, check environment | Actual results, failures, limits of applicability | How far to verify |
+| Acceptance | The candidate and its verification | The authorized customer's acceptance or feedback | Whether to accept — never done on your behalf |
+| Delivery | Release scope, operational prerequisites, permissions | The deployed version and post-delivery checks | Approval to go to production |
+| Closure | All contributing work, evidence, outstanding obligations | An honest disposition per item, and acceptance, delivery, handover and maintenance obligations settled | When to declare closure |
+| Maintenance | The released baseline, new requests and incidents | Traced changes and recheck results | The next request |
 
-**단계를 넘어가는 기준.** 요청한 단계까지 진행합니다. "계획까지만" 요청하면 계획에서 마치고, 구체적인 구현 범위를 요청하면 준비된 작업을 구현·검증까지 이어갑니다. 같은 범위의 작업을 진행할 때마다 승인을 다시 받지는 않습니다. 계획이 끝났다는 것은 문서가 생겼다는 뜻이 아니라 완료 검사를 통과했다는 뜻입니다. 원본 자료가 계획에 반영됐는지, 구현자가 중요한 동작을 다시 추측하지 않아도 될 만큼 상세한지, 확인되지 않은 사항이 각각 처리됐는지를 봅니다. 남은 질문을 나열하는 것은 통과가 아닙니다. 구현 착수는 여기에 더해 실행 범위 결정과 준비된 선행 조건이 필요합니다.
+**Moving between stages.** Work stops at the requested stage. A planning-only request ends with the plan; a request to implement a concrete scope continues through ready implementation and verification work, and the same scope does not require approval again at every step. Planning is finished when it passes its completion checks, not when a document exists: the original sources are reflected in the plan, the detail is concrete enough that the implementer does not have to guess consequential behavior, and every unknown has a disposition. Listing open questions is not a pass. Starting implementation additionally needs a scope decision and ready prerequisites.
 
-범위가 명확하고 되돌리기 쉬운 낮은 위험의 작업은 간단한 계획이 기본입니다. 작은 수정과 기존 계약을 사용하는 작은 추가 기능이 여기에 해당합니다. 작업 문서에 기대 결과·수정 경로·수행 순서·검사를 적고 확인한 뒤 진행하며, 별도 예외 사유서나 계획 검토 기록을 만들지 않습니다. 공개 계약·데이터 수명주기·접근 정책 변경, 독립 산출물의 조정, 고위험 외부 효과에는 해당 범위의 상세 계획을 적용합니다. [계획 깊이 기준](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth)을 따릅니다.
+Compact planning is the default for bounded, reversible low-risk work with a clear outcome, including corrections and small additions using established contracts. Record the expected result, paths, steps and checks in the work document, review them and proceed; no separate exception justification or planning-review log is needed. Public contract, data lifecycle or access-policy changes, coordinated independent outputs and high-risk external effects require detailed planning for the affected scope. See [planning depth](docs/DEVELOPMENT_METHOD.md#choosing-planning-depth).
 
-**작업에 맞는 모델.** 정의·분석·설계·계획·의사결정과 검증 결과 판단에는 현재 사용할 수 있는 적합한 모델 중 가장 강력한 모델을 사용합니다. 개발 구현은 난이도와 실패 영향에 따라 모델을 조절하고, 도중에 분석이나 설계 판단이 필요해지면 그 부분은 다시 강력한 모델이 맡습니다. 구체적인 모델명은 실행 환경과 최신 근거로 선택하며, 명시적으로 고정한 모델과 사용 제약을 존중합니다. 프로젝트가 등급별로 쓸 모델을 지정해 두면 그 안에서만 고릅니다. 세부 기준은 [모델 선택](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation)을 따릅니다.
+**Models suited to the work.** Definition, analysis, design, planning, decisions and verification judgments use the strongest suitable model currently available. Implementation models vary with difficulty and failure impact; analysis or design judgments discovered during development return to a strong model. Concrete models are selected from the execution environment using current evidence, respecting explicit model pins and usage constraints. Where a project designates the models each tier may use, selection stays within that roster. See [model selection](docs/CONTEXT_EFFICIENCY.md#model-selection-and-delegation).
 
-**되돌아가는 경우.** 구현 중에 예상과 다른 동작을 발견하면 먼저 원인을 조사하고, 영향받는 계획을 고치거나 빠진 결정을 요청합니다. 그 변경이 이미 합의된 범위를 건드리면 관련 요구사항·설계·작업·검증까지 함께 갱신합니다. 검증 실패나 통과 철회는 그 상태 그대로 보고하고, 이후 작업은 복구 조건을 통과할 때까지 기다립니다.
+**Going back.** When implementation behaves unexpectedly, the cause is investigated first, then the affected plan is revised or the missing decision requested. Where that change touches what was already agreed, the related requirements, design, tasks and verification are updated with it. A failed check or a withdrawn pass is reported as it stands, and dependent work waits until the condition for restoring it is met.
 
-**별도 승인이 필요한 일.** 운영 배포, 운영 데이터 변경, 파괴적 작업, 비밀정보·보호된 인증수단 접근, 최종 고객 인수는 개발 진행 권한으로 처리하지 않습니다. 말하지 않아도 이 다섯 가지는 따로 확인하며, 인수는 권한 있는 고객 본인의 확인이 필요합니다.
+**What needs its own approval.** Production deployment, production data changes, destructive operations, access to secrets and protected credentials, and final customer acceptance are never covered by development authority. These five are confirmed separately even when you do not mention them, and acceptance requires the authorized customer's own sign-off.
 
-**기존 프로젝트.** 현재 진행 상태에서 시작합니다. 이미 구현된 부분과 남은 작업을 구분하고, 기존 문서·ID와 버전 이력을 활용합니다. 코드에서 관찰한 동작, 추정한 의도, 고객이 확인한 요구사항, 아직 모르는 것을 각각 구분해 적습니다.
+**Existing projects** start from their actual progress. The agent distinguishes implemented behavior from remaining work and uses existing documents, IDs and version history, keeping behavior observed in code, inferred intent, requirements confirmed by the customer and open unknowns apart from each other.
 
-## 문서는 무엇을 남기는가
+## What documents record
 
-**전체 상황은 프로젝트 개요에서, 이미 정해진 작업은 그 작업 문서에서 시작합니다.** 작업 문서는 실행 상태, 근거가 된 결정을 가리키는 현재 실행 모드, 바로 다음 행동과 선행 조건을 소유하고, 검증 문서는 검사 계획과 아직 유효한 실패를 소유합니다. 통과한 검사 결과는 커밋 메시지에 남깁니다. 계획은 순서·의존성과 재개 위치를 관리합니다. 개요와 상위 계획은 이 원본들을 연결하며, 작업 상태나 통과 건수를 다시 적지 않습니다.
+**Start with the overview for the whole project, or the task document for work already identified.** Work items own execution state, the current execution mode with a link to the decision behind it, immediate next action and prerequisites; verification records own planned checks and failures that still stand. Passing results go to the commit message. Plans manage order, dependencies and resumption positions. Overviews and parent plans link these owners without repeating task statuses or pass counts.
 
-여러 세션에 걸친 작업은 재개 기록에서 현재 항목·다음 항목과 먼저 읽을 원본을 연결합니다. 실행 모드·다음 행동·차단 사유는 해당 작업에서, 마지막 확인 결과는 커밋 메시지에서 읽습니다. 작업 전환·재개·인계 때 [현재 지시](docs/WORKFLOW.md#updating-current-work-state)를 확인하되, 작업 상태만 바뀌었다고 개요까지 고치지 않습니다. 진행 보고는 요청 시 원본에서 도출하고, 보관하는 보고서는 기준 버전을 적은 산출물이지 현재 상태 기록이 아닙니다.
+Work spanning sessions uses a resumption record linking the current item, next item and first owning sections to read. Read execution mode, next action and blockers from the work item, and checkpoint results from the commit message. Check [current instructions](docs/WORKFLOW.md#updating-current-work-state) when switching, resuming or handing off. A task status change alone requires no overview edit. Derive progress reports from the owners when requested; a kept report is a deliverable at its basis version, not a current status record.
 
-문서는 현재 유효한 결정 사항을 중심으로 간결하게 씁니다. 결정된 결과·범위·제약을 바로 적고, 이유는 이후 적용에 필요한 만큼만 남깁니다. 논의 과정이나 변경 경과를 서술하지 않습니다. 이후 작업에 필요하지만 코드나 Git 이력에서 되찾을 수 없는 것만 남깁니다. 지금 유효한 결정(요구사항·설계·계약·계획·작업), 작업을 막는 미결 질문, 아직 유효한 실패, 여러 세션에 걸친 작업의 현재 위치입니다. 세부 기준은 [현재 상태만 유지](docs/DEVELOPMENT_METHOD.md#current-state-only)에 있습니다. 실행한 검사와 결과, 착수 상태, 인계 내용은 문서 대신 커밋 메시지에 적습니다. 커밋하지 않은 채 세션이 끝나면 착수 상태와 인계 내용을, Git이 없으면 이것들 모두를 현재 위치에 둡니다. 뒤집힌 결정, 끝나거나 취소된 작업, 답이 반영된 미결 질문은 지웁니다. 변경 기록, 날짜별 이력, 세션 일지, 이력 파일, 스냅샷은 만들지 않으며, 과거는 Git이나 기존 트래커의 버전 이력이 맡습니다. 한 사실은 한 문서만 갖고, 다른 곳에서는 그 문서를 링크합니다. 다른 문서가 링크하는 앵커는 유지하거나, 그 링크를 같은 변경에서 함께 고칩니다.
+Write documents around the decisions in force. State the decided outcome, scope and constraints directly, with only the rationale needed to apply them. Do not narrate discussions or successive changes. Keep only what later work needs and cannot recover from the code or Git history: the decisions in force (requirements, designs, contracts, plans and tasks), open questions that block work, failures that still stand and the current position of work spanning sessions. See [current state only](docs/DEVELOPMENT_METHOD.md#current-state-only). Checks run and their results, the starting state and handoff notes go in the commit message instead. When work stays uncommitted past a session, the starting state and handoff notes stay with the current position; without Git, all of them do. Overturned decisions, finished or cancelled tasks, and open questions whose answer is in its owner are deleted. Do not write change notes, dated history entries, session diaries, history files or snapshots; Git or the existing tracker's version history carries the past. Each fact lives in one document, and other places link to it. Keep an anchor that other documents link to, or repair those links in the same change.
 
-| 문서 | 사용자가 확인할 내용 |
+| Document | What you can learn |
 |---|---|
-| 프로젝트 개요 | 전체 목표, 공유 규약, 항목 색인과 현재 작업 원본으로 가는 링크 |
-| 요구사항 | 고객이 원하는 결과와 충족 기준 |
-| 설계 | 화면·API·데이터가 어떻게 동작하고 연결되는지 |
-| 계획 | 구현 순서, 작업 간 의존성, 검증 방법과 완료 기준, 여러 세션에 걸친 작업의 현재 재개 지점 |
-| 작업 | 담당, 현재 허용된 작업 범위, 읽는 입력과 다른 작업과 공유하는 경로, 구체적인 실행 내용, 미리 정한 중단 조건, 실제 명령으로 적은 완료 검사와 진행 상태. 끝나거나 취소되면 지웁니다 |
-| 검증 | 무엇을 어떻게 검사할지와 아직 유효한 실패. 통과한 결과는 커밋 메시지에 있습니다 |
-| 미결사항·결정 | 아직 결정하거나 해결할 내용과 그 영향·다음 행동(답이 반영되면 삭제), 실제 결정 |
+| Project overview | Overall goals, shared conventions, item index and links to current owning work |
+| Requirements | Customer outcomes and the conditions for satisfying them |
+| Design | How screens, APIs and data behave and connect |
+| Plan | Implementation order, dependencies, verification methods, completion criteria and the current resumption point for work spanning sessions |
+| Task | Owner, what the work may currently produce, the inputs it reads and the paths it shares with other work, concrete execution steps, declared stop conditions, completion checks written as actual commands, and progress; deleted once done or cancelled |
+| Verification | What to check and how, and failures that still stand; passing results are in the commit message |
+| Open items and decisions | Questions still to settle, their impact and next action (deleted once the answer is in its owner), and actual decisions |
 
-독립적으로 관리하는 요구사항과 공유 설계·계약은 각각의 소유 문서로 연결합니다. 낮은 위험의 작은 작업은 [간단한 문서화 기준](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change)에 따라 빠진 로컬 설계·계획·검증을 작업 문서 안에 구분해 적습니다. 이미 있는 소유 문서는 그대로 참조하며, 그 내용이 실제로 바뀔 때만 갱신합니다.
+Independently managed requirements and shared designs or contracts have their own linked documents. For bounded low-risk work, [compact documentation](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change) keeps missing local approach, plan and verification definitions in distinct sections of the work document. Existing owners stay in place and are updated only when their facts change.
 
-예를 들어 **사용자 검색**과 **CSV 내보내기**는 각각의 요구사항입니다. “검색 결과가 없으면 0 표시”는 검색 요구사항 안의 세부 조건입니다. 검색 기능의 오류를 고칠 때는 그 요구사항을 그대로 참조합니다.
+For example, **user search** and **CSV export** are separate requirements. “Display zero when no results match” is a condition within the search requirement. Fixing a search defect continues to reference that requirement.
 
-문서는 `project-docs/user/user-search.md`처럼 프로젝트 루트 기준 경로로 식별하며, 별도 채번은 하지 않습니다. 제목이 바뀌어도 경로는 유지하고, 승인된 이동·이름 변경에서는 연결된 링크를 함께 고칩니다. 문서 간 관계는 이름의 유사성이 아닌 실제 링크로 확인합니다. 특정 검토·검증 결과는 경로와 함께 커밋이나 버전을 지정합니다. 세부 기준은 [문서 식별](docs/DATA_MODEL.md#item-identity)을 따릅니다.
+Documents use project-root-relative paths such as `project-docs/user/user-search.md` as identity, without separate numbering. Preserve paths when titles change; repair incoming links during authorized moves or renames. Relationships come from actual links, not similar names. Identify reviewed or tested versions by their commit/version and path. See [item identity](docs/DATA_MODEL.md#item-identity).
 
-## 이렇게 요청하면 됩니다
+## Example requests
 
-필수 입력은 "어느 기능을 어떻게" 하나입니다. 파일 경로나 폴더명을 몰라도 됩니다. 에이전트가 개요와 계획에서 설명에 맞는 문서를 찾고, 어느 항목으로 해석했는지 해당 문서 경로와 함께 보고합니다. 후보가 여럿이면 수정 전에 고르게 하고, 맞는 항목이 없으면 새로 만들지 않고 알려 줍니다.
+The only required input is which feature and what to do with it. You do not need file paths or folder names. The agent finds the matching documents in the overview and plans and reports which items it resolved to, with their owning paths. When several items could match, it presents the candidates before editing; when nothing matches, it says so instead of creating a new item.
 
-나머지는 기본값이 있어 다르게 하고 싶을 때만 덧붙입니다.
+Everything else has a default and is added only when you want something different.
 
-| 선택 줄 | 기본값 | 덧붙이는 예 |
+| Optional line | Default | Example addition |
 |---|---|---|
-| 정지점 | 요청이 허용한 범위와 정지점 안에서 준비된 단계를 계속 진행 | `계획까지만`, `작업 정의까지만` |
-| 제외 범위 | 운영 배포·운영 데이터·비밀정보·최종 인수는 말하지 않아도 별도 승인 필요 | `공유 API 계약은 수정하지 말고 제안만` |
-| 영역 | 계획 이후에는 항목의 기록에서 유도 | `인증 영역` |
+| Stopping point | Continue through ready stages within the request's authority and stopping point | `plan only`, `define the task only` |
+| Exclusions | Production deployment, production data, secrets and final acceptance need separate approval even if unstated | `propose changes to the shared API contract, do not edit it` |
+| Area | Derived from the item record after planning | `authentication area` |
 
-계획 단계에서 영역을 알려 주면 이후에는 항목의 기록에서 찾습니다. 여러 영역에 걸친 기능도 요청 범위와 작업 소유권이 명확하면 진행합니다. 다른 사람의 미커밋 작업은 보존하고, 실제 수정 범위가 겹치거나 소유권이 불분명한 부분만 확인합니다. 같은 영역이라는 이유만으로 독립적인 작업을 멈추지는 않습니다.
+Name the area during planning; later requests can use the item records. A feature spanning several areas can proceed when the requested scope and ownership are clear. The agent preserves others' uncommitted work and clarifies actual edit overlap or uncertain ownership. Being in the same area does not alone stop independent work.
 
-아래 `〈 〉`는 채워 넣는 자리이고, 필요 없는 줄은 지웁니다.
+`〈 〉` marks a placeholder; delete lines you do not need.
 
-### 계획 단계: 영역을 말합니다
+### Planning stage: name the area
 
-**기존 프로젝트 분석**
+**Analyze an existing project**
 
-> 현재 코드와 문서를 분석해서 구현된 기능과 남은 작업을 정리해 줘.
-> 코드에서 확인한 사실, 추정한 의도, 확인된 고객 요구사항을 구분해 줘.
-> 이번에는 분석과 계획까지만 진행해.
+> Analyze the current code and documents and identify implemented features and remaining work.
+> Distinguish observed facts, inferred intent and confirmed customer requirements.
+> Stop after analysis and planning this time.
 
-**팀 작업 준비**
+**Set up team work**
 
-> 이 프로젝트는 〈3〉명이 각자 별도 작업 트리와 브랜치에서 작업하고 PR로 합친다.
-> 영역은 〈인증(src/auth), 백엔드 API(src/api), 화면(web)〉으로 나눈다.
-> 작업 배정과 진행 상태는 〈GitHub Issues〉가 갖고, 문서에서 해당 이슈를 링크한다.
-> 개요에 영역, 문서 경로 규약, 작업 상태를 두는 곳, 변경 방식을 기록해 줘.
+> This project has 〈3〉 people, each using a separate worktree on their own branch and merging through pull requests.
+> The areas are 〈authentication (src/auth), backend API (src/api), screens (web)〉.
+> Task assignment and status live in 〈GitHub Issues〉, and documents link the relevant issues.
+> Record the areas, document path conventions, where task status lives and how changes land in the overview.
 
-에이전트가 개요에 영역 목록, 경로 규약, 트래커 지정, 변경 방식을 적습니다. 트래커의 이슈 키는 그대로 참조하고, Markdown 문서에는 별도 순번을 붙이지 않습니다. 이 예시처럼 각자 작업 트리와 브랜치, 이슈 담당자, 검토된 PR 병합으로 작업하면 별도 소유자 표는 필요 없습니다. 공유 문서도 승인된 범위에서 같은 병합 절차로 변경할 수 있습니다.
+The agent records the area list, path conventions, tracker designation and change flow in the overview. Reference tracker keys as issued; do not add sequence numbers to Markdown documents. With separate worktrees and branches, issue assignees and reviewed pull-request merges as in this example, no separate owner table is needed. Shared documents can change within authorized scope through the same merge process.
 
-브랜치를 합치기 전에는 같은 경로에 서로 다른 항목을 만들었는지, 서로 다른 경로에 같은 정의를 중복 작성했는지 확인합니다. 소유자와 내용을 정리하고 주제·역할이 구분되는 경로로 참조를 고칩니다. 적용 기준은 [경로 충돌과 통합](docs/DATA_MODEL.md#branch-path-collisions-and-integration)을 따릅니다.
+Before integration, check for different items created at one path and duplicate definitions created at different paths. Reconcile ownership and content, choose distinct subject or role names, and repair references under [path collisions and integration](docs/DATA_MODEL.md#branch-path-collisions-and-integration).
 
-**합류하며 현재 상태 확인**
+**Join and check the current state**
 
-> 이 프로젝트에 참여한다. 내가 맡을 영역은 〈인증〉이야.
-> 개요와 내 영역의 항목을 읽고, 현재 단계, 배정된 작업, 미결사항과 막힌 부분을 알려 줘.
-> 문서는 수정하지 말고 보고만 해.
+> I am joining this project. The area I will work in is 〈authentication〉.
+> Read the overview and my area's items, and tell me the current stage, assigned tasks, open items and blockers.
+> Report only; do not edit documents.
 
-영역이 하나뿐인 작은 프로젝트면 첫 줄은 "현재 상태를 알려 줘"로 충분합니다.
+In a small project with a single area, the first line can simply be "tell me the current state".
 
-**새 기능 계획**
+**Plan a new feature**
 
-> 〈인증 영역〉에 〈비밀번호 재설정 링크 만료〉 기능을 계획해 줘.
-> 요구사항·설계·상세 계획까지만 작성하고, 다른 영역에 영향이 있으면 표시해 줘.
+> Plan a 〈password reset link expiry〉 feature in the 〈authentication area〉.
+> Write the requirement, design and detailed plan only, and flag any impact on other areas.
 
-**새 작업 정의**
+**Define a new task**
 
-> 〈인증 영역〉에 새 작업을 만들어 줘.
-> 내용: 〈잠금 해제 요청을 관리자에게 알림〉. 〈계정 잠금〉 요구사항에 속해.
-> 영역의 경로 규약에 맞게 주제를 드러내는 파일을 만들고, 해당 계획의 작업 목록에 링크해 줘.
-> 작업 정의까지만 하고 구현은 하지 마.
+> Create a new task in the 〈authentication area〉.
+> Content: 〈notify an administrator when an unlock is requested〉. It belongs to the 〈account lockout〉 requirement.
+> Create a descriptive file under the area's path conventions and link it in that plan's task list.
+> Define the task only; do not implement it.
 
-요구사항에 없는 동작이면 에이전트가 요구사항 변경이 먼저라고 알립니다.
+If the behavior is not in any requirement, the agent reports that a requirement change comes first.
 
-### 계획 이후: 기능만 말합니다
+### After planning: name only the feature
 
-**정의된 작업 구현**
+**Implement a defined task**
 
-> 〈로그인 실패 5회 시 계정 잠금〉 작업을 진행해 줘.
-> 작업 문서를 시작점으로 현재 적용할 요구사항·설계·결정을 확인해.
-> 작업 문서의 실행 내용과 완료 검사를 따르고, 검증까지 진행해.
+> Work on the 〈lock the account after five failed sign-ins〉 task.
+> Start from its task document and check the currently applicable requirements, design and decisions.
+> Follow the task document's actions and completion checks, and continue through verification.
 
-에이전트는 어느 작업인지 먼저 알려 줍니다. 다른 영역의 문서나 공유 계약도 승인 범위와 소유권·통합 규칙에 포함되면 수정합니다. 범위 밖의 변경은 제안하고, 다른 담당자가 소유한 파일의 변경은 그 담당자에게 전달하거나 합의된 병합 절차를 따릅니다. 완료 보고에는 실제로 돌린 검사와 결과가 들어갑니다.
+The agent first states which task it is. Documents of other areas and shared contracts can be edited when covered by the authorized scope and ownership/integration rules. Uncovered changes remain proposals; changes to another writer's files go through that owner or the agreed merge process. The completion report lists the checks actually run and their results.
 
-**오류 수정**
+**Fix a defect**
 
-> 〈로그인 실패 후 잠금 안내가 표시되지 않는〉 문제를 수정해 줘.
-> 원인과 영향 범위를 먼저 알려 주고, 수정 후 〈잠금 전·잠금 시·잠금 해제 후〉를 확인해 줘.
+> Fix 〈the lock notice not appearing after failed sign-ins〉.
+> Report the cause and affected scope first, then after the fix check 〈before lock, at lock and after unlock〉.
 
-증상으로 관련 요구사항을 찾아 유효한 정의와 검증을 재사용합니다. 수정 자체를 별도 요구사항으로 만들지는 않습니다. 기존 관리 기록이 없고 한 작성자가 하나의 간단한 작업을 처리한다면, [간단한 문서화 조건](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change)에 따라 작업 문서 하나가 개요도 겸할 수 있습니다. 그 안에서 프로젝트 맥락·기대 동작·접근 방법·수행 순서·아직 유효한 실패를 구분하고, 실제 검증은 커밋 메시지에 남깁니다. 독립 항목이나 동시 작성자가 늘어나면 개요를 분리합니다. [작은 수정 예시](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents)를 참고하세요.
+The agent finds the related requirement from the symptom and reuses applicable definitions and verification. The correction itself does not become a separate requirement. One writer handling one compact item without management records can use a single work document that also serves as its overview, subject to the [compact documentation conditions](docs/DATA_MODEL.md#minimum-documentation-for-a-small-change). Distinguish project context, expected behavior, approach, steps and failures that still stand there; the commit message carries the actual verification. Additional independent items or concurrent writers require a separate overview. See the [small correction without existing documents](docs/EXAMPLE_WEB_PROJECT.md#small-correction-without-existing-management-documents).
 
-**개발 중 계획 보완**
+**Revise the plan during development**
 
-> 개발 중 확인한 〈라이브러리의 응답 형식〉이 계획의 가정과 달라.
-> 기존 요구사항과 계약을 유지하면서 원인을 조사하고, 확인한 결과로 영향받는 설계·작업·검증 계획을 갱신해 줘.
-> 새 동작이나 범위를 결정해야 하는 부분은 알려 주고, 준비된 작업은 계속해.
+> The observed 〈library response format〉 differs from the plan's assumption.
+> Investigate while preserving the existing requirements and contracts, then update the affected design, work instructions and planned checks from the findings.
+> Tell me where a new behavior or scope decision is needed, and continue ready work.
 
-확인이 필요한 기술적 사실은 허용된 조사나 제한된 실험으로 확인합니다. 그 결과로 영향받는 계획을 보완하고, 적용 가능한 기존 검토와 검증은 재사용합니다. 실험을 계획했다는 사실이나 계획서를 고쳤다는 사실을 제품 검증 성공으로 기록하지 않습니다.
+Resolve technical questions through authorized investigation or a bounded experiment. Use the findings to revise the affected plan and reuse applicable planning and verification evidence. Planning an experiment or revising a document does not establish passed product verification.
 
-**변경 영향 검토**
+**Review a proposed change**
 
-> 〈세션 만료 시간을 30분에서 15분으로〉 바꾸려고 해.
-> 관련 요구사항, 공유 계약, 다른 영역의 작업과 검증에 미치는 영향을 정리해 줘.
-> 다른 영역의 결정이 필요한 부분을 따로 표시해 줘. 아직 수정하지는 마.
+> I want to change 〈the session timeout from 30 to 15 minutes〉.
+> Summarize the impact on related requirements, shared contracts, and other areas' tasks and verification.
+> Mark the parts that need a decision in another area. Do not edit yet.
 
-**공유 문서 변경 요청**
+**Request a change to a shared document**
 
-> 〈로그인 API〉 응답에 〈잠금 상태 필드〉 추가가 필요해.
-> 직접 고치지 말고, 변경 내용·이유·영향을 정리한 제안만 남겨 줘.
-> 제안이 반영될 때까지 이 입력에 의존하는 작업은 대기로 표시하고, 독립적인 작업은 계속해.
+> The 〈sign-in API〉 response needs 〈a lock-status field〉.
+> Do not edit it; leave a proposal with the change, reason and impact.
+> Mark work that depends on this input as waiting until the proposal is applied, and continue independent work.
 
-**진행 현황과 요구사항 추적 확인**
+**Check progress and requirement trace**
 
-> 현재 프로젝트 문서를 기준으로 진행 현황을 정리해 줘.
-> 요구사항별로 설계·계획·작업·검증이 어디까지 연결됐는지, 연결이 끊긴 곳과 막힌 부분을 알려 줘.
-> 문서는 수정하지 말고 보고만 해.
+> Summarize the current project progress from the project documents.
+> For each requirement, show how far design, plan, tasks and verification are linked, and where links or work are missing or blocked.
+> Report only; do not edit the documents.
 
-개요 요약과 상세 기록이 다르면 상세 기록을 기준으로 보고하고 그 차이를 알려 줍니다.
+Where an overview summary and the owning record differ, the owning record is reported and the difference is flagged.
 
-**정기 보고 작성** (주간 보고처럼 일정에 맞춰 제출해야 하는 경우)
+**Prepare a scheduled report** (a weekly or milestone report the project owes)
 
-> 이번 주 〈수요일 제출〉 보고를 준비해 줘. 진척 수치는 〈WBS 최신본〉 기준으로만 쓰고,
-> 오늘까지 확정된 것만 완료로, 제출일까지 예정인 것은 예정으로 구분해 줘.
-> 확인되지 않은 항목은 임의로 채우지 말고 확인 필요로 남겨 줘.
+> Prepare the report due 〈Wednesday〉. Take every progress figure from 〈the current WBS〉 only.
+> Report what is confirmed as of today as done, and what is planned before the due date as planned.
+> Leave anything unconfirmed as unconfirmed instead of filling it in.
 
-정기 보고는 요청할 때마다 뽑는 현황 보고와 달리 제출물입니다. 주기와 작성·제출 시점, 회차별 기록, 진척 수치의 단일 출처를 정해 두고, 작성 시점에 확정된 것과 그 이후 예정인 것을 섞지 않습니다. 이미 제출한 회차는 나중 사실에 맞춰 고치지 않고 다음 회차에서 정정하며, 현재 위치는 보고서가 아니라 원래 기록에 남습니다. 고객에게 나가는 보고서는 소통용이지 개발 요구사항이나 상태의 출처가 아닙니다.
+A scheduled report is a deliverable, not a status summary produced on request. Its cadence, writing and delivery points, per-issue records and the single source for each figure are fixed in advance, and what is confirmed at the writing point is not mixed with what is merely expected before delivery. An issued report is not rewritten to match later facts; it is corrected in the next issue, and the current position stays in the owning records rather than in the report. A report written for a customer is communication, not a source of requirements or status.
 
-**막힘 보고와 미결사항 등록**
+**Report a blocker and record an open item**
 
-> 〈계정 잠금〉 작업이 〈로그인 API에 잠금 상태 응답 정의가 없어서〉 막혔어.
-> 미결사항으로 등록하고, 영향받는 작업, 해결 조건, 담당자, 필요한 시점을 적어 줘.
-> 막히지 않은 나머지 작업은 계속 진행해.
+> The 〈account lockout〉 task is blocked because 〈the sign-in API has no lock-status response definition〉.
+> Record it as an open item with affected work, resolution criterion, owner and needed-by point.
+> Continue the remaining unblocked work.
 
-**통합 전 점검**
+**Prepare for integration**
 
-> 내 변경을 통합할 준비를 해 줘.
-> 변경된 문서와 코드의 diff, 실제 돌린 검증, 실패하거나 못 돌린 검사를 정리하고, 문서 경로·앵커·링크가 규칙에 맞는지 확인해 줘.
-> fetch 후 〈main〉과 충돌이 있으면 알려 주고, 푸시는 내가 확인한 뒤에 해.
+> Prepare my changes for integration.
+> Summarize the diff of changed documents and code, the verification actually run, and checks that failed or did not run, and confirm document paths, anchors and links follow the rules.
+> Fetch and tell me about conflicts with 〈main〉; push only after I confirm.
 
-**다음 세션이나 담당자에게 인계**
+**Hand off to another session or contributor**
 
-> 내 담당 항목의 지금까지 변경과 실제 검증 결과를 정리해 줘.
-> 미완료 작업, 막힌 이유, 대기 중인 공유 문서 변경, 다음 담당자가 먼저 할 일을 포함해 줘.
+> Summarize the changes to my assigned items so far and the actual verification results.
+> Include unfinished work, blockers, pending shared-document changes and what the next contributor should do first.
 
-## 실행 결정과 변경은 어떻게 처리하는가
+## Implementation decisions and changes
 
-사용자는 목표, 우선순위, 제약과 실행할 범위를 결정합니다. 에이전트는 그 안에서 기술적인 내용을 조사하고 상세 계획·구현·검증을 수행합니다.
+You decide the goals, priorities, constraints and execution scope. Within that scope, the agent investigates technical details and performs detailed planning, implementation and verification.
 
-판단을 맡긴 경우에는 [위임된 대상과 한계](docs/APPROVALS.md#decision-requests-and-delegated-judgment)를 기록하고, 에이전트가 그 안에서 선택한 이유를 남깁니다. 이미 맡긴 선택과 통상적인 구현 판단은 다시 묻지 않습니다. 새 기획 버전이나 계획이 생겨도 실제 위임 범위가 계속 적용되는지 확인합니다.
+When you delegate judgment, the agent records the [subject and limits](docs/APPROVALS.md#decision-requests-and-delegated-judgment), then records its choice and rationale within them. Delegated choices and routine implementation decisions need no repeated approval. A new specification version or plan prompts a coverage check against the actual delegation.
 
-지시와 기획, 계약, 현행 코드, 임시 산출물이 서로 다를 때는 정해진 [근거 우선순위](docs/DEVELOPMENT_METHOD.md#input-precedence)를 따릅니다. 더 최근이거나 더 자세하다는 이유로 낮은 근거가 높은 근거를 이기지 않으며, 충돌 자체는 해당 문서에 남깁니다.
+When an instruction, a specification, a contract, the running code and provisional material disagree, the agent follows a fixed [input precedence](docs/DEVELOPMENT_METHOD.md#input-precedence). A lower basis does not win by being newer or more detailed, and the conflict itself is recorded where it belongs.
 
-결과나 비용, 데이터 처리, 외부 서비스 이용 등 중요한 약속이 달라지면 변경의 이유와 영향을 제시하고 필요한 결정을 확인합니다. 운영 배포·운영 데이터 변경·파괴적 작업·비밀정보 접근·최종 고객 인수에는 해당 대상과 효과에 맞는 구체적인 승인과 보호 절차가 적용됩니다. 실제 외부 발신에도 명시적인 권한이 필요합니다. 세부 경계는 [결정 기준](docs/APPROVALS.md)과 [보안 정책](docs/SECURITY.md)에 있습니다.
+When a material commitment changes, such as behavior, cost, data handling or use of an external service, the agent presents the reason and impact and obtains any needed decision. Production deployment, production data changes, destructive actions, protected-credential access and final customer acceptance need specific authorization and safeguards for the subject and effect. Sending external messages also needs explicit authority. See [decisions](docs/APPROVALS.md) and [security](docs/SECURITY.md) for the boundaries.
 
-파일을 수정하기 전에 관련 정의·참조·의존성과 영향받는 검사를 조사할 것을 권고합니다. 조사 범위는 예상 영향에 맞추고, 유효한 기존 조사 결과를 재사용합니다. 수정할 때는 기존의 유효한 내용을 재사용하고, 영향받는 소유 문서만 갱신합니다. 공용 함수나 API가 바뀌면 소비 코드·테스트·요구사항을 확인합니다. [다른 작업에 걸친 수정](docs/WORKFLOW.md#fixes-across-work-item-boundaries)은 담당 작업에 연결하고, 미루면 책임자·다음 행동·필요 시점을 남깁니다. 개요는 자체 범위·의존성·탐색 경로가 바뀔 때 갱신합니다.
+Before editing a file, we recommend investigating its related definitions, references, dependencies and affected checks. Scale the investigation to the expected impact and reuse current findings. For a correction, reuse applicable content and update affected owners. Changes to shared functions or APIs require checking consumers, tests and requirements. [Corrections across tasks](docs/WORKFLOW.md#fixes-across-work-item-boundaries) link to owning work; deferred corrections retain responsibility, a next action and a needed-by point. Update the overview when its own scope, dependencies or navigation change.
 
-사용자 프롬프트나 응답을 문서나 커밋 메시지에 그대로 적거나 인용하지 않습니다. 일반적인 결정에는 요청 출처나 결정에 이른 대화의 설명을 남길 필요가 없습니다. 결정된 내용·범위·제약을 기록하고, 적용이나 검증에 필요한 기술적 근거만 남깁니다. 별도로 요구되는 승인·인수 증빙은 해당 규칙을 따릅니다. 세부 기준은 [결정 기록](docs/APPROVALS.md#preparing-and-recording-one-decision)에 있습니다.
+Do not copy or quote user prompts or replies into documents or commit messages. Routine decisions need no request-origin note or account of the conversation behind them. Record the decided content, scope and constraints, keeping technical rationale only when needed for application or verification. Separately required approval and acceptance evidence follows its owning rules. See [decision recording](docs/APPROVALS.md#preparing-and-recording-one-decision).
 
-대화에서 결정이 확정되면, 그 결정에 의존하는 다음 작업 전에 해당 원본에서 대체되는 지시를 새 결정으로 바꿉니다. 다음 세션이 대화 기록을 찾아야만 최신 결정을 알 수 있는 상태로 두지 않습니다. 보고만 요청한 경우에는 파일을 수정하지 않고 필요한 변경을 보고합니다.
+When a decision is settled in conversation, replace the instruction it supersedes in its owner before the next action that depends on it. The next session should not need to recover the conversation to discover the current decision. For a report-only request, report the needed amendments without editing files.
 
-여러 에이전트가 동시에 파일을 쓰려면 작성자마다 별도 작업 트리나 clone을 사용하고, 한 작업 트리에서는 파일을 쓰는 에이전트를 한 번에 하나만 실행합니다. 세부 기준은 [협업](docs/COLLABORATION.md#concurrent-writers)을 따릅니다. 필요한 계약이나 입력을 기다리는 작업은 대기하고, 준비된 독립 작업은 계속할 수 있습니다.
+Concurrent agents use a separate worktree or clone for each writer, and a single working tree runs one writing agent at a time; see [collaboration](docs/COLLABORATION.md#concurrent-writers). Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue.
 
-### 에이전트가 멈추고 묻는 경우
+### When the agent stops and asks
 
-다음 상황에서는 에이전트가 해당 작업을 멈추고 결정이나 입력을 요청합니다. 영향받지 않는 다른 작업은 계속합니다.
+In these situations the agent stops the affected work and asks for a decision or input. Unaffected work continues.
 
-- **요청만으로 결과를 정할 수 없을 때.** "이거 개선해 줘"처럼 목표가 없어 에이전트가 사용자 대신 결과를 골라야 하는 경우.
-- **기존 권한을 벗어나는 중요한 약속이 생길 때.** 동작·인수 기준, 다른 시스템이 의존하는 인터페이스, 데이터 수집·보관·삭제, 보안·권한 경계, 비용·외부 서비스·납기, 이전 결정의 전제. 변경 전후를 정리해 결정을 요청합니다.
-- **고위험 경계에 닿을 때.** 운영 배포, 운영 데이터 변경, 파괴적 작업, 비밀정보 접근, 최종 고객 인수. 일반적인 구현 승인으로는 부족하고, 대상·버전·효과가 특정된 사람의 결정이 필요합니다.
-- **필수 입력이 없을 때.** 실제 수정 범위가 다른 사람의 작업과 겹쳐 조정이 필요할 때, 여러 후보 중 어느 항목을 뜻하는지 불분명할 때, 자료 조사로 해소할 수 없는 범위·동작 선택이 필요할 때.
-- **근거가 흔들릴 때.** 권한 출처가 불확실하거나, 소유권이 충돌하거나, 현재 증거가 서로 모순될 때.
+- **The request alone cannot fix the outcome.** "Improve this" with no target, where the agent would have to choose the result for you.
+- **A material commitment exceeds existing authority.** Behavior or acceptance criteria, interfaces other systems rely on, data collection, retention or deletion, security or permission boundaries, cost, external services or delivery promises, or the assumptions behind an earlier decision. The agent presents the before and after and asks for a decision.
+- **A high-risk boundary is reached.** Production deployment, production data changes, destructive operations, secret access and final customer acceptance. Ordinary implementation approval is not enough; a human decision naming the subject, version and effect is needed.
+- **Essential input is missing.** Actual edit overlap with another writer needs coordination, the intended item is unclear among several candidates, or a scope/behavior choice cannot be resolved from available sources.
+- **The basis is unreliable.** Uncertain authority provenance, an ownership conflict, or contradictory current evidence.
 
-반대로 다음은 묻지 않고 진행합니다. 파일명·테스트 명령을 모르는 것, 작업을 나누거나 순서를 바꾸는 것, 같은 범위의 다음 작업을 시작하는 것, 계획 완료 자체에 대한 승인. 명확한 수정 요청은 그 자체가 범위 결정이므로 "진행할까요?"를 다시 묻지 않습니다.
+The agent does not ask about the following. Unknown filenames or test commands, splitting or reordering tasks, starting the next task in the same scope, or approval of planning completion itself. A clear fix request is its own scope decision, so the agent does not ask "shall I proceed?" again.
 
-## 무엇을 검증했고 무엇이 완료됐는가
+## Verification and completion
 
-결과 보고에서는 다음 세 가지를 확인하면 됩니다.
+Look for three things in a result report:
 
-1. **처리한 범위:** 어떤 요구사항과 작업을 다뤘고, 각 작업의 상태는 무엇인가.
-2. **실제로 확인한 결과:** 어떤 버전·환경에서 무엇을 검사했고 무엇이 통과하거나 실패했는가.
-3. **남은 일:** 실행하지 못한 검사, 미해결 문제, 필요한 결정과 다음 행동은 무엇인가.
+1. **Scope addressed:** which requirements and tasks were worked on, with each task's state.
+2. **Observed results:** what was checked, against which version and environment, and what passed or failed.
+3. **Remaining work:** unrun checks, unresolved issues, required decisions and next actions.
 
-계획 완료, 구현 완료, 검증 완료, 고객 인수와 프로젝트 종료는 각각 다른 상태입니다. 문서나 코드가 준비됐다는 사실만으로 실제 동작이나 고객 인수가 확인되지는 않습니다. 실패·미실행·부분 확인은 그 상태 그대로 보고합니다. 프로젝트의 빌드·테스트·검사 명령과 각 명령이 실행되는 곳(로컬, CI)은 정해지는 대로 루트 진입 파일에 기록됩니다. 스테이징 같은 공유 검증 환경은 개요에 기록되며, 검증 결과는 이 둘을 참조합니다.
+Planning completion, implementation, verification, customer acceptance and project closure are distinct. Prepared documents or existing code do not by themselves establish working behavior or customer acceptance. Failed, unrun and partial checks are reported as such. Once decided, the project's build, test and check commands and where each runs (locally or in CI) are recorded in its root entry file. Shared verification environments, such as staging, are recorded in the overview, and verification results refer to both.
 
-검사는 주장이 가리키는 실제 대상에서, 확인하려는 결과와 잡아내야 할 실패를 기준으로 고릅니다. 대역(fixture·샘플·mock)의 결과는 그 대역에 대한 증거일 뿐이고, 요소 존재 검사만으로 화면에서 읽을 수 있다고 판단하지 않습니다. 화면·그래픽은 공통 표현을 넓히기 전에 실제 제품의 대표 결과를 확인하고, 재미·사용성 같은 [제품 가정](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions)은 관련 작업을 넓히기 전에 확인 방법과 시점을 계획합니다. 세부 기준은 [검증과 완료](docs/WORKFLOW.md#verification-and-completion)를 따릅니다.
+Checks run against the subject the claim names and are chosen from the intended result and the failure they must detect. A result from a stand-in — a fixture, a copied sample, a mock — is evidence about that stand-in, and element existence alone cannot establish readability in the rendered product. For UI and graphics, a representative result in the actual product is checked before a shared treatment is extended, and [product assumptions](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions) such as enjoyment or usability get a planned check before dependent work expands. See [verification and completion](docs/WORKFLOW.md#verification-and-completion).
 
-작업이 막히면 원인과 영향받는 범위를 알려 줍니다. 인계할 때는 한 일과 필요한 입력을 커밋 메시지에 적고, 다음 행동은 해당 작업 문서에 둡니다.
+If work is blocked, the report identifies the cause and affected scope. A handoff states in the commit message what was done and which inputs are needed; the next action stays in the work item.
 
-문서 링크와 제목 앵커는 `node tools/check-docs.mjs [문서 경로]`로 직접 확인할 수 있습니다. 하네스를 적용한 프로젝트에서는 사본 경로로 실행합니다(예: `node harness/tools/check-docs.mjs project-docs`). Node만 있으면 되고 파일을 고치지 않으며, 검사 범위는 [문서 검사기](docs/CONTEXT_EFFICIENCY.md#document-checker)에 있습니다.
+You can check document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. In an adopting project, run it from the harness copy, such as `node harness/tools/check-docs.mjs project-docs`. It needs only Node and changes no files; its scope is described under [document checker](docs/CONTEXT_EFFICIENCY.md#document-checker).
 
-### 상태와 검증 종류
+### States and verification kinds
 
-정책은 다음을 서로 구분해 보고하도록 요구합니다. 보고나 커밋 메시지에는 라벨과 함께 실제 방법·환경·대상 버전·결과·한계를 적으므로, 라벨만으로 판단하지 않습니다. 정의는 [작업 상태](docs/WORKFLOW.md#task-states)와 [검증과 완료](docs/WORKFLOW.md#verification-and-completion)에 있습니다.
+The policy requires these to be kept distinct. A report or commit message carries the actual method, environment, subject version, result and limits alongside each label, so the label alone is never the judgment. The definitions are in [task states](docs/WORKFLOW.md#task-states) and [verification and completion](docs/WORKFLOW.md#verification-and-completion).
 
-**작업 상태.** 작업은 PLANNED, IN_PROGRESS, BLOCKED, IMPLEMENTED(변경은 끝났지만 완료 검사를 다 돌리지 못함), DONE(작업 자체의 완료 검사 통과), CANCELLED 중 하나입니다. DONE이 인수나 종료를 뜻하지는 않습니다. 끝났거나 취소된 작업 문서는 지웁니다.
+**Task states.** A task is PLANNED, IN_PROGRESS, BLOCKED, IMPLEMENTED (changes made, completion checks not all run), DONE (its own completion checks passed) or CANCELLED. DONE does not mean acceptance or closure. A done or cancelled task's document is deleted.
 
-**검증 종류.** 한 줄로 이어진 단계가 아니라 서로 다른 종류입니다. 브라우저 검사를 했다고 통합 검사를 한 것은 아닙니다.
+**Verification kinds.** These are separate kinds, not steps on one scale. A browser check does not imply an integration check.
 
-| 종류 | 뜻 | 증명하지 않는 것 |
+| Kind | Meaning | What it does not prove |
 |---|---|---|
-| STATIC_VERIFIED | 실행 없이 확인하는 검사(컴파일, 정적 분석, 문서·링크 검사 등)를 통과했습니다. | 실제 동작이나 통합. |
-| INTEGRATION_VERIFIED | 연결된 구성 요소를 검사 환경에서 함께 실행해 확인했습니다. | 실제 화면 동작이나 운영 환경. |
-| BROWSER_VERIFIED | 실제 브라우저나 사용자 인터페이스를 통해 확인했습니다. | 운영 환경의 데이터·설정. |
-| LIVE_ENV_VERIFIED | 운영 또는 운영과 같은 환경에서 확인했습니다. | 고객의 인수. |
+| STATIC_VERIFIED | Checks that need no execution passed, such as compilation, static analysis and document or link checks. | Actual behavior or integration. |
+| INTEGRATION_VERIFIED | Connected components were run together in a check environment. | Real screen behavior or the live environment. |
+| BROWSER_VERIFIED | Confirmed through a real browser or user interface. | Live-environment data and configuration. |
+| LIVE_ENV_VERIFIED | Confirmed in the live environment or one equivalent to it. | Customer acceptance. |
 
-**검증 밖의 상태.** 계획 완료는 계획 완료 검사를 통과했다는 뜻이며 실행 권한은 아닙니다. CUSTOMER_ACCEPTED는 권한 있는 고객이 특정 후보 버전을 명시적으로 인수했다는 뜻이며, 인계·유지보수 의무까지 끝났다는 뜻은 아닙니다. CLOSED에는 무엇을 닫았는지(미결사항, 릴리스, 프로젝트)를 항상 함께 적습니다. 프로젝트 종료는 기여한 모든 작업과 인수·전달·인계·유지보수 의무가 처리된 상태입니다.
+**Beyond verification.** Planning complete means the planning completion checks passed; it is not authority to execute. CUSTOMER_ACCEPTED means the authorized customer explicitly accepted a specific candidate version; it does not complete handover or maintenance obligations. CLOSED always names what was closed: an open item, a release or the project. Project closure means all contributing work and the acceptance, delivery, handover and maintenance obligations are settled.
 
-확인은 했지만 통과는 아닌 경우, 필요한 입력이 없어 검사할 수 없는 경우, 재작업이 필요한 경우, 해당되지 않는 경우는 각각 따로 적고 통과 집계에 넣지 않습니다. 나중의 검사가 앞선 통과를 뒤집으면 그 통과를 명시적으로 철회하고, 뒤집은 근거를 아직 유효한 실패로 해당 문서에 남깁니다. 세부 기준은 [검증과 완료](docs/WORKFLOW.md#verification-and-completion)와 [검증 재사용](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification)을 따릅니다.
+A subject examined without passing, one that cannot be checked because a required input is missing, one needing rework and one the criteria do not apply to each carry their own disposition and stay out of pass counts. When a later check overturns an earlier pass, the pass is withdrawn explicitly, and the overturning finding stays in the owning document as a failure that still stands. See [verification and completion](docs/WORKFLOW.md#verification-and-completion) and [verification reuse](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification).
 
-### 결과 보고 예시
+### Example result report
 
-"로그인 실패 5회 시 계정 잠금" 작업을 검증까지 진행한 뒤의 보고는 대략 다음과 같습니다.
+After taking the "lock the account after five failed sign-ins" task through verification, the report looks roughly like this.
 
-> **처리한 범위**: `project-docs/auth/account-lock.md`의 `project-docs/auth/account-lock-task.md`. 잠금 카운터, 잠금 응답, 잠금 안내 화면 문구. `project-docs/auth/account-lock-plan.md`의 다른 작업은 손대지 않음.
+> **Scope addressed**: `project-docs/auth/account-lock-task.md` under `project-docs/auth/account-lock.md`. Lock counter, lock response and lock notice text. Other tasks in `project-docs/auth/account-lock-plan.md` untouched.
 >
-> **실제로 확인한 결과**: 커밋 9f3e21a, 로컬 Node 20 환경. `npm test` 47개 통과. 잠금 전·잠금 시·잠금 해제 후 시나리오를 통합 테스트로 확인: INTEGRATION_VERIFIED. 브라우저 확인은 하지 않음. 작업 상태: 계약 테스트 `project-docs/auth/lock-response-check.md`를 아직 돌릴 수 없어 IMPLEMENTED.
+> **Actually verified**: commit 9f3e21a, local Node 20 environment. `npm test`: 47 passed. Before-lock, at-lock and after-unlock scenarios confirmed by integration tests: INTEGRATION_VERIFIED. No browser check performed. Task state: IMPLEMENTED, because contract test `project-docs/auth/lock-response-check.md` cannot run yet.
 >
-> **남은 일**: `project-docs/auth/account-lock-api.md`에 잠금 상태 응답 필드가 아직 없어 `project-docs/auth/lock-response-question.md`으로 등록, 후속 담당 minsu, 다음 통합 전 필요. 잠금 해제 알림은 범위 밖. 다음 행동: `project-docs/auth/account-lock-api.md` 반영 후 계약 테스트 `project-docs/auth/lock-response-check.md` 실행.
+> **Remaining**: `project-docs/auth/account-lock-api.md` still lacks the lock-status response field, recorded as `project-docs/auth/lock-response-question.md`, follow-up by minsu, needed before the next integration. Unlock notification is out of scope. Next action: run contract test `project-docs/auth/lock-response-check.md` once `project-docs/auth/account-lock-api.md` is updated.
 
-이 보고에서 확인할 점은 세 가지입니다. 무엇을 검사했는지가 명령과 환경으로 적혀 있는가, 하지 않은 검사가 숨겨지지 않았는가, 막힌 것의 담당과 다음 행동이 있는가.
+Three things to check in such a report: whether what was checked is stated as a command and environment, whether any unrun check is hidden, and whether each blocker has an owner and a next action.
 
-이 정책은 개발 속도나 토큰 절감률을 보장하지 않습니다. 실제 효과는 계획의 품질, 프로젝트 특성과 적용 방식에 따라 달라집니다.
+The policy does not guarantee development speed or token savings. Results depend on planning quality, the project and how the guidance is applied.
 
-## 상세 문서 안내
+## Detailed documentation
 
-이 README는 사용자가 하네스의 목적과 사용 방식을 이해하기 위한 안내입니다. 에이전트는 [공통 정책의 작업별 읽기 기준](AGENTS.md#startup-and-context)에 따라 필요한 상세 규칙을 적용합니다.
+This README explains the harness for people using it. Agents apply the relevant detailed rules through the [shared policy's reading guide](AGENTS.md#startup-and-context).
 
-| 더 알고 싶은 내용 | 문서 |
+| To learn more about | Read |
 |---|---|
-| 전체 운영 원칙 | [공통 정책](AGENTS.md) |
-| 계획 깊이와 기존 프로젝트 분석 | [개발 방법](docs/DEVELOPMENT_METHOD.md) |
-| 문서 구성과 경로 | [정보 모델](docs/DATA_MODEL.md) |
-| 결정·권한·보호 경계 | [승인과 결정](docs/APPROVALS.md) · [보안](docs/SECURITY.md) |
-| 미결사항·진행·종료 | [진행 절차](docs/WORKFLOW.md) |
-| 병렬 작업과 인계 | [협업](docs/COLLABORATION.md) |
-| 기존 내용과 검증의 재사용 | [효율 지침](docs/CONTEXT_EFFICIENCY.md) |
-| 실제 적용 흐름 | [웹 프로젝트 예시](docs/EXAMPLE_WEB_PROJECT.md) |
+| Overall operating principles | [Shared policy](AGENTS.md) |
+| Planning depth and existing-project analysis | [Development method](docs/DEVELOPMENT_METHOD.md) |
+| Document organization and paths | [Information model](docs/DATA_MODEL.md) |
+| Decisions, permissions and protection | [Approvals](docs/APPROVALS.md) · [Security](docs/SECURITY.md) |
+| Open items, progress and closure | [Workflow](docs/WORKFLOW.md) |
+| Concurrent work and handoff | [Collaboration](docs/COLLABORATION.md) |
+| Reusing content and verification | [Context efficiency](docs/CONTEXT_EFFICIENCY.md) |
+| A worked project flow | [Web project example](docs/EXAMPLE_WEB_PROJECT.md) |
 
-## 라이선스
+## License
 
-이 프로젝트는 [Apache License, Version 2.0](LICENSE)에 따라 제공됩니다.
+This project is licensed under the [Apache License, Version 2.0](LICENSE).
