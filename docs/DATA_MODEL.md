@@ -523,7 +523,7 @@ Apply [item boundaries](#independent-items-and-supporting-detail), including
 
 ### Folders by area and purpose
 
-Group new documents by functional area or feature when no established layout exists.
+Group new documents by business division when no established layout exists.
 Record the document root and folder conventions in the project overview.
 Shared definitions have one designated owning location.
 Existing kind-based folders remain valid; do not migrate them automatically.
@@ -551,7 +551,24 @@ not an incremented suffix. Feature relationships may span folders through links.
 
 Choose and record a new area or purpose folder within authorized work when needed.
 The agent makes routine placement choices without asking the user to classify each document.
-Add deeper folders only when navigation needs them.
+
+Make subfolders by business division: the business areas the product serves,
+such as orders, payments or membership. Features of one division share its
+folder. Do not split folders by:
+
+- document kind or stage;
+- technical layer, such as backend and frontend;
+- individual feature or screen.
+
+When a module or product covers several divisions, give each its own folder.
+Documents shared by those divisions stay at the module folder's top. For
+example, a shop module uses `shop/order/` and `shop/payment/`, with their
+shared design in `shop/`.
+
+Create these folders when the overview first records folder conventions, from
+the divisions the scope already names. Moving documents later is a
+reorganization that needs a matching request and link repair, so a flat start
+tends to stay flat. Record the division folders in the overview.
 Do not create empty folders, placeholders or duplicate feature indexes.
 Shared conventions belong in the overview; detailed content stays with its owner.
 
