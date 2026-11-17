@@ -159,9 +159,10 @@ block work, failures that still stand and the current position. Requirements,
 designs, contracts, plans and tasks count as decisions. Update them in place
 under [current state only](docs/DEVELOPMENT_METHOD.md#current-state-only).
 Delete a decision once a later decision overturns it, a task once it is done
-or cancelled, and an open question once its answer is in its owner. The commit
-message carries the starting state, checks run and their results, and handoff notes. Version history carries the past; link a commit
-where current work depends on it.
+or cancelled, finished work from its plan, and an open question once its
+answer is in its owner. The commit message carries the starting state, checks
+run and their results, investigation results and handoff notes. Version
+history carries the past; link a commit where current work depends on it.
 
 - Keep these distinct: the [task state](docs/WORKFLOW.md#task-states)
   IMPLEMENTED; the [verification kinds](docs/WORKFLOW.md#verification-and-completion)

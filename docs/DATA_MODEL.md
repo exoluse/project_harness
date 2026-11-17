@@ -112,6 +112,15 @@ Length alone does not create a new item; use sections and navigation
 when accumulated supporting detail obscures scope, decisions or evidence.
 Record the chosen boundaries and rationale briefly in the overview or work note.
 
+Write each document so its next reader can scan it:
+
+- Keep table cells to short facts. Put rules, conditions and reasons in lists
+  or prose.
+- State ownership boundaries once, in the overview or the owning section.
+  Elsewhere, link the owner where the text relies on it.
+- A plan or task should let its next writer find scope, next action and checks
+  in one reading.
+
 Every unit links back to its overview and applicable shared specifications.
 Connect requirements and acceptance criteria to the covering design, planned
 work and planned checks. Use descriptive file or section links, optionally
@@ -223,6 +232,12 @@ Plans link to the owning task files. API contracts and screen specifications
 are inputs to plans, not plans themselves. Preserve established project
 meanings where they differ.
 
+Keep decisions that outlast the work in a design or specification owner. These
+include contracts, data rules and state transitions; the plan links them. Where
+an established plan already holds them, keep them in their own sections. When
+the plan's work ends, those sections remain and its work sections go, under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only).
+
 A task is a concrete output that the actual work assigns and completes as a
 separate unit. Implementation steps serving that output may stay in its file.
 Its owning task file follows the project's path convention and records:
@@ -280,6 +295,10 @@ targets it writes. Name the governing instructions, requirement and design
 sections, contracts, source files and prior outputs the result depends on. A
 missing, unreadable or changed input is then recognizable
 as a stop condition rather than a surprise mid-execution.
+
+Declare each input as a link to its file or section. Do not restate its content
+or record what reading it showed. A finding goes where
+[current state only](DEVELOPMENT_METHOD.md#current-state-only) puts it.
 
 Reading something outside that set is not a violation. Add it to the
 declaration when it turns out to carry the result, and reassess the item when
@@ -405,7 +424,8 @@ A short ordered reading list is enough; no second status table is needed.
 
 Move the position when work actually moves. A changed task state requires an
 update to its owner, not a rewrite of every entry pointer.
-Version history keeps past positions; keep no position log.
+Version history keeps past positions; keep no position log. List no finished
+items here; link a commit only where the next action depends on it.
 
 A pointer establishes no permission, readiness or pass. The actual decision
 and evidence govern under [Approvals](APPROVALS.md#preparing-and-recording-one-decision)

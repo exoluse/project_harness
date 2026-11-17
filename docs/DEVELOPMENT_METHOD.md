@@ -61,7 +61,8 @@ completion alone cannot create consent or turn missing evidence into a pass.
 Use compact planning by default for bounded, reversible work with a clear
 outcome and no consequential scope/design unknown. This includes corrections
 and small additions using established contracts. File count and a new requirement
-alone do not require detailed planning.
+alone do not require detailed planning. Nor does a project rule that each unit
+needs an approved plan; a compact plan can be the plan presented for approval.
 
 Use the detailed procedure for the affected scope when it introduces:
 
@@ -104,7 +105,9 @@ a gap. Keep the requested stopping point and actual implementation authority.
    each obligation and its supporting conditions into a source-linked inventory
    in the owning documents. Conversational requests need their resulting obligations,
    not a prompt reference. Separate confirmed requirements, observed behavior,
-   inferred needs, proposals and unknowns. Include exclusions and unresolved
+   inferred needs, proposals and unknowns. Record observed behavior only where
+   it affects a requirement, gap or check, and link its source instead of
+   describing the code. Include exclusions and unresolved
    contradictions; do not infer that uninspected inputs are covered.
 2. **Define observable outcomes.** For each requirement, specify acceptance
    details, normal behavior, applicable boundary/failure cases and constraints.
@@ -160,9 +163,11 @@ a gap. Keep the requested stopping point and actual implementation authority.
 Use these areas to find omissions in the affected scope. Record applicable
 details in their owning sections; do not copy them into an applicability table
 or write N/A for unrelated rows. Explain an exclusion when it could otherwise
-hide a source obligation or material risk. This checklist grants no authority
-to add features. Domain-specific obligations from the inputs remain required
-even when this checklist does not name them.
+hide a source obligation or material risk. State another exclusion only where
+a reader would otherwise assume it is in scope. Write each exclusion once, in
+the scope section; other sections link there. This checklist grants no
+authority to add features. Domain-specific obligations from the inputs remain
+required even when this checklist does not name them.
 
 | Area | Details to resolve in the plan or linked owning specification/task |
 |---|---|
@@ -326,6 +331,10 @@ attributable product documents. Distinguish:
 | Contradiction or unknown | Conflicting sources, missing information and affected conclusions. |
 | Proposed target | Explicit desired change and its difference from the current implementation. |
 
+This recording recovers definitions that no owner holds. Later planning links
+those definitions and records only gaps against them; it does not survey the
+code again into its plan.
+
 Code is not proof of the original business intent, correctness or acceptance.
 Tests found in the repository are not tests that have passed. Do not turn
 existing code into a retrospectively approved plan or reset completed work.
@@ -380,6 +389,8 @@ link the commit or version where current work depends on it.
 | A decision overturned by a later one | Delete it and record the decision in force in its place. Where no new decision replaces it, record the owner's cancellation or withdrawal as the decision in force. Update what relied on it under the [change cycle](#change-cycle-and-propagation). |
 | A superseded instruction or contract | Replace it with the current one. |
 | A finished or cancelled task | Delete it once its completion checks pass, or once its plan, or the overview for a standalone task, records its cancellation. Before deleting it, move any decision later work still needs to its owner. A work document that also serves as the overview keeps its project context. |
+| Finished work in a plan | Delete finished work steps, and planned checks that passed for the current version, unless a check must run again at a named later point. Once the plan's completion criteria pass or its cancellation is recorded, move lasting decisions to their owner and delete the plan. The overview then links those owners. |
+| Investigation, survey and review results | Put them in the commit message or the report. Keep only what they produce: a decision, work for a gap, an open question or a failure that still stands. Keep no reading lists. Describe current code only where no design owns that behavior yet, as at [intake](#existing-project-intake-and-reverse-engineering). |
 | An answered open question | Put the answer in its owning definitions, then delete the question under the [open-item lifecycle](WORKFLOW.md#open-item-lifecycle). |
 | A failure | Keep it while it still stands or a decision in force rests on it. A failed check stands until a later check of its scope passes, or until an actual owner decision removes its subject from scope. The same holds for a finding that overturned a pass and for an incident not yet repaired. |
 | A record an external process requires | Keep that process's format and retention rules. Examples are approval records, issued reports and delivered verification evidence. |
