@@ -67,6 +67,7 @@ ends at the first `## ` heading, to choose the sections for the work.
 | Produce a report the project owes on a schedule | [Recurring reports](docs/WORKFLOW.md#recurring-reports) and the source that owns each figure. |
 | Coordinate writers, hand off or integrate Git work | Relevant [Collaboration](docs/COLLABORATION.md) procedure, shared assignments and path ownership. |
 | Classify data loss, credential access or high-risk/external effects | Relevant [Security](docs/SECURITY.md) boundaries and applicable external controls before acting. |
+| Run work or checks that authenticate to an OS account, or handle an authentication denial or lockout warning | [OS account lockout](docs/SECURITY.md#os-account-lockout) before the first attempt. |
 | Configure agent tool permissions or sandboxing for a project | [Tool-level supporting controls](docs/SECURITY.md#tool-level-supporting-controls). |
 | Plan checks, reuse evidence or determine recheck scope | [Verification reuse and scheduling](docs/CONTEXT_EFFICIENCY.md#reuse-and-verification), [verification methods](docs/WORKFLOW.md#verification-and-completion) and applicable project checks. |
 | Run builds, tests, static analysis or large-file processing in any work, or recover from an out-of-memory failure or resource conflict | [Resource-heavy work](docs/CONTEXT_EFFICIENCY.md#resource-heavy-work). |

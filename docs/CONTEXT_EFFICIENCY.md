@@ -203,7 +203,8 @@ Base the decision to run heavy work concurrently on all of these:
 Where that capacity cannot be confirmed, run heavy work one at a time with few
 workers. Increase concurrency only once a run shows spare capacity. Light
 independent work, such as reading files or a scoped search, may run in parallel
-while capacity allows.
+while capacity allows. Workers that share an OS account also follow
+[OS account lockout](SECURITY.md#os-account-lockout).
 
 Where a project establishes a limit, such as a worker count for a suite, record
 it with that command in the [project entry](DATA_MODEL.md#suggested-information).
