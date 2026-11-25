@@ -173,17 +173,108 @@ their result. Deferring an integrated check does not establish that result for
 an individual task. Mandatory project, contract and CI checks retain their
 required scope and timing.
 
-Run resource-heavy suites one at a time unless adequate capacity for overlap
-has been established. For repeated timeouts, investigate product behavior,
-test reliability and resource contention before choosing the rerun scope.
-A focused rerun can test the diagnosis. The original failures stand until a
-check of their scope passes; state what the later execution actually
-establishes.
+Run costly checks under [resource-heavy work](#resource-heavy-work), which
+also covers repeated timeouts and reduced reruns.
 
 Once the relevant required checks pass, proceed with the work. Repeat or broaden
 checks only when changed inputs, unresolved failures, uncertain evidence or
 project controls justify it. Recording a result or handing off work alone does
 not justify another full run.
+
+## Resource-heavy work
+
+Run heavy work within the memory and shared resources actually available.
+Keep an interrupted run safe to resume. Heavy work includes builds, test
+suites, static analysis and large-file processing, in ordinary work as well as
+verification. This section covers out-of-memory (OOM) failures and
+shared-resource conflicts. [Check scheduling](#check-scope-and-scheduling)
+decides which checks run and when.
+
+### Concurrency and capacity
+
+Base the decision to run heavy work concurrently on all of these:
+
+- the memory currently available;
+- the work already running, including other sessions, subagents and background
+  processes;
+- the workers each tool starts internally, since test runners, compilers and
+  bundlers may start one per CPU core by default.
+
+Where that capacity cannot be confirmed, run heavy work one at a time with few
+workers. Increase concurrency only once a run shows spare capacity. Light
+independent work, such as reading files or a scoped search, may run in parallel
+while capacity allows.
+
+Where a project establishes a limit, such as a worker count for a suite, record
+it with that command in the [project entry](DATA_MODEL.md#suggested-information).
+
+### Shared resources and large inputs
+
+Give concurrent runs separate ports, test databases and output directories, or
+run them in sequence. Treat other exclusive resources, such as lock files or a
+fixed temporary path, the same way. Separate worktrees do not separate ports,
+local databases or caches outside the tree. Between concurrent writers, these
+are among the logical resources agreed under
+[concurrent writers](COLLABORATION.md#concurrent-writers).
+
+Read large inputs and logs in bounded parts, such as a line range, a filtered
+search or the tail. Process large files as streams or in batches instead of
+loading them whole.
+
+### Failures and retries
+
+When a run fails out of memory or hits a resource conflict, start no further
+runs of the affected work. Unaffected work may continue within capacity.
+Before retrying, check:
+
+- the error message and exit status;
+- the work running at the same time;
+- whether the product or the test is the cause, such as a leak, unbounded load
+  or an unreliable test.
+
+Retry only after a change that addresses the diagnosed cause. For memory
+exhaustion, lower the worker count or batch size. For a conflict, separate the
+contested resource. Check repeated timeouts against the same list before
+choosing the rerun scope. A focused rerun can test the diagnosis. Where the product is the
+cause, report the defect; a smaller run does not remove it.
+
+### Process cleanup and interrupted output
+
+Stop only processes confirmed as started by the current work. Confirm this from
+a record such as the process ID noted at launch, not from a matching name.
+Leave any other process running, even one holding the needed port or memory.
+Report it with the conflict it causes; stopping it needs its owner's decision.
+Classify that effect under
+[destructive operations](SECURITY.md#file-changes-and-destructive-operations).
+
+Before resuming after an interrupted run, check for processes it started and
+output it left behind. That output may be incomplete. Regenerate or check it
+before using it as evidence or input. Remove it only as a generated output
+under [destructive operations](SECURITY.md#file-changes-and-destructive-operations).
+
+### Reporting reduced runs
+
+A retry that succeeds at a reduced scope establishes that scope only. Report it
+as that scope's result. A required check passes only when its required scope
+and conditions are all met. A lower worker count alone keeps a check's scope,
+unless its conditions specify parallelism. Where concurrency or load is under
+test, confirm the result at the required load.
+
+The original failure stands until a check of its scope passes. A check that
+cannot reach its required scope or conditions keeps its own
+[disposition](WORKFLOW.md#verification-and-completion), such as not checkable
+for want of an adequate environment.
+
+When work cannot continue, report:
+
+- the failed command;
+- the observed symptoms;
+- the checks still outstanding;
+- the condition for resuming.
+
+A failure that still stands stays in its owning document under
+[current state only](DEVELOPMENT_METHOD.md#current-state-only). The work item
+holds the condition for resuming as a prerequisite or blocker.
 
 ## Model selection and delegation
 
