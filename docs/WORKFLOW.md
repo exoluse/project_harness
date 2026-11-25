@@ -20,8 +20,7 @@ Follow [AGENTS.md](../AGENTS.md) for the current workflow and authority.
    recording only real blockers.
 6. Apply [starting execution in a working tree](#starting-execution-in-a-working-tree)
    before the first edit. Execute covered work and verify the changed
-   deliverables against the agreed criteria. Before work authenticates to an
-   OS account, apply [OS account lockout](SECURITY.md#os-account-lockout).
+   deliverables against the agreed criteria.
 7. Deliver the requested result. For releases or project closure, apply
    [closure preparation](#closure-preparation).
 
@@ -313,8 +312,7 @@ artifacts and the limits. The commit message carries them; a failure that still
 stands also stays in its owning document under
 [current state only](DEVELOPMENT_METHOD.md#current-state-only). Apply
 [check scheduling](CONTEXT_EFFICIENCY.md#check-scope-and-scheduling) to their
-execution scope, timing and resource use. Before a check authenticates to an
-OS account, apply [OS account lockout](SECURITY.md#os-account-lockout).
+execution scope, timing and resource use.
 
 **Start from the claim.** For each material outcome, identify the observable
 result and a plausible failure the check must distinguish. Keep this reasoning

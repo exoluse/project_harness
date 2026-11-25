@@ -354,7 +354,7 @@ flowchart LR
 | 결정·권한·보호 경계 | [승인과 결정](docs/APPROVALS.md) · [보안](docs/SECURITY.md) |
 | 미결사항·진행·종료 | [진행 절차](docs/WORKFLOW.md) |
 | 병렬 작업과 인계 | [협업](docs/COLLABORATION.md) |
-| 기존 내용과 검증의 재사용, 무거운 작업 실행 | [효율 지침](docs/CONTEXT_EFFICIENCY.md) |
+| 기존 내용과 검증의 재사용 | [효율 지침](docs/CONTEXT_EFFICIENCY.md) |
 | 실제 적용 흐름 | [웹 프로젝트 예시](docs/EXAMPLE_WEB_PROJECT.md) |
 
 ## 라이선스

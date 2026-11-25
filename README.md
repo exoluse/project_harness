@@ -354,7 +354,7 @@ This README explains the harness for people using it. Agents apply the relevant 
 | Decisions, permissions and protection | [Approvals](docs/APPROVALS.md) · [Security](docs/SECURITY.md) |
 | Open items, progress and closure | [Workflow](docs/WORKFLOW.md) |
 | Concurrent work and handoff | [Collaboration](docs/COLLABORATION.md) |
-| Reusing content and verification, and running heavy work | [Context efficiency](docs/CONTEXT_EFFICIENCY.md) |
+| Reusing content and verification | [Context efficiency](docs/CONTEXT_EFFICIENCY.md) |
 | A worked project flow | [Web project example](docs/EXAMPLE_WEB_PROJECT.md) |
 
 ## License

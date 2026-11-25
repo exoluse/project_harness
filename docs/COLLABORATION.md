@@ -107,9 +107,7 @@ Writing subagents follow the [collaboration basis](#collaboration-basis) with
 non-overlapping ownership. This includes the one-writer limit per working tree
 in [concurrent writers](#concurrent-writers). Where subagents share a checkout,
 run one writing subagent at a time and use read-only subagents for parallel
-work. Builds and checks that subagents run share the machine's memory, disk
-and ports; schedule them under [resource-heavy work](CONTEXT_EFFICIENCY.md#resource-heavy-work).
-User instructions or tool rules that limit or prohibit delegation remain
+work. User instructions or tool rules that limit or prohibit delegation remain
 binding.
 
 ## Transfer and integration

@@ -76,7 +76,6 @@ data changes and deployments retain their own boundaries even when reversible.
 |---|---|
 | Remove an obsolete code path within an authorized fix, with its source revision preserved | Routine covered code edit; inspect the diff and verify affected behavior. |
 | Remove a verified disposable local build directory to rerun an authorized check | Routine covered cleanup; confirm exact resolved targets, ownership and regeneration inputs first. |
-| Delete another project's files, or run a tool-wide prune, to free disk space | Not permitted; free space only from the current project's own finished outputs under [freeing space](CONTEXT_EFFICIENCY.md#freeing-space). |
 | Delete unknown untracked files, a shared database or retained test evidence | Destructive boundary; prepare exact scope, impact and recovery information and obtain the specific decision/control. |
 | Reset project records or start over | Always follow the explicit current reset request, dry run and recoverability requirements in [Workflow](WORKFLOW.md#starting-over). |
 
@@ -105,76 +104,6 @@ for that actual effect; existing tool access does not supply it.
 | Read a project resource through an authenticated connector within authorized scope | Use the existing operation permission and protected authentication; no extra approval solely for internal credential use. |
 | Open a credential file or dump environment variables to discover a token | Protected-value access; establish the specific purpose/scope and protected handling before access. |
 | Send a message or deploy through an already authenticated tool | Obtain/reuse the matching explicit action authorization and any required external control; the authenticated session alone is insufficient. |
-
-## OS account lockout
-
-Keep work and checks from locking a real user's or service's OS account. This
-covers any work that authenticates to a local, domain or service account. Such
-work includes sign-in, remote shells, privilege elevation and network shares.
-It also includes product sign-in backed by the OS or its directory.
-
-### Before authenticating
-
-Before work authenticates, confirm all of these:
-
-- the target environment;
-- the account it will use;
-- the lockout policy that applies, such as its failure threshold and reset
-  window.
-
-Check whether test workers, CI jobs or background tasks authenticate with the
-same account at the same time. Check whether any of them retries automatically
-after a failure. Where the lockout conditions are unknown, turn off automatic
-retries for that account before proceeding. Where several workers share an
-account, confirm that one authentication succeeds before starting the rest.
-
-### Accounts for work and lockout checks
-
-Ordinary work uses an already authenticated tool or an approved test account.
-Checks of wrong-password entry, lockout or unlock use only an approved isolated
-environment. Their accounts must be dedicated to the check and recoverable.
-Approval comes from the owner of the account or environment.
-
-Record approved test accounts by name, and isolated environments, with the
-[project conventions](DATA_MODEL.md#suggested-information). Never record their
-passwords. Without them, such a check is not checkable for want of that input.
-Give it that [disposition](WORKFLOW.md#verification-and-completion) and raise
-an open item.
-
-### Stopping after a denial or warning
-
-On the first unexpected authentication denial or lockout warning, stop further
-attempts with that account at once. Stop them in every worker the current work
-controls. Report any other source still attempting, such as a job the current
-work did not start; leave stopping it to its owner. Work unrelated to that
-authentication may continue.
-
-Before resuming, check the account's status without authenticating as it
-again, such as through its owner or a directory query. Resolve the cause, such
-as a wrong or outdated stored password, then resume. A locked account needs an
-authorized unlock first, as below.
-
-### Long-running and interactive work
-
-Prefer an approved non-interactive environment for long-running work, one that
-keeps running when the screen locks. Run tests that need a user's screen in a
-dedicated test session, not in a real user's session.
-
-Unlocking an account, resetting a password and changing OS security settings
-each need approval from a person with authority over that action. Carry them
-out through the existing recovery or change procedure. Existing administrative
-access does not supply that authority, as under
-[authenticated tools](#authenticated-tools-and-protected-values). Disabling a
-screen lock or changing a lockout policy to keep work running is such a change.
-
-### Reporting authentication failures
-
-Report the symptoms, the affected work and the condition for resuming. Name the
-account and environment involved. Leave out passwords, tokens, hashes and other
-credential values. Remove them from any log excerpt or command line the report
-includes. A failure that still stands stays in its owning document under
-[current state only](DEVELOPMENT_METHOD.md#current-state-only). The work item
-holds the condition for resuming as a prerequisite or blocker.
 
 ## Independently controlled approval and execution
 
