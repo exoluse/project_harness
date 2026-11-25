@@ -76,6 +76,7 @@ data changes and deployments retain their own boundaries even when reversible.
 |---|---|
 | Remove an obsolete code path within an authorized fix, with its source revision preserved | Routine covered code edit; inspect the diff and verify affected behavior. |
 | Remove a verified disposable local build directory to rerun an authorized check | Routine covered cleanup; confirm exact resolved targets, ownership and regeneration inputs first. |
+| Delete another project's files, or run a tool-wide prune, to free disk space | Not permitted; free space only from the current project's own finished outputs under [freeing space](CONTEXT_EFFICIENCY.md#freeing-space). |
 | Delete unknown untracked files, a shared database or retained test evidence | Destructive boundary; prepare exact scope, impact and recovery information and obtain the specific decision/control. |
 | Reset project records or start over | Always follow the explicit current reset request, dry run and recoverability requirements in [Workflow](WORKFLOW.md#starting-over). |
 
