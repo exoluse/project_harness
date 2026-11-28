@@ -174,8 +174,10 @@ an individual task. Mandatory project, contract and CI checks retain their
 required scope and timing.
 
 Run resource-heavy suites one at a time unless adequate capacity for overlap
-has been established. For repeated timeouts, investigate product behavior,
-test reliability and resource contention before choosing the rerun scope.
+has been established. For long-running or memory-intensive checks, apply
+[memory monitoring](#monitoring-available-memory). For repeated timeouts,
+investigate product behavior, test reliability and resource contention before
+choosing the rerun scope.
 A focused rerun can test the diagnosis. The original failures stand until a
 check of their scope passes; state what the later execution actually
 establishes.
@@ -184,6 +186,24 @@ Once the relevant required checks pass, proceed with the work. Repeat or broaden
 checks only when changed inputs, unresolved failures, uncertain evidence or
 project controls justify it. Recording a result or handing off work alone does
 not justify another full run.
+
+## Monitoring available memory
+
+Before starting long-running or memory-intensive work, check available memory
+on the machine that will run it. If a job or container has a tighter limit,
+check how much of its allowance remains. Compare available memory with the
+expected peak. If demand is uncertain, start with a smaller batch when practical.
+
+Keep sampling during execution, including while a single command is running.
+Use host or runner metrics at intervals short enough to catch growing memory
+pressure. Recheck before increasing concurrency or batch size. If the runner
+exposes only job-level readings, state that limit when reporting memory pressure.
+
+If memory is too low for the work ahead or readings show growing pressure,
+reduce concurrency or batch size. Defer a run that still cannot fit. If
+pressure persists during a run you started for this task, pause or stop it at
+a safe point. Start or resume when a fresh reading shows enough memory for
+the adjusted workload.
 
 ## Model selection and delegation
 

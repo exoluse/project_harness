@@ -281,6 +281,8 @@ When a decision is settled in conversation, replace the instruction it supersede
 
 Concurrent agents use a separate worktree or clone for each writer, and a single working tree runs one writing agent at a time; see [collaboration](docs/COLLABORATION.md#concurrent-writers). Work that needs an unresolved contract or input waits; independent work with ready prerequisites can continue.
 
+For long-running or memory-intensive work, the agent checks the execution host's available memory before starting and monitors it throughout the run. It reduces concurrency or batch size if memory runs low. [Memory monitoring](docs/CONTEXT_EFFICIENCY.md#monitoring-available-memory)
+
 ### When the agent stops and asks
 
 In these situations the agent stops the affected work and asks for a decision or input. Unaffected work continues.
