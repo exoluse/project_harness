@@ -459,6 +459,26 @@ contracts. Update those owners where their criteria change. Changed subjects or
 criteria need applicable new checks; an overturned result follows pass
 withdrawal above.
 
+### Test cleanup
+
+Remove disposable resources created solely for a test run as soon as the last
+test using them ends. Run teardown on success, failure, timeout and cancellation.
+
+1. Identify disposable targets by their resolved paths or resource IDs as
+   they are created. A dedicated temporary directory can cover its contents.
+   Register cleanup during setup so teardown also handles partial setup.
+2. Before teardown, retain the [evidence needed for verification](#verification-and-completion)
+   or failure diagnosis, including any one-off script needed to reproduce the
+   result. Maintained regression tests and reusable fixtures are project assets.
+3. Delete temporary directories, scratch code and caches dedicated to the run.
+   Stop and remove its temporary containers. Remove images or volumes created
+   exclusively for the run once their last consumer finishes. Check
+   [ownership and disposability](SECURITY.md#file-changes-and-destructive-operations)
+   before removal. In shared storage, target only entries the run owns exclusively.
+4. Confirm the targets are gone. If cleanup fails or a crash prevents teardown,
+   recheck ownership and retry at the first safe opportunity. Report any
+   remaining path or resource ID, the reason and the next cleanup action.
+
 ## Status and trace reporting
 
 A status request such as "how far is this project" or "how much of the

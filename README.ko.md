@@ -307,6 +307,8 @@ flowchart LR
 
 검사는 주장이 가리키는 실제 대상에서, 확인하려는 결과와 잡아내야 할 실패를 기준으로 고릅니다. 대역(fixture·샘플·mock)의 결과는 그 대역에 대한 증거일 뿐이고, 요소 존재 검사만으로 화면에서 읽을 수 있다고 판단하지 않습니다. 화면·그래픽은 공통 표현을 넓히기 전에 실제 제품의 대표 결과를 확인하고, 재미·사용성 같은 [제품 가정](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions)은 관련 작업을 넓히기 전에 확인 방법과 시점을 계획합니다. 세부 기준은 [검증과 완료](docs/WORKFLOW.md#verification-and-completion)를 따릅니다.
 
+에이전트는 테스트 전용으로 만든 임시 폴더·코드·컨테이너·캐시를 마지막으로 사용하는 테스트가 끝나는 즉시 삭제합니다. 테스트가 실패하거나 중단돼도 재현에 필요한 증거를 확보한 뒤 바로 정리합니다. [테스트 후 정리 기준](docs/WORKFLOW.md#test-cleanup)
+
 작업이 막히면 원인과 영향받는 범위를 알려 줍니다. 인계할 때는 한 일과 필요한 입력을 커밋 메시지에 적고, 다음 행동은 해당 작업 문서에 둡니다.
 
 문서 링크와 제목 앵커는 `node tools/check-docs.mjs [문서 경로]`로 직접 확인할 수 있습니다. 하네스를 적용한 프로젝트에서는 사본 경로로 실행합니다(예: `node harness/tools/check-docs.mjs project-docs`). Node만 있으면 되고 파일을 고치지 않으며, 검사 범위는 [문서 검사기](docs/CONTEXT_EFFICIENCY.md#document-checker)에 있습니다.

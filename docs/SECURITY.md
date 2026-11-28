@@ -61,6 +61,8 @@ These use the existing development decision when all of these hold:
 For generated outputs, verify that they can be recreated from available inputs
 and contain no unique user data or evidence needed for the work. A name such
 as `tmp`, `build` or `test` does not establish disposability.
+Apply [test cleanup](WORKFLOW.md#test-cleanup) to resources created solely
+for a test run.
 
 Treat an operation as destructive when it risks any of these:
 

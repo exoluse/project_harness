@@ -307,6 +307,8 @@ Planning completion, implementation, verification, customer acceptance and proje
 
 Checks run against the subject the claim names and are chosen from the intended result and the failure they must detect. A result from a stand-in — a fixture, a copied sample, a mock — is evidence about that stand-in, and element existence alone cannot establish readability in the rendered product. For UI and graphics, a representative result in the actual product is checked before a shared treatment is extended, and [product assumptions](docs/DEVELOPMENT_METHOD.md#testing-product-assumptions) such as enjoyment or usability get a planned check before dependent work expands. See [verification and completion](docs/WORKFLOW.md#verification-and-completion).
 
+The agent removes each test-only directory, scratch script, container or cache as soon as the last test using it ends. After a failure or cancellation, it retains the evidence needed to reproduce the result and performs the same cleanup. [Test cleanup](docs/WORKFLOW.md#test-cleanup)
+
 If work is blocked, the report identifies the cause and affected scope. A handoff states in the commit message what was done and which inputs are needed; the next action stays in the work item.
 
 You can check document links and heading anchors yourself with `node tools/check-docs.mjs [document path]`. In an adopting project, run it from the harness copy, such as `node harness/tools/check-docs.mjs project-docs`. It needs only Node and changes no files; its scope is described under [document checker](docs/CONTEXT_EFFICIENCY.md#document-checker).
